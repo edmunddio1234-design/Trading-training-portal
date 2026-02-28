@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impact Trading Academy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --bg-primary: #F0F5F3;
+    --bg-secondary: #FFFFFF;
+    --bg-card: #F7FAF9;
+    --bg-hover: #E8F0ED;
+    --accent: #0D9373;
+    --accent-light: #10B981;
+    --accent-dark: #0B7A60;
+    --green: #10B981;
+    --green-dark: #0D9373;
+    --red: #EF4444;
+    --blue: #0D9373;
+    --navy: #1B2A4A;
+    --text-primary: #1B2A4A;
+    --text-secondary: #374151;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
+    --border-light: #D1D5DB;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+  .app-container { display: flex; min-height: 100vh; }
+  .sidebar { width: 300px; background: var(--bg-secondary); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; transition: transform 0.3s ease; }
+  .sidebar.collapsed { transform: translateX(-300px); }
+  .sidebar-header { padding: 24px 20px; border-bottom: 1px solid var(--border); background: var(--navy); }
+  .sidebar-header h1 { font-size: 18px; color: #FFFFFF; font-weight: 700; letter-spacing: -0.3px; }
+  .sidebar-header h1 span { color: var(--accent-light); }
+  .sidebar-header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .nav-section { padding: 12px 0; flex: 1; overflow-y: auto; }
+  .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); padding: 8px 20px; font-weight: 600; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; font-size: 13px; color: var(--text-secondary); }
+  .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .nav-item.active { background: rgba(13,147,115,0.08); border-left-color: var(--accent); color: var(--accent); }
+  .nav-item.completed .nav-dot { background: var(--green); }
+  .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-light); flex-shrink: 0; }
+  .nav-item.active .nav-dot { background: var(--accent); box-shadow: 0 0 8px rgba(13,147,115,0.4); }
+  .progress-bar-container { padding: 16px 20px; border-top: 1px solid var(--border); }
+  .progress-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); border-radius: 2px; transition: width 0.5s ease; }
+  .main-content { flex: 1; margin-left: 300px; transition: margin-left 0.3s ease; }
+  .main-content.expanded { margin-left: 0; }
+  .content-header { padding: 16px 40px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .toggle-btn { background: none; border: 1px solid var(--border-light); color: var(--text-muted); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  .toggle-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .header-actions { display: flex; gap: 8px; }
+  .header-actions button { background: none; border: 1px solid var(--border-light); color: var(--text-secondary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .header-actions button:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .header-actions button.primary { background: var(--accent); border-color: var(--accent); color: #FFF; font-weight: 600; }
+  .header-actions button.primary:hover { background: var(--accent-dark); }
+  .content-body { padding: 40px; max-width: 920px; }
+  .module-badge { display: inline-block; background: rgba(13,147,115,0.12); color: var(--accent); font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; }
+  .module-title { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; letter-spacing: -0.5px; color: var(--navy); }
+  .module-subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5; }
+  .lesson-section { margin-bottom: 28px; }
+  .lesson-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .lesson-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
+  .lesson-section p { font-size: 15px; line-height: 1.75; color: var(--text-secondary); margin-bottom: 12px; }
+  .lesson-section ul { list-style: none; padding: 0; }
+  .lesson-section ul li { padding: 6px 0 6px 24px; position: relative; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .lesson-section ul li::before { content: '\25B8'; position: absolute; left: 4px; color: var(--accent); }
+  .key-concept { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 12px; padding: 20px 24px; margin: 16px 0; }
+  .key-concept .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+  .key-concept p { font-size: 14px; color: var(--text-primary); line-height: 1.6; margin: 0; }
+  .resource-card { display: flex; align-items: center; gap: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 12px 0; text-decoration: none; color: inherit; transition: all 0.2s; }
+  .resource-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
+  .resource-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .resource-icon.learn { background: rgba(13,147,115,0.1); }
+  .resource-icon.chart { background: rgba(27,42,74,0.08); }
+  .resource-icon.video { background: rgba(239,68,68,0.08); }
+  .resource-icon.tool { background: rgba(245,165,36,0.1); }
+  .resource-info h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 2px; }
+  .resource-info p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.4; }
+  .resource-arrow { color: var(--border-light); font-size: 18px; margin-left: auto; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
+  .stat-box { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-box .num { font-size: 24px; font-weight: 800; color: var(--accent); }
+  .stat-box .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .comparison-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; margin: 16px 0; border: 1px solid var(--border); }
+  .comparison-table th { background: var(--navy); padding: 12px 16px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #FFF; font-weight: 600; border-bottom: 1px solid var(--border); }
+  .comparison-table td { padding: 10px 16px; font-size: 13px; color: var(--text-secondary); border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
+  .comparison-table tr:last-child td { border-bottom: none; }
+  .comparison-table tr:hover td { background: rgba(13,147,115,0.03); }
+  .quiz-container { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-top: 40px; }
+  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .quiz-header h3 { font-size: 18px; color: var(--navy); font-weight: 700; }
+  .quiz-score { font-size: 13px; color: var(--text-muted); }
+  .quiz-question { font-size: 16px; font-weight: 500; margin-bottom: 16px; line-height: 1.5; color: var(--navy); }
+  .quiz-progress { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .quiz-option { display: block; width: 100%; text-align: left; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 8px; font-size: 14px; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .quiz-option:hover:not(.selected):not(.correct):not(.incorrect) { border-color: var(--accent); color: var(--text-primary); background: var(--bg-hover); }
+  .quiz-option.selected { border-color: var(--accent); background: rgba(13,147,115,0.08); color: var(--text-primary); }
+  .quiz-option.correct { border-color: var(--green); background: rgba(16,185,129,0.1); color: var(--green-dark); }
+  .quiz-option.incorrect { border-color: var(--red); background: rgba(239,68,68,0.06); color: var(--red); }
+  .quiz-feedback { margin-top: 16px; padding: 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+  .quiz-feedback.correct { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); color: var(--green-dark); }
+  .quiz-feedback.incorrect { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
+  .quiz-btn { background: var(--accent); color: #FFF; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 16px; font-family: inherit; }
+  .quiz-btn:hover { background: var(--accent-dark); }
+  .quiz-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .modal { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
+  .modal-header { padding: 24px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-header h2 { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
+  .modal-body { padding: 28px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+  .form-group input, .form-group textarea, .form-group select { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; color: var(--text-primary); font-family: inherit; resize: vertical; }
+  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
+  .form-group textarea { min-height: 100px; }
+  .section-editor { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+  .section-editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .remove-btn { background: none; border: none; color: var(--red); cursor: pointer; font-size: 13px; }
+  .add-btn { background: none; border: 1px dashed var(--border-light); color: var(--text-muted); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 13px; margin-bottom: 16px; }
+  .add-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-editor { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+  .option-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .option-row input[type="text"] { flex: 1; }
+  .option-row input[type="radio"] { accent-color: var(--accent); }
+  .modal-footer { padding: 20px 28px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
+  .modal-footer button { padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; font-family: inherit; }
+  .btn-cancel { background: var(--bg-hover); color: var(--text-secondary); }
+  .btn-save { background: var(--accent); color: #FFF; font-weight: 600; }
+  .btn-delete { background: var(--red); color: white; }
+  .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+  .dash-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 14px; padding: 24px; cursor: pointer; transition: all 0.3s; }
+  .dash-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+  .dash-card-num { font-size: 12px; color: var(--green); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .dash-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; color: var(--navy); }
+  .dash-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .dash-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .dash-card-footer span { font-size: 12px; color: var(--text-muted); }
+  .status-badge { font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 500; }
+  .status-badge.not-started { background: rgba(100,116,139,0.1); color: var(--text-muted); }
+  .status-badge.in-progress { background: rgba(13,147,115,0.1); color: var(--accent); }
+  .status-badge.completed { background: rgba(16,185,129,0.12); color: var(--green-dark); }
+  .hero-banner { background: linear-gradient(135deg, var(--navy) 0%, #243B60 100%); border-radius: 16px; padding: 40px; margin-bottom: 32px; color: white; }
+  .hero-banner h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .hero-banner h2 span { color: var(--accent-light); }
+  .hero-banner p { color: rgba(255,255,255,0.7); font-size: 15px; }
+  .hero-stats { display: flex; gap: 32px; margin-top: 20px; }
+  .hero-stat .val { font-size: 28px; font-weight: 800; color: var(--accent-light); }
+  .hero-stat .desc { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); }
+
+  /* AI Visual Generator Styles */
+  .ai-visual-container { margin: 16px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
+  .ai-visual-img { width: 100%; display: block; border-radius: 12px 12px 0 0; }
+  .ai-visual-actions { display: flex; gap: 8px; padding: 12px 16px; align-items: center; border-top: 1px solid var(--border); }
+  .ai-visual-btn { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--navy), #2d4a7a); color: #FFF; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.3s; }
+  .ai-visual-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(27,42,74,0.3); }
+  .ai-visual-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .ai-visual-btn.regenerate { background: var(--bg-hover); color: var(--text-secondary); border: 1px solid var(--border); }
+  .ai-visual-btn.regenerate:hover { border-color: var(--accent); color: var(--accent); }
+  .ai-visual-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 16px; background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.04)); }
+  .ai-visual-loading .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ai-visual-loading p { font-size: 13px; color: var(--text-muted); }
+  .ai-visual-error { padding: 16px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; margin: 12px 0; color: var(--red); font-size: 13px; }
+  .generate-all-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #FFF; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 24px; transition: all 0.3s; box-shadow: 0 2px 12px rgba(13,147,115,0.2); }
+  .generate-all-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,147,115,0.35); }
+  .generate-all-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Settings Modal */
+  .settings-section { margin-bottom: 24px; }
+  .settings-section h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .settings-info { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 6px; }
+  .api-key-row { display: flex; gap: 8px; }
+  .api-key-row input { flex: 1; }
+  .api-key-row button { white-space: nowrap; background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
+  .api-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 8px; padding: 4px 10px; border-radius: 12px; }
+  .api-status.connected { background: rgba(16,185,129,0.1); color: var(--green-dark); }
+  .api-status.disconnected { background: rgba(239,68,68,0.08); color: var(--red); }
+
+  /* Toast Notifications */
+  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+  .toast { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); font-size: 13px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; max-width: 360px; }
+  .toast.success { border-left: 3px solid var(--green); }
+  .toast.error { border-left: 3px solid var(--red); }
+  .toast.info { border-left: 3px solid var(--accent); }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* Loading skeleton */
+  .loading-screen { display: flex; align-items: center; justify-content: center; min-height: 60vh; flex-direction: column; gap: 16px; }
+  .loading-screen .spinner { width: 48px; height: 48px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-300px); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0 !important; }
+    .content-body { padding: 24px 20px; }
+    .module-title { font-size: 24px; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .hero-banner { padding: 24px; }
+    .hero-stats { flex-wrap: wrap; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useMemo, useCallback, useRef } = React;
+
+// =============================================================================
+// DEFAULT MODULES (built-in fallback when backend is unavailable)
+// =============================================================================
+
+const DEFAULT_MODULES = [
+  {
+    id: 'm1',
+    title: 'Mindset, Financial Reality & The Chasm of Fear',
+    subtitle: 'Build the psychology and habits that separate the top 5% of traders from everyone else.',
+    sections: [
+      { title: 'Financial Reality Check', content: 'Many people never achieve their financial goals because they think and act like reactive, emotional retail traders. To measure your progress, reference Fidelity\'s age-based retirement benchmarks. These milestones provide a clear reality check on where you stand and where you need to be.', type: 'text' },
+      { title: 'Fidelity Retirement Benchmarks', type: 'stats', stats: [
+        { num: '1x', lbl: 'Salary by Age 30' },
+        { num: '3x', lbl: 'Salary by Age 40' },
+        { num: '6x', lbl: 'Salary by Age 50' },
+        { num: '8x', lbl: 'Salary by Age 60' },
+        { num: '10x', lbl: 'Salary by Age 67' }
+      ]},
+      { title: 'The Chasm of Fear', content: 'The ultimate determinant of success is mindset. 95% of people never reach the top 5% because attitudes, biases, beliefs, and fear hold them back. Crossing the "chasm of fear" requires three critical traits:\n\nFaith — Belief in your system and in yourself. Without faith, you\'ll second-guess every trade and abandon your plan at the worst moment.\n\nNo Fear — Achieved through strict risk management. When you know your downside is capped at 1%, fear loses its grip.\n\nCourage — Taking bold, decisive steps toward your goals. Courage isn\'t the absence of fear — it\'s acting despite it.', type: 'text' },
+      { title: 'The Five Pillars of Success', content: 'Every successful trader follows these five pillars:\n\n1. Stack the odds in your favor — Use strategies backed by data and history, not gut feelings.\n2. Follow rules — Rules protect you from emotional mistakes that destroy accounts.\n3. Be disciplined — Consistency beats intensity every single time.\n4. Be coachable — Learn from others with proven results and be willing to adapt.\n5. Be decisive — Success requires taking action, not endless analysis paralysis.', type: 'text' },
+      { title: 'The Structural Advantage of Starting Small', content: '"It is a huge structural advantage to not have a lot of money." Smaller accounts offer more agility — you can enter and exit positions quicker and pursue high-growth opportunities that large funds cannot.\n\nThe S&P 500 returns ~10% annually long-term. Berkshire Hathaway compounds at ~20%. The difference? Over 30 years, $10,000 at 10% becomes $174,000. At 20%, it becomes $2.37 million. Even a small increase in your annual compounding rate creates a massive long-term difference.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'Fidelity: Average Retirement Savings by Age', desc: 'Official benchmarks showing retirement savings goals with interactive calculators.', url: 'https://www.fidelity.com/learning-center/personal-finance/average-retirement-savings' },
+        { icon: 'chart', title: 'Schwab: Benefits of Compound Growth', desc: 'Interactive compound interest calculator showing exponential growth over time.', url: 'https://www.schwabmoneywise.com/essentials/benefits-of-compound-growth' },
+        { icon: 'tool', title: 'Investor.gov: Compound Interest Calculator', desc: 'Free government tool to calculate how compounding affects your investments.', url: 'https://www.investor.gov/financial-tools-calculators/calculators/compound-interest-calculator' }
+      ]}
+    ],
+    quiz: [
+      { question: 'According to Fidelity benchmarks, how much should you have saved by age 67?', options: ['5x annual salary', '8x annual salary', '10x annual salary', '15x annual salary'], correct: 2, explanation: 'Fidelity recommends having 10x your annual salary saved by age 67.' },
+      { question: 'What are the three traits needed to cross the "Chasm of Fear"?', options: ['Speed, Power, Intelligence', 'Faith, No Fear, Courage', 'Patience, Logic, Timing', 'Knowledge, Capital, Luck'], correct: 1, explanation: 'The three traits are Faith (in your system), No Fear (through risk management), and Courage (bold action).' },
+      { question: 'Which is NOT one of the Five Pillars of successful trading?', options: ['Stack the odds in your favor', 'Be disciplined', 'Trust your gut instinct', 'Be coachable'], correct: 2, explanation: 'The five pillars are: stack odds, follow rules, be disciplined, be coachable, and be decisive. Trusting gut instinct is emotional, not systematic.' },
+      { question: 'Why is starting with a small account considered a structural advantage?', options: ['Lower taxes on gains', 'More agility to enter/exit positions quickly', 'Brokers give better commission rates', 'Less regulatory paperwork required'], correct: 1, explanation: 'Smaller accounts provide agility — you can enter and exit positions quicker and pursue high-growth opportunities that large funds cannot.' }
+    ]
+  },
+  {
+    id: 'm2',
+    title: 'Market Mechanics, Supply & Demand, and Chart Reading',
+    subtitle: 'Understand how institutional money moves markets and learn to read price action like a professional.',
+    sections: [
+      { title: 'Who Really Moves the Market?', content: 'Total market capitalization is approximately $50 trillion. Institutional investors account for 80–90% of all market volume, while retail traders only account for 10–20%. This is the single most important fact to internalize: institutions control the market. Your job is to follow their "footprints in the sand" — a concept from legendary investor Peter Lynch — to study what big money is quietly accumulating.', type: 'text' },
+      { title: 'Market Volume Breakdown', type: 'stats', stats: [
+        { num: '80-90%', lbl: 'Institutional Volume' },
+        { num: '10-20%', lbl: 'Retail Volume' },
+        { num: '$50T', lbl: 'Total Market Cap' }
+      ]},
+      { title: 'Supply & Demand: The #1 Law of Markets', content: 'The single most important law governing all markets:\n\nLow Supply → Price Goes Up\nHigh Supply → Price Goes Down\n\nThis fundamental principle creates demand zones and supply zones on the chart. When massive institutional orders are not fully executed, they leave behind "unfilled orders" that create fundamental market imbalances. These imbalances are the footprints you\'re looking for.', type: 'text' },
+      { title: 'Reading the Price Bar (OHLC)', content: 'An Open-High-Low-Close bar tells you four critical pieces of information:\n\nOpen — Where the price started the session\nHigh — The highest price reached during the session\nLow — The lowest price dropped during the session\nClose — The final price when the session ended\n\nThis is the foundation of all chart reading. Every influence — news, earnings, Fed announcements, fear, greed — gets reflected in these four data points. Market Hours (Louisiana/CST): Opens 8:30 AM, Closes 3:00 PM.', type: 'text' },
+      { title: 'Demand Zones & Supply Zones', content: 'Demand Zones are created by leftover institutional buy orders. In long trading, you trade inside demand zones to buy low and sell high:\n• Step 1: Buy to Enter\n• Step 2: Sell to Exit\n• Profit when: Price rises\n\nSupply Zones are created by leftover institutional sell orders. In short trading, you trade inside supply zones to sell high and buy low:\n• Step 1: Sell to Enter\n• Step 2: Buy to Exit\n• Profit when: Price falls', type: 'text' },
+      { title: 'How Orders Create Movement', content: 'When a buyer wants 100 shares of ABC at $41.30 and supply equals demand, price stays balanced. When no more shares are available at that price, an imbalance occurs and price must move.\n\nBalance → Imbalance → Movement\n\nThis is the key to understanding all price action. Unfilled orders are leftover pockets of institutional buying or selling pressure that were never executed. They create predictable zones where price is likely to react in the future.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'CME Group: Chart Types — Candlestick, Line, Bar', desc: 'Official CME course explaining OHLC charts and how to read each component.', url: 'https://www.cmegroup.com/education/courses/technical-analysis/chart-types-candlestick-line-bar' },
+        { icon: 'learn', title: 'TrendSpider: Supply and Demand Zones Explained', desc: 'Detailed guide with chart examples showing how to identify supply and demand zones.', url: 'https://trendspider.com/learning-center/what-are-supply-and-demand-zones/' },
+        { icon: 'chart', title: 'TradingView: Institutional vs Retail Activity Indicator', desc: 'Live indicator showing institutional volume surges vs retail trading activity.', url: 'https://www.tradingview.com/script/6LT81C3T-Enhanced-Retail-vs-Institutional-Activity/' },
+        { icon: 'learn', title: 'Market Bulls: Institutional vs Retail Traders Comparison', desc: 'Deep comparison of how institutional and retail traders approach the market.', url: 'https://market-bulls.com/institutional-traders-vs-retail-traders/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What percentage of market volume do institutional investors control?', options: ['50–60%', '60–70%', '80–90%', '95–99%'], correct: 2, explanation: 'Institutional investors account for 80–90% of all market volume.' },
+      { question: 'What does a Demand Zone represent?', options: ['Area of heavy selling pressure', 'Leftover institutional buy orders', 'Where retail traders congregate', 'Government price controls'], correct: 1, explanation: 'Demand zones are created by leftover institutional buy orders that were never fully executed.' },
+      { question: 'In a long trade, what is the first execution step?', options: ['Sell to Enter', 'Buy to Enter', 'Set Stop Loss', 'Check Volume'], correct: 1, explanation: 'In long trading (buy low, sell high), the first step is Buy to Enter, then Sell to Exit.' },
+      { question: 'What creates price movement according to order flow theory?', options: ['News announcements only', 'Balance → Imbalance → Movement', 'Random walk patterns', 'Technical indicator crossovers'], correct: 1, explanation: 'When supply and demand become imbalanced due to unfilled orders, price must move to find new equilibrium.' }
+    ]
+  },
+  {
+    id: 'm3',
+    title: 'The Master Surge Strategy: Five Pillars of Institutional Timing',
+    subtitle: 'Your primary timing mechanism to identify market turns and major moves in advance.',
+    sections: [
+      { title: 'Strategy Overview', content: 'The Master Surge Strategy functions as your primary timing mechanism, designed to help you identify market turns and major moves before they happen. Its core principle: follow the "footprints in the sand" to track what massive institutional money is quietly accumulating.\n\nTo stack the odds in your favor, you must combine all five pillars together. No single pillar works in isolation — the power comes from confirmation across multiple signals.', type: 'text' },
+      { title: 'The Five Pillars', type: 'stats', stats: [
+        { num: '1', lbl: 'Price Cycles' },
+        { num: '2', lbl: 'Volume Surges' },
+        { num: '3', lbl: 'Inst. Footprints' },
+        { num: '4', lbl: 'Trend Strength' },
+        { num: '5', lbl: 'Risk Management' }
+      ]},
+      { title: 'Pillar 1: Understand Price Cycles', content: 'Markets move in four repeating phases: Accumulation (institutions quietly buying), Markup (price rising as demand overwhelms supply), Distribution (institutions quietly selling into strength), and Markdown (price falling as supply overwhelms demand).\n\nRecognizing which phase the market is in helps you time entries with precision rather than guessing.', type: 'text' },
+      { title: 'Pillar 2: Track Volume Surges', content: 'Since institutions control 80–90% of market volume, unusual volume spikes are direct evidence of big money entering or exiting positions. A volume surge that accompanies a price move confirms the move is backed by institutional conviction, not just retail noise.', type: 'text' },
+      { title: 'Pillar 3: Watch Institutional Footprints', content: 'Identify "unfilled orders" on your chart — the leftover pockets of massive institutional buying or selling pressure that were never fully executed. These create predictable supply and demand zones where price is highly likely to react when revisited.', type: 'text' },
+      { title: 'Pillar 4: Confirm Trend Strength', content: 'Always ensure the overarching market trend supports your intended trade direction. Trading with the trend means you have institutional momentum on your side. Trading against the trend means fighting the biggest players in the market.', type: 'text' },
+      { title: 'Pillar 5: Use Risk Management Every Time', content: 'Strictly limit risk to a maximum of 1% per trade. Aim for a 3:1 reward-to-risk ratio using the S.E.T. rule (Stop, Entry, Target). This mathematical edge means even with only a 30% win rate, you remain consistently profitable over time.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'Schwab: Four Stages of the Stock Market Cycle', desc: 'Learn to identify Accumulation, Markup, Distribution, and Markdown phases.', url: 'https://www.schwab.com/learn/story/four-stages-stock-market-cycles' },
+        { icon: 'learn', title: 'Visual Capitalist: Market Cycle Diagram', desc: 'Infographic showing the best time to buy stocks within market cycles.', url: 'https://www.visualcapitalist.com/this-market-cycle-diagram-explains-the-best-time-to-buy-stocks/' },
+        { icon: 'chart', title: 'TradingView: Volume Surge Detector', desc: 'Indicator that highlights institutional volume spikes using color-coded alerts.', url: 'https://www.tradingview.com/script/RY2Dda1o/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What is the primary purpose of the Master Surge Strategy?', options: ['Scalping small profits quickly', 'Identifying market turns and major moves in advance', 'Automated algorithmic trading', 'Long-term buy and hold investing'], correct: 1, explanation: 'The Master Surge Strategy is your primary timing mechanism to identify market turns and major moves before they happen.' },
+      { question: 'What are the four phases of a market cycle?', options: ['Buy, Hold, Sell, Wait', 'Accumulation, Markup, Distribution, Markdown', 'Opening, Trending, Consolidation, Closing', 'Fear, Greed, Panic, Recovery'], correct: 1, explanation: 'Markets cycle through Accumulation, Markup, Distribution, and Markdown phases.' },
+      { question: 'Why is tracking volume surges important?', options: ['It predicts exact price targets', 'It confirms institutional activity', 'It replaces the need for risk management', 'It eliminates all trading losses'], correct: 1, explanation: 'Volume surges confirm institutional activity since institutions control 80–90% of market volume.' }
+    ]
+  },
+  {
+    id: 'm4',
+    title: 'Risk Management and the S.E.T. Rule',
+    subtitle: 'The foundation of all profitable trading: control your downside on every single trade.',
+    sections: [
+      { title: 'Why Risk Management is Everything', content: 'A 70% losing percentage is considered terrible by most people. But with proper risk management, a 70% loss rate can still be profitable. The goal is never perfection — it\'s profitability through mathematical edge and risk control. This is what separates professionals from amateurs.', type: 'text' },
+      { title: 'The 1% Rule', content: 'Never risk more than 1% of your total trading portfolio per trade. This is non-negotiable.\n\nCalculation: Total Account Balance × 1% = Maximum Dollar Risk Per Trade\n\nExample: $10,000 account × 1% = $100 max risk per trade\nExample: $50,000 account × 1% = $500 max risk per trade\n\nThis ensures no single trade can significantly damage your account, allowing you to survive losing streaks and stay in the game.', type: 'text' },
+      { title: 'The 3:1 Reward-to-Risk Ratio', content: 'For every $1 you risk, aim to earn $3. This creates a powerful mathematical advantage:\n\nRisk per trade = 1% of account\nReward target = 3% of account\n\nEven winning only 30% of trades:\n(30 wins × $3) – (70 losses × $1) = $90 – $70 = $20 net profit per 100 trades\n\nThis is how traders survive downturns and grow consistently over time.', type: 'text' },
+      { title: 'Profitability at Different Win Rates (3:1 Ratio)', type: 'table', headers: ['Win Rate', 'Wins (per 100)', 'Gain', 'Loss', 'Net Result'], rows: [
+        ['25%', '25', '+$75', '-$75', 'Break Even'],
+        ['30%', '30', '+$90', '-$70', '+$20 Profit'],
+        ['40%', '40', '+$120', '-$60', '+$60 Profit'],
+        ['50%', '50', '+$150', '-$50', '+$100 Profit'],
+        ['60%', '60', '+$180', '-$40', '+$140 Profit']
+      ]},
+      { title: 'The S.E.T. Rule', content: 'Every trade must have a S.E.T. defined before you ever press the button:\n\nS — Stop: Your protective floor (for longs) or ceiling (for shorts). This caps your downside at exactly 1% of your account. Set it and never move it against your position.\n\nE — Entry: Your exact buy or sell trigger. This must be prepared before the price move happens, not during it. Chasing price is a losing strategy.\n\nT — Target: Your 3% profit objective (3:1 ratio). When price hits your target, you take profit. No hoping, no greed, no "maybe it\'ll go higher."\n\nThis creates consistency, discipline, and controlled risk on every single trade.', type: 'text' },
+      { title: 'Position Sizing Formula', content: 'Position Size = Account Risk ÷ Trade Risk\n\nAccount Risk = 1% of total account value (your max dollar risk)\nTrade Risk = Distance between Entry and Stop in dollar terms\n\nExample: $50,000 account, Entry at $100, Stop at $98\nAccount Risk = $50,000 × 1% = $500\nTrade Risk = $100 – $98 = $2 per share\nPosition Size = $500 ÷ $2 = 250 shares\n\nNote: Always verify position sizing calculations independently before trading.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'FOREX.com: Risk vs Reward Explained', desc: 'Visual guide to understanding and applying risk-reward ratios in real trades.', url: 'https://www.forex.com/en-us/trading-academy/courses/successful-trading-techniques/risk-vs-reward/' },
+        { icon: 'chart', title: 'StockGro: Stop Loss and Target in Trading', desc: 'Visual walkthrough of setting Stop, Entry, and Target points on live charts.', url: 'https://www.stockgro.club/blogs/trading/stop-loss-and-target-in-trading/' },
+        { icon: 'tool', title: 'TradesViz: Stop Loss & Profit Target Simulator', desc: 'Interactive simulator to practice setting stops and targets before real trading.', url: 'https://www.tradesviz.com/blog/stop-loss-profit-target-trade-simulator/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What is the maximum percentage of your portfolio you should risk per trade?', options: ['5%', '3%', '2%', '1%'], correct: 3, explanation: 'Never risk more than 1% of your total trading portfolio per trade.' },
+      { question: 'What does S.E.T. stand for?', options: ['Signal, Execute, Track', 'Stop, Entry, Target', 'Strategy, Emotion, Timing', 'Supply, Entry, Trend'], correct: 1, explanation: 'S.E.T. = Stop (protective floor/ceiling), Entry (buy/sell trigger), Target (profit objective at 3:1).' },
+      { question: 'With a 3:1 ratio, what win rate is needed to break even?', options: ['50%', '25%', '33%', '10%'], correct: 1, explanation: 'At 3:1 ratio, you need ~25% wins to break even: (25 × $3) = $75 gain vs (75 × $1) = $75 loss.' },
+      { question: 'If your account is $20,000, what is your maximum risk per trade?', options: ['$100', '$200', '$500', '$600'], correct: 1, explanation: '$20,000 × 1% = $200 maximum risk per trade.' }
+    ]
+  },
+  {
+    id: 'm5',
+    title: 'Leverage Strategy and Asset Vehicles',
+    subtitle: 'Choose the right investment vehicle for your goals, timeframe, and account size.',
+    sections: [
+      { title: 'Good Leverage vs. Bad Leverage', content: 'Leverage is the most misunderstood concept in trading. There are only two kinds:\n\nGood Leverage — Used on non-depreciating assets, backed by strategy and strict risk management, enhances returns without risking ruin.\n\nBad Leverage — Emotional, speculative, used on depreciating assets with no risk control. This is how accounts get destroyed overnight.\n\nThe difference is never the amount of leverage — it\'s whether you have a plan and the discipline to follow it.', type: 'text' },
+      { title: 'Mutual Funds vs. ETFs', type: 'table', headers: ['Feature', 'Mutual Funds', 'ETFs'], rows: [
+        ['Trading', 'Once/day at market close', 'Throughout the day like stocks'],
+        ['Fees', 'Higher fees & commissions', 'Lower fees, low/no commissions'],
+        ['Leverage', 'No leverage available', 'Leverage available'],
+        ['Short Selling', 'Cannot short sell', 'Can trade long and short'],
+        ['Stop-Loss Orders', 'Cannot set stop-loss', 'Stop-loss orders permitted'],
+        ['Market Conditions', 'Primarily for bull markets', 'Work in bull and bear markets'],
+        ['Options', 'Not compatible with options', 'Compatible with options strategies']
+      ]},
+      { title: 'Options & LEAPS (10x–20x Leverage)', content: 'Options give you the right to control 100 shares of a stock for a fraction of the total cost (the premium). Your maximum possible loss is strictly capped at the premium you paid — making options perfect for the 1% risk rule.\n\nKey terms: Strike Price (the price to buy/sell the stock), Expiration Date (when the option expires, ranging from 1 day to 3 years).\n\nLEAPS (Long-Term Equity Anticipation Securities) are options expiring 2–3 years out, giving trades plenty of time to develop. Options are ideal for weekly and monthly income.', type: 'text' },
+      { title: 'Futures & S&P 500 Micro E-mini (20x–200x Leverage)', content: 'Futures provide massive leverage and 23-hour daily market access, significantly reducing overnight gap risk. The MES contract is 1/10th the size of the standard S&P 500 contract.\n\nKey advantages:\n• No $25,000 pattern day-trading requirement (only $2,000 needed)\n• 60/40 tax rule: 60% of gains taxed at long-term rate\n• Low commissions and exchange fees\n• 23-hour electronic trading access\n\nCritical warning: Because risk is not naturally capped like options, futures require professional-level risk management and strict use of stop orders.', type: 'text' },
+      { title: 'Income Strategy by Timeframe', type: 'table', headers: ['Timeframe', 'Vehicle', 'Min. Account', 'Leverage'], rows: [
+        ['Daily', 'Futures', '$2,000', '20x–200x'],
+        ['Weekly', 'Options & Futures', '$5,000', '10x–200x'],
+        ['Monthly', 'Options & Forex/Crypto', '$25,000', '10x–100x'],
+        ['Quarterly', 'Options & Forex/Crypto', '$50,000', '10x–100x'],
+        ['Yearly/Wealth', 'Stocks', '$250,000', 'None'],
+        ['ETFs/Bonds', 'ETFs', '$50,000', 'Available']
+      ]},
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'Vanguard: ETFs vs Mutual Funds — Which to Choose', desc: 'Official side-by-side comparison with fee analysis and use cases.', url: 'https://investor.vanguard.com/investor-resources-education/etfs/etf-vs-mutual-fund' },
+        { icon: 'learn', title: 'Fidelity: Mutual Fund or ETF?', desc: 'Interactive tool to help decide which vehicle fits your strategy.', url: 'https://www.fidelity.com/viewpoints/investing-ideas/mutual-fund-or-etf' },
+        { icon: 'chart', title: 'OANDA: Beginner\'s Guide to Leverage Trading', desc: 'Explains good vs bad leverage with real examples and risk scenarios.', url: 'https://www.oanda.com/us-en/learn/introduction-to-leverage-trading/what-is-leverage-trading/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What leverage range do Futures offer?', options: ['5x–10x', '10x–20x', '20x–200x', '500x–1000x'], correct: 2, explanation: 'Futures provide 20x to 200x leverage, requiring professional-level risk management.' },
+      { question: 'What is the minimum recommended account for daily futures trading?', options: ['$500', '$2,000', '$10,000', '$25,000'], correct: 1, explanation: 'Futures avoid the $25,000 pattern day-trading requirement, needing only $2,000.' },
+      { question: 'What makes options inherently safer than futures in terms of risk?', options: ['Lower leverage', 'Government insurance', 'Max loss capped at premium paid', 'Guaranteed profits'], correct: 2, explanation: 'With options, your maximum loss is strictly capped at the premium you paid.' },
+      { question: 'What is the 60/40 tax rule for futures?', options: ['60% tax, 40% keep', '60% long-term rate, 40% short-term rate', '60% deductible, 40% taxable', '60% federal, 40% state'], correct: 1, explanation: '60% of futures gains are taxed at the favorable long-term rate, 40% at short-term rate.' }
+    ]
+  },
+  {
+    id: 'm6',
+    title: 'Options Deep Dive: Mechanics, LEAPS & Strategy',
+    subtitle: 'Master the complete mechanics of options trading — from premiums to strike prices to expiration.',
+    sections: [
+      { title: 'What Is an Options Trade?', content: 'Options give you the right, but not the obligation, to buy or sell a stock at a certain price by a certain date. The most you can ever lose is the premium you paid. Example: Pay $500 for a call option → your absolute maximum loss is $500, no matter how badly the trade goes.', type: 'text' },
+      { title: 'How Options Are Quoted', content: 'Options are quoted per share but control 100 shares per contract:\n\nQuoted price: $5.00 per share\nActual cost: $5.00 × 100 shares = $500 total\n\nThis is critical to understand for proper position sizing and risk calculation.', type: 'text' },
+      { title: '100 Shares vs. 1 Call Option', type: 'table', headers: ['Method', 'What You Control', 'Cost', 'Max Loss'], rows: [
+        ['Buy 100 Shares', '100 shares directly', '$10,000', '$10,000 (full amount)'],
+        ['Buy 1 Call Option', 'Right to 100 shares', '$500 (premium)', '$500 (premium only)']
+      ]},
+      { title: 'Strike Price & Expiration', content: 'Every option has two defining characteristics:\n\nStrike Price — The price at which you can buy the stock (for a call) or sell the stock (for a put). This is your target execution price.\n\nExpiration Date — The last day the option is valid. Options can expire anywhere from 1 day to 3 years (LEAPS). You always choose both before you buy.', type: 'text' },
+      { title: 'LEAPS: Long-Term Options', content: 'LEAPS (Long-Term Equity Anticipation Securities) are simply long-term options that expire up to 2–3 years in the future. They behave exactly like regular options but give your trades substantially more time to develop.\n\nAdvantages of LEAPS:\n• More time for the stock to make the move you want\n• Less time decay pressure than short-term options\n• Can be used for swing trading or position trading\n• Ideal for capturing large multi-month moves', type: 'text' },
+      { title: 'Complete Example Trade', content: 'Scenario:\n• Stock price: $100\n• Strike price: $90 (call option)\n• Premium: $5.00 per share = $500 total\n• You control: $9,000 worth of stock (100 shares × $90)\n\nOutcome if stock rises to $110:\nOption value increases significantly. Your $500 investment controls $9,000 worth of stock.\n\nOutcome if stock drops to $80:\nYour maximum loss is $500 (the premium). Not $9,000. Not $10,000. Just $500.\n\nThis is the power of defined-risk leverage.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'CME Group: Understanding Options Expiration & P/L', desc: 'Official course covering strike prices, premiums, and payoff diagrams.', url: 'https://www.cmegroup.com/education/courses/introduction-to-options/understanding-options-expiration-profit-and-loss' },
+        { icon: 'learn', title: 'Options Industry Council: How LEAPS Work', desc: 'Official guide to LEAPS with payoff comparisons to short-term options.', url: 'https://www.optionseducation.org/optionsoverview/how-leaps-work' },
+        { icon: 'chart', title: 'Fidelity: LEAPS and Bounds', desc: 'Practical strategies for using LEAPS in your portfolio.', url: 'https://www.fidelity.com/viewpoints/active-investor/leaps-and-bounds' },
+        { icon: 'learn', title: 'SoFi: Strike Price Explained', desc: 'Visual breakdown of how strike prices work with real-world examples.', url: 'https://www.sofi.com/learn/content/strike-price-options-trading/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'How many shares does 1 options contract control?', options: ['10 shares', '50 shares', '100 shares', '1,000 shares'], correct: 2, explanation: 'One options contract controls 100 shares of the underlying stock.' },
+      { question: 'If an option is quoted at $3.50, what is the total cost?', options: ['$3.50', '$35', '$350', '$3,500'], correct: 2, explanation: '$3.50 per share × 100 shares per contract = $350 total cost.' },
+      { question: 'What is the maximum you can lose on a purchased option?', options: ['Unlimited', 'The premium paid', '50% of premium', 'The strike price'], correct: 1, explanation: 'The maximum loss on a purchased option is strictly capped at the premium you paid.' },
+      { question: 'How long can LEAPS options last?', options: ['1 month max', '6 months', 'Up to 2–3 years', 'Forever'], correct: 2, explanation: 'LEAPS are long-term options that can expire up to 2–3 years in the future.' }
+    ]
+  },
+  {
+    id: 'm7',
+    title: 'Futures Trading: The 23-Hour Advantage',
+    subtitle: 'Master the unique benefits of futures — from tax advantages to around-the-clock market access.',
+    sections: [
+      { title: 'Why 23-Hour Access Matters', content: 'Futures markets (including the S&P 500 Micro E-mini) are open nearly around the clock, providing 23-hour electronic trading access. This extended schedule offers two critical advantages:\n\n1. Flexible Income Generation — Daily income typically requires only 1–2 hours of active trading\n2. Reduced Overnight Risk — Because the market is almost continuously open, overnight price gaps are significantly reduced compared to stock trading', type: 'text' },
+      { title: 'S&P 500 Micro E-mini (MES) Key Facts', type: 'stats', stats: [
+        { num: '1/10', lbl: 'Size of Standard ES' },
+        { num: '$2K', lbl: 'Min. Account' },
+        { num: '23hr', lbl: 'Daily Access' },
+        { num: '60/40', lbl: 'Tax Advantage' }
+      ]},
+      { title: 'Complete Futures Advantages', content: '• No $25,000 Day-Trading Minimum — Unlike stocks, you don\'t need $25K to day trade. Only ~$2,000 recommended.\n• High Leverage (20x–200x) — Capture large market moves with small capital.\n• 23-Hour Trading — Trade when it fits your schedule, not just market hours.\n• Reduced Gap Risk — Near-continuous trading means fewer surprise gaps.\n• 60/40 Tax Treatment — 60% of gains taxed at favorable long-term rate.\n• Low Commissions — Cost-efficient execution.\n• Daily & Weekly Income — Designed for active income generation.', type: 'text' },
+      { title: 'The 60/40 Tax Rule Explained', content: 'Under Section 1256 of the tax code, futures qualify for special treatment:\n\n60% of gains → Taxed at long-term capital gains rate (lower)\n40% of gains → Taxed at short-term capital gains rate (higher)\n\nThis applies regardless of how long you hold the position. A day trade in futures still gets 60/40 treatment. This structural advantage means futures traders keep significantly more of their profits compared to stock day traders who pay 100% short-term rates.', type: 'text' },
+      { title: 'Major Futures Market Categories', type: 'table', headers: ['Category', 'Examples'], rows: [
+        ['Equity Index', 'S&P 500, Nasdaq, Dow, Russell, DAX, Nikkei'],
+        ['Interest Rates', '10-Year Treasury, 30-Year Bond, 2-Year Note'],
+        ['Energy & Metals', 'Crude Oil, Natural Gas, Gold, Silver, Copper'],
+        ['Currencies', 'Euro, Yen, Swiss Franc, GBP, AUD, CAD, USD Index'],
+        ['Agriculture/Softs', 'Corn, Soybeans, Wheat, Coffee, Cocoa, Cotton, Sugar']
+      ]},
+      { title: 'Critical Risk Warning', content: 'While leverage and 23-hour access are major benefits, futures require the highest level of discipline and risk management of any vehicle covered in this training.\n\nUnlike options where your risk is capped at the premium paid, futures losses can exceed your initial investment. You MUST:\n• Use protective stop orders on every single trade\n• Never risk more than 1% of your account\n• Apply the S.E.T. rule without exception\n• Never trade futures without a written plan', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'CME Group: Micro E-mini S&P 500 Contract Specs', desc: 'Official MES contract details including margin, tick size, and trading hours.', url: 'https://www.cmegroup.com/markets/equities/sp/micro-e-mini-sandp-500.html' },
+        { icon: 'learn', title: 'Schwab: What is a Micro E-Mini Future?', desc: 'Beginner-friendly explanation of micro futures with real examples.', url: 'https://www.schwab.com/learn/story/what-is-micro-e-mini-future' },
+        { icon: 'chart', title: 'High Strike: Futures 60/40 Tax Rule Guide', desc: 'Detailed breakdown of Section 1256 tax treatment with examples.', url: 'https://highstrike.com/futures-60-40-tax-rule/' },
+        { icon: 'learn', title: 'Schwab: Trader Taxes & Section 1256 Contracts', desc: 'How to report futures taxes and maximize the 60/40 advantage.', url: 'https://www.schwab.com/learn/story/trader-taxes-form-8949-section-1256-contracts' }
+      ]}
+    ],
+    quiz: [
+      { question: 'How many hours per day can you trade futures?', options: ['8 hours', '12 hours', '23 hours', '24 hours'], correct: 2, explanation: 'Futures provide 23-hour daily electronic trading access.' },
+      { question: 'What is the MES contract?', options: ['Full-size S&P 500 futures', '1/10th size of standard S&P 500 contract', 'A type of option', 'A mutual fund'], correct: 1, explanation: 'MES is the Micro E-mini S&P 500 futures contract, 1/10th the size of the regular ES contract.' },
+      { question: 'Under the 60/40 rule, what percentage is taxed at long-term rates?', options: ['40%', '50%', '60%', '100%'], correct: 2, explanation: '60% of futures gains are taxed at the favorable long-term capital gains rate.' },
+      { question: 'What minimum account is needed for daily futures trading?', options: ['$500', '$2,000', '$10,000', '$25,000'], correct: 1, explanation: 'Futures require only ~$2,000 for daily income trading, avoiding the $25,000 PDT rule.' }
+    ]
+  }
+];
+
+// =============================================================================
+// API LAYER — Falls back to local data when backend is unavailable
+// =============================================================================
+
+let backendAvailable = false;
+
+async function tryFetch(url, options) {
+  try {
+    const res = await fetch(url, options);
+    if (res.ok) { backendAvailable = true; return res.json(); }
+    throw new Error('Not OK');
+  } catch (e) {
+    backendAvailable = false;
+    return null;
+  }
+}
+
+const API = {
+  async getModules() {
+    const data = await tryFetch('/api/modules');
+    return data || DEFAULT_MODULES;
+  },
+  async saveModules(modules) {
+    return await tryFetch('/api/modules', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(modules) });
+  },
+  async addModule(mod) {
+    return await tryFetch('/api/modules', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(mod) });
+  },
+  async updateModule(id, mod) {
+    return await tryFetch(`/api/modules/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(mod) });
+  },
+  async deleteModule(id) {
+    return await tryFetch(`/api/modules/${id}`, { method: 'DELETE' });
+  },
+  async getProgress() {
+    const data = await tryFetch('/api/progress');
+    return data || { completedModules: {}, quizState: {} };
+  },
+  async saveProgress(progress) {
+    return await tryFetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(progress) });
+  },
+  async getSettings() {
+    const data = await tryFetch('/api/settings');
+    return data || { geminiApiKey: '', hasKey: false };
+  },
+  async saveSettings(settings) {
+    return await tryFetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(settings) });
+  },
+  async generateVisual(params) {
+    return await tryFetch('/api/generate-visual', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
+  },
+  async regenerateVisual(params) {
+    return await tryFetch('/api/regenerate-visual', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
+  },
+  async generateModuleVisuals(moduleId) {
+    return await tryFetch('/api/generate-module-visuals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ moduleId }) });
+  }
+};
+
+// =============================================================================
+// TOAST SYSTEM
+// =============================================================================
+
+function ToastContainer({ toasts }) {
+  return (
+    <div className="toast-container">
+      {toasts.map(t => (
+        <div key={t.id} className={`toast ${t.type}`}>
+          <span>{t.type === 'success' ? '✓' : t.type === 'error' ? '✗' : 'ℹ'}</span>
+          <span>{t.message}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// =============================================================================
+// AI VISUAL COMPONENT
+// =============================================================================
+
+function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionContent }) {
+  const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [checked, setChecked] = useState(false);
+
+  // Check if a cached image exists on mount
+  useEffect(() => {
+    if (!checked) {
+      setChecked(true);
+      fetch('/api/generate-visual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle })
+      }).then(r => r.json()).then(data => {
+        if (data.success && data.cached) {
+          setImageUrl(data.imageUrl + '?t=' + Date.now());
+        }
+      }).catch(() => {});
+    }
+  }, [moduleId, sectionIndex]);
+
+  const generate = async (regenerate = false) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const endpoint = regenerate ? '/api/regenerate-visual' : '/api/generate-visual';
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setImageUrl(data.imageUrl + '?t=' + Date.now());
+      } else {
+        setError(data.error || 'Failed to generate visual');
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="ai-visual-container">
+        <div className="ai-visual-loading">
+          <div className="spinner" />
+          <p>Generating AI visual for "{sectionTitle}"...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (imageUrl) {
+    return (
+      <div className="ai-visual-container">
+        <img className="ai-visual-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} />
+        <div className="ai-visual-actions">
+          <button className="ai-visual-btn regenerate" onClick={() => generate(true)}>↻ Regenerate</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{margin: '12px 0'}}>
+      <button className="ai-visual-btn" onClick={() => generate(false)}>
+        ✦ Generate AI Visual
+      </button>
+      {error && <div className="ai-visual-error">{error}</div>}
+    </div>
+  );
+}
+
+// =============================================================================
+// MAIN APP
+// =============================================================================
+
+function App() {
+  const [modules, setModules] = useState([]);
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [currentModuleId, setCurrentModuleId] = useState(null);
+  const [completedModules, setCompletedModules] = useState({});
+  const [quizState, setQuizState] = useState({});
+  const [showAdmin, setShowAdmin] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [editingModule, setEditingModule] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (message, type = 'info') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+  };
+
+  // Load data from backend on mount
+  useEffect(() => {
+    async function load() {
+      try {
+        const [mods, prog] = await Promise.all([API.getModules(), API.getProgress()]);
+        setModules(mods);
+        setCompletedModules(prog.completedModules || {});
+        setQuizState(prog.quizState || {});
+      } catch (err) {
+        addToast('Failed to load data: ' + err.message, 'error');
+      }
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  // Auto-save progress when it changes
+  const progressSaveTimeout = useRef(null);
+  useEffect(() => {
+    if (loading) return;
+    clearTimeout(progressSaveTimeout.current);
+    progressSaveTimeout.current = setTimeout(() => {
+      API.saveProgress({ completedModules, quizState }).catch(() => {});
+    }, 1000);
+  }, [completedModules, quizState, loading]);
+
+  const progress = useMemo(() => {
+    const done = Object.values(completedModules).filter(Boolean).length;
+    return modules.length > 0 ? Math.round((done / modules.length) * 100) : 0;
+  }, [modules, completedModules]);
+
+  const currentModule = modules.find(m => m.id === currentModuleId);
+  const openModule = (id) => { setCurrentModuleId(id); setCurrentView('module'); };
+  const goToDashboard = () => { setCurrentView('dashboard'); setCurrentModuleId(null); };
+  const completeModule = (id) => setCompletedModules(prev => ({...prev, [id]: true}));
+
+  const openAdminNew = () => {
+    setEditingModule({ id: 'm' + Date.now(), title: '', subtitle: '', sections: [{ title: '', content: '', type: 'text' }], quiz: [{ question: '', options: ['','','',''], correct: 0, explanation: '' }] });
+    setShowAdmin(true);
+  };
+  const openAdminEdit = (mod) => { setEditingModule(JSON.parse(JSON.stringify(mod))); setShowAdmin(true); };
+
+  const saveModule = async (mod) => {
+    const isNew = !modules.find(m => m.id === mod.id);
+    if (isNew) {
+      setModules(prev => [...prev, mod]);
+      await API.addModule(mod).catch(() => {});
+    } else {
+      setModules(prev => { const n = [...prev]; const idx = n.findIndex(m => m.id === mod.id); if (idx >= 0) n[idx] = mod; return n; });
+      await API.updateModule(mod.id, mod).catch(() => {});
+    }
+    setShowAdmin(false);
+    setEditingModule(null);
+    addToast(isNew ? 'Module created!' : 'Module saved!', 'success');
+  };
+
+  const deleteModule = async (id) => {
+    setModules(prev => prev.filter(m => m.id !== id));
+    await API.deleteModule(id).catch(() => {});
+    if (currentModuleId === id) goToDashboard();
+    setShowAdmin(false);
+    setEditingModule(null);
+    addToast('Module deleted', 'info');
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner" />
+        <p style={{color: 'var(--text-muted)', fontSize: 14}}>Loading Impact Trading Academy...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-container">
+      <div className={`sidebar ${!sidebarOpen ? 'collapsed' : ''}`}>
+        <div className="sidebar-header" onClick={goToDashboard} style={{cursor:'pointer'}}>
+          <h1>IMPACT <span>TRADING</span> ACADEMY</h1>
+          <p>Powered by Mission Metrics</p>
+        </div>
+        <div className="nav-section">
+          <div className="nav-label">Training Modules</div>
+          {modules.map((m, i) => (
+            <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''}`} onClick={() => openModule(m.id)}>
+              <div className="nav-dot" />
+              <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}</span>
+            </div>
+          ))}
+        </div>
+        <div className="progress-bar-container">
+          <div className="progress-label"><span>Overall Progress</span><span>{progress}%</span></div>
+          <div className="progress-track"><div className="progress-fill" style={{width: `${progress}%`}} /></div>
+        </div>
+      </div>
+      <div className={`main-content ${!sidebarOpen ? 'expanded' : ''}`}>
+        <div className="content-header">
+          <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>{sidebarOpen ? '◀' : '▶'} Menu</button>
+          <div className="header-actions">
+            <button onClick={goToDashboard}>◈ Dashboard</button>
+            <button onClick={() => setShowSettings(true)}>⚙ Settings</button>
+            <button className="primary" onClick={openAdminNew}>+ Add Module</button>
+          </div>
+        </div>
+        <div className="content-body">
+          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} />}
+          {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={() => openAdminEdit(currentModule)} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
+        </div>
+      </div>
+      {showAdmin && editingModule && <AdminModal module={editingModule} onSave={saveModule} onDelete={deleteModule} onClose={() => { setShowAdmin(false); setEditingModule(null); }} isNew={!modules.find(m => m.id === editingModule.id)} />}
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} addToast={addToast} />}
+      <ToastContainer toasts={toasts} />
+    </div>
+  );
+}
+
+// =============================================================================
+// DASHBOARD
+// =============================================================================
+
+function Dashboard({ modules, completedModules, progress, onOpen }) {
+  const completed = Object.values(completedModules).filter(Boolean).length;
+  return (
+    <div>
+      <div className="hero-banner">
+        <h2>See Your Impact. <span>Grow Your Mission.</span></h2>
+        <p>Track your progress through the complete foundations of trading, risk management, and asset leverage.</p>
+        <div className="hero-stats">
+          <div className="hero-stat"><div className="val">{modules.length}</div><div className="desc">Total Modules</div></div>
+          <div className="hero-stat"><div className="val">{completed}</div><div className="desc">Completed</div></div>
+          <div className="hero-stat"><div className="val">{progress}%</div><div className="desc">Progress</div></div>
+          <div className="hero-stat"><div className="val">{modules.reduce((a,m) => a + (m.quiz?.length||0), 0)}</div><div className="desc">Quiz Questions</div></div>
+        </div>
+      </div>
+      <div className="dashboard-grid">
+        {modules.map((m, i) => {
+          const status = completedModules[m.id] ? 'completed' : 'in-progress';
+          return (
+            <div key={m.id} className="dash-card" onClick={() => onOpen(m.id)}>
+              <div className="dash-card-num">Module {i + 1}</div>
+              <h3>{m.title}</h3>
+              <p>{m.subtitle}</p>
+              <div className="dash-card-footer">
+                <span>{m.sections?.filter(s=>s.type!=='resources').length || 0} lessons · {m.quiz?.length || 0} questions</span>
+                <span className={`status-badge ${status}`}>{status === 'completed' ? '✓ Done' : 'Available'}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// MODULE VIEW (with AI visuals per section)
+// =============================================================================
+
+function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCompleted, onEdit, onNext, hasNext, addToast }) {
+  const moduleIndex = modules.findIndex(m => m.id === module.id);
+  const mQuiz = quizState[module.id] || { current: 0, answers: {}, submitted: {} };
+  const quiz = module.quiz || [];
+  const q = quiz[mQuiz.current];
+  const allAnswered = Object.keys(mQuiz.submitted).length === quiz.length;
+  const correctCount = Object.entries(mQuiz.submitted).filter(([,v]) => v).length;
+  const [generatingAll, setGeneratingAll] = useState(false);
+
+  const selectAnswer = (qi, oi) => { if (mQuiz.submitted[qi] !== undefined) return; setQuizState(p => ({...p, [module.id]: {...mQuiz, answers: {...mQuiz.answers, [qi]: oi}}})); };
+  const submitAnswer = (qi) => { const ok = mQuiz.answers[qi] === quiz[qi].correct; setQuizState(p => ({...p, [module.id]: {...mQuiz, submitted: {...mQuiz.submitted, [qi]: ok}}})); };
+  const nextQuestion = () => { if (mQuiz.current < quiz.length - 1) setQuizState(p => ({...p, [module.id]: {...mQuiz, current: mQuiz.current + 1}})); };
+  const resetQuiz = () => setQuizState(p => ({...p, [module.id]: { current: 0, answers: {}, submitted: {} }}));
+
+  const generateAllVisuals = async () => {
+    setGeneratingAll(true);
+    addToast('Generating visuals for all sections... This may take a minute.', 'info');
+    try {
+      const result = await API.generateModuleVisuals(module.id);
+      if (result.success) {
+        const successCount = result.results.filter(r => r.imageUrl).length;
+        addToast(`Generated ${successCount} visuals!`, 'success');
+        // Force re-render by navigating away and back
+        window.location.reload();
+      }
+    } catch (err) {
+      addToast('Error generating visuals: ' + err.message, 'error');
+    }
+    setGeneratingAll(false);
+  };
+
+  return (
+    <div>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div>
+          <div className="module-badge">Module {moduleIndex + 1} of {modules.length}</div>
+          <h2 className="module-title">{module.title}</h2>
+          <p className="module-subtitle">{module.subtitle}</p>
+        </div>
+        <button onClick={onEdit} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'6px 14px',borderRadius:6,cursor:'pointer',fontSize:12,whiteSpace:'nowrap',marginTop:8}}>✎ Edit</button>
+      </div>
+
+      <button className="generate-all-btn" onClick={generateAllVisuals} disabled={generatingAll}>
+        {generatingAll ? '⟳ Generating...' : '✦ Generate All AI Visuals'}
+      </button>
+
+      {module.sections?.map((s, i) => {
+        if (s.type === 'stats') return (
+          <div key={i} className="lesson-section">
+            <h3>{s.title}</h3>
+            <div className="stat-grid">
+              {s.stats.map((st, si) => <div key={si} className="stat-box"><div className="num">{st.num}</div><div className="lbl">{st.lbl}</div></div>)}
+            </div>
+          </div>
+        );
+        if (s.type === 'table') return (
+          <div key={i} className="lesson-section">
+            <h3>{s.title}</h3>
+            <table className="comparison-table">
+              <thead><tr>{s.headers.map((h,hi) => <th key={hi}>{h}</th>)}</tr></thead>
+              <tbody>{s.rows.map((r,ri) => <tr key={ri}>{r.map((c,ci) => <td key={ci}>{c}</td>)}</tr>)}</tbody>
+            </table>
+          </div>
+        );
+        if (s.type === 'resources') return (
+          <div key={i} className="lesson-section">
+            <h3>{s.title || 'Visual Resources & Further Reading'}</h3>
+            {s.resources.map((r, ri) => (
+              <a key={ri} className="resource-card" href={r.url} target="_blank" rel="noopener noreferrer">
+                <div className={`resource-icon ${r.icon}`}>{r.icon === 'learn' ? '📚' : r.icon === 'chart' ? '📈' : r.icon === 'video' ? '🎬' : '🔧'}</div>
+                <div className="resource-info"><h4>{r.title}</h4><p>{r.desc}</p></div>
+                <div className="resource-arrow">→</div>
+              </a>
+            ))}
+          </div>
+        );
+        // TEXT sections — these get AI visual buttons
+        return (
+          <div key={i} className="lesson-section">
+            <h3>{s.title}</h3>
+            {s.content.split('\n\n').map((para, pi) => <p key={pi}>{para}</p>)}
+            <AIVisual
+              moduleId={module.id}
+              moduleTitle={module.title}
+              sectionIndex={i}
+              sectionTitle={s.title}
+              sectionContent={s.content}
+            />
+          </div>
+        );
+      })}
+
+      {quiz.length > 0 && (
+        <div className="quiz-container">
+          <div className="quiz-header"><h3>📝 Knowledge Check</h3><span className="quiz-score">{allAnswered ? `Score: ${correctCount}/${quiz.length} (${Math.round(correctCount/quiz.length*100)}%)` : `${Object.keys(mQuiz.submitted).length}/${quiz.length} answered`}</span></div>
+          {!allAnswered && q && (
+            <div>
+              <div className="quiz-progress">Question {mQuiz.current + 1} of {quiz.length}</div>
+              <div className="quiz-question">{q.question}</div>
+              {q.options.map((opt, oi) => {
+                let cls = 'quiz-option';
+                if (mQuiz.submitted[mQuiz.current] !== undefined) { if (oi === q.correct) cls += ' correct'; else if (oi === mQuiz.answers[mQuiz.current] && oi !== q.correct) cls += ' incorrect'; }
+                else if (mQuiz.answers[mQuiz.current] === oi) cls += ' selected';
+                return <button key={oi} className={cls} onClick={() => selectAnswer(mQuiz.current, oi)}>{opt}</button>;
+              })}
+              {mQuiz.submitted[mQuiz.current] !== undefined && <div className={`quiz-feedback ${mQuiz.submitted[mQuiz.current] ? 'correct' : 'incorrect'}`}>{mQuiz.submitted[mQuiz.current] ? '✓ Correct! ' : '✗ Incorrect. '}{q.explanation}</div>}
+              <div style={{display:'flex',gap:8,marginTop:16}}>
+                {mQuiz.submitted[mQuiz.current] === undefined && <button className="quiz-btn" disabled={mQuiz.answers[mQuiz.current] === undefined} onClick={() => submitAnswer(mQuiz.current)}>Submit Answer</button>}
+                {mQuiz.submitted[mQuiz.current] !== undefined && mQuiz.current < quiz.length - 1 && <button className="quiz-btn" onClick={nextQuestion}>Next Question →</button>}
+              </div>
+            </div>
+          )}
+          {allAnswered && (
+            <div style={{textAlign:'center',padding:'20px 0'}}>
+              <div style={{fontSize:48,marginBottom:12}}>{correctCount === quiz.length ? '🏆' : correctCount >= quiz.length * 0.7 ? '👍' : '📚'}</div>
+              <div style={{fontSize:20,fontWeight:700,marginBottom:8,color:'var(--navy)'}}>{correctCount === quiz.length ? 'Perfect Score!' : correctCount >= quiz.length * 0.7 ? 'Great Job!' : 'Keep Studying!'}</div>
+              <div style={{fontSize:14,color:'var(--text-muted)',marginBottom:20}}>You scored {correctCount} out of {quiz.length} ({Math.round(correctCount/quiz.length*100)}%)</div>
+              <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+                <button className="quiz-btn" onClick={resetQuiz} style={{background:'var(--bg-hover)',color:'var(--text-secondary)'}}>Retake Quiz</button>
+                {!isCompleted && correctCount >= quiz.length * 0.7 && <button className="quiz-btn" onClick={onComplete}>✓ Mark Complete</button>}
+                {hasNext && <button className="quiz-btn" onClick={onNext}>Next Module →</button>}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      {isCompleted && <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.25)',borderRadius:12,padding:20,marginTop:24,textAlign:'center'}}><span style={{color:'var(--green-dark)',fontSize:16,fontWeight:600}}>✓ Module Completed</span></div>}
+    </div>
+  );
+}
+
+// =============================================================================
+// ADMIN MODAL (same as before)
+// =============================================================================
+
+function AdminModal({ module, onSave, onDelete, onClose, isNew }) {
+  const [form, setForm] = useState(module);
+  const updateField = (f, v) => setForm(p => ({...p, [f]: v}));
+  const updateSection = (idx, f, v) => { const s = [...form.sections]; s[idx] = {...s[idx], [f]: v}; setForm(p => ({...p, sections: s})); };
+  const addSection = () => setForm(p => ({...p, sections: [...p.sections, {title:'', content:'', type:'text'}]}));
+  const removeSection = (idx) => setForm(p => ({...p, sections: p.sections.filter((_,i) => i !== idx)}));
+  const updateQuiz = (qi, f, v) => { const q = [...(form.quiz||[])]; q[qi] = {...q[qi], [f]: v}; setForm(p => ({...p, quiz: q})); };
+  const updateQuizOption = (qi, oi, v) => { const q = [...(form.quiz||[])]; const o = [...q[qi].options]; o[oi] = v; q[qi] = {...q[qi], options: o}; setForm(p => ({...p, quiz: q})); };
+  const addQuiz = () => setForm(p => ({...p, quiz: [...(p.quiz||[]), {question:'', options:['','','',''], correct:0, explanation:''}]}));
+  const removeQuiz = (idx) => setForm(p => ({...p, quiz: (p.quiz||[]).filter((_,i) => i !== idx)}));
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header"><h2>{isNew ? 'Add New Module' : 'Edit Module'}</h2><button className="modal-close" onClick={onClose}>×</button></div>
+        <div className="modal-body">
+          <div className="form-group"><label>Module Title</label><input value={form.title} onChange={e => updateField('title', e.target.value)} placeholder="e.g., Advanced Chart Patterns" /></div>
+          <div className="form-group"><label>Subtitle / Description</label><input value={form.subtitle} onChange={e => updateField('subtitle', e.target.value)} placeholder="Brief description" /></div>
+          <h3 style={{fontSize:15,fontWeight:700,margin:'24px 0 12px',color:'var(--navy)'}}>Lesson Sections</h3>
+          {form.sections?.map((s, i) => (
+            <div key={i} className="section-editor">
+              <div className="section-editor-header"><span style={{fontSize:12,color:'var(--text-muted)'}}>Section {i + 1} ({s.type || 'text'})</span>{form.sections.length > 1 && <button className="remove-btn" onClick={() => removeSection(i)}>Remove</button>}</div>
+              <div className="form-group" style={{marginBottom:8}}><input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section title" /></div>
+              <div className="form-group" style={{marginBottom:0}}><textarea value={s.content||''} onChange={e => updateSection(i, 'content', e.target.value)} placeholder="Section content..." rows={4} /></div>
+            </div>
+          ))}
+          <button className="add-btn" onClick={addSection}>+ Add Section</button>
+          <h3 style={{fontSize:15,fontWeight:700,margin:'24px 0 12px',color:'var(--navy)'}}>Quiz Questions</h3>
+          {(form.quiz || []).map((q, qi) => (
+            <div key={qi} className="quiz-editor">
+              <div className="section-editor-header"><span style={{fontSize:12,color:'var(--text-muted)'}}>Question {qi + 1}</span><button className="remove-btn" onClick={() => removeQuiz(qi)}>Remove</button></div>
+              <div className="form-group" style={{marginBottom:8}}><input value={q.question} onChange={e => updateQuiz(qi, 'question', e.target.value)} placeholder="Question text" /></div>
+              {q.options.map((opt, oi) => (<div key={oi} className="option-row"><input type="radio" name={`c-${qi}`} checked={q.correct === oi} onChange={() => updateQuiz(qi, 'correct', oi)} /><input type="text" value={opt} onChange={e => updateQuizOption(qi, oi, e.target.value)} placeholder={`Option ${oi+1}`} /></div>))}
+              <div className="form-group" style={{marginTop:8,marginBottom:0}}><input value={q.explanation||''} onChange={e => updateQuiz(qi, 'explanation', e.target.value)} placeholder="Explanation shown after answering" /></div>
+            </div>
+          ))}
+          <button className="add-btn" onClick={addQuiz}>+ Add Question</button>
+        </div>
+        <div className="modal-footer">
+          {!isNew && <button className="btn-delete" onClick={() => { if(confirm('Delete this module permanently?')) onDelete(form.id); }}>Delete Module</button>}
+          <div style={{flex:1}} />
+          <button className="btn-cancel" onClick={onClose}>Cancel</button>
+          <button className="btn-save" onClick={() => onSave(form)}>Save Module</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// SETTINGS MODAL
+// =============================================================================
+
+function SettingsModal({ onClose, addToast }) {
+  const [apiKey, setApiKey] = useState('');
+  const [hasKey, setHasKey] = useState(false);
+  const [maskedKey, setMaskedKey] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    API.getSettings().then(data => {
+      setHasKey(data.hasKey);
+      setMaskedKey(data.geminiApiKey || '');
+    });
+  }, []);
+
+  const saveKey = async () => {
+    if (!apiKey.trim()) return;
+    setSaving(true);
+    try {
+      await API.saveSettings({ geminiApiKey: apiKey.trim() });
+      setHasKey(true);
+      setMaskedKey('••••••••' + apiKey.trim().slice(-4));
+      setApiKey('');
+      addToast('API key saved successfully!', 'success');
+    } catch (err) {
+      addToast('Failed to save API key', 'error');
+    }
+    setSaving(false);
+  };
+
+  const clearKey = async () => {
+    await API.saveSettings({ geminiApiKey: '' });
+    setHasKey(false);
+    setMaskedKey('');
+    addToast('API key removed', 'info');
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()} style={{maxWidth: 560}}>
+        <div className="modal-header"><h2>⚙ Settings</h2><button className="modal-close" onClick={onClose}>×</button></div>
+        <div className="modal-body">
+          <div className="settings-section">
+            <h4>✦ AI Visual Generation</h4>
+            <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
+              Connect your Google Gemini API key to generate AI-powered visuals for each lesson section.
+              Images are cached so you only pay once per section.
+            </p>
+            <div className="form-group">
+              <label>Gemini API Key</label>
+              {hasKey && (
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+                  <span className="api-status connected">● Connected</span>
+                  <span style={{fontSize:12,color:'var(--text-muted)',fontFamily:'monospace'}}>{maskedKey}</span>
+                  <button onClick={clearKey} style={{background:'none',border:'none',color:'var(--red)',cursor:'pointer',fontSize:12}}>Remove</button>
+                </div>
+              )}
+              {!hasKey && <span className="api-status disconnected" style={{marginBottom:8,display:'inline-flex'}}>● Not connected</span>}
+              <div className="api-key-row">
+                <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder={hasKey ? 'Enter new key to replace' : 'Paste your Gemini API key'} />
+                <button onClick={saveKey} disabled={saving || !apiKey.trim()}>{saving ? '...' : 'Save Key'}</button>
+              </div>
+              <div className="settings-info">
+                Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{color:'var(--accent)'}}>aistudio.google.com/apikey</a>.
+                Your key is stored securely on the server and never exposed to the browser.
+              </div>
+            </div>
+          </div>
+          <div className="settings-section">
+            <h4>💾 Data Persistence</h4>
+            <p style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.6}}>
+              All modules, progress, quiz states, and generated images are automatically saved to the server.
+              Your data persists across browser sessions and devices.
+            </p>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn-cancel" onClick={onClose}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
