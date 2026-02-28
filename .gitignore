@@ -1,0 +1,7 @@
+node_modules/
+.env
+data/images/*.png
+data/images/*.jpg
+data/modules.json
+data/progress.json
+data/settings.json
