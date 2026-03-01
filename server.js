@@ -169,7 +169,7 @@ app.post('/api/generate-visual', async (req, res) => {
     const prompt = buildImagePrompt(moduleTitle, sectionTitle, sectionContent);
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-2.5-flash-image",
     });
 
     const result = await model.generateContent({
@@ -338,7 +338,7 @@ app.post('/api/generate-module-visuals', async (req, res) => {
       const genAI = new GoogleGenerativeAI(apiKey);
       const prompt = buildImagePrompt(mod.title, section.title, section.content);
 
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
       const result = await model.generateContent({
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         generationConfig: { responseModalities: ["image", "text"] }
