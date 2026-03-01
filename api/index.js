@@ -150,13 +150,13 @@ app.post('/api/generate-visual', async (req, res) => {
   try {
     const { moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle } = req.body;
 
-    const imageKey = `image_${moduleId}_s${sectionIndex}`;
+    const imageId = `${moduleId}_s${sectionIndex}`;
+    const imageKey = `image_${imageId}`;
     const cached = await kvGet(imageKey);
     if (cached) {
       return res.json({
         success: true,
-        imageData: cached.imageData,
-        mimeType: cached.mimeType || 'image/png',
+        imageUrl: `/api/images/${imageId}.png`,
         cached: true
       });
     }
@@ -196,7 +196,7 @@ app.post('/api/generate-visual', async (req, res) => {
 
     if (imageData) {
       await kvSet(imageKey, { imageData, mimeType });
-      return res.json({ success: true, imageData, mimeType, cached: false });
+      return res.json({ success: true, imageUrl: `/api/images/${imageId}.png`, cached: false });
     }
 
     try {
@@ -205,7 +205,7 @@ app.post('/api/generate-visual', async (req, res) => {
       if (imagenResult.images && imagenResult.images.length > 0) {
         const imgData = imagenResult.images[0].imageBytes;
         await kvSet(imageKey, { imageData: imgData, mimeType: 'image/png' });
-        return res.json({ success: true, imageData: imgData, mimeType: 'image/png', cached: false });
+        return res.json({ success: true, imageUrl: `/api/images/${imageId}.png`, cached: false });
       }
     } catch (imagenErr) {}
 
@@ -250,10 +250,11 @@ app.post('/api/generate-module-visuals', async (req, res) => {
   for (let i = 0; i < contentSections.length; i++) {
     const section = contentSections[i];
     const sectionIndex = mod.sections.indexOf(section);
-    const imageKey = `image_${moduleId}_s${sectionIndex}`;
+    const imageId = `${moduleId}_s${sectionIndex}`;
+    const imageKey = `image_${imageId}`;
     try {
       const cached = await kvGet(imageKey);
-      if (cached) { results.push({ sectionIndex, imageData: cached.imageData, mimeType: cached.mimeType, cached: true }); continue; }
+      if (cached) { results.push({ sectionIndex, imageUrl: `/api/images/${imageId}.png`, cached: true }); continue; }
       const prompt = buildImagePrompt(mod.title, section.title, section.content);
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
       const result = await model.generateContent({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { responseModalities: ["image", "text"] } });
@@ -264,13 +265,40 @@ app.post('/api/generate-module-visuals', async (req, res) => {
           if (part.inlineData && part.inlineData.mimeType?.startsWith('image/')) { imageData = part.inlineData.data; mimeType = part.inlineData.mimeType; break; }
         }
       }
-      if (imageData) { await kvSet(imageKey, { imageData, mimeType }); results.push({ sectionIndex, imageData, mimeType, cached: false }); }
+      if (imageData) { await kvSet(imageKey, { imageData, mimeType }); results.push({ sectionIndex, imageUrl: `/api/images/${imageId}.png`, cached: false }); }
       else { results.push({ sectionIndex, error: 'No image generated' }); }
       if (i < contentSections.length - 1) await new Promise(resolve => setTimeout(resolve, 2000));
     } catch (err) { results.push({ sectionIndex, error: err.message }); }
   }
   res.json({ success: true, results });
 });
+
+// =============================================================================
+// IMAGE SERVING ENDPOINT (backward-compatible with frontend's imageUrl handling)
+// Serves cached images from KV as binary HTTP responses
+// =============================================================================
+
+app.get('/api/images/:filename', async (req, res) => {
+  try {
+    const filename = req.params.filename.replace(/\.png$/, '');
+    const imageKey = `image_${filename}`;
+    const cached = await kvGet(imageKey);
+    if (cached && cached.imageData) {
+      const buffer = Buffer.from(cached.imageData, 'base64');
+      res.setHeader('Content-Type', cached.mimeType || 'image/png');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      return res.send(buffer);
+    }
+    res.status(404).json({ error: 'Image not found' });
+  } catch (e) {
+    console.error('Image serve error:', e.message);
+    res.status(500).json({ error: 'Failed to serve image' });
+  }
+});
+
+// =============================================================================
+// HEALTH CHECK
+// =============================================================================
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
