@@ -169,17 +169,18 @@ app.post('/api/generate-visual', async (req, res) => {
       });
     }
 
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const { GoogleGenAI } = require('@google/genai');
+    const ai = new GoogleGenAI({ apiKey });
     const prompt = buildImagePrompt(moduleTitle, sectionTitle, sectionContent);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { responseModalities: ["image", "text"] }
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: prompt,
+      config: {
+        responseModalities: ['TEXT', 'IMAGE']
+      }
     });
 
-    const response = result.response;
     let imageData = null;
     let mimeType = 'image/png';
 
@@ -199,22 +200,12 @@ app.post('/api/generate-visual', async (req, res) => {
       return res.json({ success: true, imageUrl: `/api/images/${imageId}.png`, cached: false });
     }
 
-    try {
-      const imagenModel = genAI.getGenerativeModel({ model: "imagen-3.0-generate-002" });
-      const imagenResult = await imagenModel.generateImages({ prompt, config: { numberOfImages: 1 } });
-      if (imagenResult.images && imagenResult.images.length > 0) {
-        const imgData = imagenResult.images[0].imageBytes;
-        await kvSet(imageKey, { imageData: imgData, mimeType: 'image/png' });
-        return res.json({ success: true, imageUrl: `/api/images/${imageId}.png`, cached: false });
-      }
-    } catch (imagenErr) {}
-
     const textContent = response.candidates?.[0]?.content?.parts
       ?.filter(p => p.text)?.map(p => p.text)?.join('\n') || '';
 
     return res.json({
       success: false,
-      error: 'Image generation not available with current model.',
+      error: 'Image generation not available. The model returned text only.',
       description: textContent
     });
 
@@ -244,8 +235,8 @@ app.post('/api/generate-module-visuals', async (req, res) => {
 
   const results = [];
   const contentSections = (mod.sections || []).filter(s => s.type === 'text' || !s.type);
-  const { GoogleGenerativeAI } = require('@google/generative-ai');
-  const genAI = new GoogleGenerativeAI(apiKey);
+  const { GoogleGenAI } = require('@google/genai');
+  const ai = new GoogleGenAI({ apiKey });
 
   for (let i = 0; i < contentSections.length; i++) {
     const section = contentSections[i];
@@ -256,9 +247,11 @@ app.post('/api/generate-module-visuals', async (req, res) => {
       const cached = await kvGet(imageKey);
       if (cached) { results.push({ sectionIndex, imageUrl: `/api/images/${imageId}.png`, cached: true }); continue; }
       const prompt = buildImagePrompt(mod.title, section.title, section.content);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-image" });
-      const result = await model.generateContent({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { responseModalities: ["image", "text"] } });
-      const response = result.response;
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash-image',
+        contents: prompt,
+        config: { responseModalities: ['TEXT', 'IMAGE'] }
+      });
       let imageData = null; let mimeType = 'image/png';
       if (response.candidates && response.candidates[0]) {
         for (const part of response.candidates[0].content.parts) {
