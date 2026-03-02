@@ -272,6 +272,149 @@ app.post('/api/generate-module-visuals', async (req, res) => {
 });
 
 // =============================================================================
+// INFOGRAPHIC GENERATION ENDPOINT
+// Generates a full module infographic using Gemini 2.5 Flash Image
+// =============================================================================
+
+function buildInfographicPrompt(moduleTitle, moduleSubtitle, sections) {
+  const sectionSummaries = sections
+    .filter(s => s.type === 'text' || !s.type)
+    .slice(0, 8)
+    .map(s => `• ${s.title}: ${(s.content || '').substring(0, 200)}`)
+    .join('\n');
+
+  const statSections = sections
+    .filter(s => s.type === 'stats')
+    .map(s => s.stats ? s.stats.map(st => `${st.num} — ${st.lbl}`).join(', ') : '')
+    .filter(Boolean)
+    .join('; ');
+
+  return `Create a professional LANDSCAPE infographic (wide format, 1920x1080 ratio) for a trading academy training module.
+
+MODULE TITLE: "${moduleTitle}"
+MODULE SUBTITLE: "${moduleSubtitle || ''}"
+
+KEY SECTIONS AND CONCEPTS:
+${sectionSummaries}
+
+${statSections ? `KEY STATISTICS: ${statSections}` : ''}
+
+DESIGN REQUIREMENTS:
+- MUST be LANDSCAPE orientation (wider than tall, 16:9 aspect ratio)
+- Use a premium dark navy (#1B2A4A) background with emerald green (#10B981) accents
+- Professional financial/trading infographic style
+- Include the module title prominently at the top
+- Organize key concepts into clear visual sections with icons, arrows, or flowcharts
+- Use data visualizations, charts, or diagrams where appropriate
+- Include key statistics and numbers prominently displayed
+- Clean modern typography — bold headers, readable body text
+- Add "IMPACT TRADING ACADEMY" branding at the top
+- Add "Powered by Mission Metrics" at the bottom
+- Professional gradient backgrounds on cards/sections
+- NO watermarks, NO stock photo feel, NO clipart
+- Make it look like a premium Wall Street educational poster
+- Color palette: Navy #1B2A4A, Emerald #10B981, White #FFFFFF, Light accents #0B7A60
+- Ensure ALL text is legible and properly spaced`;
+}
+
+app.post('/api/generate-infographic', async (req, res) => {
+  try {
+    const { moduleId } = req.body;
+
+    // Check cache first
+    const infographicKey = `infographic_${moduleId}`;
+    const cached = await kvGet(infographicKey);
+    if (cached) {
+      return res.json({
+        success: true,
+        imageUrl: `/api/infographics/${moduleId}.png`,
+        cached: true
+      });
+    }
+
+    // Get the module data
+    const modules = await kvGet('modules', []);
+    const mod = modules.find(m => m.id === moduleId);
+    if (!mod) return res.status(404).json({ error: 'Module not found' });
+
+    const settings = await kvGet('settings', {});
+    const apiKey = settings.geminiApiKey || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({
+        error: 'No Gemini API key configured. Go to Settings to add your key.'
+      });
+    }
+
+    const { GoogleGenAI } = require('@google/genai');
+    const ai = new GoogleGenAI({ apiKey });
+    const prompt = buildInfographicPrompt(mod.title, mod.subtitle, mod.sections || []);
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: prompt,
+      config: {
+        responseModalities: ['TEXT', 'IMAGE']
+      }
+    });
+
+    let imageData = null;
+    let mimeType = 'image/png';
+
+    if (response.candidates && response.candidates[0]) {
+      const parts = response.candidates[0].content.parts;
+      for (const part of parts) {
+        if (part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')) {
+          imageData = part.inlineData.data;
+          mimeType = part.inlineData.mimeType;
+          break;
+        }
+      }
+    }
+
+    if (imageData) {
+      await kvSet(infographicKey, { imageData, mimeType });
+      return res.json({ success: true, imageUrl: `/api/infographics/${moduleId}.png`, cached: false });
+    }
+
+    return res.json({
+      success: false,
+      error: 'Infographic generation not available. The model returned text only.'
+    });
+
+  } catch (error) {
+    console.error('Infographic generation error:', error);
+    res.status(500).json({ error: error.message || 'Failed to generate infographic' });
+  }
+});
+
+app.post('/api/regenerate-infographic', async (req, res) => {
+  const { moduleId } = req.body;
+  const infographicKey = `infographic_${moduleId}`;
+  try { await kv.del(infographicKey); } catch (e) {}
+  req.url = '/api/generate-infographic';
+  app.handle(req, res);
+});
+
+// Serve infographic images from KV
+app.get('/api/infographics/:filename', async (req, res) => {
+  try {
+    const moduleId = req.params.filename.replace(/\.png$/, '');
+    const infographicKey = `infographic_${moduleId}`;
+    const cached = await kvGet(infographicKey);
+    if (cached && cached.imageData) {
+      const buffer = Buffer.from(cached.imageData, 'base64');
+      res.setHeader('Content-Type', cached.mimeType || 'image/png');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      return res.send(buffer);
+    }
+    res.status(404).json({ error: 'Infographic not found' });
+  } catch (e) {
+    console.error('Infographic serve error:', e.message);
+    res.status(500).json({ error: 'Failed to serve infographic' });
+  }
+});
+
+// =============================================================================
 // IMAGE SERVING ENDPOINT (backward-compatible with frontend's imageUrl handling)
 // Serves cached images from KV as binary HTTP responses
 // =============================================================================
