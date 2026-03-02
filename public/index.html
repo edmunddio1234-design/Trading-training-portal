@@ -855,104 +855,77 @@ function YouTubeEmbed({ moduleId }) {
 // =============================================================================
 
 function InfographicGenerator({ module }) {
-  const [infographic, setInfographic] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const canvasRef = useRef(null);
+  const [error, setError] = useState(null);
+  const [checked, setChecked] = useState(false);
 
-  const generateInfographic = async () => {
+  // Check for cached infographic on mount
+  useEffect(() => {
+    if (!checked) {
+      setChecked(true);
+      fetch('/api/generate-infographic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId: module.id, cacheOnly: true })
+      }).then(r => r.json()).then(data => {
+        if (data.success && data.cached) {
+          setImageUrl(data.imageUrl + '?t=' + Date.now());
+        }
+      }).catch(() => {});
+    }
+  }, [module.id]);
+
+  const generateInfographic = async (regenerate = false) => {
     setLoading(true);
+    setError(null);
     try {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-
-      const ctx = canvas.getContext('2d');
-      const width = 1920;
-      const height = 1080;
-      canvas.width = width;
-      canvas.height = height;
-
-      // Background gradient
-      const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, '#1B2A4A');
-      gradient.addColorStop(1, '#243B60');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      // Header
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 56px Inter';
-      ctx.textAlign = 'center';
-      ctx.fillText(module.title, width / 2, 100);
-
-      // Branding
-      ctx.font = '28px Inter';
-      ctx.fillStyle = '#10B981';
-      ctx.fillText('Impact Trading Academy', width / 2, 160);
-
-      // Main content area
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = '32px Inter';
-      ctx.textAlign = 'center';
-      let yPosition = 250;
-
-      // Extract key concepts from sections
-      const keyPoints = module.sections
-        ?.filter(s => s.type === 'text')
-        .slice(0, 3)
-        .map(s => s.title) || ['Key Concept 1', 'Key Concept 2', 'Key Concept 3'];
-
-      keyPoints.forEach((point, idx) => {
-        // Draw card background
-        const cardX = 150 + (idx % 3) * 600;
-        const cardY = yPosition + Math.floor(idx / 3) * 300;
-        ctx.fillStyle = 'rgba(13, 147, 115, 0.1)';
-        ctx.fillRect(cardX, cardY, 500, 250);
-
-        // Border
-        ctx.strokeStyle = '#0D9373';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(cardX, cardY, 500, 250);
-
-        // Text
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 24px Inter';
-        ctx.textAlign = 'center';
-        ctx.fillText(point.substring(0, 40), cardX + 250, cardY + 130);
+      const endpoint = regenerate ? '/api/regenerate-infographic' : '/api/generate-infographic';
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId: module.id })
       });
-
-      // Footer
-      ctx.font = '20px Inter';
-      ctx.fillStyle = '#10B981';
-      ctx.textAlign = 'center';
-      ctx.fillText('Powered by Mission Metrics', width / 2, height - 40);
-
-      setInfographic(canvas.toDataURL('image/png'));
+      const data = await res.json();
+      if (data.success) {
+        setImageUrl(data.imageUrl + '?t=' + Date.now());
+      } else {
+        setError(data.error || 'Failed to generate infographic');
+      }
     } catch (err) {
-      console.error('Error generating infographic:', err);
+      setError(err.message);
     }
     setLoading(false);
   };
 
-  const downloadPNG = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/png');
-    link.download = `${module.title.replace(/\s+/g, '-')}-infographic.png`;
-    link.click();
+  const downloadPNG = async () => {
+    if (!imageUrl) return;
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${module.title.replace(/\s+/g, '-')}-infographic.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error downloading PNG:', err);
+    }
   };
 
-  const downloadPDF = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const downloadPDF = async () => {
+    if (!imageUrl) return;
     try {
-      const { jsPDF } = window;
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'px',
-        format: [1920, 1080]
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const imgData = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
       });
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1920, 1080] });
       pdf.addImage(imgData, 'PNG', 0, 0, 1920, 1080);
       pdf.save(`${module.title.replace(/\s+/g, '-')}-infographic.pdf`);
     } catch (err) {
@@ -964,21 +937,32 @@ function InfographicGenerator({ module }) {
     <div className="infographic-section">
       <h3 style={{fontSize: '18px', fontWeight: 700, color: '#1B2A4A', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'}}>
         <span style={{width: '3px', height: '18px', background: '#0D9373', borderRadius: '2px'}} />
-        📊 Module Infographic
+        📊 AI Module Infographic
       </h3>
+      <p style={{fontSize: '13px', color: '#6B7280', marginBottom: '16px', lineHeight: 1.6}}>
+        Generate a professional landscape infographic for this module using AI (Gemini 2.5 Flash). The infographic includes key concepts, statistics, and visual diagrams tailored to this module's content.
+      </p>
 
-      <button
-        className="infographic-btn"
-        onClick={generateInfographic}
-        disabled={loading}
-      >
-        {loading ? '⟳ Generating...' : '✦ Generate Infographic'}
-      </button>
+      {loading && (
+        <div className="ai-visual-loading" style={{borderRadius: 12}}>
+          <div className="spinner" />
+          <p>Generating AI infographic for "{module.title}"... This may take a moment.</p>
+        </div>
+      )}
 
-      {infographic && (
+      {!loading && !imageUrl && (
+        <div>
+          <button className="infographic-btn" onClick={() => generateInfographic(false)} disabled={loading}>
+            ✦ Generate AI Infographic
+          </button>
+          {error && <div className="ai-visual-error" style={{marginTop: 12}}>{error}</div>}
+        </div>
+      )}
+
+      {!loading && imageUrl && (
         <div>
           <div className="infographic-preview">
-            <img src={infographic} alt="Generated infographic" style={{width: '100%', display: 'block'}} />
+            <img src={imageUrl} alt={`AI infographic for ${module.title}`} style={{width: '100%', display: 'block'}} />
           </div>
           <div className="infographic-download-btns">
             <button className="infographic-download-btn png" onClick={downloadPNG}>
@@ -987,11 +971,12 @@ function InfographicGenerator({ module }) {
             <button className="infographic-download-btn pdf" onClick={downloadPDF}>
               📥 Download PDF
             </button>
+            <button className="ai-visual-btn regenerate" onClick={() => generateInfographic(true)} style={{marginLeft: 8}}>
+              ↻ Regenerate
+            </button>
           </div>
         </div>
       )}
-
-      <canvas ref={canvasRef} style={{display: 'none'}} />
     </div>
   );
 }
