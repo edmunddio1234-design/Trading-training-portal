@@ -535,7 +535,7 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
       fetch('/api/generate-visual', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle })
+        body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle, cacheOnly: true })
       }).then(r => r.json()).then(data => {
         if (data.success && data.cached) {
           setImageUrl(data.imageUrl + '?t=' + Date.now());
