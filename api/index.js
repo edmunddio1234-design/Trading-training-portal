@@ -148,7 +148,7 @@ Requirements:
 
 app.post('/api/generate-visual', async (req, res) => {
   try {
-    const { moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle } = req.body;
+    const { moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle, cacheOnly } = req.body;
 
     const imageId = `${moduleId}_s${sectionIndex}`;
     const imageKey = `image_${imageId}`;
@@ -159,6 +159,11 @@ app.post('/api/generate-visual', async (req, res) => {
         imageUrl: `/api/images/${imageId}.png`,
         cached: true
       });
+    }
+
+    // If cacheOnly flag is set, don't auto-generate — just report no cache
+    if (cacheOnly) {
+      return res.json({ success: false, cached: false, message: 'No cached image' });
     }
 
     const settings = await kvGet('settings', {});
