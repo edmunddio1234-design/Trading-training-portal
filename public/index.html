@@ -7,6 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
@@ -208,6 +209,43 @@
     .hero-banner { padding: 24px; }
     .hero-stats { flex-wrap: wrap; gap: 16px; }
   }
+
+  /* Login Screen */
+  .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1B2A4A 0%, #243B60 50%, #0D9373 100%); }
+  .login-card { background: white; border-radius: 20px; padding: 48px 40px; width: 400px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; }
+  .login-card h1 { font-size: 24px; font-weight: 800; color: #1B2A4A; margin-bottom: 4px; }
+  .login-card h1 span { color: #0D9373; }
+  .login-card .login-subtitle { font-size: 13px; color: #6B7280; margin-bottom: 32px; }
+  .login-card .login-field { text-align: left; margin-bottom: 20px; }
+  .login-card .login-field label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .login-card .login-field input { width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; color: #1B2A4A; transition: border-color 0.2s; }
+  .login-card .login-field input:focus { outline: none; border-color: #0D9373; box-shadow: 0 0 0 3px rgba(13,147,115,0.1); }
+  .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #0D9373, #0B7A60); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; margin-top: 8px; }
+  .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,147,115,0.3); }
+  .login-error { color: #EF4444; font-size: 13px; margin-top: 12px; }
+  .login-logo { width: 64px; height: 64px; background: linear-gradient(135deg, #1B2A4A, #0D9373); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; color: white; }
+
+  /* Media Embed Sections */
+  .media-section { margin: 28px 0; }
+  .media-section-header { font-size: 18px; font-weight: 700; color: #1B2A4A; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .media-section-header::before { content: ''; width: 3px; height: 18px; background: #0D9373; border-radius: 2px; }
+  .media-embed-container { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 12px; overflow: hidden; border: 1px solid #E5E7EB; background: #F7FAF9; }
+  .media-embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .media-placeholder { display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: #F7FAF9; border: 1px dashed #D1D5DB; border-radius: 12px; color: #6B7280; font-size: 14px; gap: 8px; }
+
+  /* Infographic Generator */
+  .infographic-section { margin: 28px 0; padding: 24px; background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.04)); border: 1px solid rgba(13,147,115,0.2); border-radius: 16px; }
+  .infographic-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #1B2A4A, #2d4a7a); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; box-shadow: 0 2px 12px rgba(27,42,74,0.2); }
+  .infographic-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,42,74,0.35); }
+  .infographic-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .infographic-preview { margin-top: 20px; border-radius: 12px; overflow: hidden; border: 1px solid #E5E7EB; }
+  .infographic-preview canvas { width: 100%; display: block; }
+  .infographic-download-btns { display: flex; gap: 10px; margin-top: 12px; }
+  .infographic-download-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+  .infographic-download-btn.png { background: #0D9373; color: white; }
+  .infographic-download-btn.png:hover { background: #0B7A60; }
+  .infographic-download-btn.pdf { background: #1B2A4A; color: white; }
+  .infographic-download-btn.pdf:hover { background: #243B60; }
 </style>
 </head>
 <body>
@@ -443,6 +481,73 @@ const DEFAULT_MODULES = [
 ];
 
 // =============================================================================
+// MODULE MEDIA MAPPING (YouTube videos and Heyzine flipbooks)
+// =============================================================================
+
+const MODULE_MEDIA = {
+  m1: {
+    youtube: 'https://youtu.be/Zs6foGLhyT4',
+    flipbook: 'https://heyzine.com/flip-book/efef8d99bd.html'
+  },
+  m2: {
+    youtube: 'https://youtu.be/UEDXefl88WI',
+    flipbook: 'https://heyzine.com/flip-book/ff1ae5d0d1.html'
+  },
+  m3: {
+    youtube: 'https://youtu.be/wa7qzaJeKs8',
+    flipbook: 'https://heyzine.com/flip-book/5aa9c06a45.html'
+  },
+  m4: {
+    youtube: 'https://youtu.be/kmmfk8edWAE',
+    flipbook: 'https://heyzine.com/flip-book/f2897a107b.html'
+  },
+  m5: {
+    youtube: 'https://youtu.be/7S1FfEAwA4Y',
+    flipbook: 'https://heyzine.com/flip-book/e6a3fe38ee.html'
+  },
+  m6: {
+    youtube: 'https://youtu.be/xO1izk4B8V4',
+    flipbook: 'https://heyzine.com/flip-book/a6131760c8.html'
+  },
+  m7: {
+    youtube: 'https://youtu.be/ah5YvTY51e0',
+    flipbook: 'https://heyzine.com/flip-book/c2dfd5e320.html'
+  },
+  m8: {
+    youtube: 'https://youtu.be/3uKJ5kqOTDk',
+    flipbook: 'https://heyzine.com/flip-book/a98c1584f8.html'
+  },
+  m9: {
+    youtube: 'https://youtu.be/WHWD75diNQI',
+    flipbook: 'https://heyzine.com/flip-book/559606bc08.html'
+  },
+  m10: {
+    youtube: 'https://youtu.be/JdPfJ1JWHoY',
+    flipbook: 'https://heyzine.com/flip-book/8001dd24d7.html'
+  },
+  m11: {
+    youtube: 'https://youtu.be/xPE7K26GhWQ',
+    flipbook: 'https://heyzine.com/flip-book/d716681f64.html'
+  },
+  m12: {
+    youtube: 'https://youtu.be/_QNiPHaSD8g',
+    flipbook: 'https://heyzine.com/flip-book/35a15cecf4.html'
+  },
+  m13: {
+    youtube: 'https://youtu.be/YtSlg7mjdfM',
+    flipbook: null
+  },
+  m14: {
+    youtube: null,
+    flipbook: null
+  },
+  m15: {
+    youtube: null,
+    flipbook: null
+  }
+};
+
+// =============================================================================
 // API LAYER — Falls back to local data when backend is unavailable
 // =============================================================================
 
@@ -583,6 +688,7 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
         <img className="ai-visual-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} />
         <div className="ai-visual-actions">
           <button className="ai-visual-btn regenerate" onClick={() => generate(true)}>↻ Regenerate</button>
+          <a href={imageUrl} download={`ai-visual-${sectionTitle.replace(/\s+/g,'-').toLowerCase()}.png`} className="ai-visual-btn" style={{textDecoration:'none',background:'var(--accent)',fontSize:12,padding:'8px 16px'}}>⬇ Download</a>
         </div>
       </div>
     );
@@ -594,6 +700,298 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
         ✦ Generate AI Visual
       </button>
       {error && <div className="ai-visual-error">{error}</div>}
+    </div>
+  );
+}
+
+// =============================================================================
+// LOGIN SCREEN COMPONENT
+// =============================================================================
+
+function LoginScreen({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = () => {
+    setError('');
+    if (username === 'Sonny' && password === 'Africa12345!') {
+      onLogin();
+    } else {
+      setError('Invalid username or password');
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') handleLogin();
+  };
+
+  return (
+    <div className="login-screen">
+      <div className="login-card">
+        <div className="login-logo">📊</div>
+        <h1>IMPACT <span>TRADING</span> ACADEMY</h1>
+        <p className="login-subtitle">Powered by Mission Metrics</p>
+
+        <div className="login-field">
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Enter username"
+          />
+        </div>
+
+        <div className="login-field">
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Enter password"
+          />
+        </div>
+
+        <button className="login-btn" onClick={handleLogin}>
+          Login to Academy
+        </button>
+
+        {error && <div className="login-error">{error}</div>}
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// FLIPBOOK EMBED COMPONENT
+// =============================================================================
+
+function FlipbookEmbed({ moduleId }) {
+  const media = MODULE_MEDIA[moduleId];
+  const flipbookUrl = media?.flipbook;
+
+  if (!flipbookUrl) {
+    return (
+      <div className="media-section">
+        <div className="media-section-header">📖 Interactive Flipbook</div>
+        <div className="media-placeholder">
+          Flipbook coming soon for this module
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="media-section">
+      <div className="media-section-header">📖 Interactive Flipbook</div>
+      <div className="media-embed-container">
+        <iframe
+          src={flipbookUrl}
+          allow="fullscreen"
+          title={`Flipbook for ${moduleId}`}
+        />
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// YOUTUBE EMBED COMPONENT
+// =============================================================================
+
+function YouTubeEmbed({ moduleId }) {
+  const media = MODULE_MEDIA[moduleId];
+  const youtubeUrl = media?.youtube;
+
+  if (!youtubeUrl) {
+    return (
+      <div className="media-section">
+        <div className="media-section-header">🎥 Video Lesson</div>
+        <div className="media-placeholder">
+          Video lesson coming soon for this module
+        </div>
+      </div>
+    );
+  }
+
+  // Extract video ID from YouTube URL
+  const getYoutubeId = (url) => {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
+  };
+
+  const videoId = getYoutubeId(youtubeUrl);
+  if (!videoId) {
+    return (
+      <div className="media-section">
+        <div className="media-section-header">🎥 Video Lesson</div>
+        <div className="media-placeholder">
+          Invalid video URL
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="media-section">
+      <div className="media-section-header">🎥 Video Lesson</div>
+      <div className="media-embed-container">
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={`Video lesson for ${moduleId}`}
+        />
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// INFOGRAPHIC GENERATOR COMPONENT
+// =============================================================================
+
+function InfographicGenerator({ module }) {
+  const [infographic, setInfographic] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const canvasRef = useRef(null);
+
+  const generateInfographic = async () => {
+    setLoading(true);
+    try {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      const width = 1920;
+      const height = 1080;
+      canvas.width = width;
+      canvas.height = height;
+
+      // Background gradient
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, '#1B2A4A');
+      gradient.addColorStop(1, '#243B60');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      // Header
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 56px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText(module.title, width / 2, 100);
+
+      // Branding
+      ctx.font = '28px Inter';
+      ctx.fillStyle = '#10B981';
+      ctx.fillText('Impact Trading Academy', width / 2, 160);
+
+      // Main content area
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '32px Inter';
+      ctx.textAlign = 'center';
+      let yPosition = 250;
+
+      // Extract key concepts from sections
+      const keyPoints = module.sections
+        ?.filter(s => s.type === 'text')
+        .slice(0, 3)
+        .map(s => s.title) || ['Key Concept 1', 'Key Concept 2', 'Key Concept 3'];
+
+      keyPoints.forEach((point, idx) => {
+        // Draw card background
+        const cardX = 150 + (idx % 3) * 600;
+        const cardY = yPosition + Math.floor(idx / 3) * 300;
+        ctx.fillStyle = 'rgba(13, 147, 115, 0.1)';
+        ctx.fillRect(cardX, cardY, 500, 250);
+
+        // Border
+        ctx.strokeStyle = '#0D9373';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(cardX, cardY, 500, 250);
+
+        // Text
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 24px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText(point.substring(0, 40), cardX + 250, cardY + 130);
+      });
+
+      // Footer
+      ctx.font = '20px Inter';
+      ctx.fillStyle = '#10B981';
+      ctx.textAlign = 'center';
+      ctx.fillText('Powered by Mission Metrics', width / 2, height - 40);
+
+      setInfographic(canvas.toDataURL('image/png'));
+    } catch (err) {
+      console.error('Error generating infographic:', err);
+    }
+    setLoading(false);
+  };
+
+  const downloadPNG = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `${module.title.replace(/\s+/g, '-')}-infographic.png`;
+    link.click();
+  };
+
+  const downloadPDF = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    try {
+      const { jsPDF } = window;
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [1920, 1080]
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, 1920, 1080);
+      pdf.save(`${module.title.replace(/\s+/g, '-')}-infographic.pdf`);
+    } catch (err) {
+      console.error('Error downloading PDF:', err);
+    }
+  };
+
+  return (
+    <div className="infographic-section">
+      <h3 style={{fontSize: '18px', fontWeight: 700, color: '#1B2A4A', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'}}>
+        <span style={{width: '3px', height: '18px', background: '#0D9373', borderRadius: '2px'}} />
+        📊 Module Infographic
+      </h3>
+
+      <button
+        className="infographic-btn"
+        onClick={generateInfographic}
+        disabled={loading}
+      >
+        {loading ? '⟳ Generating...' : '✦ Generate Infographic'}
+      </button>
+
+      {infographic && (
+        <div>
+          <div className="infographic-preview">
+            <img src={infographic} alt="Generated infographic" style={{width: '100%', display: 'block'}} />
+          </div>
+          <div className="infographic-download-btns">
+            <button className="infographic-download-btn png" onClick={downloadPNG}>
+              📥 Download PNG
+            </button>
+            <button className="infographic-download-btn pdf" onClick={downloadPDF}>
+              📥 Download PDF
+            </button>
+          </div>
+        </div>
+      )}
+
+      <canvas ref={canvasRef} style={{display: 'none'}} />
     </div>
   );
 }
@@ -653,7 +1051,7 @@ function App() {
   }, [modules, completedModules]);
 
   const currentModule = modules.find(m => m.id === currentModuleId);
-  const openModule = (id) => { setCurrentModuleId(id); setCurrentView('module'); };
+  const openModule = (id) => { setCurrentModuleId(id); setCurrentView('module'); window.scrollTo(0, 0); document.querySelector('.main-content')?.scrollTo(0, 0); };
   const goToDashboard = () => { setCurrentView('dashboard'); setCurrentModuleId(null); };
   const completeModule = (id) => setCompletedModules(prev => ({...prev, [id]: true}));
 
@@ -871,6 +1269,10 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
         );
       })}
 
+      <FlipbookEmbed moduleId={module.id} />
+      <YouTubeEmbed moduleId={module.id} />
+      <InfographicGenerator module={module} />
+
       {quiz.length > 0 && (
         <div className="quiz-container">
           <div className="quiz-header"><h3>📝 Knowledge Check</h3><span className="quiz-score">{allAnswered ? `Score: ${correctCount}/${quiz.length} (${Math.round(correctCount/quiz.length*100)}%)` : `${Object.keys(mQuiz.submitted).length}/${quiz.length} answered`}</span></div>
@@ -1049,7 +1451,17 @@ function SettingsModal({ onClose, addToast }) {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// =============================================================================
+// APP WITH LOGIN WRAPPER
+// =============================================================================
+
+function AppWithLogin() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  if (!isAuthenticated) return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
+  return <App />;
+}
+
+ReactDOM.render(<AppWithLogin />, document.getElementById('root'));
 </script>
 </body>
 </html>
