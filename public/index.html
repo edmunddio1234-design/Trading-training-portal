@@ -713,13 +713,27 @@ function LoginScreen({ onLogin }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
     setError('');
-    if (username === 'Sonny' && password === 'Africa12345!') {
-      onLogin();
-    } else {
-      setError('Invalid username or password');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        onLogin();
+      } else {
+        setError('Invalid username or password');
+      }
+    } catch (err) {
+      setError('Login failed. Please try again.');
     }
+    setLoading(false);
   };
 
   const handleKeyPress = (e) => {
@@ -755,8 +769,8 @@ function LoginScreen({ onLogin }) {
           />
         </div>
 
-        <button className="login-btn" onClick={handleLogin}>
-          Login to Academy
+        <button className="login-btn" onClick={handleLogin} disabled={loading}>
+          {loading ? 'Logging in...' : 'Login to Academy'}
         </button>
 
         {error && <div className="login-error">{error}</div>}
