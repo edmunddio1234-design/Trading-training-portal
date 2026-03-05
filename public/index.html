@@ -820,7 +820,7 @@ function LoginScreen({ onLogin }) {
       });
       const data = await res.json();
       if (data.success) {
-        onLogin();
+        onLogin(data.token);
       } else {
         setError('Invalid username or password');
       }
@@ -2293,7 +2293,43 @@ function SettingsModal({ onClose, addToast }) {
 
 function AppWithLogin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  if (!isAuthenticated) return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  // On mount, check if there's a saved session token and validate it
+  useEffect(() => {
+    const savedToken = sessionStorage.getItem('ita_session_token');
+    if (savedToken) {
+      fetch('/api/validate-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: savedToken })
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.valid) setIsAuthenticated(true);
+          else sessionStorage.removeItem('ita_session_token');
+          setCheckingSession(false);
+        })
+        .catch(() => setCheckingSession(false));
+    } else {
+      setCheckingSession(false);
+    }
+  }, []);
+
+  const handleLogin = (token) => {
+    sessionStorage.setItem('ita_session_token', token);
+    setIsAuthenticated(true);
+  };
+
+  if (checkingSession) {
+    return (
+      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'linear-gradient(135deg, #1B2A4A 0%, #243B60 50%, #0D9373 100%)'}}>
+        <div style={{color:'white',fontSize:'18px',fontFamily:'Inter,sans-serif'}}>Loading session...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) return <LoginScreen onLogin={handleLogin} />;
   return <App />;
 }
 
