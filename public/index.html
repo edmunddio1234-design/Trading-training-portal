@@ -246,6 +246,99 @@
   .infographic-download-btn.png:hover { background: #0B7A60; }
   .infographic-download-btn.pdf { background: #1B2A4A; color: white; }
   .infographic-download-btn.pdf:hover { background: #243B60; }
+
+  /* Gating System Styles */
+  .gating-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; }
+  .gating-overlay-content { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; max-width: 500px; text-align: center; }
+  .gating-overlay-content h2 { font-size: 32px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+  .gating-overlay-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
+  .requirement-checklist { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 24px 0; text-align: left; }
+  .requirement-checklist-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-size: 14px; color: var(--text-secondary); }
+  .requirement-checklist-item.completed { color: var(--green-dark); }
+  .requirement-checklist-item span:first-child { min-width: 20px; }
+  .gating-overlay-content button { background: var(--accent); color: white; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 16px; font-family: inherit; }
+  .gating-overlay-content button:hover { background: var(--accent-dark); }
+
+  /* Mastery Exam */
+  .mastery-exam { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
+  .mastery-exam h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .mastery-exam h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
+  .mastery-progress { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 16px 0; }
+  .mastery-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transition: width 0.3s ease; }
+  .mastery-exam .quiz-option, .mastery-exam .quiz-question { margin-bottom: 12px; }
+
+  /* Notebook Section */
+  .notebook-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
+  .notebook-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .notebook-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
+  .notebook-prompt { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 16px; border-radius: 8px; margin-bottom: 16px; font-style: italic; color: var(--text-secondary); }
+  .notebook-textarea { width: 100%; min-height: 120px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 14px; font-family: inherit; color: var(--text-primary); resize: vertical; }
+  .notebook-textarea:focus { outline: none; border-color: var(--accent); }
+  .notebook-entry { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; }
+  .notebook-entry-date { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
+  .notebook-entry-content { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* Simulation Section */
+  .simulation-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
+  .simulation-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .simulation-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
+  .simulation-exercise-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; cursor: pointer; transition: all 0.2s; }
+  .simulation-exercise-card:hover { border-color: var(--accent); background: rgba(13,147,115,0.03); }
+  .simulation-exercise-card h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .simulation-exercise-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+  .exercise-badge { display: inline-block; background: rgba(13,147,115,0.12); color: var(--accent); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; }
+  .exercise-form { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; }
+
+  /* Strategy Section */
+  .strategy-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
+  .strategy-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .strategy-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
+  .strategy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; }
+  .strategy-card h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .strategy-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; }
+  .set-calculator { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 10px; padding: 20px; margin: 16px 0; }
+  .set-calculator .form-group { margin-bottom: 12px; }
+  .set-calculator .form-group label { font-size: 12px; font-weight: 600; }
+  .set-calculator .form-group input { padding: 10px 12px; font-size: 13px; }
+  .calculator-output { background: white; border-left: 3px solid var(--green); padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
+
+  /* Video Discovery */
+  .video-discovery { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
+  .video-discovery h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .video-discovery h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+  .video-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: all 0.2s; }
+  .video-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .video-thumbnail { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--navy), #243B60); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .video-info { padding: 12px; }
+  .video-info h4 { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .video-info p { font-size: 11px; color: var(--text-muted); }
+
+  /* Onboarding Section */
+  .onboarding-section { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 16px; padding: 32px; margin: 28px 0; }
+  .onboarding-section h3 { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 24px; text-align: center; }
+  .onboarding-progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 32px; }
+  .onboarding-progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transition: width 0.3s ease; }
+  .onboarding-step { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .onboarding-step input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
+  .onboarding-step-content h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .onboarding-step-content p { font-size: 13px; color: var(--text-secondary); }
+
+  /* Locked Module State */
+  .locked-module { opacity: 0.6; pointer-events: none; }
+  .locked-module-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); border-radius: 14px; }
+  .locked-module-overlay span { color: white; font-size: 32px; }
+
+  /* Collapsible Section */
+  .collapsible-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 16px 0; }
+  .collapsible-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: var(--bg-card); transition: all 0.2s; }
+  .collapsible-header:hover { background: var(--bg-hover); }
+  .collapsible-header h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin: 0; display: flex; align-items: center; gap: 8px; }
+  .collapsible-header h3::before { content: ''; width: 3px; height: 16px; background: var(--accent); border-radius: 2px; }
+  .collapsible-toggle { font-size: 14px; color: var(--text-muted); transition: transform 0.2s; }
+  .collapsible-toggle.open { transform: rotate(180deg); }
+  .collapsible-content { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+  .collapsible-content.open { padding: 20px; max-height: 10000px; }
 </style>
 </head>
 <body>
@@ -1011,11 +1104,37 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [toasts, setToasts] = useState([]);
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
+  const [masteryExamState, setMasteryExamState] = useState({});
+  const [notebookComplete, setNotebookComplete] = useState({});
+  const [simulationProgress, setSimulationProgress] = useState({});
 
   const addToast = (message, type = 'info') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+  };
+
+  // Gating logic: determine if a module is unlocked
+  const isModuleUnlocked = (moduleId) => {
+    if (moduleId === 'm1') return onboardingComplete;
+    const currentIndex = modules.findIndex(m => m.id === moduleId);
+    if (currentIndex <= 0) return true;
+    const prevModule = modules[currentIndex - 1];
+    const prevId = prevModule.id;
+    const quizPassed = (masteryExamState[prevId]?.passed) || completedModules[prevId];
+    const notebookDone = notebookComplete[prevId] || false;
+    const requiredExercises = Math.ceil((prevModule.simulations?.length || 0) / 2);
+    const exercisesDone = (simulationProgress[prevId]?.completedCount || 0) >= requiredExercises;
+    return quizPassed && notebookDone && exercisesDone;
+  };
+
+  const getModuleRequirements = (prevModuleId) => {
+    return {
+      quizPassed: (masteryExamState[prevModuleId]?.passed) || completedModules[prevModuleId] || false,
+      notebookEntry: notebookComplete[prevModuleId] || false,
+      exercisesComplete: true
+    };
   };
 
   // Load data from backend on mount
@@ -1026,6 +1145,13 @@ function App() {
         setModules(mods);
         setCompletedModules(prog.completedModules || {});
         setQuizState(prog.quizState || {});
+        try {
+          const onRes = await fetch('/api/onboarding');
+          if (onRes.ok) {
+            const onData = await onRes.json();
+            setOnboardingComplete(onData.isComplete || false);
+          }
+        } catch (e) {}
       } catch (err) {
         addToast('Failed to load data: ' + err.message, 'error');
       }
@@ -1050,7 +1176,16 @@ function App() {
   }, [modules, completedModules]);
 
   const currentModule = modules.find(m => m.id === currentModuleId);
-  const openModule = (id) => { setCurrentModuleId(id); setCurrentView('module'); window.scrollTo(0, 0); document.querySelector('.main-content')?.scrollTo(0, 0); };
+  const openModule = (id) => {
+    if (!isModuleUnlocked(id)) {
+      addToast('This module is locked. Complete the previous module first.', 'error');
+      return;
+    }
+    setCurrentModuleId(id);
+    setCurrentView('module');
+    window.scrollTo(0, 0);
+    document.querySelector('.main-content')?.scrollTo(0, 0);
+  };
   const goToDashboard = () => { setCurrentView('dashboard'); setCurrentModuleId(null); };
   const completeModule = (id) => setCompletedModules(prev => ({...prev, [id]: true}));
 
@@ -1101,12 +1236,15 @@ function App() {
         </div>
         <div className="nav-section">
           <div className="nav-label">Training Modules</div>
-          {modules.map((m, i) => (
-            <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''}`} onClick={() => openModule(m.id)}>
-              <div className="nav-dot" />
-              <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}</span>
-            </div>
-          ))}
+          {modules.map((m, i) => {
+            const locked = !isModuleUnlocked(m.id);
+            return (
+              <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''} ${locked ? 'locked-module' : ''}`} onClick={() => openModule(m.id)} style={{ opacity: locked ? 0.5 : 1, cursor: locked ? 'not-allowed' : 'pointer' }}>
+                <div className="nav-dot" />
+                <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}{locked ? ' 🔒' : ''}</span>
+              </div>
+            );
+          })}
         </div>
         <div className="progress-bar-container">
           <div className="progress-label"><span>Overall Progress</span><span>{progress}%</span></div>
@@ -1123,7 +1261,7 @@ function App() {
           </div>
         </div>
         <div className="content-body">
-          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} />}
+          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} onboardingComplete={onboardingComplete} isModuleUnlocked={isModuleUnlocked} />}
           {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={() => openAdminEdit(currentModule)} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
         </div>
       </div>
@@ -1135,11 +1273,631 @@ function App() {
 }
 
 // =============================================================================
+// GATING OVERLAY COMPONENT
+// =============================================================================
+
+function GatingOverlay({ previousModuleTitle, requirements }) {
+  return (
+    <div className="gating-overlay">
+      <div className="gating-overlay-content">
+        <h2>🔒 Module Locked</h2>
+        <p>Complete <strong>{previousModuleTitle}</strong> first to unlock this module</p>
+        <div className="requirement-checklist">
+          <div className={`requirement-checklist-item ${requirements.quizPassed ? 'completed' : ''}`}>
+            <span>{requirements.quizPassed ? '☑' : '☐'}</span>
+            <span>Quiz Passed (50%+)</span>
+          </div>
+          <div className={`requirement-checklist-item ${requirements.notebookEntry ? 'completed' : ''}`}>
+            <span>{requirements.notebookEntry ? '☑' : '☐'}</span>
+            <span>Notebook Entry Submitted</span>
+          </div>
+          <div className={`requirement-checklist-item ${requirements.exercisesComplete ? 'completed' : ''}`}>
+            <span>{requirements.exercisesComplete ? '☑' : '☐'}</span>
+            <span>Required Exercises Complete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// WEBULL ONBOARDING COMPONENT
+// =============================================================================
+
+function WebullOnboarding({ onComplete }) {
+  const [status, setStatus] = useState({
+    accountCreated: false,
+    paperTradingEnabled: false,
+    platformFamiliarized: false,
+    firstTradeExecuted: false,
+    watchlistCreated: false
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch('/api/onboarding');
+        if (res.ok) {
+          const data = await res.json();
+          setStatus({
+            accountCreated: data.accountCreated || false,
+            paperTradingEnabled: data.paperTradingEnabled || false,
+            platformFamiliarized: data.platformFamiliarized || false,
+            firstTradeExecuted: data.firstTradeExecuted || false,
+            watchlistCreated: data.watchlistCreated || false
+          });
+        }
+      } catch (e) {}
+    }
+    load();
+  }, []);
+
+  const toggleStep = async (step) => {
+    const newStatus = { ...status, [step]: !status[step] };
+    setStatus(newStatus);
+    try {
+      await fetch('/api/onboarding', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStatus)
+      });
+    } catch (e) {}
+    if (Object.values(newStatus).every(Boolean)) {
+      onComplete();
+    }
+  };
+
+  const steps = [
+    { key: 'accountCreated', title: 'Create Webull Account', desc: 'Sign up for a free Webull trading account' },
+    { key: 'paperTradingEnabled', title: 'Enable Paper Trading', desc: 'Activate paper trading mode (virtual money)' },
+    { key: 'platformFamiliarized', title: 'Learn the Platform', desc: 'Explore Webull interface and charting tools' },
+    { key: 'firstTradeExecuted', title: 'Execute First Paper Trade', desc: 'Place your first paper trade (long or short)' },
+    { key: 'watchlistCreated', title: 'Create a Watchlist', desc: 'Build a watchlist of stocks to monitor' }
+  ];
+
+  const completedCount = Object.values(status).filter(Boolean).length;
+  const progress = (completedCount / steps.length) * 100;
+
+  return (
+    <div className="onboarding-section">
+      <h3>🚀 Webull Account Setup</h3>
+      <div className="onboarding-progress-bar">
+        <div className="onboarding-progress-bar-fill" style={{ width: `${progress}%` }} />
+      </div>
+      {steps.map(step => (
+        <div key={step.key} className="onboarding-step">
+          <input
+            type="checkbox"
+            checked={status[step.key]}
+            onChange={() => toggleStep(step.key)}
+          />
+          <div className="onboarding-step-content">
+            <h4>{step.title}</h4>
+            <p>{step.desc}</p>
+          </div>
+        </div>
+      ))}
+      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, textAlign: 'center' }}>
+        {completedCount} of {steps.length} completed
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// MASTERY EXAM COMPONENT
+// =============================================================================
+
+function MasteryExam({ moduleId, moduleTitle, onPass }) {
+  const [quiz, setQuiz] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [generated, setGenerated] = useState(false);
+
+  const QUESTIONS_PER_PAGE = 5;
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`/api/quizzes/${moduleId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setQuiz(data.questions || []);
+          setGenerated(data.questions?.length > 0);
+        }
+      } catch (e) {}
+    }
+    load();
+  }, [moduleId]);
+
+  const generateQuiz = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/quizzes/generate/${moduleId}`, { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        setQuiz(data.questions || []);
+        setGenerated(true);
+      }
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  if (!generated) {
+    return (
+      <div className="mastery-exam">
+        <h3>🎓 Mastery Exam (70 Questions)</h3>
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '12px 0' }}>
+          Master this module by passing a 70-question exam with a score of 50/70 (71%). This ensures deep understanding before moving forward.
+        </p>
+        <button className="quiz-btn" onClick={generateQuiz} disabled={loading}>
+          {loading ? '⟳ Generating...' : '✦ Generate Quiz'}
+        </button>
+      </div>
+    );
+  }
+
+  const currentQuestions = quiz.slice(currentPage * QUESTIONS_PER_PAGE, (currentPage + 1) * QUESTIONS_PER_PAGE);
+  const allAnswered = Object.keys(submitted).length === quiz.length;
+  const correctCount = Object.values(submitted).filter(Boolean).length;
+  const passed = correctCount >= Math.ceil(quiz.length * 0.71);
+
+  const selectAnswer = (questionId, optionIndex) => {
+    if (!submitted[questionId]) {
+      setAnswers(prev => ({ ...prev, [questionId]: optionIndex }));
+    }
+  };
+
+  const submitAnswer = (questionId, question) => {
+    const selectedOption = answers[questionId];
+    const isCorrect = selectedOption === question.correct;
+    setSubmitted(prev => ({ ...prev, [questionId]: isCorrect }));
+  };
+
+  const handleSubmit = () => {
+    if (passed && onPass) {
+      onPass(correctCount);
+    }
+  };
+
+  return (
+    <div className="mastery-exam">
+      <h3>🎓 Mastery Exam (70 Questions)</h3>
+      {!allAnswered && (
+        <div>
+          <div className="mastery-progress">
+            <div className="mastery-progress-fill" style={{ width: `${(Object.keys(submitted).length / quiz.length) * 100}%` }} />
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
+            Question {currentPage * QUESTIONS_PER_PAGE + 1}-{Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, quiz.length)} of {quiz.length}
+          </div>
+          {currentQuestions.map((q, idx) => {
+            const qId = currentPage * QUESTIONS_PER_PAGE + idx;
+            return (
+              <div key={qId} style={{ marginBottom: 20 }}>
+                <div className="quiz-question">{idx + 1}. {q.question}</div>
+                {q.options.map((opt, oi) => {
+                  let cls = 'quiz-option';
+                  if (submitted[qId] !== undefined) {
+                    if (oi === q.correct) cls += ' correct';
+                    else if (oi === answers[qId] && oi !== q.correct) cls += ' incorrect';
+                  } else if (answers[qId] === oi) cls += ' selected';
+                  return (
+                    <button key={oi} className={cls} onClick={() => selectAnswer(qId, oi)} disabled={submitted[qId] !== undefined}>
+                      {opt}
+                    </button>
+                  );
+                })}
+                {submitted[qId] !== undefined && (
+                  <div className={`quiz-feedback ${submitted[qId] ? 'correct' : 'incorrect'}`}>
+                    {submitted[qId] ? '✓ Correct' : '✗ Incorrect'}
+                  </div>
+                )}
+                {submitted[qId] === undefined && (
+                  <button className="quiz-btn" onClick={() => submitAnswer(qId, q)} disabled={answers[qId] === undefined}>
+                    Submit Answer
+                  </button>
+                )}
+              </div>
+            );
+          })}
+          <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+            <button className="quiz-btn" onClick={() => setCurrentPage(Math.max(0, currentPage - 1))} disabled={currentPage === 0}>
+              ← Previous
+            </button>
+            <button className="quiz-btn" onClick={() => setCurrentPage(Math.min(Math.ceil(quiz.length / QUESTIONS_PER_PAGE) - 1, currentPage + 1))} disabled={(currentPage + 1) * QUESTIONS_PER_PAGE >= quiz.length}>
+              Next →
+            </button>
+          </div>
+        </div>
+      )}
+      {allAnswered && (
+        <div style={{ textAlign: 'center', padding: '20px 0' }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>{passed ? '🏆' : '📚'}</div>
+          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: 'var(--navy)' }}>
+            {passed ? 'Exam Passed!' : 'Keep Studying'}
+          </div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20 }}>
+            You scored {correctCount} out of {quiz.length} ({Math.round((correctCount / quiz.length) * 100)}%)
+          </div>
+          {passed && <button className="quiz-btn" onClick={handleSubmit}>✓ Mark Complete</button>}
+          {!passed && <button className="quiz-btn" style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }} onClick={() => { setCurrentPage(0); setAnswers({}); setSubmitted({}); }}>Retake Exam</button>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =============================================================================
+// NOTEBOOK SECTION COMPONENT
+// =============================================================================
+
+function NotebookSection({ moduleId, notebookPrompts, onEntryAdded }) {
+  const [currentPrompt, setCurrentPrompt] = useState(notebookPrompts?.[0] || '');
+  const [content, setContent] = useState('');
+  const [entries, setEntries] = useState([]);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (notebookPrompts?.length) {
+      const randomPrompt = notebookPrompts[Math.floor(Math.random() * notebookPrompts.length)];
+      setCurrentPrompt(randomPrompt);
+    }
+    async function load() {
+      try {
+        const res = await fetch(`/api/notebook/${moduleId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setEntries(data.entries || []);
+        }
+      } catch (e) {}
+    }
+    load();
+  }, [moduleId]);
+
+  const saveEntry = async () => {
+    if (!content.trim()) return;
+    setSaving(true);
+    try {
+      await fetch('/api/notebook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId, content })
+      });
+      setEntries(prev => [{ date: new Date().toLocaleDateString(), content }, ...prev]);
+      setContent('');
+      onEntryAdded?.();
+    } catch (e) {}
+    setSaving(false);
+  };
+
+  return (
+    <div className="notebook-section">
+      <h3>📔 Reflection Notebook</h3>
+      <div className="notebook-prompt">"{currentPrompt}"</div>
+      <textarea
+        className="notebook-textarea"
+        placeholder="Write your reflection here..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
+      <button className="quiz-btn" onClick={saveEntry} disabled={saving || !content.trim()} style={{ marginTop: 12 }}>
+        {saving ? 'Saving...' : '✓ Save Entry'}
+      </button>
+      {entries.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <h4 style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)', marginBottom: 12 }}>Previous Entries</h4>
+          {entries.map((entry, idx) => (
+            <div key={idx} className="notebook-entry">
+              <div className="notebook-entry-date">{entry.date}</div>
+              <div className="notebook-entry-content">{entry.content.substring(0, 150)}...</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =============================================================================
+// SIMULATION EXERCISES COMPONENT
+// =============================================================================
+
+function SimulationExercises({ moduleId, exercises, requiredCount, onExerciseComplete }) {
+  const [expanded, setExpanded] = useState({});
+  const [formData, setFormData] = useState({});
+  const [completed, setCompleted] = useState({});
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`/api/simulations/${moduleId}`);
+        if (res.ok) {
+          const data = await res.json();
+          const exerciseMap = {};
+          if (data.exercises) {
+            Object.keys(data.exercises).forEach(key => {
+              if (data.exercises[key]?.completed) exerciseMap[key] = true;
+            });
+          }
+          setCompleted(exerciseMap);
+        }
+      } catch (e) {}
+    }
+    load();
+  }, [moduleId]);
+
+  const submitExercise = async (exerciseId) => {
+    try {
+      await fetch(`/api/simulations/${moduleId}/${exerciseId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData[exerciseId] || {})
+      });
+      setCompleted(prev => ({ ...prev, [exerciseId]: true }));
+      onExerciseComplete?.();
+    } catch (e) {}
+  };
+
+  const completedCount = Object.values(completed).filter(Boolean).length;
+
+  return (
+    <div className="simulation-section">
+      <h3>🎯 Simulation Exercises</h3>
+      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
+        {completedCount} of {requiredCount} required exercises completed
+      </div>
+      {exercises?.map((exercise, idx) => (
+        <div key={idx}>
+          <div className="simulation-exercise-card" onClick={() => setExpanded(prev => ({ ...prev, [idx]: !prev[idx] }))}>
+            <h4>{exercise.title}</h4>
+            <p>{exercise.description}</p>
+            <span className="exercise-badge">{exercise.type || 'Trade Simulation'}</span>
+            {completed[exercise.id] && <span className="exercise-badge" style={{ background: 'rgba(16,185,129,0.12)', color: 'var(--green-dark)', marginLeft: 8 }}>✓ Completed</span>}
+          </div>
+          {expanded[idx] && !completed[exercise.id] && (
+            <div className="exercise-form">
+              <div className="form-group">
+                <label>Entry Price</label>
+                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], entry: e.target.value } }))} />
+              </div>
+              <div className="form-group">
+                <label>Stop Loss Price</label>
+                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], stop: e.target.value } }))} />
+              </div>
+              <div className="form-group">
+                <label>Target Price</label>
+                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], target: e.target.value } }))} />
+              </div>
+              <div className="form-group">
+                <label>Trading Reasoning</label>
+                <textarea placeholder="Explain your trade logic..." rows="3" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], reasoning: e.target.value } }))} />
+              </div>
+              <div className="form-group">
+                <label>Confidence Level (1-5)</label>
+                <input type="number" min="1" max="5" placeholder="1-5" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], confidence: e.target.value } }))} />
+              </div>
+              <button className="quiz-btn" onClick={() => submitExercise(exercise.id)}>✓ Submit Exercise</button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// =============================================================================
+// STRATEGY BUILDER COMPONENT
+// =============================================================================
+
+function StrategyBuilder({ moduleId, moduleTitle }) {
+  const [strategy, setStrategy] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [calcInputs, setCalcInputs] = useState({ accountSize: 10000, entryPrice: 100, stopPrice: 98 });
+  const [calcResult, setCalcResult] = useState(null);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`/api/strategy/${moduleId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setStrategy(data.strategy);
+        }
+      } catch (e) {}
+    }
+    load();
+  }, [moduleId]);
+
+  const generateStrategy = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/strategy/generate/${moduleId}`, { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        setStrategy(data.strategy);
+      }
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  const calculateSET = () => {
+    const { accountSize, entryPrice, stopPrice } = calcInputs;
+    const accountRisk = accountSize * 0.01;
+    const tradeRisk = Math.abs(entryPrice - stopPrice);
+    const positionSize = accountRisk / tradeRisk;
+    const targetPrice = entryPrice + (tradeRisk * 3);
+    setCalcResult({ positionSize, accountRisk, targetPrice });
+  };
+
+  return (
+    <div className="strategy-section">
+      <h3>⚡ Strategy Builder & S.E.T. Calculator</h3>
+      {!strategy ? (
+        <button className="quiz-btn" onClick={generateStrategy} disabled={loading}>
+          {loading ? '⟳ Generating...' : '✦ Generate My Strategy'}
+        </button>
+      ) : (
+        <div>
+          <div className="strategy-card">
+            <h4>Strategy Name</h4>
+            <p>{strategy.strategyName || strategy.name || 'Custom Trading Strategy'}</p>
+          </div>
+          {(strategy.marketConditions) && (
+            <div className="strategy-card">
+              <h4>Market Conditions</h4>
+              <p>{strategy.marketConditions}</p>
+            </div>
+          )}
+          {(strategy.setupConditions) && (
+            <div className="strategy-card">
+              <h4>Setup Conditions</h4>
+              <p>{Array.isArray(strategy.setupConditions) ? strategy.setupConditions.join(', ') : strategy.setupConditions}</p>
+            </div>
+          )}
+          {(strategy.entryRules) && (
+            <div className="strategy-card">
+              <h4>Entry Rules</h4>
+              <p>{Array.isArray(strategy.entryRules) ? strategy.entryRules.join(', ') : strategy.entryRules}</p>
+            </div>
+          )}
+          {strategy.positionSizing && (
+            <div className="strategy-card">
+              <h4>Position Sizing</h4>
+              <p>{strategy.positionSizing}</p>
+            </div>
+          )}
+          {strategy.stopLossRules && (
+            <div className="strategy-card">
+              <h4>Stop Loss Rules</h4>
+              <p>{strategy.stopLossRules}</p>
+            </div>
+          )}
+          {strategy.profitTargets && (
+            <div className="strategy-card">
+              <h4>Profit Targets</h4>
+              <p>{strategy.profitTargets}</p>
+            </div>
+          )}
+          {(strategy.commonMistakes) && (
+            <div className="strategy-card">
+              <h4>Common Mistakes to Avoid</h4>
+              <p>{Array.isArray(strategy.commonMistakes) ? strategy.commonMistakes.join(', ') : strategy.commonMistakes}</p>
+            </div>
+          )}
+          <button className="quiz-btn" onClick={generateStrategy} disabled={loading} style={{ marginTop: 12 }}>
+            ↻ Regenerate Strategy
+          </button>
+        </div>
+      )}
+      <div className="set-calculator">
+        <h4 style={{ marginBottom: 12 }}>S.E.T. Calculator</h4>
+        <div className="form-group">
+          <label>Account Size ($)</label>
+          <input type="number" value={calcInputs.accountSize} onChange={(e) => setCalcInputs(prev => ({ ...prev, accountSize: parseFloat(e.target.value) }))} />
+        </div>
+        <div className="form-group">
+          <label>Entry Price ($)</label>
+          <input type="number" value={calcInputs.entryPrice} onChange={(e) => setCalcInputs(prev => ({ ...prev, entryPrice: parseFloat(e.target.value) }))} />
+        </div>
+        <div className="form-group">
+          <label>Stop Loss Price ($)</label>
+          <input type="number" value={calcInputs.stopPrice} onChange={(e) => setCalcInputs(prev => ({ ...prev, stopPrice: parseFloat(e.target.value) }))} />
+        </div>
+        <button className="quiz-btn" onClick={calculateSET}>Calculate</button>
+        {calcResult && (
+          <div className="calculator-output">
+            <div>Position Size: <strong>{calcResult.positionSize.toFixed(2)} shares</strong></div>
+            <div>Account Risk (1%): <strong>${calcResult.accountRisk.toFixed(2)}</strong></div>
+            <div>Target Price (3:1): <strong>${calcResult.targetPrice.toFixed(2)}</strong></div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// VIDEO DISCOVERY COMPONENT
+// =============================================================================
+
+function VideoDiscovery({ moduleId, fallbackVideos }) {
+  const [videos, setVideos] = useState(fallbackVideos || []);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`/api/youtube/${moduleId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setVideos(data.videos || fallbackVideos || []);
+        }
+      } catch (e) {}
+    }
+    load();
+  }, [moduleId]);
+
+  const getYoutubeId = (url) => {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
+  };
+
+  return (
+    <div className="video-discovery">
+      <h3>🎥 Video Tutorials & Resources</h3>
+      <div className="video-grid">
+        {videos.map((video, idx) => {
+          const videoId = getYoutubeId(video.url || video);
+          if (!videoId) return null;
+          return (
+            <div key={idx} className="video-card">
+              <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                <div className="video-thumbnail">▶️</div>
+                <div className="video-info">
+                  <h4>{video.title || 'Video Tutorial'}</h4>
+                  <p>{video.channel || 'YouTube'}</p>
+                </div>
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// COLLAPSIBLE SECTION COMPONENT
+// =============================================================================
+
+function CollapsibleSection({ title, children }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="collapsible-section">
+      <div className="collapsible-header" onClick={() => setOpen(!open)}>
+        <h3>{title}</h3>
+        <span className={`collapsible-toggle ${open ? 'open' : ''}`}>▼</span>
+      </div>
+      <div className={`collapsible-content ${open ? 'open' : ''}`}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
 // DASHBOARD
 // =============================================================================
 
-function Dashboard({ modules, completedModules, progress, onOpen }) {
+function Dashboard({ modules, completedModules, progress, onOpen, onboardingComplete, isModuleUnlocked }) {
   const completed = Object.values(completedModules).filter(Boolean).length;
+  const showOnboarding = !onboardingComplete;
   return (
     <div>
       <div className="hero-banner">
@@ -1152,17 +1910,22 @@ function Dashboard({ modules, completedModules, progress, onOpen }) {
           <div className="hero-stat"><div className="val">{modules.reduce((a,m) => a + (m.quiz?.length||0), 0)}</div><div className="desc">Quiz Questions</div></div>
         </div>
       </div>
+      {showOnboarding && (
+        <WebullOnboarding onComplete={() => { window.location.reload(); }} />
+      )}
       <div className="dashboard-grid">
         {modules.map((m, i) => {
           const status = completedModules[m.id] ? 'completed' : 'in-progress';
+          const locked = !isModuleUnlocked(m.id);
           return (
-            <div key={m.id} className="dash-card" onClick={() => onOpen(m.id)}>
+            <div key={m.id} className={`dash-card ${locked ? 'locked-module' : ''}`} onClick={() => onOpen(m.id)} style={{ position: 'relative', opacity: locked ? 0.6 : 1, cursor: locked ? 'not-allowed' : 'pointer' }}>
+              {locked && <div className="locked-module-overlay"><span>🔒</span></div>}
               <div className="dash-card-num">Module {i + 1}</div>
               <h3>{m.title}</h3>
               <p>{m.subtitle}</p>
               <div className="dash-card-footer">
                 <span>{m.sections?.filter(s=>s.type!=='resources').length || 0} lessons · {m.quiz?.length || 0} questions</span>
-                <span className={`status-badge ${status}`}>{status === 'completed' ? '✓ Done' : 'Available'}</span>
+                <span className={`status-badge ${status}`}>{status === 'completed' ? '✓ Done' : locked ? '🔒 Locked' : 'Available'}</span>
               </div>
             </div>
           );
@@ -1306,6 +2069,43 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
           )}
         </div>
       )}
+
+      <CollapsibleSection title="🎓 Mastery Exam">
+        <MasteryExam
+          moduleId={module.id}
+          moduleTitle={module.title}
+          onPass={(score) => { addToast(`Exam passed! Score: ${score}`, 'success'); }}
+        />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="⚡ Strategy Builder & S.E.T. Calculator">
+        <StrategyBuilder moduleId={module.id} moduleTitle={module.title} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="🎯 Simulation Exercises">
+        <SimulationExercises
+          moduleId={module.id}
+          exercises={module.simulations || []}
+          requiredCount={Math.ceil((module.simulations?.length || 0) / 2)}
+          onExerciseComplete={() => { addToast('Exercise completed!', 'success'); }}
+        />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="📔 Reflection Notebook">
+        <NotebookSection
+          moduleId={module.id}
+          notebookPrompts={module.notebookPrompts || ['What was the most important concept you learned?', 'How will you apply this knowledge to your trading?', 'What questions do you still have?']}
+          onEntryAdded={() => { addToast('Notebook entry saved!', 'success'); }}
+        />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="🎥 Video Tutorials & Resources">
+        <VideoDiscovery
+          moduleId={module.id}
+          fallbackVideos={module.videos || []}
+        />
+      </CollapsibleSection>
+
       {isCompleted && <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.25)',borderRadius:12,padding:20,marginTop:24,textAlign:'center'}}><span style={{color:'var(--green-dark)',fontSize:16,fontWeight:600}}>✓ Module Completed</span></div>}
     </div>
   );
