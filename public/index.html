@@ -308,8 +308,9 @@
   .video-discovery h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
   .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
   .video-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: all 0.2s; }
-  .video-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .video-thumbnail { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--navy), #243B60); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .video-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .video-card:hover .play-overlay { opacity: 1 !important; }
+  .video-thumbnail { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--navy), #243B60); display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative; }
   .video-info { padding: 12px; }
   .video-info h4 { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
   .video-info p { font-size: 11px; color: var(--text-muted); }
@@ -1811,41 +1812,95 @@ function StrategyBuilder({ moduleId, moduleTitle }) {
 // =============================================================================
 
 function VideoDiscovery({ moduleId, fallbackVideos }) {
-  const [videos, setVideos] = useState(fallbackVideos || []);
-  const [loading, setLoading] = useState(false);
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
+      setError(null);
       try {
         const res = await fetch(`/api/youtube/${moduleId}`);
         if (res.ok) {
           const data = await res.json();
-          setVideos(data.videos || fallbackVideos || []);
+          setVideos(data.videos && data.videos.length > 0 ? data.videos : []);
         }
-      } catch (e) {}
+      } catch (e) {
+        setError('Could not load videos');
+      }
+      setLoading(false);
     }
     load();
   }, [moduleId]);
 
   const getYoutubeId = (url) => {
+    if (!url) return null;
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
     return match ? match[1] : null;
   };
+
+  if (loading) {
+    return (
+      <div className="video-discovery">
+        <h3>🎥 Video Tutorials & Resources</h3>
+        <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '24px', marginBottom: '8px' }}>⏳</div>
+          Loading videos from YouTube...
+        </div>
+      </div>
+    );
+  }
+
+  if (videos.length === 0) {
+    return (
+      <div className="video-discovery">
+        <h3>🎥 Video Tutorials & Resources</h3>
+        <div style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)', fontSize: '14px' }}>
+          No videos available for this module yet.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="video-discovery">
       <h3>🎥 Video Tutorials & Resources</h3>
       <div className="video-grid">
         {videos.map((video, idx) => {
-          const videoId = getYoutubeId(video.url || video);
-          if (!videoId) return null;
+          const videoId = getYoutubeId(video.url);
+          const thumbnailUrl = video.thumbnail || (videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null);
           return (
             <div key={idx} className="video-card">
-              <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                <div className="video-thumbnail">▶️</div>
+              <a href={video.url || `https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="video-thumbnail" style={{
+                  background: thumbnailUrl ? `url(${thumbnailUrl}) center/cover` : 'linear-gradient(135deg, var(--navy), #243B60)',
+                  position: 'relative'
+                }}>
+                  {!thumbnailUrl && '▶️'}
+                  {video.duration && (
+                    <span style={{
+                      position: 'absolute', bottom: '6px', right: '6px',
+                      background: 'rgba(0,0,0,0.8)', color: '#fff', fontSize: '11px',
+                      padding: '2px 6px', borderRadius: '3px', fontWeight: '600'
+                    }}>{video.duration}</span>
+                  )}
+                  <div style={{
+                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(0,0,0,0.15)', opacity: 0, transition: 'opacity 0.2s'
+                  }} className="play-overlay">
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ color: '#fff', fontSize: '16px', marginLeft: '3px' }}>▶</span>
+                    </div>
+                  </div>
+                </div>
                 <div className="video-info">
-                  <h4>{video.title || 'Video Tutorial'}</h4>
-                  <p>{video.channel || 'YouTube'}</p>
+                  <h4 style={{ lineHeight: '1.3', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {video.title || 'Video Tutorial'}
+                  </h4>
+                  <p style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {video.channel || 'YouTube'}
+                  </p>
                 </div>
               </a>
             </div>
