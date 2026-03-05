@@ -2084,7 +2084,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
       <CollapsibleSection title="🎥 Video Tutorials & Resources">
         <VideoDiscovery
           moduleId={module.id}
-          fallbackVideos={module.videos || []}
+          fallbackVideos={module.youtubeVideos || []}
         />
       </CollapsibleSection>
 
