@@ -248,7 +248,7 @@ app.post('/api/regenerate-visual', async (req, res) => {
 
 app.post('/api/generate-module-visuals', async (req, res) => {
   const { moduleId } = req.body;
-  const modules = await kvGet('modules', []);
+  const modules = await getModules();
   const mod = modules.find(m => m.id === moduleId);
   if (!mod) return res.status(404).json({ error: 'Module not found' });
 
