@@ -470,10 +470,21 @@ app.post('/api/login', async (req, res) => {
   }
 
   if (username === validUsername && password === validPassword) {
-    res.json({ success: true });
+    // Generate a simple session token so the frontend can persist login state
+    const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
+    await kvSet('session_token', token);
+    res.json({ success: true, token });
   } else {
     res.status(401).json({ success: false, error: 'Invalid username or password' });
   }
+});
+
+// Session validation endpoint — checks if a stored token is still valid
+app.post('/api/validate-session', async (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.json({ valid: false });
+  const storedToken = await kvGet('session_token');
+  res.json({ valid: token === storedToken });
 });
 
 // =============================================================================
