@@ -459,6 +459,357 @@ app.post('/api/login', async (req, res) => {
 });
 
 // =============================================================================
+// MASTERY QUIZ GENERATION (70 questions per module via Gemini)
+// =============================================================================
+
+app.post('/api/quizzes/generate/:moduleId', async (req, res) => {
+  try {
+    const { moduleId } = req.params;
+    const { force } = req.body || {};
+
+    // Check cache first (unless force regenerate)
+    const quizKey = `quiz_70_${moduleId}`;
+    if (!force) {
+      const cached = await kvGet(quizKey);
+      if (cached && cached.questions && cached.questions.length >= 70) {
+        return res.json({ success: true, ...cached, cached: true });
+      }
+    }
+
+    // Get module content for context
+    const modules = await getModules();
+    const mod = modules.find(m => m.id === moduleId);
+    if (!mod) return res.status(404).json({ error: 'Module not found' });
+
+    const settings = await kvGet('settings', {});
+    const apiKey = settings.geminiApiKey || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({ error: 'No Gemini API key configured. Go to Settings to add your key.' });
+    }
+
+    // Build content summary from module sections
+    const contentSummary = (mod.sections || [])
+      .filter(s => s.type === 'text' || !s.type)
+      .map(s => `${s.title}: ${(s.content || '').substring(0, 300)}`)
+      .join('\n');
+
+    const keywords = (mod.keywords || []).join(', ') || mod.title;
+
+    const prompt = `Generate exactly 70 multiple-choice quiz questions for a trading education module.
+
+MODULE: "${mod.title}"
+SUBTITLE: "${mod.subtitle || ''}"
+KEY TOPICS: ${keywords}
+
+CONTENT SUMMARY:
+${contentSummary.substring(0, 3000)}
+
+REQUIREMENTS:
+- 70 questions total, numbered 1-70
+- Each question has exactly 4 options
+- One correct answer per question (0-indexed: 0=first option, 1=second, 2=third, 3=fourth)
+- Include a brief explanation for the correct answer
+- Difficulty mix: 20 easy, 30 medium, 20 hard
+- Question types: concept definitions, scenario decisions, risk management calculations, strategy application
+- All questions must directly relate to the module content
+- For any chart-related questions: UP/bullish = GREEN, DOWN/bearish = RED (real-world trading colors)
+- Passing score: 50/70 (71.4%)
+
+Return ONLY a valid JSON array (no markdown, no code blocks):
+[{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"...","difficulty":"easy"},...]`;
+
+    const { GoogleGenAI } = require('@google/genai');
+    const ai = new GoogleGenAI({ apiKey });
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-preview-05-20',
+      contents: prompt,
+      config: { responseMimeType: 'application/json' }
+    });
+
+    let questions = [];
+    const text = response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    try {
+      questions = JSON.parse(text);
+    } catch (parseErr) {
+      // Try to extract JSON array from response
+      const match = text.match(/\[[\s\S]*\]/);
+      if (match) {
+        questions = JSON.parse(match[0]);
+      } else {
+        return res.status(500).json({ error: 'Failed to parse quiz questions from AI response' });
+      }
+    }
+
+    if (!Array.isArray(questions) || questions.length < 10) {
+      return res.status(500).json({ error: 'AI returned insufficient questions', count: questions.length });
+    }
+
+    const quizData = {
+      moduleId,
+      questions: questions.slice(0, 70),
+      generatedAt: new Date().toISOString(),
+      version: 1
+    };
+
+    await kvSet(quizKey, quizData);
+    res.json({ success: true, ...quizData, cached: false });
+
+  } catch (error) {
+    console.error('Quiz generation error:', error);
+    res.status(500).json({ error: error.message || 'Failed to generate quiz' });
+  }
+});
+
+app.get('/api/quizzes/:moduleId', async (req, res) => {
+  const quizKey = `quiz_70_${req.params.moduleId}`;
+  const cached = await kvGet(quizKey);
+  if (cached && cached.questions) {
+    return res.json({ success: true, ...cached });
+  }
+  res.json({ success: false, questions: [], message: 'No quiz generated yet. Click Generate to create one.' });
+});
+
+// =============================================================================
+// NOTEBOOK / JOURNAL ENDPOINTS
+// =============================================================================
+
+app.post('/api/notebook', async (req, res) => {
+  try {
+    const { moduleId, title, content, prompt: entryPrompt } = req.body;
+    if (!moduleId || !content || content.trim().length < 10) {
+      return res.status(400).json({ error: 'Notebook entry must have moduleId and content (min 10 chars)' });
+    }
+
+    const notebook = await kvGet('notebook', []);
+    const entry = {
+      id: 'nb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+      moduleId,
+      title: title || 'Untitled Entry',
+      content: content.trim(),
+      prompt: entryPrompt || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    notebook.push(entry);
+    await kvSet('notebook', notebook);
+    res.json({ success: true, entry });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/notebook/:moduleId', async (req, res) => {
+  const notebook = await kvGet('notebook', []);
+  const entries = notebook.filter(e => e.moduleId === req.params.moduleId);
+  res.json({ success: true, entries });
+});
+
+app.get('/api/notebook', async (req, res) => {
+  const notebook = await kvGet('notebook', []);
+  res.json({ success: true, entries: notebook });
+});
+
+// =============================================================================
+// STRATEGY BUILDER ENDPOINTS
+// =============================================================================
+
+app.post('/api/strategy/generate/:moduleId', async (req, res) => {
+  try {
+    const { moduleId } = req.params;
+    const { force } = req.body || {};
+
+    const stratKey = `strategy_${moduleId}`;
+    if (!force) {
+      const cached = await kvGet(stratKey);
+      if (cached && cached.strategy) {
+        return res.json({ success: true, ...cached, cached: true });
+      }
+    }
+
+    const modules = await getModules();
+    const mod = modules.find(m => m.id === moduleId);
+    if (!mod) return res.status(404).json({ error: 'Module not found' });
+
+    const settings = await kvGet('settings', {});
+    const apiKey = settings.geminiApiKey || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({ error: 'No Gemini API key configured.' });
+    }
+
+    const contentSummary = (mod.sections || [])
+      .filter(s => s.type === 'text' || !s.type)
+      .map(s => `${s.title}: ${(s.content || '').substring(0, 300)}`)
+      .join('\n');
+
+    const prompt = `Create a detailed trading strategy playbook based on this trading module.
+
+MODULE: "${mod.title}"
+SUBTITLE: "${mod.subtitle || ''}"
+KEY TOPICS: ${(mod.keywords || []).join(', ') || mod.title}
+
+CONTENT:
+${contentSummary.substring(0, 3000)}
+
+Generate a complete strategy with these sections:
+1. "strategyName" - A compelling name for this strategy
+2. "principleSource" - Which module principles this strategy is built on
+3. "marketConditions" - When to use this strategy (bull/bear/sideways)
+4. "setupConditions" - What to look for before entering (3-5 conditions)
+5. "entryRules" - Exact entry trigger rules (be specific)
+6. "positionSizing" - How to size the position using 1% rule and S.E.T.
+7. "stopLossRules" - Where to place stops and why
+8. "profitTargets" - Exit rules and profit targets (3:1 minimum)
+9. "commonMistakes" - Top 5 mistakes to avoid
+10. "whenNotToUse" - Conditions where this strategy fails
+
+IMPORTANT: For any chart references: UP/bullish = GREEN, DOWN/bearish = RED (real-world trading colors)
+
+Return ONLY valid JSON (no markdown, no code blocks):
+{"strategyName":"...","principleSource":"...","marketConditions":"...","setupConditions":["..."],"entryRules":["..."],"positionSizing":"...","stopLossRules":"...","profitTargets":"...","commonMistakes":["..."],"whenNotToUse":["..."]}`;
+
+    const { GoogleGenAI } = require('@google/genai');
+    const ai = new GoogleGenAI({ apiKey });
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-preview-05-20',
+      contents: prompt,
+      config: { responseMimeType: 'application/json' }
+    });
+
+    const text = response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    let strategy;
+    try {
+      strategy = JSON.parse(text);
+    } catch (parseErr) {
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) strategy = JSON.parse(match[0]);
+      else return res.status(500).json({ error: 'Failed to parse strategy from AI response' });
+    }
+
+    const stratData = {
+      moduleId,
+      strategy,
+      generatedAt: new Date().toISOString()
+    };
+
+    await kvSet(stratKey, stratData);
+    res.json({ success: true, ...stratData, cached: false });
+
+  } catch (error) {
+    console.error('Strategy generation error:', error);
+    res.status(500).json({ error: error.message || 'Failed to generate strategy' });
+  }
+});
+
+app.get('/api/strategy/:moduleId', async (req, res) => {
+  const stratKey = `strategy_${req.params.moduleId}`;
+  const cached = await kvGet(stratKey);
+  if (cached && cached.strategy) return res.json({ success: true, ...cached });
+  res.json({ success: false, strategy: null, message: 'No strategy generated yet.' });
+});
+
+// =============================================================================
+// YOUTUBE VIDEO MANAGEMENT (manual curation with admin CRUD)
+// =============================================================================
+
+app.get('/api/youtube/:moduleId', async (req, res) => {
+  const ytKey = `youtube_${req.params.moduleId}`;
+  const cached = await kvGet(ytKey);
+  if (cached && cached.videos) return res.json({ success: true, ...cached });
+
+  // Fallback: get from module metadata
+  const modules = await getModules();
+  const mod = modules.find(m => m.id === req.params.moduleId);
+  const fallback = (mod && mod.youtubeVideos) || [];
+  res.json({ success: true, moduleId: req.params.moduleId, videos: fallback });
+});
+
+app.put('/api/youtube/:moduleId', async (req, res) => {
+  try {
+    const { videos } = req.body;
+    if (!Array.isArray(videos)) return res.status(400).json({ error: 'Videos must be an array' });
+    const ytKey = `youtube_${req.params.moduleId}`;
+    const data = { moduleId: req.params.moduleId, videos, updatedAt: new Date().toISOString() };
+    await kvSet(ytKey, data);
+    res.json({ success: true, ...data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// =============================================================================
+// WEBULL ONBOARDING STATUS
+// =============================================================================
+
+app.get('/api/onboarding', async (req, res) => {
+  const onboarding = await kvGet('onboarding', {
+    accountCreated: false,
+    paperTradingEnabled: false,
+    platformFamiliarized: false,
+    firstTradeExecuted: false,
+    watchlistCreated: false,
+    completedAt: null
+  });
+  const steps = ['accountCreated', 'paperTradingEnabled', 'platformFamiliarized', 'firstTradeExecuted', 'watchlistCreated'];
+  const done = steps.filter(s => onboarding[s]).length;
+  res.json({ success: true, ...onboarding, completionPercent: Math.round((done / steps.length) * 100), isComplete: done === steps.length });
+});
+
+app.put('/api/onboarding', async (req, res) => {
+  try {
+    const current = await kvGet('onboarding', {});
+    const updated = { ...current, ...req.body };
+    const steps = ['accountCreated', 'paperTradingEnabled', 'platformFamiliarized', 'firstTradeExecuted', 'watchlistCreated'];
+    const done = steps.filter(s => updated[s]).length;
+    if (done === steps.length && !updated.completedAt) {
+      updated.completedAt = new Date().toISOString();
+    }
+    await kvSet('onboarding', updated);
+    res.json({ success: true, ...updated, completionPercent: Math.round((done / steps.length) * 100), isComplete: done === steps.length });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// =============================================================================
+// SIMULATION EXERCISE ENDPOINTS
+// =============================================================================
+
+app.get('/api/simulations/:moduleId', async (req, res) => {
+  const simKey = `simulations_${req.params.moduleId}`;
+  const results = await kvGet(simKey, { moduleId: req.params.moduleId, exercises: {} });
+  res.json({ success: true, ...results });
+});
+
+app.post('/api/simulations/:moduleId/:exerciseId', async (req, res) => {
+  try {
+    const { moduleId, exerciseId } = req.params;
+    const { entry, stop, target, reasoning, confidence } = req.body;
+
+    const simKey = `simulations_${moduleId}`;
+    const current = await kvGet(simKey, { moduleId, exercises: {} });
+
+    current.exercises[exerciseId] = {
+      completed: true,
+      entry,
+      stop,
+      target,
+      reasoning,
+      confidence: confidence || 3,
+      submittedAt: new Date().toISOString()
+    };
+
+    await kvSet(simKey, current);
+    res.json({ success: true, exercise: current.exercises[exerciseId] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// =============================================================================
 // HEALTH CHECK
 // =============================================================================
 
