@@ -522,7 +522,7 @@ Return ONLY a valid JSON array (no markdown, no code blocks):
     const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-preview-05-20',
+      model: 'gemini-2.5-flash',
       contents: prompt,
       config: { responseMimeType: 'application/json' }
     });
@@ -674,7 +674,7 @@ Return ONLY valid JSON (no markdown, no code blocks):
     const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-preview-05-20',
+      model: 'gemini-2.5-flash',
       contents: prompt,
       config: { responseMimeType: 'application/json' }
     });
