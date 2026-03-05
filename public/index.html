@@ -1115,18 +1115,9 @@ function App() {
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
   };
 
-  // Gating logic: determine if a module is unlocked
+  // Gating logic: all modules unlocked (gating disabled)
   const isModuleUnlocked = (moduleId) => {
-    if (moduleId === 'm1') return onboardingComplete;
-    const currentIndex = modules.findIndex(m => m.id === moduleId);
-    if (currentIndex <= 0) return true;
-    const prevModule = modules[currentIndex - 1];
-    const prevId = prevModule.id;
-    const quizPassed = (masteryExamState[prevId]?.passed) || completedModules[prevId];
-    const notebookDone = notebookComplete[prevId] || false;
-    const requiredExercises = Math.ceil((prevModule.simulations?.length || 0) / 2);
-    const exercisesDone = (simulationProgress[prevId]?.completedCount || 0) >= requiredExercises;
-    return quizPassed && notebookDone && exercisesDone;
+    return true;
   };
 
   const getModuleRequirements = (prevModuleId) => {
@@ -1177,10 +1168,6 @@ function App() {
 
   const currentModule = modules.find(m => m.id === currentModuleId);
   const openModule = (id) => {
-    if (!isModuleUnlocked(id)) {
-      addToast('This module is locked. Complete the previous module first.', 'error');
-      return;
-    }
     setCurrentModuleId(id);
     setCurrentView('module');
     window.scrollTo(0, 0);
@@ -1236,15 +1223,12 @@ function App() {
         </div>
         <div className="nav-section">
           <div className="nav-label">Training Modules</div>
-          {modules.map((m, i) => {
-            const locked = !isModuleUnlocked(m.id);
-            return (
-              <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''} ${locked ? 'locked-module' : ''}`} onClick={() => openModule(m.id)} style={{ opacity: locked ? 0.5 : 1, cursor: locked ? 'not-allowed' : 'pointer' }}>
+          {modules.map((m, i) => (
+              <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''}`} onClick={() => openModule(m.id)}>
                 <div className="nav-dot" />
-                <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}{locked ? ' 🔒' : ''}</span>
+                <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}</span>
               </div>
-            );
-          })}
+          ))}
         </div>
         <div className="progress-bar-container">
           <div className="progress-label"><span>Overall Progress</span><span>{progress}%</span></div>
@@ -1916,16 +1900,14 @@ function Dashboard({ modules, completedModules, progress, onOpen, onboardingComp
       <div className="dashboard-grid">
         {modules.map((m, i) => {
           const status = completedModules[m.id] ? 'completed' : 'in-progress';
-          const locked = !isModuleUnlocked(m.id);
           return (
-            <div key={m.id} className={`dash-card ${locked ? 'locked-module' : ''}`} onClick={() => onOpen(m.id)} style={{ position: 'relative', opacity: locked ? 0.6 : 1, cursor: locked ? 'not-allowed' : 'pointer' }}>
-              {locked && <div className="locked-module-overlay"><span>🔒</span></div>}
+            <div key={m.id} className="dash-card" onClick={() => onOpen(m.id)} style={{ cursor: 'pointer' }}>
               <div className="dash-card-num">Module {i + 1}</div>
               <h3>{m.title}</h3>
               <p>{m.subtitle}</p>
               <div className="dash-card-footer">
                 <span>{m.sections?.filter(s=>s.type!=='resources').length || 0} lessons · {m.quiz?.length || 0} questions</span>
-                <span className={`status-badge ${status}`}>{status === 'completed' ? '✓ Done' : locked ? '🔒 Locked' : 'Available'}</span>
+                <span className={`status-badge ${status}`}>{status === 'completed' ? '✓ Done' : 'Available'}</span>
               </div>
             </div>
           );
