@@ -42,7 +42,25 @@ async function kvSet(key, data) {
 
 async function getModules() {
   const modules = await kvGet('modules');
-  if (modules && Array.isArray(modules) && modules.length > 0) return modules;
+  if (modules && Array.isArray(modules) && modules.length > 0) {
+    // Merge metadata fields from DEFAULT_MODULES into KV-stored modules
+    // This ensures fields added after initial KV save (simulations, keywords,
+    // notebookPrompts, youtubeVideos, requiredExercises) are always present
+    return modules.map(kvMod => {
+      const defaultMod = DEFAULT_MODULES.find(d => d.id === kvMod.id);
+      if (!defaultMod) return kvMod;
+      return {
+        ...kvMod,
+        simulations: kvMod.simulations || defaultMod.simulations || [],
+        keywords: kvMod.keywords || defaultMod.keywords || [],
+        notebookPrompts: kvMod.notebookPrompts || defaultMod.notebookPrompts || [],
+        youtubeVideos: kvMod.youtubeVideos || defaultMod.youtubeVideos || [],
+        requiredExercises: kvMod.requiredExercises ?? defaultMod.requiredExercises ?? 2,
+        sections: kvMod.sections || defaultMod.sections || [],
+        quiz: kvMod.quiz || defaultMod.quiz || []
+      };
+    });
+  }
   await kvSet('modules', DEFAULT_MODULES);
   return DEFAULT_MODULES;
 }
@@ -712,19 +730,92 @@ app.get('/api/strategy/:moduleId', async (req, res) => {
 });
 
 // =============================================================================
-// YOUTUBE VIDEO MANAGEMENT (manual curation with admin CRUD)
+// YOUTUBE VIDEO MANAGEMENT (YouTube Data API v3 + KV caching)
 // =============================================================================
+
+// Helper: Search YouTube Data API v3 for real videos
+async function searchYouTubeVideos(query, maxResults = 6) {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey) return [];
+
+  try {
+    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults}&relevanceLanguage=en&safeSearch=moderate&videoDuration=medium&key=${apiKey}`;
+    const searchRes = await fetch(searchUrl);
+    if (!searchRes.ok) return [];
+    const searchData = await searchRes.json();
+
+    if (!searchData.items || searchData.items.length === 0) return [];
+
+    // Get video durations from videos endpoint
+    const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+    const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${apiKey}`;
+    const detailsRes = await fetch(detailsUrl);
+    const detailsData = detailsRes.ok ? await detailsRes.json() : { items: [] };
+    const durationMap = {};
+    (detailsData.items || []).forEach(v => {
+      // Parse ISO 8601 duration (PT12M34S) to readable format
+      const match = v.contentDetails.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      if (match) {
+        const h = match[1] ? `${match[1]}:` : '';
+        const m = match[2] || '0';
+        const s = match[3] ? match[3].padStart(2, '0') : '00';
+        durationMap[v.id] = h ? `${h}${m.padStart(2,'0')}:${s}` : `${m}:${s}`;
+      }
+    });
+
+    return searchData.items.map(item => ({
+      title: item.snippet.title,
+      url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+      channel: item.snippet.channelTitle,
+      thumbnail: item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+      duration: durationMap[item.id.videoId] || '',
+      description: item.snippet.description?.substring(0, 120) || '',
+      publishedAt: item.snippet.publishedAt
+    }));
+  } catch (err) {
+    console.error('YouTube API error:', err.message);
+    return [];
+  }
+}
 
 app.get('/api/youtube/:moduleId', async (req, res) => {
   const ytKey = `youtube_${req.params.moduleId}`;
-  const cached = await kvGet(ytKey);
-  if (cached && cached.videos) return res.json({ success: true, ...cached });
 
-  // Fallback: get from module metadata
-  const modules = await getModules();
-  const mod = modules.find(m => m.id === req.params.moduleId);
-  const fallback = (mod && mod.youtubeVideos) || [];
-  res.json({ success: true, moduleId: req.params.moduleId, videos: fallback });
+  // Check KV cache first (cached for 24 hours)
+  const cached = await kvGet(ytKey);
+  if (cached && cached.videos && cached.videos.length > 0 && cached.fetchedAt) {
+    const cacheAge = Date.now() - new Date(cached.fetchedAt).getTime();
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    if (cacheAge < ONE_DAY) {
+      return res.json({ success: true, ...cached, source: 'cache' });
+    }
+  }
+
+  // Search YouTube API using module title
+  const mod = DEFAULT_MODULES.find(m => m.id === req.params.moduleId);
+  if (!mod) return res.status(404).json({ error: 'Module not found' });
+
+  const searchQuery = `${mod.title} trading tutorial`;
+  const videos = await searchYouTubeVideos(searchQuery, 6);
+
+  if (videos.length > 0) {
+    // Cache results in KV
+    const data = { moduleId: req.params.moduleId, videos, fetchedAt: new Date().toISOString() };
+    await kvSet(ytKey, data);
+    return res.json({ success: true, ...data, source: 'youtube_api' });
+  }
+
+  // Final fallback: try with just keywords
+  const keywordQuery = (mod.keywords || []).slice(0, 3).join(' ') + ' trading';
+  const fallbackVideos = await searchYouTubeVideos(keywordQuery, 6);
+
+  if (fallbackVideos.length > 0) {
+    const data = { moduleId: req.params.moduleId, videos: fallbackVideos, fetchedAt: new Date().toISOString() };
+    await kvSet(ytKey, data);
+    return res.json({ success: true, ...data, source: 'youtube_api_keywords' });
+  }
+
+  res.json({ success: true, moduleId: req.params.moduleId, videos: [], source: 'none' });
 });
 
 app.put('/api/youtube/:moduleId', async (req, res) => {
