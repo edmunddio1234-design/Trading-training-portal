@@ -721,27 +721,23 @@ function ToastContainer({ toasts }) {
 // AI VISUAL COMPONENT
 // =============================================================================
 
-function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionContent }) {
+function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionContent, refreshKey }) {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [checked, setChecked] = useState(false);
 
-  // Check if a cached image exists on mount
+  // Check if a cached image exists on mount AND whenever refreshKey changes (after Generate All)
   useEffect(() => {
-    if (!checked) {
-      setChecked(true);
-      fetch('/api/generate-visual', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle, cacheOnly: true })
-      }).then(r => r.json()).then(data => {
-        if (data.success && data.cached) {
-          setImageUrl(data.imageUrl + '?t=' + Date.now());
-        }
-      }).catch(() => {});
-    }
-  }, [moduleId, sectionIndex]);
+    fetch('/api/generate-visual', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle, cacheOnly: true })
+    }).then(r => r.json()).then(data => {
+      if (data.success && data.cached) {
+        setImageUrl(data.imageUrl + '?t=' + Date.now());
+      }
+    }).catch(() => {});
+  }, [moduleId, sectionIndex, refreshKey]);
 
   const generate = async (regenerate = false) => {
     setLoading(true);
@@ -1984,6 +1980,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
   const allAnswered = Object.keys(mQuiz.submitted).length === quiz.length;
   const correctCount = Object.entries(mQuiz.submitted).filter(([,v]) => v).length;
   const [generatingAll, setGeneratingAll] = useState(false);
+  const [visualRefreshKey, setVisualRefreshKey] = useState(0);
 
   const selectAnswer = (qi, oi) => { if (mQuiz.submitted[qi] !== undefined) return; setQuizState(p => ({...p, [module.id]: {...mQuiz, answers: {...mQuiz.answers, [qi]: oi}}})); };
   const submitAnswer = (qi) => { const ok = mQuiz.answers[qi] === quiz[qi].correct; setQuizState(p => ({...p, [module.id]: {...mQuiz, submitted: {...mQuiz.submitted, [qi]: ok}}})); };
@@ -1995,14 +1992,17 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
     addToast('Generating visuals for all sections... This may take a minute.', 'info');
     try {
       const result = await API.generateModuleVisuals(module.id);
-      if (result.success) {
+      if (result && result.success) {
         const successCount = result.results.filter(r => r.imageUrl).length;
-        addToast(`Generated ${successCount} visuals!`, 'success');
-        // Force re-render by navigating away and back
-        window.location.reload();
+        const failCount = result.results.length - successCount;
+        addToast(`Generated ${successCount} visual${successCount !== 1 ? 's' : ''}${failCount > 0 ? ` (${failCount} failed)` : ''}!`, 'success');
+        // Trigger re-render of visual components without reloading the page
+        setVisualRefreshKey(k => k + 1);
+      } else {
+        addToast('Could not generate visuals. Check your Gemini API key in Settings.', 'error');
       }
     } catch (err) {
-      addToast('Error generating visuals: ' + err.message, 'error');
+      addToast('Error generating visuals: ' + (err.message || 'Request timed out'), 'error');
     }
     setGeneratingAll(false);
   };
@@ -2063,6 +2063,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
               sectionIndex={i}
               sectionTitle={s.title}
               sectionContent={s.content}
+              refreshKey={visualRefreshKey}
             />
           </div>
         );
