@@ -1227,6 +1227,13 @@ function App() {
               </div>
           ))}
         </div>
+        <div style={{padding:'12px 20px',borderTop:'1px solid var(--border)'}}>
+          <div className="nav-label">Tools</div>
+          <a href="/options-backtester.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
+            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
+            📊 Options Backtester
+          </a>
+        </div>
         <div className="progress-bar-container">
           <div className="progress-label"><span>Overall Progress</span><span>{progress}%</span></div>
           <div className="progress-track"><div className="progress-fill" style={{width: `${progress}%`}} /></div>
@@ -1237,6 +1244,7 @@ function App() {
           <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>{sidebarOpen ? '◀' : '▶'} Menu</button>
           <div className="header-actions">
             <button onClick={goToDashboard}>◈ Dashboard</button>
+            <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
             <button onClick={() => setShowSettings(true)}>⚙ Settings</button>
             <button className="primary" onClick={openAdminNew}>+ Add Module</button>
           </div>
@@ -1589,10 +1597,24 @@ function NotebookSection({ moduleId, notebookPrompts, onEntryAdded }) {
 // SIMULATION EXERCISES COMPONENT
 // =============================================================================
 
+const BACKTESTER_MODULES = ['m4', 'm5', 'm6', 'm7', 'm8', 'm13', 'm14'];
+const BACKTESTER_TAB_MAP = {
+  m4:  { defaultTab: 'sizer', label: 'Position Sizer (S.E.T. Rule)' },
+  m5:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
+  m6:  { defaultTab: 'chain', label: 'Live Options Chain' },
+  m7:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
+  m8:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
+  m13: { defaultTab: 'chain', label: 'Live Options Chain' },
+  m14: { defaultTab: 'chain', label: 'Live Options Chain' },
+};
+
 function SimulationExercises({ moduleId, exercises, requiredCount, onExerciseComplete }) {
   const [expanded, setExpanded] = useState({});
   const [formData, setFormData] = useState({});
   const [completed, setCompleted] = useState({});
+  const [showBacktester, setShowBacktester] = useState(false);
+  const hasBacktester = BACKTESTER_MODULES.includes(moduleId);
+  const backtesterInfo = BACKTESTER_TAB_MAP[moduleId] || { defaultTab: 'backtest', label: 'Options Backtester' };
 
   useEffect(() => {
     async function load() {
@@ -1668,6 +1690,40 @@ function SimulationExercises({ moduleId, exercises, requiredCount, onExerciseCom
           )}
         </div>
       ))}
+
+      {hasBacktester && (
+        <div style={{marginTop:'24px',borderTop:'1px solid var(--border)',paddingTop:'24px'}}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'16px'}}>
+            <div>
+              <h4 style={{fontSize:'16px',fontWeight:700,color:'var(--navy)',margin:0,display:'flex',alignItems:'center',gap:'8px'}}>
+                📊 Options Backtester — {backtesterInfo.label}
+              </h4>
+              <p style={{fontSize:'12px',color:'var(--text-muted)',margin:'4px 0 0'}}>
+                Live backtesting, position sizing, Markov regime detection & options chain data
+              </p>
+            </div>
+            <button
+              onClick={() => setShowBacktester(!showBacktester)}
+              style={{background:showBacktester?'var(--accent)':'var(--navy)',color:'#fff',border:'none',padding:'10px 20px',borderRadius:'8px',fontSize:'13px',fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',transition:'all 0.2s'}}
+            >
+              {showBacktester ? '▼ Hide Backtester' : '▶ Launch Backtester'}
+            </button>
+          </div>
+          {showBacktester && (
+            <div style={{borderRadius:'12px',overflow:'hidden',border:'2px solid var(--accent)',boxShadow:'0 4px 24px rgba(13,147,115,0.15)'}}>
+              <div style={{background:'var(--navy)',padding:'8px 16px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                <span style={{fontSize:'12px',color:'rgba(255,255,255,0.7)'}}>Mission Metrics — Options Backtester</span>
+                <a href="/options-backtester.html" target="_blank" rel="noopener" style={{fontSize:'11px',color:'var(--accent-light)',textDecoration:'none'}}>↗ Open Full Screen</a>
+              </div>
+              <iframe
+                src={`/options-backtester.html#${backtesterInfo.defaultTab}`}
+                style={{width:'100%',height:'800px',border:'none',background:'#F0F5F3'}}
+                title="Options Backtester"
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
