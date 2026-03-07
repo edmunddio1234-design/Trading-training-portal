@@ -790,50 +790,63 @@ async function searchYouTubeVideos(query, maxResults = 6) {
 }
 
 app.get('/api/youtube/:moduleId', async (req, res) => {
-  const ytKey = `youtube_${req.params.moduleId}`;
+  const moduleId = req.params.moduleId;
+  const curatedKey = `youtube_${moduleId}`;
+  const apiCacheKey = `youtube_api_${moduleId}`;
 
-  // Check KV cache first
-  const cached = await kvGet(ytKey);
-  if (cached && cached.videos && cached.videos.length > 0) {
-    // Curated videos (set via PUT) are permanent — never expire
-    if (cached.curated) {
-      return res.json({ success: true, ...cached, source: 'curated' });
+  // 1. Load curated (Mission Metrics) videos — these are permanent
+  let curatedVideos = [];
+  const curatedData = await kvGet(curatedKey);
+  if (curatedData && curatedData.curated && curatedData.videos && curatedData.videos.length > 0) {
+    curatedVideos = curatedData.videos;
+  }
+
+  // 2. Load YouTube API search results (cached separately, expire after 24h)
+  let apiVideos = [];
+  const apiCached = await kvGet(apiCacheKey);
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+
+  if (apiCached && apiCached.videos && apiCached.videos.length > 0 && apiCached.fetchedAt) {
+    const cacheAge = Date.now() - new Date(apiCached.fetchedAt).getTime();
+    if (cacheAge < ONE_DAY) {
+      apiVideos = apiCached.videos;
     }
-    // Auto-fetched videos expire after 24 hours
-    if (cached.fetchedAt) {
-      const cacheAge = Date.now() - new Date(cached.fetchedAt).getTime();
-      const ONE_DAY = 24 * 60 * 60 * 1000;
-      if (cacheAge < ONE_DAY) {
-        return res.json({ success: true, ...cached, source: 'cache' });
+  }
+
+  // 3. If no fresh API results, fetch from YouTube API
+  if (apiVideos.length === 0) {
+    const mod = DEFAULT_MODULES.find(m => m.id === moduleId);
+    if (mod) {
+      const searchQuery = `${mod.title} trading tutorial`;
+      apiVideos = await searchYouTubeVideos(searchQuery, 6);
+
+      if (apiVideos.length === 0) {
+        const keywordQuery = (mod.keywords || []).slice(0, 3).join(' ') + ' trading';
+        apiVideos = await searchYouTubeVideos(keywordQuery, 6);
+      }
+
+      if (apiVideos.length > 0) {
+        await kvSet(apiCacheKey, { moduleId, videos: apiVideos, fetchedAt: new Date().toISOString() });
       }
     }
   }
 
-  // Search YouTube API using module title
-  const mod = DEFAULT_MODULES.find(m => m.id === req.params.moduleId);
-  if (!mod) return res.status(404).json({ error: 'Module not found' });
+  // 4. Combine: curated videos FIRST, then API results (deduplicate by URL)
+  const curatedUrls = new Set(curatedVideos.map(v => v.url));
+  const uniqueApiVideos = apiVideos.filter(v => !curatedUrls.has(v.url));
+  const combined = [...curatedVideos, ...uniqueApiVideos];
 
-  const searchQuery = `${mod.title} trading tutorial`;
-  const videos = await searchYouTubeVideos(searchQuery, 6);
-
-  if (videos.length > 0) {
-    // Cache results in KV
-    const data = { moduleId: req.params.moduleId, videos, fetchedAt: new Date().toISOString() };
-    await kvSet(ytKey, data);
-    return res.json({ success: true, ...data, source: 'youtube_api' });
+  if (combined.length > 0) {
+    const source = curatedVideos.length > 0 && uniqueApiVideos.length > 0 ? 'curated+api' :
+                   curatedVideos.length > 0 ? 'curated' : 'youtube_api';
+    return res.json({ success: true, moduleId, videos: combined, curated: curatedVideos.length > 0, source });
   }
 
-  // Final fallback: try with just keywords
-  const keywordQuery = (mod.keywords || []).slice(0, 3).join(' ') + ' trading';
-  const fallbackVideos = await searchYouTubeVideos(keywordQuery, 6);
-
-  if (fallbackVideos.length > 0) {
-    const data = { moduleId: req.params.moduleId, videos: fallbackVideos, fetchedAt: new Date().toISOString() };
-    await kvSet(ytKey, data);
-    return res.json({ success: true, ...data, source: 'youtube_api_keywords' });
+  if (!DEFAULT_MODULES.find(m => m.id === moduleId)) {
+    return res.status(404).json({ error: 'Module not found' });
   }
 
-  res.json({ success: true, moduleId: req.params.moduleId, videos: [], source: 'none' });
+  res.json({ success: true, moduleId, videos: [], source: 'none' });
 });
 
 app.put('/api/youtube/:moduleId', async (req, res) => {
