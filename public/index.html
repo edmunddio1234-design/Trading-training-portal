@@ -1622,9 +1622,12 @@ function MasteryExam({ moduleId, moduleTitle, onPass }) {
   }
 
   const currentQuestions = quiz.slice(currentPage * QUESTIONS_PER_PAGE, (currentPage + 1) * QUESTIONS_PER_PAGE);
-  const allAnswered = Object.keys(submitted).length === quiz.length;
+  const submittedCount = Object.keys(submitted).length;
+  const allAnswered = quiz.length > 0 && submittedCount === quiz.length;
   const correctCount = Object.values(submitted).filter(Boolean).length;
+  const scorePercent = quiz.length > 0 ? Math.round((correctCount / quiz.length) * 100) : 0;
   const passed = correctCount >= Math.ceil(quiz.length * 0.71);
+  const getLetterGrade = (pct) => { if (pct >= 93) return 'A'; if (pct >= 90) return 'A-'; if (pct >= 87) return 'B+'; if (pct >= 83) return 'B'; if (pct >= 80) return 'B-'; if (pct >= 77) return 'C+'; if (pct >= 73) return 'C'; if (pct >= 70) return 'C-'; if (pct >= 67) return 'D+'; if (pct >= 63) return 'D'; if (pct >= 60) return 'D-'; return 'F'; };
 
   const selectAnswer = (questionId, optionIndex) => {
     if (!submitted[questionId]) {
@@ -1686,10 +1689,10 @@ function MasteryExam({ moduleId, moduleTitle, onPass }) {
             );
           })}
           <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-            <button className="quiz-btn" onClick={() => setCurrentPage(Math.max(0, currentPage - 1))} disabled={currentPage === 0}>
+            <button className="quiz-btn" onClick={() => { setCurrentPage(Math.max(0, currentPage - 1)); document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} disabled={currentPage === 0}>
               ← Previous
             </button>
-            <button className="quiz-btn" onClick={() => setCurrentPage(Math.min(Math.ceil(quiz.length / QUESTIONS_PER_PAGE) - 1, currentPage + 1))} disabled={(currentPage + 1) * QUESTIONS_PER_PAGE >= quiz.length}>
+            <button className="quiz-btn" onClick={() => { setCurrentPage(Math.min(Math.ceil(quiz.length / QUESTIONS_PER_PAGE) - 1, currentPage + 1)); document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} disabled={(currentPage + 1) * QUESTIONS_PER_PAGE >= quiz.length}>
               Next →
             </button>
           </div>
@@ -1701,8 +1704,14 @@ function MasteryExam({ moduleId, moduleTitle, onPass }) {
           <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: 'var(--navy)' }}>
             {passed ? 'Exam Passed!' : 'Keep Studying'}
           </div>
+          <div style={{ fontSize: 36, fontWeight: 800, color: passed ? 'var(--green)' : 'var(--red)', marginBottom: 8 }}>
+            Grade: {getLetterGrade(scorePercent)}
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--navy)', marginBottom: 4 }}>
+            Score: {correctCount} / {quiz.length}
+          </div>
           <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20 }}>
-            You scored {correctCount} out of {quiz.length} ({Math.round((correctCount / quiz.length) * 100)}%)
+            {scorePercent}% — {passed ? 'You met the 71% passing threshold!' : `You need at least 71% to pass. You scored ${scorePercent}%.`}
           </div>
           {passed && <button className="quiz-btn" onClick={handleSubmit}>✓ Mark Complete</button>}
           {!passed && <button className="quiz-btn" style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }} onClick={() => { setCurrentPage(0); setAnswers({}); setSubmitted({}); }}>Retake Exam</button>}
