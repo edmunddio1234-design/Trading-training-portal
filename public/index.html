@@ -2045,16 +2045,14 @@ function Dashboard({ modules, completedModules, progress, onOpen, onboardingComp
       {showOnboarding && (
         <WebullOnboarding onComplete={() => { window.location.reload(); }} />
       )}
-      <div className="media-section" style={{marginBottom: '28px'}}>
-        <div className="media-section-header">📘 Impact Trading Academy — Complete Training Manual</div>
-        <div className="media-embed-container">
-          <iframe
-            src="https://heyzine.com/flip-book/209700e74d.html"
-            allow="fullscreen"
-            title="Impact Trading Academy - Complete Training Manual"
-          />
+      <a href="/training-manual.html" target="_blank" rel="noopener noreferrer" className="resource-card" style={{marginBottom: '24px', padding: '20px 24px', background: 'linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.06))', border: '2px solid rgba(13,147,115,0.25)', borderRadius: '14px', textDecoration: 'none', color: 'inherit'}}>
+        <div className="resource-icon learn" style={{width: '52px', height: '52px', fontSize: '26px', borderRadius: '12px'}}>📘</div>
+        <div className="resource-info" style={{flex: 1}}>
+          <h4 style={{fontSize: '16px', fontWeight: 700, color: '#1B2A4A', marginBottom: '4px'}}>Impact Trading Academy — Complete Training Manual</h4>
+          <p style={{fontSize: '13px', color: '#6B7280', margin: 0}}>All 15 modules in one interactive flipbook — From Mindset &amp; Financial Reality to Advanced Options Mastery</p>
         </div>
-      </div>
+        <span style={{color: '#0D9373', fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap'}}>Open Manual ↗</span>
+      </a>
       <div className="dashboard-grid">
         {modules.map((m, i) => {
           const status = completedModules[m.id] ? 'completed' : 'in-progress';

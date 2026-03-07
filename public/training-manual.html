@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impact Trading Academy — Complete Training Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --emerald: #0D9373;
+    --emerald-light: #10B981;
+    --mint: #E8F5F1;
+    --offwhite: #F7FAF9;
+    --bg: #F0F5F3;
+    --border: #E5E7EB;
+    --text-primary: #1B2A4A;
+    --text-muted: #6B7280;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .header {
+    background: var(--navy);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-logo {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--emerald), var(--emerald-light));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 800;
+  }
+  .header-title h1 {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .header-title h1 span { color: var(--emerald-light); }
+  .header-title p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+  }
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.85);
+  }
+  .btn-outline:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .btn-primary {
+    background: var(--emerald);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--emerald-light);
+  }
+
+  /* Page Title Bar */
+  .title-bar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .title-bar h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .title-bar h2 .icon {
+    font-size: 26px;
+  }
+  .title-bar .subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(13,147,115,0.12);
+    color: var(--emerald);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* Flipbook Container */
+  .flipbook-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 32px;
+  }
+  .flipbook-container {
+    flex: 1;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    min-height: 600px;
+    position: relative;
+  }
+  .flipbook-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Fallback */
+  .fallback-message {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(27,42,74,0.9);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 10;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .fallback-message a {
+    color: var(--emerald-light);
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .footer {
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .footer a {
+    color: var(--emerald);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .footer a:hover { text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header { padding: 12px 16px; }
+    .title-bar { padding: 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .flipbook-wrapper { padding: 16px; }
+    .flipbook-container { min-height: 450px; }
+    .footer { padding: 12px 16px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-logo">📊</div>
+      <div class="header-title">
+        <h1>IMPACT <span>TRADING</span> ACADEMY</h1>
+        <p>Powered by Mission Metrics</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Back to Academy</a>
+      <a href="https://heyzine.com/flip-book/209700e74d.html" target="_blank" class="btn btn-primary">Open Fullscreen ↗</a>
+    </div>
+  </div>
+
+  <!-- Title Bar -->
+  <div class="title-bar">
+    <div>
+      <h2><span class="icon">📘</span> Complete Training Manual</h2>
+      <p class="subtitle">All 15 modules — From Mindset & Financial Reality to Advanced Options Mastery</p>
+    </div>
+    <span class="badge">15 Modules</span>
+  </div>
+
+  <!-- Flipbook -->
+  <div class="flipbook-wrapper">
+    <div class="flipbook-container" id="flipbookContainer">
+      <iframe
+        id="flipbookFrame"
+        src="https://heyzine.com/flip-book/209700e74d.html"
+        allow="fullscreen"
+        title="Impact Trading Academy — Complete Training Manual"
+        loading="eager"
+      ></iframe>
+      <div class="fallback-message" id="fallbackMsg">
+        Having trouble loading? <a href="https://heyzine.com/flip-book/209700e74d.html" target="_blank">Open directly in Heyzine ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>Impact Trading Academy &bull; Complete Training Manual &bull; Powered by Mission Metrics</span>
+    <a href="https://trading-training-portal.vercel.app/">Return to Academy Dashboard</a>
+  </div>
+
+  <script>
+    // Show fallback link after 8 seconds if flipbook hasn't loaded
+    const frame = document.getElementById('flipbookFrame');
+    const fallback = document.getElementById('fallbackMsg');
+    let loaded = false;
+
+    frame.addEventListener('load', () => { loaded = true; });
+
+    setTimeout(() => {
+      if (!loaded) {
+        fallback.style.display = 'flex';
+      }
+    }, 8000);
+  </script>
+</body>
+</html>
