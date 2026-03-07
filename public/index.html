@@ -581,63 +581,78 @@ const DEFAULT_MODULES = [
 const MODULE_MEDIA = {
   m1: {
     youtube: 'https://youtu.be/Zs6foGLhyT4',
-    flipbook: 'https://heyzine.com/flip-book/6eedbdd39c.html'
+    flipbook: 'https://heyzine.com/flip-book/6eedbdd39c.html',
+    slideDeck: 'https://heyzine.com/flip-book/b594bf7fc7.html'
   },
   m2: {
     youtube: 'https://youtu.be/UEDXefl88WI',
-    flipbook: 'https://heyzine.com/flip-book/b4fb4bc178.html'
+    flipbook: 'https://heyzine.com/flip-book/b4fb4bc178.html',
+    slideDeck: 'https://heyzine.com/flip-book/8ea14a9276.html'
   },
   m3: {
     youtube: 'https://youtu.be/wa7qzaJeKs8',
-    flipbook: 'https://heyzine.com/flip-book/7660ee5c0d.html'
+    flipbook: 'https://heyzine.com/flip-book/7660ee5c0d.html',
+    slideDeck: 'https://heyzine.com/flip-book/6c34ad3b0a.html'
   },
   m4: {
     youtube: 'https://youtu.be/kmmfk8edWAE',
-    flipbook: 'https://heyzine.com/flip-book/e9b0419d8b.html'
+    flipbook: 'https://heyzine.com/flip-book/e9b0419d8b.html',
+    slideDeck: 'https://heyzine.com/flip-book/69fd47205c.html'
   },
   m5: {
     youtube: 'https://youtu.be/7S1FfEAwA4Y',
-    flipbook: 'https://heyzine.com/flip-book/1fb074ad95.html'
+    flipbook: 'https://heyzine.com/flip-book/1fb074ad95.html',
+    slideDeck: 'https://heyzine.com/flip-book/b7dedbcd0f.html'
   },
   m6: {
     youtube: 'https://youtu.be/xO1izk4B8V4',
-    flipbook: 'https://heyzine.com/flip-book/80a8903e68.html'
+    flipbook: 'https://heyzine.com/flip-book/80a8903e68.html',
+    slideDeck: 'https://heyzine.com/flip-book/a7f265085a.html'
   },
   m7: {
     youtube: 'https://youtu.be/ah5YvTY51e0',
-    flipbook: 'https://heyzine.com/flip-book/c88aed78a6.html'
+    flipbook: 'https://heyzine.com/flip-book/c88aed78a6.html',
+    slideDeck: 'https://heyzine.com/flip-book/95c2572302.html'
   },
   m8: {
     youtube: 'https://youtu.be/3uKJ5kqOTDk',
-    flipbook: 'https://heyzine.com/flip-book/e41ec0238f.html'
+    flipbook: 'https://heyzine.com/flip-book/e41ec0238f.html',
+    slideDeck: 'https://heyzine.com/flip-book/2f96d2dc84.html'
   },
   m9: {
     youtube: 'https://youtu.be/WHWD75diNQI',
-    flipbook: 'https://heyzine.com/flip-book/594bf16903.html'
+    flipbook: 'https://heyzine.com/flip-book/594bf16903.html',
+    slideDeck: 'https://heyzine.com/flip-book/f096587f0b.html'
   },
   m10: {
     youtube: 'https://youtu.be/JdPfJ1JWHoY',
-    flipbook: 'https://heyzine.com/flip-book/9bdf3068d2.html'
+    flipbook: 'https://heyzine.com/flip-book/9bdf3068d2.html',
+    slideDeck: 'https://heyzine.com/flip-book/0e8e8d180b.html'
   },
   m11: {
     youtube: 'https://youtu.be/xPE7K26GhWQ',
-    flipbook: 'https://heyzine.com/flip-book/dc2d1feb17.html'
+    flipbook: 'https://heyzine.com/flip-book/dc2d1feb17.html',
+    slideDeck: 'https://heyzine.com/flip-book/eeca42c650.html'
   },
   m12: {
     youtube: 'https://youtu.be/_QNiPHaSD8g',
-    flipbook: 'https://heyzine.com/flip-book/6bf4f8e10e.html'
+    flipbook: 'https://heyzine.com/flip-book/6bf4f8e10e.html',
+    slideDeck: 'https://heyzine.com/flip-book/0242255e2a.html'
   },
   m13: {
     youtube: 'https://youtu.be/YtSlg7mjdfM',
-    flipbook: 'https://heyzine.com/flip-book/02005127c4.html'
+    flipbook: 'https://heyzine.com/flip-book/02005127c4.html',
+    slideDeck: 'https://heyzine.com/flip-book/eab48e2edf.html'
   },
   m14: {
     youtube: null,
-    flipbook: 'https://heyzine.com/flip-book/6d6342ea71.html'
+    flipbook: 'https://heyzine.com/flip-book/6d6342ea71.html',
+    slideDeck: 'https://heyzine.com/flip-book/901f9ecb7d.html'
   },
   m15: {
     youtube: null,
-    flipbook: 'https://heyzine.com/flip-book/537da95fab.html'
+    flipbook: 'https://heyzine.com/flip-book/537da95fab.html',
+    slideDeck: 'https://heyzine.com/flip-book/6794b3023f.html'
   }
 };
 
@@ -896,6 +911,32 @@ function FlipbookEmbed({ moduleId }) {
           src={flipbookUrl}
           allow="fullscreen"
           title={`Flipbook for ${moduleId}`}
+        />
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// SLIDE DECK EMBED COMPONENT
+// =============================================================================
+
+function SlideDeckEmbed({ moduleId }) {
+  const media = MODULE_MEDIA[moduleId];
+  const slideDeckUrl = media?.slideDeck;
+
+  if (!slideDeckUrl) {
+    return null;
+  }
+
+  return (
+    <div className="media-section">
+      <div className="media-section-header">📊 Slide Deck</div>
+      <div className="media-embed-container">
+        <iframe
+          src={slideDeckUrl}
+          allow="fullscreen"
+          title={`Slide Deck for ${moduleId}`}
         />
       </div>
     </div>
@@ -2126,6 +2167,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
       })}
 
       <FlipbookEmbed moduleId={module.id} />
+      <SlideDeckEmbed moduleId={module.id} />
       <YouTubeEmbed moduleId={module.id} />
       <InfographicGenerator module={module} />
 
