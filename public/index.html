@@ -2045,6 +2045,16 @@ function Dashboard({ modules, completedModules, progress, onOpen, onboardingComp
       {showOnboarding && (
         <WebullOnboarding onComplete={() => { window.location.reload(); }} />
       )}
+      <div className="media-section" style={{marginBottom: '28px'}}>
+        <div className="media-section-header">📘 Impact Trading Academy — Complete Training Manual</div>
+        <div className="media-embed-container">
+          <iframe
+            src="https://heyzine.com/flip-book/209700e74d.html"
+            allow="fullscreen"
+            title="Impact Trading Academy - Complete Training Manual"
+          />
+        </div>
+      </div>
       <div className="dashboard-grid">
         {modules.map((m, i) => {
           const status = completedModules[m.id] ? 'completed' : 'in-progress';
