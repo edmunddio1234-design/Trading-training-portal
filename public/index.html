@@ -1688,14 +1688,38 @@ function MasteryExam({ moduleId, moduleTitle, onPass }) {
               </div>
             );
           })}
-          <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+          <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
             <button className="quiz-btn" onClick={() => { setCurrentPage(Math.max(0, currentPage - 1)); document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} disabled={currentPage === 0}>
               ← Previous
             </button>
-            <button className="quiz-btn" onClick={() => { setCurrentPage(Math.min(Math.ceil(quiz.length / QUESTIONS_PER_PAGE) - 1, currentPage + 1)); document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} disabled={(currentPage + 1) * QUESTIONS_PER_PAGE >= quiz.length}>
-              Next →
-            </button>
+            {(currentPage + 1) * QUESTIONS_PER_PAGE < quiz.length ? (
+              <button className="quiz-btn" onClick={() => { setCurrentPage(Math.min(Math.ceil(quiz.length / QUESTIONS_PER_PAGE) - 1, currentPage + 1)); document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>
+                Next →
+              </button>
+            ) : (
+              <button className="quiz-btn" style={{ background: submittedCount === quiz.length ? 'var(--green)' : 'var(--accent)', color: '#fff', fontWeight: 700 }} onClick={() => {
+                if (submittedCount === quiz.length) {
+                  document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  const unanswered = [];
+                  for (let i = 0; i < quiz.length; i++) {
+                    if (submitted[i] === undefined) {
+                      const pg = Math.floor(i / QUESTIONS_PER_PAGE) + 1;
+                      if (!unanswered.includes(pg)) unanswered.push(pg);
+                    }
+                  }
+                  alert('You still have unanswered questions on page(s): ' + unanswered.join(', ') + '. Please go back and submit answers for all questions.');
+                }
+              }}>
+                {submittedCount === quiz.length ? '✓ Finish Exam' : `Finish Exam (${submittedCount}/${quiz.length} answered)`}
+              </button>
+            )}
           </div>
+          {submittedCount > 0 && submittedCount < quiz.length && (
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, textAlign: 'center' }}>
+              Progress: {submittedCount} of {quiz.length} questions submitted
+            </div>
+          )}
         </div>
       )}
       {allAnswered && (
