@@ -7,7 +7,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
@@ -172,6 +171,46 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .ai-visual-loading p { font-size: 13px; color: var(--text-muted); }
   .ai-visual-error { padding: 16px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; margin: 12px 0; color: var(--red); font-size: 13px; }
+  .ai-visual-img { cursor: pointer; transition: opacity 0.2s; }
+  .ai-visual-img:hover { opacity: 0.92; }
+  .ai-visual-btn.download { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #FFF; border: none; }
+  .ai-visual-btn.download:hover { box-shadow: 0 4px 16px rgba(13,147,115,0.3); }
+
+  /* Subsection YouTube Video Embed */
+  .subsection-video { margin: 20px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
+  .subsection-video-header { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.04)); }
+  .subsection-video-header span.label { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+  .subsection-video-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+  .subsection-video-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .subsection-video-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 12px; color: var(--text-muted); }
+  .subsection-video-placeholder .icon { font-size: 36px; opacity: 0.4; }
+  .subsection-video-placeholder p { font-size: 13px; text-align: center; }
+
+  /* Subsection Audio/Podcast Section */
+  .subsection-audio { margin: 16px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
+  .subsection-audio-header { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(139,92,246,0.04)); }
+  .subsection-audio-header span.label { font-size: 12px; font-weight: 600; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.5px; }
+  .subsection-audio-body { padding: 20px 18px; }
+  .subsection-audio-body audio { width: 100%; border-radius: 8px; }
+  .subsection-audio-placeholder { display: flex; align-items: center; gap: 12px; padding: 16px 18px; color: var(--text-muted); }
+  .subsection-audio-placeholder .icon { font-size: 24px; opacity: 0.5; }
+  .subsection-audio-placeholder p { font-size: 13px; margin: 0; }
+
+  /* Image Lightbox / Expanded Detail View */
+  .image-lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .image-lightbox { position: relative; max-width: 95vw; max-height: 92vh; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .image-lightbox-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+  .image-lightbox-header h3 { color: #FFF; font-size: 16px; font-weight: 600; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .image-lightbox-header .badge { background: rgba(13,147,115,0.3); color: var(--accent-light); font-size: 11px; padding: 4px 12px; border-radius: 16px; font-weight: 600; letter-spacing: 0.5px; }
+  .image-lightbox-close { position: absolute; top: -8px; right: -8px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #FFF; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; z-index: 10; transition: all 0.2s; }
+  .image-lightbox-close:hover { background: rgba(255,255,255,0.25); }
+  .image-lightbox img { max-width: 90vw; max-height: 78vh; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); object-fit: contain; }
+  .image-lightbox-actions { display: flex; gap: 12px; margin-top: 4px; }
+  .image-lightbox-actions button { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: all 0.2s; font-family: inherit; }
+  .image-lightbox-actions button:hover { background: rgba(255,255,255,0.2); }
+  .image-lightbox-actions button.primary { background: var(--accent); border-color: var(--accent); }
+  .image-lightbox-actions button.primary:hover { background: var(--accent-dark); }
   .generate-all-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #FFF; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 24px; transition: all 0.3s; box-shadow: 0 2px 12px rgba(13,147,115,0.2); }
   .generate-all-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,147,115,0.35); }
   .generate-all-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -209,137 +248,6 @@
     .hero-banner { padding: 24px; }
     .hero-stats { flex-wrap: wrap; gap: 16px; }
   }
-
-  /* Login Screen */
-  .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1B2A4A 0%, #243B60 50%, #0D9373 100%); }
-  .login-card { background: white; border-radius: 20px; padding: 48px 40px; width: 400px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; }
-  .login-card h1 { font-size: 24px; font-weight: 800; color: #1B2A4A; margin-bottom: 4px; }
-  .login-card h1 span { color: #0D9373; }
-  .login-card .login-subtitle { font-size: 13px; color: #6B7280; margin-bottom: 32px; }
-  .login-card .login-field { text-align: left; margin-bottom: 20px; }
-  .login-card .login-field label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .login-card .login-field input { width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; color: #1B2A4A; transition: border-color 0.2s; }
-  .login-card .login-field input:focus { outline: none; border-color: #0D9373; box-shadow: 0 0 0 3px rgba(13,147,115,0.1); }
-  .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #0D9373, #0B7A60); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; margin-top: 8px; }
-  .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,147,115,0.3); }
-  .login-error { color: #EF4444; font-size: 13px; margin-top: 12px; }
-  .login-logo { width: 64px; height: 64px; background: linear-gradient(135deg, #1B2A4A, #0D9373); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; color: white; }
-
-  /* Media Embed Sections */
-  .media-section { margin: 28px 0; }
-  .media-section-header { font-size: 18px; font-weight: 700; color: #1B2A4A; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .media-section-header::before { content: ''; width: 3px; height: 18px; background: #0D9373; border-radius: 2px; }
-  .media-embed-container { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 12px; overflow: hidden; border: 1px solid #E5E7EB; background: #F7FAF9; }
-  .media-embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-  .media-placeholder { display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: #F7FAF9; border: 1px dashed #D1D5DB; border-radius: 12px; color: #6B7280; font-size: 14px; gap: 8px; }
-
-  /* Infographic Generator */
-  .infographic-section { margin: 28px 0; padding: 24px; background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.04)); border: 1px solid rgba(13,147,115,0.2); border-radius: 16px; }
-  .infographic-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #1B2A4A, #2d4a7a); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; box-shadow: 0 2px 12px rgba(27,42,74,0.2); }
-  .infographic-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,42,74,0.35); }
-  .infographic-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-  .infographic-preview { margin-top: 20px; border-radius: 12px; overflow: hidden; border: 1px solid #E5E7EB; }
-  .infographic-preview canvas { width: 100%; display: block; }
-  .infographic-download-btns { display: flex; gap: 10px; margin-top: 12px; }
-  .infographic-download-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: all 0.2s; }
-  .infographic-download-btn.png { background: #0D9373; color: white; }
-  .infographic-download-btn.png:hover { background: #0B7A60; }
-  .infographic-download-btn.pdf { background: #1B2A4A; color: white; }
-  .infographic-download-btn.pdf:hover { background: #243B60; }
-
-  /* Gating System Styles */
-  .gating-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; }
-  .gating-overlay-content { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; max-width: 500px; text-align: center; }
-  .gating-overlay-content h2 { font-size: 32px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
-  .gating-overlay-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
-  .requirement-checklist { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 24px 0; text-align: left; }
-  .requirement-checklist-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-size: 14px; color: var(--text-secondary); }
-  .requirement-checklist-item.completed { color: var(--green-dark); }
-  .requirement-checklist-item span:first-child { min-width: 20px; }
-  .gating-overlay-content button { background: var(--accent); color: white; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 16px; font-family: inherit; }
-  .gating-overlay-content button:hover { background: var(--accent-dark); }
-
-  /* Mastery Exam */
-  .mastery-exam { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .mastery-exam h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .mastery-exam h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .mastery-progress { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 16px 0; }
-  .mastery-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transition: width 0.3s ease; }
-  .mastery-exam .quiz-option, .mastery-exam .quiz-question { margin-bottom: 12px; }
-
-  /* Notebook Section */
-  .notebook-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .notebook-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .notebook-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .notebook-prompt { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 16px; border-radius: 8px; margin-bottom: 16px; font-style: italic; color: var(--text-secondary); }
-  .notebook-textarea { width: 100%; min-height: 120px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 14px; font-family: inherit; color: var(--text-primary); resize: vertical; }
-  .notebook-textarea:focus { outline: none; border-color: var(--accent); }
-  .notebook-entry { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; }
-  .notebook-entry-date { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
-  .notebook-entry-content { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-
-  /* Simulation Section */
-  .simulation-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .simulation-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .simulation-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .simulation-exercise-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; cursor: pointer; transition: all 0.2s; }
-  .simulation-exercise-card:hover { border-color: var(--accent); background: rgba(13,147,115,0.03); }
-  .simulation-exercise-card h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
-  .simulation-exercise-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-  .exercise-badge { display: inline-block; background: rgba(13,147,115,0.12); color: var(--accent); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; }
-  .exercise-form { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; }
-
-  /* Strategy Section */
-  .strategy-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .strategy-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .strategy-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .strategy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; }
-  .strategy-card h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-  .strategy-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; }
-  .set-calculator { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 10px; padding: 20px; margin: 16px 0; }
-  .set-calculator .form-group { margin-bottom: 12px; }
-  .set-calculator .form-group label { font-size: 12px; font-weight: 600; }
-  .set-calculator .form-group input { padding: 10px 12px; font-size: 13px; }
-  .calculator-output { background: white; border-left: 3px solid var(--green); padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
-
-  /* Video Discovery */
-  .video-discovery { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .video-discovery h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .video-discovery h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
-  .video-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: all 0.2s; }
-  .video-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .video-card:hover .play-overlay { opacity: 1 !important; }
-  .video-thumbnail { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--navy), #243B60); display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative; }
-  .video-info { padding: 12px; }
-  .video-info h4 { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .video-info p { font-size: 11px; color: var(--text-muted); }
-
-  /* Onboarding Section */
-  .onboarding-section { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .onboarding-section h3 { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 24px; text-align: center; }
-  .onboarding-progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 32px; }
-  .onboarding-progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transition: width 0.3s ease; }
-  .onboarding-step { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-  .onboarding-step input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
-  .onboarding-step-content h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .onboarding-step-content p { font-size: 13px; color: var(--text-secondary); }
-
-  /* Locked Module State */
-  .locked-module { opacity: 0.6; pointer-events: none; }
-  .locked-module-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); border-radius: 14px; }
-  .locked-module-overlay span { color: white; font-size: 32px; }
-
-  /* Collapsible Section */
-  .collapsible-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 16px 0; }
-  .collapsible-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: var(--bg-card); transition: all 0.2s; }
-  .collapsible-header:hover { background: var(--bg-hover); }
-  .collapsible-header h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin: 0; display: flex; align-items: center; gap: 8px; }
-  .collapsible-header h3::before { content: ''; width: 3px; height: 16px; background: var(--accent); border-radius: 2px; }
-  .collapsible-toggle { font-size: 14px; color: var(--text-muted); transition: transform 0.2s; }
-  .collapsible-toggle.open { transform: rotate(180deg); }
-  .collapsible-content { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
-  .collapsible-content.open { padding: 20px; max-height: 10000px; }
 </style>
 </head>
 <body>
@@ -357,7 +265,7 @@ const DEFAULT_MODULES = [
     title: 'Mindset, Financial Reality & The Chasm of Fear',
     subtitle: 'Build the psychology and habits that separate the top 5% of traders from everyone else.',
     sections: [
-      { title: 'Financial Reality Check', content: 'Many people never achieve their financial goals because they think and act like reactive, emotional retail traders. To measure your progress, reference Fidelity\'s age-based retirement benchmarks. These milestones provide a clear reality check on where you stand and where you need to be.', type: 'text' },
+      { title: 'Financial Reality Check', content: 'Many people never achieve their financial goals because they think and act like reactive, emotional retail traders. To measure your progress, reference Fidelity\'s age-based retirement benchmarks. These milestones provide a clear reality check on where you stand and where you need to be.', type: 'text', media: { youtubeUrl: 'https://youtu.be/wtRohcO3v-o', audioUrl: '' } },
       { title: 'Fidelity Retirement Benchmarks', type: 'stats', stats: [
         { num: '1x', lbl: 'Salary by Age 30' },
         { num: '3x', lbl: 'Salary by Age 40' },
@@ -365,9 +273,9 @@ const DEFAULT_MODULES = [
         { num: '8x', lbl: 'Salary by Age 60' },
         { num: '10x', lbl: 'Salary by Age 67' }
       ]},
-      { title: 'The Chasm of Fear', content: 'The ultimate determinant of success is mindset. 95% of people never reach the top 5% because attitudes, biases, beliefs, and fear hold them back. Crossing the "chasm of fear" requires three critical traits:\n\nFaith — Belief in your system and in yourself. Without faith, you\'ll second-guess every trade and abandon your plan at the worst moment.\n\nNo Fear — Achieved through strict risk management. When you know your downside is capped at 1%, fear loses its grip.\n\nCourage — Taking bold, decisive steps toward your goals. Courage isn\'t the absence of fear — it\'s acting despite it.', type: 'text' },
-      { title: 'The Five Pillars of Success', content: 'Every successful trader follows these five pillars:\n\n1. Stack the odds in your favor — Use strategies backed by data and history, not gut feelings.\n2. Follow rules — Rules protect you from emotional mistakes that destroy accounts.\n3. Be disciplined — Consistency beats intensity every single time.\n4. Be coachable — Learn from others with proven results and be willing to adapt.\n5. Be decisive — Success requires taking action, not endless analysis paralysis.', type: 'text' },
-      { title: 'The Structural Advantage of Starting Small', content: '"It is a huge structural advantage to not have a lot of money." Smaller accounts offer more agility — you can enter and exit positions quicker and pursue high-growth opportunities that large funds cannot.\n\nThe S&P 500 returns ~10% annually long-term. Berkshire Hathaway compounds at ~20%. The difference? Over 30 years, $10,000 at 10% becomes $174,000. At 20%, it becomes $2.37 million. Even a small increase in your annual compounding rate creates a massive long-term difference.', type: 'text' },
+      { title: 'The Chasm of Fear', content: 'The ultimate determinant of success is mindset. 95% of people never reach the top 5% because attitudes, biases, beliefs, and fear hold them back. Crossing the "chasm of fear" requires three critical traits:\n\nFaith — Belief in your system and in yourself. Without faith, you\'ll second-guess every trade and abandon your plan at the worst moment.\n\nNo Fear — Achieved through strict risk management. When you know your downside is capped at 1%, fear loses its grip.\n\nCourage — Taking bold, decisive steps toward your goals. Courage isn\'t the absence of fear — it\'s acting despite it.', type: 'text', media: { youtubeUrl: 'https://youtu.be/G-oED7TtHU4', audioUrl: '' } },
+      { title: 'The Five Pillars of Success', content: 'Every successful trader follows these five pillars:\n\n1. Stack the odds in your favor — Use strategies backed by data and history, not gut feelings.\n2. Follow rules — Rules protect you from emotional mistakes that destroy accounts.\n3. Be disciplined — Consistency beats intensity every single time.\n4. Be coachable — Learn from others with proven results and be willing to adapt.\n5. Be decisive — Success requires taking action, not endless analysis paralysis.', type: 'text', media: { youtubeUrl: 'https://youtu.be/7EGGMPBIYjA', audioUrl: '' } },
+      { title: 'The Structural Advantage of Starting Small', content: '"It is a huge structural advantage to not have a lot of money." Smaller accounts offer more agility — you can enter and exit positions quicker and pursue high-growth opportunities that large funds cannot.\n\nThe S&P 500 returns ~10% annually long-term. Berkshire Hathaway compounds at ~20%. The difference? Over 30 years, $10,000 at 10% becomes $174,000. At 20%, it becomes $2.37 million. Even a small increase in your annual compounding rate creates a massive long-term difference.', type: 'text', media: { youtubeUrl: 'https://youtu.be/lNyCNJ_oqGU', audioUrl: '' } },
       { title: 'Visual Resources', type: 'resources', resources: [
         { icon: 'learn', title: 'Fidelity: Average Retirement Savings by Age', desc: 'Official benchmarks showing retirement savings goals with interactive calculators.', url: 'https://www.fidelity.com/learning-center/personal-finance/average-retirement-savings' },
         { icon: 'chart', title: 'Schwab: Benefits of Compound Growth', desc: 'Interactive compound interest calculator showing exponential growth over time.', url: 'https://www.schwabmoneywise.com/essentials/benefits-of-compound-growth' },
@@ -575,88 +483,6 @@ const DEFAULT_MODULES = [
 ];
 
 // =============================================================================
-// MODULE MEDIA MAPPING (YouTube videos and Heyzine flipbooks)
-// =============================================================================
-
-const MODULE_MEDIA = {
-  m1: {
-    youtube: 'https://youtu.be/Zs6foGLhyT4',
-    flipbook: 'https://heyzine.com/flip-book/6eedbdd39c.html',
-    slideDeck: 'https://heyzine.com/flip-book/b594bf7fc7.html'
-  },
-  m2: {
-    youtube: 'https://youtu.be/UEDXefl88WI',
-    flipbook: 'https://heyzine.com/flip-book/b4fb4bc178.html',
-    slideDeck: 'https://heyzine.com/flip-book/8ea14a9276.html'
-  },
-  m3: {
-    youtube: 'https://youtu.be/wa7qzaJeKs8',
-    flipbook: 'https://heyzine.com/flip-book/7660ee5c0d.html',
-    slideDeck: 'https://heyzine.com/flip-book/6c34ad3b0a.html'
-  },
-  m4: {
-    youtube: 'https://youtu.be/kmmfk8edWAE',
-    flipbook: 'https://heyzine.com/flip-book/e9b0419d8b.html',
-    slideDeck: 'https://heyzine.com/flip-book/69fd47205c.html'
-  },
-  m5: {
-    youtube: 'https://youtu.be/7S1FfEAwA4Y',
-    flipbook: 'https://heyzine.com/flip-book/1fb074ad95.html',
-    slideDeck: 'https://heyzine.com/flip-book/b7dedbcd0f.html'
-  },
-  m6: {
-    youtube: 'https://youtu.be/xO1izk4B8V4',
-    flipbook: 'https://heyzine.com/flip-book/80a8903e68.html',
-    slideDeck: 'https://heyzine.com/flip-book/a7f265085a.html'
-  },
-  m7: {
-    youtube: 'https://youtu.be/ah5YvTY51e0',
-    flipbook: 'https://heyzine.com/flip-book/c88aed78a6.html',
-    slideDeck: 'https://heyzine.com/flip-book/95c2572302.html'
-  },
-  m8: {
-    youtube: 'https://youtu.be/3uKJ5kqOTDk',
-    flipbook: 'https://heyzine.com/flip-book/e41ec0238f.html',
-    slideDeck: 'https://heyzine.com/flip-book/2f96d2dc84.html'
-  },
-  m9: {
-    youtube: 'https://youtu.be/WHWD75diNQI',
-    flipbook: 'https://heyzine.com/flip-book/594bf16903.html',
-    slideDeck: 'https://heyzine.com/flip-book/f096587f0b.html'
-  },
-  m10: {
-    youtube: 'https://youtu.be/JdPfJ1JWHoY',
-    flipbook: 'https://heyzine.com/flip-book/9bdf3068d2.html',
-    slideDeck: 'https://heyzine.com/flip-book/0e8e8d180b.html'
-  },
-  m11: {
-    youtube: 'https://youtu.be/xPE7K26GhWQ',
-    flipbook: 'https://heyzine.com/flip-book/dc2d1feb17.html',
-    slideDeck: 'https://heyzine.com/flip-book/eeca42c650.html'
-  },
-  m12: {
-    youtube: 'https://youtu.be/_QNiPHaSD8g',
-    flipbook: 'https://heyzine.com/flip-book/6bf4f8e10e.html',
-    slideDeck: 'https://heyzine.com/flip-book/0242255e2a.html'
-  },
-  m13: {
-    youtube: 'https://youtu.be/YtSlg7mjdfM',
-    flipbook: 'https://heyzine.com/flip-book/02005127c4.html',
-    slideDeck: 'https://heyzine.com/flip-book/eab48e2edf.html'
-  },
-  m14: {
-    youtube: null,
-    flipbook: 'https://heyzine.com/flip-book/6d6342ea71.html',
-    slideDeck: 'https://heyzine.com/flip-book/901f9ecb7d.html'
-  },
-  m15: {
-    youtube: null,
-    flipbook: 'https://heyzine.com/flip-book/537da95fab.html',
-    slideDeck: 'https://heyzine.com/flip-book/6794b3023f.html'
-  }
-};
-
-// =============================================================================
 // API LAYER — Falls back to local data when backend is unavailable
 // =============================================================================
 
@@ -733,26 +559,163 @@ function ToastContainer({ toasts }) {
 }
 
 // =============================================================================
-// AI VISUAL COMPONENT
+// IMAGE LIGHTBOX — Dedicated expanded image detail view
 // =============================================================================
 
-function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionContent, refreshKey }) {
+function ImageLightbox({ imageUrl, sectionTitle, moduleTitle, onClose }) {
+  useEffect(() => {
+    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${sectionTitle.replace(/[^a-zA-Z0-9]/g, '_')}_visual.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download failed:', err);
+    }
+  };
+
+  return (
+    <div className="image-lightbox-overlay" onClick={onClose}>
+      <div className="image-lightbox" onClick={e => e.stopPropagation()}>
+        <button className="image-lightbox-close" onClick={onClose}>✕</button>
+        <div className="image-lightbox-header">
+          <h3>{sectionTitle}</h3>
+          <span className="badge">{moduleTitle}</span>
+        </div>
+        <img src={imageUrl} alt={`AI visual for ${sectionTitle}`} />
+        <div className="image-lightbox-actions">
+          <button className="primary" onClick={handleDownload}>⤓ Download Image</button>
+          <button onClick={onClose}>← Back to Module</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// SUBSECTION VIDEO — Reusable YouTube embed per subsection
+// =============================================================================
+
+function SubsectionVideo({ youtubeUrl, sectionTitle }) {
+  if (!youtubeUrl) {
+    return (
+      <div className="subsection-video">
+        <div className="subsection-video-header">
+          <span style={{fontSize: 16}}>🎬</span>
+          <span className="label">Video Explainer</span>
+        </div>
+        <div className="subsection-video-placeholder">
+          <div className="icon">📹</div>
+          <p>Video explainer coming soon for this section.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Convert youtu.be and youtube.com URLs to embed format
+  let embedUrl = youtubeUrl;
+  if (youtubeUrl.includes('youtu.be/')) {
+    const videoId = youtubeUrl.split('youtu.be/')[1].split(/[?&#]/)[0];
+    embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  } else if (youtubeUrl.includes('youtube.com/watch')) {
+    const urlObj = new URL(youtubeUrl);
+    const videoId = urlObj.searchParams.get('v');
+    if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  }
+
+  return (
+    <div className="subsection-video">
+      <div className="subsection-video-header">
+        <span style={{fontSize: 16}}>🎬</span>
+        <span className="label">Video Explainer</span>
+        <span style={{fontSize: 12, color: 'var(--text-muted)', marginLeft: 'auto'}}>{sectionTitle}</span>
+      </div>
+      <div className="subsection-video-embed">
+        <iframe
+          src={embedUrl}
+          title={`Video: ${sectionTitle}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// SUBSECTION AUDIO — Reusable podcast/audio section per subsection
+// =============================================================================
+
+function SubsectionAudio({ audioUrl, sectionTitle }) {
+  if (!audioUrl) {
+    return (
+      <div className="subsection-audio">
+        <div className="subsection-audio-header">
+          <span style={{fontSize: 16}}>🎧</span>
+          <span className="label">Audio Lesson</span>
+        </div>
+        <div className="subsection-audio-placeholder">
+          <div className="icon">🎙</div>
+          <p>Audio podcast for this section coming soon. Check back for narrated walkthroughs and expert commentary.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="subsection-audio">
+      <div className="subsection-audio-header">
+        <span style={{fontSize: 16}}>🎧</span>
+        <span className="label">Audio Lesson</span>
+        <span style={{fontSize: 12, color: 'var(--text-muted)', marginLeft: 'auto'}}>{sectionTitle}</span>
+      </div>
+      <div className="subsection-audio-body">
+        <audio controls preload="metadata" src={audioUrl}>
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// AI VISUAL COMPONENT — Updated with click-to-expand and download
+// =============================================================================
+
+function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionContent }) {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [checked, setChecked] = useState(false);
+  const [showLightbox, setShowLightbox] = useState(false);
 
-  // Check if a cached image exists on mount AND whenever refreshKey changes (after Generate All)
+  // Check if a cached image exists on mount
   useEffect(() => {
-    fetch('/api/generate-visual', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle, cacheOnly: true })
-    }).then(r => r.json()).then(data => {
-      if (data.success && data.cached) {
-        setImageUrl(data.imageUrl + '?t=' + Date.now());
-      }
-    }).catch(() => {});
-  }, [moduleId, sectionIndex, refreshKey]);
+    if (!checked) {
+      setChecked(true);
+      fetch('/api/generate-visual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle })
+      }).then(r => r.json()).then(data => {
+        if (data.success && data.cached) {
+          setImageUrl(data.imageUrl + '?t=' + Date.now());
+        }
+      }).catch(() => {});
+    }
+  }, [moduleId, sectionIndex]);
 
   const generate = async (regenerate = false) => {
     setLoading(true);
@@ -776,6 +739,24 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
     setLoading(false);
   };
 
+  const handleDownload = async () => {
+    if (!imageUrl) return;
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${sectionTitle.replace(/[^a-zA-Z0-9]/g, '_')}_visual.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download failed:', err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="ai-visual-container">
@@ -789,13 +770,30 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
 
   if (imageUrl) {
     return (
-      <div className="ai-visual-container">
-        <img className="ai-visual-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} />
-        <div className="ai-visual-actions">
-          <button className="ai-visual-btn regenerate" onClick={() => generate(true)}>↻ Regenerate</button>
-          <a href={imageUrl} download={`ai-visual-${sectionTitle.replace(/\s+/g,'-').toLowerCase()}.png`} className="ai-visual-btn" style={{textDecoration:'none',background:'var(--accent)',fontSize:12,padding:'8px 16px'}}>⬇ Download</a>
+      <React.Fragment>
+        <div className="ai-visual-container">
+          <img
+            className="ai-visual-img"
+            src={imageUrl}
+            alt={`AI visual for ${sectionTitle}`}
+            title="Click to expand image"
+            onClick={() => setShowLightbox(true)}
+          />
+          <div className="ai-visual-actions">
+            <button className="ai-visual-btn regenerate" onClick={() => generate(true)}>↻ Regenerate</button>
+            <button className="ai-visual-btn download" onClick={handleDownload}>⤓ Download</button>
+            <button className="ai-visual-btn" onClick={() => setShowLightbox(true)} style={{marginLeft:'auto'}}>⛶ Expand</button>
+          </div>
         </div>
-      </div>
+        {showLightbox && (
+          <ImageLightbox
+            imageUrl={imageUrl}
+            sectionTitle={sectionTitle}
+            moduleTitle={moduleTitle}
+            onClose={() => setShowLightbox(false)}
+          />
+        )}
+      </React.Fragment>
     );
   }
 
@@ -805,323 +803,6 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
         ✦ Generate AI Visual
       </button>
       {error && <div className="ai-visual-error">{error}</div>}
-    </div>
-  );
-}
-
-// =============================================================================
-// LOGIN SCREEN COMPONENT
-// =============================================================================
-
-function LoginScreen({ onLogin }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = async () => {
-    setError('');
-    setLoading(true);
-    try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await res.json();
-      if (data.success) {
-        onLogin(data.token);
-      } else {
-        setError('Invalid username or password');
-      }
-    } catch (err) {
-      setError('Login failed. Please try again.');
-    }
-    setLoading(false);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') handleLogin();
-  };
-
-  return (
-    <div className="login-screen">
-      <div className="login-card">
-        <div className="login-logo">📊</div>
-        <h1>IMPACT <span>TRADING</span> ACADEMY</h1>
-        <p className="login-subtitle">Powered by Mission Metrics</p>
-
-        <div className="login-field">
-          <label>Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter username"
-          />
-        </div>
-
-        <div className="login-field">
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter password"
-          />
-        </div>
-
-        <button className="login-btn" onClick={handleLogin} disabled={loading}>
-          {loading ? 'Logging in...' : 'Login to Academy'}
-        </button>
-
-        {error && <div className="login-error">{error}</div>}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// FLIPBOOK EMBED COMPONENT
-// =============================================================================
-
-function FlipbookEmbed({ moduleId }) {
-  const media = MODULE_MEDIA[moduleId];
-  const flipbookUrl = media?.flipbook;
-
-  if (!flipbookUrl) {
-    return (
-      <div className="media-section">
-        <div className="media-section-header">📖 Interactive Flipbook</div>
-        <div className="media-placeholder">
-          Flipbook coming soon for this module
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="media-section">
-      <div className="media-section-header">📖 Interactive Flipbook</div>
-      <div className="media-embed-container">
-        <iframe
-          src={flipbookUrl}
-          allow="fullscreen"
-          title={`Flipbook for ${moduleId}`}
-        />
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// SLIDE DECK EMBED COMPONENT
-// =============================================================================
-
-function SlideDeckEmbed({ moduleId }) {
-  const media = MODULE_MEDIA[moduleId];
-  const slideDeckUrl = media?.slideDeck;
-
-  if (!slideDeckUrl) {
-    return null;
-  }
-
-  return (
-    <div className="media-section">
-      <div className="media-section-header">📊 Slide Deck</div>
-      <div className="media-embed-container">
-        <iframe
-          src={slideDeckUrl}
-          allow="fullscreen"
-          title={`Slide Deck for ${moduleId}`}
-        />
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// YOUTUBE EMBED COMPONENT
-// =============================================================================
-
-function YouTubeEmbed({ moduleId }) {
-  const media = MODULE_MEDIA[moduleId];
-  const youtubeUrl = media?.youtube;
-
-  if (!youtubeUrl) {
-    return (
-      <div className="media-section">
-        <div className="media-section-header">🎥 Video Lesson</div>
-        <div className="media-placeholder">
-          Video lesson coming soon for this module
-        </div>
-      </div>
-    );
-  }
-
-  // Extract video ID from YouTube URL
-  const getYoutubeId = (url) => {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-    return match ? match[1] : null;
-  };
-
-  const videoId = getYoutubeId(youtubeUrl);
-  if (!videoId) {
-    return (
-      <div className="media-section">
-        <div className="media-section-header">🎥 Video Lesson</div>
-        <div className="media-placeholder">
-          Invalid video URL
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="media-section">
-      <div className="media-section-header">🎥 Video Lesson</div>
-      <div className="media-embed-container">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={`Video lesson for ${moduleId}`}
-        />
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// INFOGRAPHIC GENERATOR COMPONENT
-// =============================================================================
-
-function InfographicGenerator({ module }) {
-  const [imageUrl, setImageUrl] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [checked, setChecked] = useState(false);
-
-  // Check for cached infographic on mount
-  useEffect(() => {
-    if (!checked) {
-      setChecked(true);
-      fetch('/api/generate-infographic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId: module.id, cacheOnly: true })
-      }).then(r => r.json()).then(data => {
-        if (data.success && data.cached) {
-          setImageUrl(data.imageUrl + '?t=' + Date.now());
-        }
-      }).catch(() => {});
-    }
-  }, [module.id]);
-
-  const generateInfographic = async (regenerate = false) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const endpoint = regenerate ? '/api/regenerate-infographic' : '/api/generate-infographic';
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId: module.id })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setImageUrl(data.imageUrl + '?t=' + Date.now());
-      } else {
-        setError(data.error || 'Failed to generate infographic');
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-    setLoading(false);
-  };
-
-  const downloadPNG = async () => {
-    if (!imageUrl) return;
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${module.title.replace(/\s+/g, '-')}-infographic.png`;
-      link.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Error downloading PNG:', err);
-    }
-  };
-
-  const downloadPDF = async () => {
-    if (!imageUrl) return;
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const imgData = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1920, 1080] });
-      pdf.addImage(imgData, 'PNG', 0, 0, 1920, 1080);
-      pdf.save(`${module.title.replace(/\s+/g, '-')}-infographic.pdf`);
-    } catch (err) {
-      console.error('Error downloading PDF:', err);
-    }
-  };
-
-  return (
-    <div className="infographic-section">
-      <h3 style={{fontSize: '18px', fontWeight: 700, color: '#1B2A4A', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'}}>
-        <span style={{width: '3px', height: '18px', background: '#0D9373', borderRadius: '2px'}} />
-        📊 AI Module Infographic
-      </h3>
-      <p style={{fontSize: '13px', color: '#6B7280', marginBottom: '16px', lineHeight: 1.6}}>
-        Generate a professional landscape infographic for this module using AI (Gemini 2.5 Flash). The infographic includes key concepts, statistics, and visual diagrams tailored to this module's content.
-      </p>
-
-      {loading && (
-        <div className="ai-visual-loading" style={{borderRadius: 12}}>
-          <div className="spinner" />
-          <p>Generating AI infographic for "{module.title}"... This may take a moment.</p>
-        </div>
-      )}
-
-      {!loading && !imageUrl && (
-        <div>
-          <button className="infographic-btn" onClick={() => generateInfographic(false)} disabled={loading}>
-            ✦ Generate AI Infographic
-          </button>
-          {error && <div className="ai-visual-error" style={{marginTop: 12}}>{error}</div>}
-        </div>
-      )}
-
-      {!loading && imageUrl && (
-        <div>
-          <div className="infographic-preview">
-            <img src={imageUrl} alt={`AI infographic for ${module.title}`} style={{width: '100%', display: 'block'}} />
-          </div>
-          <div className="infographic-download-btns">
-            <button className="infographic-download-btn png" onClick={downloadPNG}>
-              📥 Download PNG
-            </button>
-            <button className="infographic-download-btn pdf" onClick={downloadPDF}>
-              📥 Download PDF
-            </button>
-            <button className="ai-visual-btn regenerate" onClick={() => generateInfographic(true)} style={{marginLeft: 8}}>
-              ↻ Regenerate
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -1142,28 +823,11 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [toasts, setToasts] = useState([]);
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
-  const [masteryExamState, setMasteryExamState] = useState({});
-  const [notebookComplete, setNotebookComplete] = useState({});
-  const [simulationProgress, setSimulationProgress] = useState({});
 
   const addToast = (message, type = 'info') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
-  };
-
-  // Gating logic: all modules unlocked (gating disabled)
-  const isModuleUnlocked = (moduleId) => {
-    return true;
-  };
-
-  const getModuleRequirements = (prevModuleId) => {
-    return {
-      quizPassed: (masteryExamState[prevModuleId]?.passed) || completedModules[prevModuleId] || false,
-      notebookEntry: notebookComplete[prevModuleId] || false,
-      exercisesComplete: true
-    };
   };
 
   // Load data from backend on mount
@@ -1174,13 +838,6 @@ function App() {
         setModules(mods);
         setCompletedModules(prog.completedModules || {});
         setQuizState(prog.quizState || {});
-        try {
-          const onRes = await fetch('/api/onboarding');
-          if (onRes.ok) {
-            const onData = await onRes.json();
-            setOnboardingComplete(onData.isComplete || false);
-          }
-        } catch (e) {}
       } catch (err) {
         addToast('Failed to load data: ' + err.message, 'error');
       }
@@ -1205,12 +862,7 @@ function App() {
   }, [modules, completedModules]);
 
   const currentModule = modules.find(m => m.id === currentModuleId);
-  const openModule = (id) => {
-    setCurrentModuleId(id);
-    setCurrentView('module');
-    window.scrollTo(0, 0);
-    document.querySelector('.main-content')?.scrollTo(0, 0);
-  };
+  const openModule = (id) => { setCurrentModuleId(id); setCurrentView('module'); };
   const goToDashboard = () => { setCurrentView('dashboard'); setCurrentModuleId(null); };
   const completeModule = (id) => setCompletedModules(prev => ({...prev, [id]: true}));
 
@@ -1262,18 +914,11 @@ function App() {
         <div className="nav-section">
           <div className="nav-label">Training Modules</div>
           {modules.map((m, i) => (
-              <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''}`} onClick={() => openModule(m.id)}>
-                <div className="nav-dot" />
-                <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}</span>
-              </div>
+            <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''}`} onClick={() => openModule(m.id)}>
+              <div className="nav-dot" />
+              <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}</span>
+            </div>
           ))}
-        </div>
-        <div style={{padding:'12px 20px',borderTop:'1px solid var(--border)'}}>
-          <div className="nav-label">Tools</div>
-          <a href="/options-backtester.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            📊 Options Backtester
-          </a>
         </div>
         <div className="progress-bar-container">
           <div className="progress-label"><span>Overall Progress</span><span>{progress}%</span></div>
@@ -1285,13 +930,12 @@ function App() {
           <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>{sidebarOpen ? '◀' : '▶'} Menu</button>
           <div className="header-actions">
             <button onClick={goToDashboard}>◈ Dashboard</button>
-            <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
             <button onClick={() => setShowSettings(true)}>⚙ Settings</button>
             <button className="primary" onClick={openAdminNew}>+ Add Module</button>
           </div>
         </div>
         <div className="content-body">
-          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} onboardingComplete={onboardingComplete} isModuleUnlocked={isModuleUnlocked} />}
+          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} />}
           {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={() => openAdminEdit(currentModule)} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
         </div>
       </div>
@@ -1303,733 +947,11 @@ function App() {
 }
 
 // =============================================================================
-// GATING OVERLAY COMPONENT
-// =============================================================================
-
-function GatingOverlay({ previousModuleTitle, requirements }) {
-  return (
-    <div className="gating-overlay">
-      <div className="gating-overlay-content">
-        <h2>🔒 Module Locked</h2>
-        <p>Complete <strong>{previousModuleTitle}</strong> first to unlock this module</p>
-        <div className="requirement-checklist">
-          <div className={`requirement-checklist-item ${requirements.quizPassed ? 'completed' : ''}`}>
-            <span>{requirements.quizPassed ? '☑' : '☐'}</span>
-            <span>Quiz Passed (50%+)</span>
-          </div>
-          <div className={`requirement-checklist-item ${requirements.notebookEntry ? 'completed' : ''}`}>
-            <span>{requirements.notebookEntry ? '☑' : '☐'}</span>
-            <span>Notebook Entry Submitted</span>
-          </div>
-          <div className={`requirement-checklist-item ${requirements.exercisesComplete ? 'completed' : ''}`}>
-            <span>{requirements.exercisesComplete ? '☑' : '☐'}</span>
-            <span>Required Exercises Complete</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// WEBULL ONBOARDING COMPONENT
-// =============================================================================
-
-function WebullOnboarding({ onComplete }) {
-  const [status, setStatus] = useState({
-    accountCreated: false,
-    paperTradingEnabled: false,
-    platformFamiliarized: false,
-    firstTradeExecuted: false,
-    watchlistCreated: false
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch('/api/onboarding');
-        if (res.ok) {
-          const data = await res.json();
-          setStatus({
-            accountCreated: data.accountCreated || false,
-            paperTradingEnabled: data.paperTradingEnabled || false,
-            platformFamiliarized: data.platformFamiliarized || false,
-            firstTradeExecuted: data.firstTradeExecuted || false,
-            watchlistCreated: data.watchlistCreated || false
-          });
-        }
-      } catch (e) {}
-    }
-    load();
-  }, []);
-
-  const toggleStep = async (step) => {
-    const newStatus = { ...status, [step]: !status[step] };
-    setStatus(newStatus);
-    try {
-      await fetch('/api/onboarding', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newStatus)
-      });
-    } catch (e) {}
-    if (Object.values(newStatus).every(Boolean)) {
-      onComplete();
-    }
-  };
-
-  const steps = [
-    { key: 'accountCreated', title: 'Create Webull Account', desc: 'Sign up for a free Webull trading account' },
-    { key: 'paperTradingEnabled', title: 'Enable Paper Trading', desc: 'Activate paper trading mode (virtual money)' },
-    { key: 'platformFamiliarized', title: 'Learn the Platform', desc: 'Explore Webull interface and charting tools' },
-    { key: 'firstTradeExecuted', title: 'Execute First Paper Trade', desc: 'Place your first paper trade (long or short)' },
-    { key: 'watchlistCreated', title: 'Create a Watchlist', desc: 'Build a watchlist of stocks to monitor' }
-  ];
-
-  const completedCount = Object.values(status).filter(Boolean).length;
-  const progress = (completedCount / steps.length) * 100;
-
-  return (
-    <div className="onboarding-section">
-      <h3>🚀 Webull Account Setup</h3>
-      <div className="onboarding-progress-bar">
-        <div className="onboarding-progress-bar-fill" style={{ width: `${progress}%` }} />
-      </div>
-      {steps.map(step => (
-        <div key={step.key} className="onboarding-step">
-          <input
-            type="checkbox"
-            checked={status[step.key]}
-            onChange={() => toggleStep(step.key)}
-          />
-          <div className="onboarding-step-content">
-            <h4>{step.title}</h4>
-            <p>{step.desc}</p>
-          </div>
-        </div>
-      ))}
-      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, textAlign: 'center' }}>
-        {completedCount} of {steps.length} completed
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// MASTERY EXAM COMPONENT
-// =============================================================================
-
-function MasteryExam({ moduleId, moduleTitle, onPass }) {
-  const [quiz, setQuiz] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [submitted, setSubmitted] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [generated, setGenerated] = useState(false);
-
-  const QUESTIONS_PER_PAGE = 5;
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/quizzes/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setQuiz(data.questions || []);
-          setGenerated(data.questions?.length > 0);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const generateQuiz = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/quizzes/generate/${moduleId}`, { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setQuiz(data.questions || []);
-        setGenerated(true);
-      }
-    } catch (e) {}
-    setLoading(false);
-  };
-
-  if (!generated) {
-    return (
-      <div className="mastery-exam">
-        <h3>🎓 Mastery Exam (70 Questions)</h3>
-        <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '12px 0' }}>
-          Master this module by passing a 70-question exam with a score of 50/70 (71%). This ensures deep understanding before moving forward.
-        </p>
-        <button className="quiz-btn" onClick={generateQuiz} disabled={loading}>
-          {loading ? '⟳ Generating...' : '✦ Generate Quiz'}
-        </button>
-      </div>
-    );
-  }
-
-  const currentQuestions = quiz.slice(currentPage * QUESTIONS_PER_PAGE, (currentPage + 1) * QUESTIONS_PER_PAGE);
-  const allAnswered = Object.keys(submitted).length === quiz.length;
-  const correctCount = Object.values(submitted).filter(Boolean).length;
-  const passed = correctCount >= Math.ceil(quiz.length * 0.71);
-
-  const selectAnswer = (questionId, optionIndex) => {
-    if (!submitted[questionId]) {
-      setAnswers(prev => ({ ...prev, [questionId]: optionIndex }));
-    }
-  };
-
-  const submitAnswer = (questionId, question) => {
-    const selectedOption = answers[questionId];
-    const isCorrect = selectedOption === question.correct;
-    setSubmitted(prev => ({ ...prev, [questionId]: isCorrect }));
-  };
-
-  const handleSubmit = () => {
-    if (passed && onPass) {
-      onPass(correctCount);
-    }
-  };
-
-  return (
-    <div className="mastery-exam">
-      <h3>🎓 Mastery Exam (70 Questions)</h3>
-      {!allAnswered && (
-        <div>
-          <div className="mastery-progress">
-            <div className="mastery-progress-fill" style={{ width: `${(Object.keys(submitted).length / quiz.length) * 100}%` }} />
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
-            Question {currentPage * QUESTIONS_PER_PAGE + 1}-{Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, quiz.length)} of {quiz.length}
-          </div>
-          {currentQuestions.map((q, idx) => {
-            const qId = currentPage * QUESTIONS_PER_PAGE + idx;
-            return (
-              <div key={qId} style={{ marginBottom: 20 }}>
-                <div className="quiz-question">{idx + 1}. {q.question}</div>
-                {q.options.map((opt, oi) => {
-                  let cls = 'quiz-option';
-                  if (submitted[qId] !== undefined) {
-                    if (oi === q.correct) cls += ' correct';
-                    else if (oi === answers[qId] && oi !== q.correct) cls += ' incorrect';
-                  } else if (answers[qId] === oi) cls += ' selected';
-                  return (
-                    <button key={oi} className={cls} onClick={() => selectAnswer(qId, oi)} disabled={submitted[qId] !== undefined}>
-                      {opt}
-                    </button>
-                  );
-                })}
-                {submitted[qId] !== undefined && (
-                  <div className={`quiz-feedback ${submitted[qId] ? 'correct' : 'incorrect'}`}>
-                    {submitted[qId] ? '✓ Correct' : '✗ Incorrect'}
-                  </div>
-                )}
-                {submitted[qId] === undefined && (
-                  <button className="quiz-btn" onClick={() => submitAnswer(qId, q)} disabled={answers[qId] === undefined}>
-                    Submit Answer
-                  </button>
-                )}
-              </div>
-            );
-          })}
-          <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-            <button className="quiz-btn" onClick={() => setCurrentPage(Math.max(0, currentPage - 1))} disabled={currentPage === 0}>
-              ← Previous
-            </button>
-            <button className="quiz-btn" onClick={() => setCurrentPage(Math.min(Math.ceil(quiz.length / QUESTIONS_PER_PAGE) - 1, currentPage + 1))} disabled={(currentPage + 1) * QUESTIONS_PER_PAGE >= quiz.length}>
-              Next →
-            </button>
-          </div>
-        </div>
-      )}
-      {allAnswered && (
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>{passed ? '🏆' : '📚'}</div>
-          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: 'var(--navy)' }}>
-            {passed ? 'Exam Passed!' : 'Keep Studying'}
-          </div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20 }}>
-            You scored {correctCount} out of {quiz.length} ({Math.round((correctCount / quiz.length) * 100)}%)
-          </div>
-          {passed && <button className="quiz-btn" onClick={handleSubmit}>✓ Mark Complete</button>}
-          {!passed && <button className="quiz-btn" style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }} onClick={() => { setCurrentPage(0); setAnswers({}); setSubmitted({}); }}>Retake Exam</button>}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// =============================================================================
-// NOTEBOOK SECTION COMPONENT
-// =============================================================================
-
-function NotebookSection({ moduleId, notebookPrompts, onEntryAdded }) {
-  const [currentPrompt, setCurrentPrompt] = useState(notebookPrompts?.[0] || '');
-  const [content, setContent] = useState('');
-  const [entries, setEntries] = useState([]);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (notebookPrompts?.length) {
-      const randomPrompt = notebookPrompts[Math.floor(Math.random() * notebookPrompts.length)];
-      setCurrentPrompt(randomPrompt);
-    }
-    async function load() {
-      try {
-        const res = await fetch(`/api/notebook/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setEntries(data.entries || []);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const saveEntry = async () => {
-    if (!content.trim()) return;
-    setSaving(true);
-    try {
-      await fetch('/api/notebook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId, content })
-      });
-      setEntries(prev => [{ date: new Date().toLocaleDateString(), content }, ...prev]);
-      setContent('');
-      onEntryAdded?.();
-    } catch (e) {}
-    setSaving(false);
-  };
-
-  return (
-    <div className="notebook-section">
-      <h3>📔 Reflection Notebook</h3>
-      <div className="notebook-prompt">"{currentPrompt}"</div>
-      <textarea
-        className="notebook-textarea"
-        placeholder="Write your reflection here..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <button className="quiz-btn" onClick={saveEntry} disabled={saving || !content.trim()} style={{ marginTop: 12 }}>
-        {saving ? 'Saving...' : '✓ Save Entry'}
-      </button>
-      {entries.length > 0 && (
-        <div style={{ marginTop: 24 }}>
-          <h4 style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)', marginBottom: 12 }}>Previous Entries</h4>
-          {entries.map((entry, idx) => (
-            <div key={idx} className="notebook-entry">
-              <div className="notebook-entry-date">{entry.date}</div>
-              <div className="notebook-entry-content">{entry.content.substring(0, 150)}...</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// =============================================================================
-// SIMULATION EXERCISES COMPONENT
-// =============================================================================
-
-const BACKTESTER_MODULES = ['m4', 'm5', 'm6', 'm7', 'm8', 'm13', 'm14'];
-const BACKTESTER_TAB_MAP = {
-  m4:  { defaultTab: 'sizer', label: 'Position Sizer (S.E.T. Rule)' },
-  m5:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
-  m6:  { defaultTab: 'chain', label: 'Live Options Chain' },
-  m7:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
-  m8:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
-  m13: { defaultTab: 'chain', label: 'Live Options Chain' },
-  m14: { defaultTab: 'chain', label: 'Live Options Chain' },
-};
-
-function SimulationExercises({ moduleId, exercises, requiredCount, onExerciseComplete }) {
-  const [expanded, setExpanded] = useState({});
-  const [formData, setFormData] = useState({});
-  const [completed, setCompleted] = useState({});
-  const [showBacktester, setShowBacktester] = useState(false);
-  const hasBacktester = BACKTESTER_MODULES.includes(moduleId);
-  const backtesterInfo = BACKTESTER_TAB_MAP[moduleId] || { defaultTab: 'backtest', label: 'Options Backtester' };
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/simulations/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          const exerciseMap = {};
-          if (data.exercises) {
-            Object.keys(data.exercises).forEach(key => {
-              if (data.exercises[key]?.completed) exerciseMap[key] = true;
-            });
-          }
-          setCompleted(exerciseMap);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const submitExercise = async (exerciseId) => {
-    try {
-      await fetch(`/api/simulations/${moduleId}/${exerciseId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData[exerciseId] || {})
-      });
-      setCompleted(prev => ({ ...prev, [exerciseId]: true }));
-      onExerciseComplete?.();
-    } catch (e) {}
-  };
-
-  const completedCount = Object.values(completed).filter(Boolean).length;
-
-  return (
-    <div className="simulation-section">
-      <h3>🎯 Simulation Exercises</h3>
-      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
-        {completedCount} of {requiredCount} required exercises completed
-      </div>
-      {exercises?.map((exercise, idx) => (
-        <div key={idx}>
-          <div className="simulation-exercise-card" onClick={() => setExpanded(prev => ({ ...prev, [idx]: !prev[idx] }))}>
-            <h4>{exercise.title}</h4>
-            <p>{exercise.description}</p>
-            <span className="exercise-badge">{exercise.type || 'Trade Simulation'}</span>
-            {completed[exercise.id] && <span className="exercise-badge" style={{ background: 'rgba(16,185,129,0.12)', color: 'var(--green-dark)', marginLeft: 8 }}>✓ Completed</span>}
-          </div>
-          {expanded[idx] && !completed[exercise.id] && (
-            <div className="exercise-form">
-              <div className="form-group">
-                <label>Entry Price</label>
-                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], entry: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Stop Loss Price</label>
-                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], stop: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Target Price</label>
-                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], target: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Trading Reasoning</label>
-                <textarea placeholder="Explain your trade logic..." rows="3" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], reasoning: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Confidence Level (1-5)</label>
-                <input type="number" min="1" max="5" placeholder="1-5" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], confidence: e.target.value } }))} />
-              </div>
-              <button className="quiz-btn" onClick={() => submitExercise(exercise.id)}>✓ Submit Exercise</button>
-            </div>
-          )}
-        </div>
-      ))}
-
-      {hasBacktester && (
-        <div style={{marginTop:'24px',borderTop:'1px solid var(--border)',paddingTop:'24px'}}>
-          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'16px'}}>
-            <div>
-              <h4 style={{fontSize:'16px',fontWeight:700,color:'var(--navy)',margin:0,display:'flex',alignItems:'center',gap:'8px'}}>
-                📊 Options Backtester — {backtesterInfo.label}
-              </h4>
-              <p style={{fontSize:'12px',color:'var(--text-muted)',margin:'4px 0 0'}}>
-                Live backtesting, position sizing, Markov regime detection & options chain data
-              </p>
-            </div>
-            <button
-              onClick={() => setShowBacktester(!showBacktester)}
-              style={{background:showBacktester?'var(--accent)':'var(--navy)',color:'#fff',border:'none',padding:'10px 20px',borderRadius:'8px',fontSize:'13px',fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',transition:'all 0.2s'}}
-            >
-              {showBacktester ? '▼ Hide Backtester' : '▶ Launch Backtester'}
-            </button>
-          </div>
-          {showBacktester && (
-            <div style={{borderRadius:'12px',overflow:'hidden',border:'2px solid var(--accent)',boxShadow:'0 4px 24px rgba(13,147,115,0.15)'}}>
-              <div style={{background:'var(--navy)',padding:'8px 16px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-                <span style={{fontSize:'12px',color:'rgba(255,255,255,0.7)'}}>Mission Metrics — Options Backtester</span>
-                <a href="/options-backtester.html" target="_blank" rel="noopener" style={{fontSize:'11px',color:'var(--accent-light)',textDecoration:'none'}}>↗ Open Full Screen</a>
-              </div>
-              <iframe
-                src={`/options-backtester.html#${backtesterInfo.defaultTab}`}
-                style={{width:'100%',height:'800px',border:'none',background:'#F0F5F3'}}
-                title="Options Backtester"
-              />
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// =============================================================================
-// STRATEGY BUILDER COMPONENT
-// =============================================================================
-
-function StrategyBuilder({ moduleId, moduleTitle }) {
-  const [strategy, setStrategy] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [calcInputs, setCalcInputs] = useState({ accountSize: 10000, entryPrice: 100, stopPrice: 98 });
-  const [calcResult, setCalcResult] = useState(null);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/strategy/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setStrategy(data.strategy);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const generateStrategy = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/strategy/generate/${moduleId}`, { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setStrategy(data.strategy);
-      }
-    } catch (e) {}
-    setLoading(false);
-  };
-
-  const calculateSET = () => {
-    const { accountSize, entryPrice, stopPrice } = calcInputs;
-    const accountRisk = accountSize * 0.01;
-    const tradeRisk = Math.abs(entryPrice - stopPrice);
-    const positionSize = accountRisk / tradeRisk;
-    const targetPrice = entryPrice + (tradeRisk * 3);
-    setCalcResult({ positionSize, accountRisk, targetPrice });
-  };
-
-  return (
-    <div className="strategy-section">
-      <h3>⚡ Strategy Builder & S.E.T. Calculator</h3>
-      {!strategy ? (
-        <button className="quiz-btn" onClick={generateStrategy} disabled={loading}>
-          {loading ? '⟳ Generating...' : '✦ Generate My Strategy'}
-        </button>
-      ) : (
-        <div>
-          <div className="strategy-card">
-            <h4>Strategy Name</h4>
-            <p>{strategy.strategyName || strategy.name || 'Custom Trading Strategy'}</p>
-          </div>
-          {(strategy.marketConditions) && (
-            <div className="strategy-card">
-              <h4>Market Conditions</h4>
-              <p>{strategy.marketConditions}</p>
-            </div>
-          )}
-          {(strategy.setupConditions) && (
-            <div className="strategy-card">
-              <h4>Setup Conditions</h4>
-              <p>{Array.isArray(strategy.setupConditions) ? strategy.setupConditions.join(', ') : strategy.setupConditions}</p>
-            </div>
-          )}
-          {(strategy.entryRules) && (
-            <div className="strategy-card">
-              <h4>Entry Rules</h4>
-              <p>{Array.isArray(strategy.entryRules) ? strategy.entryRules.join(', ') : strategy.entryRules}</p>
-            </div>
-          )}
-          {strategy.positionSizing && (
-            <div className="strategy-card">
-              <h4>Position Sizing</h4>
-              <p>{strategy.positionSizing}</p>
-            </div>
-          )}
-          {strategy.stopLossRules && (
-            <div className="strategy-card">
-              <h4>Stop Loss Rules</h4>
-              <p>{strategy.stopLossRules}</p>
-            </div>
-          )}
-          {strategy.profitTargets && (
-            <div className="strategy-card">
-              <h4>Profit Targets</h4>
-              <p>{strategy.profitTargets}</p>
-            </div>
-          )}
-          {(strategy.commonMistakes) && (
-            <div className="strategy-card">
-              <h4>Common Mistakes to Avoid</h4>
-              <p>{Array.isArray(strategy.commonMistakes) ? strategy.commonMistakes.join(', ') : strategy.commonMistakes}</p>
-            </div>
-          )}
-          <button className="quiz-btn" onClick={generateStrategy} disabled={loading} style={{ marginTop: 12 }}>
-            ↻ Regenerate Strategy
-          </button>
-        </div>
-      )}
-      <div className="set-calculator">
-        <h4 style={{ marginBottom: 12 }}>S.E.T. Calculator</h4>
-        <div className="form-group">
-          <label>Account Size ($)</label>
-          <input type="number" value={calcInputs.accountSize} onChange={(e) => setCalcInputs(prev => ({ ...prev, accountSize: parseFloat(e.target.value) }))} />
-        </div>
-        <div className="form-group">
-          <label>Entry Price ($)</label>
-          <input type="number" value={calcInputs.entryPrice} onChange={(e) => setCalcInputs(prev => ({ ...prev, entryPrice: parseFloat(e.target.value) }))} />
-        </div>
-        <div className="form-group">
-          <label>Stop Loss Price ($)</label>
-          <input type="number" value={calcInputs.stopPrice} onChange={(e) => setCalcInputs(prev => ({ ...prev, stopPrice: parseFloat(e.target.value) }))} />
-        </div>
-        <button className="quiz-btn" onClick={calculateSET}>Calculate</button>
-        {calcResult && (
-          <div className="calculator-output">
-            <div>Position Size: <strong>{calcResult.positionSize.toFixed(2)} shares</strong></div>
-            <div>Account Risk (1%): <strong>${calcResult.accountRisk.toFixed(2)}</strong></div>
-            <div>Target Price (3:1): <strong>${calcResult.targetPrice.toFixed(2)}</strong></div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// VIDEO DISCOVERY COMPONENT
-// =============================================================================
-
-function VideoDiscovery({ moduleId, fallbackVideos }) {
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`/api/youtube/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setVideos(data.videos && data.videos.length > 0 ? data.videos : []);
-        }
-      } catch (e) {
-        setError('Could not load videos');
-      }
-      setLoading(false);
-    }
-    load();
-  }, [moduleId]);
-
-  const getYoutubeId = (url) => {
-    if (!url) return null;
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-    return match ? match[1] : null;
-  };
-
-  if (loading) {
-    return (
-      <div className="video-discovery">
-        <h3>🎥 Video Tutorials & Resources</h3>
-        <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '24px', marginBottom: '8px' }}>⏳</div>
-          Loading videos from YouTube...
-        </div>
-      </div>
-    );
-  }
-
-  if (videos.length === 0) {
-    return (
-      <div className="video-discovery">
-        <h3>🎥 Video Tutorials & Resources</h3>
-        <div style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)', fontSize: '14px' }}>
-          No videos available for this module yet.
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="video-discovery">
-      <h3>🎥 Video Tutorials & Resources</h3>
-      <div className="video-grid">
-        {videos.map((video, idx) => {
-          const videoId = getYoutubeId(video.url);
-          const thumbnailUrl = video.thumbnail || (videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null);
-          return (
-            <div key={idx} className="video-card">
-              <a href={video.url || `https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div className="video-thumbnail" style={{
-                  background: thumbnailUrl ? `url(${thumbnailUrl}) center/cover` : 'linear-gradient(135deg, var(--navy), #243B60)',
-                  position: 'relative'
-                }}>
-                  {!thumbnailUrl && '▶️'}
-                  {video.duration && (
-                    <span style={{
-                      position: 'absolute', bottom: '6px', right: '6px',
-                      background: 'rgba(0,0,0,0.8)', color: '#fff', fontSize: '11px',
-                      padding: '2px 6px', borderRadius: '3px', fontWeight: '600'
-                    }}>{video.duration}</span>
-                  )}
-                  <div style={{
-                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'rgba(0,0,0,0.15)', opacity: 0, transition: 'opacity 0.2s'
-                  }} className="play-overlay">
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: '#fff', fontSize: '16px', marginLeft: '3px' }}>▶</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="video-info">
-                  <h4 style={{ lineHeight: '1.3', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {video.title || 'Video Tutorial'}
-                  </h4>
-                  <p style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {video.channel || 'YouTube'}
-                  </p>
-                </div>
-              </a>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// COLLAPSIBLE SECTION COMPONENT
-// =============================================================================
-
-function CollapsibleSection({ title, children }) {
-  const [open, setOpen] = useState(true);
-  return (
-    <div className="collapsible-section">
-      <div className="collapsible-header" onClick={() => setOpen(!open)}>
-        <h3>{title}</h3>
-        <span className={`collapsible-toggle ${open ? 'open' : ''}`}>▼</span>
-      </div>
-      <div className={`collapsible-content ${open ? 'open' : ''}`}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
 // DASHBOARD
 // =============================================================================
 
-function Dashboard({ modules, completedModules, progress, onOpen, onboardingComplete, isModuleUnlocked }) {
+function Dashboard({ modules, completedModules, progress, onOpen }) {
   const completed = Object.values(completedModules).filter(Boolean).length;
-  const showOnboarding = !onboardingComplete;
   return (
     <div>
       <div className="hero-banner">
@@ -2042,22 +964,11 @@ function Dashboard({ modules, completedModules, progress, onOpen, onboardingComp
           <div className="hero-stat"><div className="val">{modules.reduce((a,m) => a + (m.quiz?.length||0), 0)}</div><div className="desc">Quiz Questions</div></div>
         </div>
       </div>
-      {showOnboarding && (
-        <WebullOnboarding onComplete={() => { window.location.reload(); }} />
-      )}
-      <a href="/training-manual.html" target="_blank" rel="noopener noreferrer" className="resource-card" style={{marginBottom: '24px', padding: '20px 24px', background: 'linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.06))', border: '2px solid rgba(13,147,115,0.25)', borderRadius: '14px', textDecoration: 'none', color: 'inherit'}}>
-        <div className="resource-icon learn" style={{width: '52px', height: '52px', fontSize: '26px', borderRadius: '12px'}}>📘</div>
-        <div className="resource-info" style={{flex: 1}}>
-          <h4 style={{fontSize: '16px', fontWeight: 700, color: '#1B2A4A', marginBottom: '4px'}}>Impact Trading Academy — Complete Training Manual</h4>
-          <p style={{fontSize: '13px', color: '#6B7280', margin: 0}}>All 15 modules in one interactive flipbook — From Mindset &amp; Financial Reality to Advanced Options Mastery</p>
-        </div>
-        <span style={{color: '#0D9373', fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap'}}>Open Manual ↗</span>
-      </a>
       <div className="dashboard-grid">
         {modules.map((m, i) => {
           const status = completedModules[m.id] ? 'completed' : 'in-progress';
           return (
-            <div key={m.id} className="dash-card" onClick={() => onOpen(m.id)} style={{ cursor: 'pointer' }}>
+            <div key={m.id} className="dash-card" onClick={() => onOpen(m.id)}>
               <div className="dash-card-num">Module {i + 1}</div>
               <h3>{m.title}</h3>
               <p>{m.subtitle}</p>
@@ -2085,7 +996,6 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
   const allAnswered = Object.keys(mQuiz.submitted).length === quiz.length;
   const correctCount = Object.entries(mQuiz.submitted).filter(([,v]) => v).length;
   const [generatingAll, setGeneratingAll] = useState(false);
-  const [visualRefreshKey, setVisualRefreshKey] = useState(0);
 
   const selectAnswer = (qi, oi) => { if (mQuiz.submitted[qi] !== undefined) return; setQuizState(p => ({...p, [module.id]: {...mQuiz, answers: {...mQuiz.answers, [qi]: oi}}})); };
   const submitAnswer = (qi) => { const ok = mQuiz.answers[qi] === quiz[qi].correct; setQuizState(p => ({...p, [module.id]: {...mQuiz, submitted: {...mQuiz.submitted, [qi]: ok}}})); };
@@ -2097,17 +1007,14 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
     addToast('Generating visuals for all sections... This may take a minute.', 'info');
     try {
       const result = await API.generateModuleVisuals(module.id);
-      if (result && result.success) {
+      if (result.success) {
         const successCount = result.results.filter(r => r.imageUrl).length;
-        const failCount = result.results.length - successCount;
-        addToast(`Generated ${successCount} visual${successCount !== 1 ? 's' : ''}${failCount > 0 ? ` (${failCount} failed)` : ''}!`, 'success');
-        // Trigger re-render of visual components without reloading the page
-        setVisualRefreshKey(k => k + 1);
-      } else {
-        addToast('Could not generate visuals. Check your Gemini API key in Settings.', 'error');
+        addToast(`Generated ${successCount} visuals!`, 'success');
+        // Force re-render by navigating away and back
+        window.location.reload();
       }
     } catch (err) {
-      addToast('Error generating visuals: ' + (err.message || 'Request timed out'), 'error');
+      addToast('Error generating visuals: ' + err.message, 'error');
     }
     setGeneratingAll(false);
   };
@@ -2157,27 +1064,29 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
             ))}
           </div>
         );
-        // TEXT sections — these get AI visual buttons
+        // TEXT sections — these get AI visual, video explainer, and audio section
         return (
           <div key={i} className="lesson-section">
             <h3>{s.title}</h3>
             {s.content.split('\n\n').map((para, pi) => <p key={pi}>{para}</p>)}
+            <SubsectionVideo
+              youtubeUrl={s.media?.youtubeUrl || null}
+              sectionTitle={s.title}
+            />
+            <SubsectionAudio
+              audioUrl={s.media?.audioUrl || null}
+              sectionTitle={s.title}
+            />
             <AIVisual
               moduleId={module.id}
               moduleTitle={module.title}
               sectionIndex={i}
               sectionTitle={s.title}
               sectionContent={s.content}
-              refreshKey={visualRefreshKey}
             />
           </div>
         );
       })}
-
-      <FlipbookEmbed moduleId={module.id} />
-      <SlideDeckEmbed moduleId={module.id} />
-      <YouTubeEmbed moduleId={module.id} />
-      <InfographicGenerator module={module} />
 
       {quiz.length > 0 && (
         <div className="quiz-container">
@@ -2213,43 +1122,6 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
           )}
         </div>
       )}
-
-      <CollapsibleSection title="🎓 Mastery Exam">
-        <MasteryExam
-          moduleId={module.id}
-          moduleTitle={module.title}
-          onPass={(score) => { addToast(`Exam passed! Score: ${score}`, 'success'); }}
-        />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="⚡ Strategy Builder & S.E.T. Calculator">
-        <StrategyBuilder moduleId={module.id} moduleTitle={module.title} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="🎯 Simulation Exercises">
-        <SimulationExercises
-          moduleId={module.id}
-          exercises={module.simulations || []}
-          requiredCount={Math.ceil((module.simulations?.length || 0) / 2)}
-          onExerciseComplete={() => { addToast('Exercise completed!', 'success'); }}
-        />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="📔 Reflection Notebook">
-        <NotebookSection
-          moduleId={module.id}
-          notebookPrompts={module.notebookPrompts || ['What was the most important concept you learned?', 'How will you apply this knowledge to your trading?', 'What questions do you still have?']}
-          onEntryAdded={() => { addToast('Notebook entry saved!', 'success'); }}
-        />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="🎥 Video Tutorials & Resources">
-        <VideoDiscovery
-          moduleId={module.id}
-          fallbackVideos={module.youtubeVideos || []}
-        />
-      </CollapsibleSection>
-
       {isCompleted && <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.25)',borderRadius:12,padding:20,marginTop:24,textAlign:'center'}}><span style={{color:'var(--green-dark)',fontSize:16,fontWeight:600}}>✓ Module Completed</span></div>}
     </div>
   );
@@ -2394,53 +1266,7 @@ function SettingsModal({ onClose, addToast }) {
   );
 }
 
-// =============================================================================
-// APP WITH LOGIN WRAPPER
-// =============================================================================
-
-function AppWithLogin() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingSession, setCheckingSession] = useState(true);
-
-  // On mount, check if there's a saved session token and validate it
-  useEffect(() => {
-    const savedToken = sessionStorage.getItem('ita_session_token');
-    if (savedToken) {
-      fetch('/api/validate-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: savedToken })
-      })
-        .then(r => r.json())
-        .then(data => {
-          if (data.valid) setIsAuthenticated(true);
-          else sessionStorage.removeItem('ita_session_token');
-          setCheckingSession(false);
-        })
-        .catch(() => setCheckingSession(false));
-    } else {
-      setCheckingSession(false);
-    }
-  }, []);
-
-  const handleLogin = (token) => {
-    sessionStorage.setItem('ita_session_token', token);
-    setIsAuthenticated(true);
-  };
-
-  if (checkingSession) {
-    return (
-      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'linear-gradient(135deg, #1B2A4A 0%, #243B60 50%, #0D9373 100%)'}}>
-        <div style={{color:'white',fontSize:'18px',fontFamily:'Inter,sans-serif'}}>Loading session...</div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) return <LoginScreen onLogin={handleLogin} />;
-  return <App />;
-}
-
-ReactDOM.render(<AppWithLogin />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
 </script>
 </body>
 </html>
