@@ -792,13 +792,20 @@ async function searchYouTubeVideos(query, maxResults = 6) {
 app.get('/api/youtube/:moduleId', async (req, res) => {
   const ytKey = `youtube_${req.params.moduleId}`;
 
-  // Check KV cache first (cached for 24 hours)
+  // Check KV cache first
   const cached = await kvGet(ytKey);
-  if (cached && cached.videos && cached.videos.length > 0 && cached.fetchedAt) {
-    const cacheAge = Date.now() - new Date(cached.fetchedAt).getTime();
-    const ONE_DAY = 24 * 60 * 60 * 1000;
-    if (cacheAge < ONE_DAY) {
-      return res.json({ success: true, ...cached, source: 'cache' });
+  if (cached && cached.videos && cached.videos.length > 0) {
+    // Curated videos (set via PUT) are permanent — never expire
+    if (cached.curated) {
+      return res.json({ success: true, ...cached, source: 'curated' });
+    }
+    // Auto-fetched videos expire after 24 hours
+    if (cached.fetchedAt) {
+      const cacheAge = Date.now() - new Date(cached.fetchedAt).getTime();
+      const ONE_DAY = 24 * 60 * 60 * 1000;
+      if (cacheAge < ONE_DAY) {
+        return res.json({ success: true, ...cached, source: 'cache' });
+      }
     }
   }
 
@@ -834,7 +841,7 @@ app.put('/api/youtube/:moduleId', async (req, res) => {
     const { videos } = req.body;
     if (!Array.isArray(videos)) return res.status(400).json({ error: 'Videos must be an array' });
     const ytKey = `youtube_${req.params.moduleId}`;
-    const data = { moduleId: req.params.moduleId, videos, updatedAt: new Date().toISOString() };
+    const data = { moduleId: req.params.moduleId, videos, curated: true, fetchedAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     await kvSet(ytKey, data);
     res.json({ success: true, ...data });
   } catch (error) {
