@@ -49,6 +49,12 @@ async function getModules() {
     return modules.map(kvMod => {
       const defaultMod = DEFAULT_MODULES.find(d => d.id === kvMod.id);
       if (!defaultMod) return kvMod;
+      // Merge section-level media fields from defaults into KV sections
+      const mergedSections = (kvMod.sections || defaultMod.sections || []).map((kvSec, idx) => {
+        const defaultSec = (defaultMod.sections || [])[idx];
+        if (!defaultSec || kvSec.media) return kvSec;
+        return { ...kvSec, media: defaultSec.media || undefined };
+      });
       return {
         ...kvMod,
         simulations: kvMod.simulations || defaultMod.simulations || [],
@@ -56,7 +62,7 @@ async function getModules() {
         notebookPrompts: kvMod.notebookPrompts || defaultMod.notebookPrompts || [],
         youtubeVideos: kvMod.youtubeVideos || defaultMod.youtubeVideos || [],
         requiredExercises: kvMod.requiredExercises ?? defaultMod.requiredExercises ?? 2,
-        sections: kvMod.sections || defaultMod.sections || [],
+        sections: mergedSections,
         quiz: kvMod.quiz || defaultMod.quiz || []
       };
     });
