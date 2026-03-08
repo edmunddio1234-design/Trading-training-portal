@@ -131,6 +131,11 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .acard p { font-size:12px; color:var(--gray-500); line-height:1.5; margin-bottom:6px; }
 .tag { display:inline-block; padding:2px 7px; border-radius:20px; font-size:10px; font-weight:600; background:var(--mint-bg); color:var(--emerald); margin-right:3px; margin-bottom:2px; }
 
+/* Strategy Prefill Button */
+.try-calc-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 16px;background:linear-gradient(135deg,#10B981,#0D9373);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.3px;}
+.try-calc-btn:hover{transform:scale(1.03);box-shadow:0 4px 14px rgba(16,185,129,0.35);}
+.acard .try-calc-btn{margin-top:8px;font-size:11px;padding:6px 12px;}
+
 /* Strategy Deep Dive Cards */
 .strat-section{margin-top:24px;}
 .strat-section h2{font-size:20px;color:var(--navy);margin-bottom:4px;}
@@ -832,42 +837,49 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       <p>Own 100 shares + sell OTM call. Collect premium as income. Benefits from time decay. Cap upside at strike price.</p>
       <p><strong>Best Regime:</strong> Bullish to neutral. Use in low-to-mid IV.</p>
       <span class="tag">Income</span><span class="tag">Neutral-Bullish</span><span class="tag">Time Decay</span>
+      <br><button class="try-calc-btn" onclick="prefillSET(50000,415,411.80,425,'stock')">🎯 Try in Calculator</button>
     </div>
     <div class="acard">
       <h3>💵 Cash-Secured Put</h3>
       <p>Sell put while holding cash to buy shares if assigned. Great for entering positions at a discount while collecting premium.</p>
       <p><strong>Best Regime:</strong> Neutral to bullish.</p>
       <span class="tag">Income</span><span class="tag">Bullish Entry</span>
+      <br><button class="try-calc-btn" onclick="prefillSET(85000,838,800,880,'stock')">🎯 Try in Calculator</button>
     </div>
     <div class="acard">
       <h3>🦅 Iron Condor</h3>
       <p>Sell OTM call spread + OTM put spread simultaneously. Profit from range-bound price and time decay. Max loss is defined.</p>
       <p><strong>Best Regime:</strong> Neutral / Low Volatility.</p>
       <span class="tag">Income</span><span class="tag">Neutral</span><span class="tag">Defined Risk</span>
+      <br><button class="try-calc-btn" onclick="prefillSET(10000,547,540,555,'stock')">🎯 Try in Calculator</button>
     </div>
     <div class="acard">
       <h3>⚡ Long Straddle</h3>
       <p>Buy ATM call + ATM put at same strike. Profit from large moves in either direction. Ideal before high-impact news events.</p>
       <p><strong>Best Regime:</strong> Pre-earnings / High volatility expansion.</p>
       <span class="tag">Directional</span><span class="tag">High IV Events</span>
+      <br><button class="try-calc-btn" onclick="prefillSET(50000,680,644.50,731,'stock')">🎯 Try in Calculator</button>
     </div>
     <div class="acard">
       <h3>🌊 Long Strangle</h3>
       <p>Buy OTM call + OTM put at different strikes. Cheaper than straddle but needs a bigger move to profit.</p>
       <p><strong>Best Regime:</strong> Pre-earnings / High volatility expansion.</p>
       <span class="tag">Directional</span><span class="tag">Cheaper Premium</span>
+      <br><button class="try-calc-btn" onclick="prefillSET(25000,350,330,385,'stock')">🎯 Try in Calculator</button>
     </div>
     <div class="acard">
       <h3>🛡️ Protective Put</h3>
       <p>Own stock + buy a put for downside insurance. Floor on max loss while keeping unlimited upside.</p>
       <p><strong>Best Regime:</strong> Bullish but uncertain. Hedge before volatility events.</p>
       <span class="tag">Hedge</span><span class="tag">Defined Risk</span>
+      <br><button class="try-calc-btn" onclick="prefillSET(25000,180,170,195,'stock')">🎯 Try in Calculator</button>
     </div>
     <div class="acard" style="grid-column:1/-1; max-width:480px;">
       <h3>📊 Bull Call Spread (Vertical)</h3>
       <p>Buy lower-strike call + sell higher-strike call. Capital-efficient bullish bet. Max profit = spread width minus debit. Defined risk and defined reward.</p>
       <p><strong>Best Regime:</strong> Moderately bullish.</p>
       <span class="tag">Directional</span><span class="tag">Defined Risk</span><span class="tag">Capital Efficient</span>
+      <br><button class="try-calc-btn" onclick="prefillSET(10000,5.00,2.50,12.50,'options')">🎯 Try in Calculator</button>
     </div>
   </div>
 
@@ -975,6 +987,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(10000,173.80,171.50,180.70,'stock')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1064,6 +1077,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(10000,249.50,253.00,239.00,'stock')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1152,6 +1166,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(50000,415,411.80,425,'stock')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1239,6 +1254,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(85000,838,800,880,'stock')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1328,6 +1344,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(10000,547,536,558,'stock')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1417,6 +1434,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(50000,25.00,0,45.00,'options')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1506,6 +1524,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(2000,5510,5506,5522,'stock')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1594,6 +1613,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(10000,1.50,3.50,1.50,'options')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1680,6 +1700,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(10000,1.40,3.60,1.40,'options')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -1769,6 +1790,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
               </dl>
             </div>
           </div>
+          <button class="try-calc-btn" onclick="prefillSET(50000,680,644.50,731,'stock')">🎯 Try This Setup in Calculator</button>
         </div>
 
         <div class="strat-box" style="margin-bottom:14px;">
@@ -2467,6 +2489,25 @@ function showTab(tab, btn) {
   if (tab === 'regime') renderRegimeTab();
 if (tab === 'chain') { renderPriceCards(); populateExps(); }
 if (tab === 'training') { TM.initTraining(); }
+}
+
+// ---- STRATEGY PREFILL ----
+function prefillSET(acct,entry,stop,target,type){
+  document.getElementById('sz-acct').value=acct;
+  document.getElementById('sz-entry').value=entry;
+  document.getElementById('sz-stop').value=stop;
+  document.getElementById('sz-target').value=target;
+  document.getElementById('sz-type').value=type||'stock';
+  // Switch to the sizer tab
+  const sizerTab=document.getElementById('tab-sizer');
+  const aboutTab=document.getElementById('tab-about');
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  sizerTab.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(btn=>{if(btn.textContent.toLowerCase().includes('position'))btn.classList.add('active');});
+  calcSET();
+  // Scroll to top of sizer
+  sizerTab.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ---- POSITION SIZER ----
