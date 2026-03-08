@@ -413,7 +413,36 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 /* ============================================ */
 
 /* --- Full Viewport Layout --- */
-.wb-sim { display:grid; grid-template-columns:230px 1fr 310px; gap:0; background:#000000; border-radius:0; overflow:hidden; min-height:92vh; box-shadow:0 4px 24px rgba(0,0,0,.6); margin:0 -24px; }
+/* Training active: container goes full-width, dark */
+.container.tm-active { max-width:none; padding:0; background:#000000; }
+.container.tm-active .train-arena.active { display:block; background:#0d0d0d; border-top:1px solid #2a2a2a; padding:10px 16px; }
+.container.tm-active .ta-head { background:transparent; }
+.container.tm-active .ta-head h3 { color:#e0e0e0; }
+.container.tm-active .ta-back { color:#00c805; border-color:#2a2a2a; background:#1b1b1b; }
+.container.tm-active .ta-back:hover { background:#2a2a2a; }
+.container.tm-active .dpill { color:#a0a0a0; background:#1b1b1b; border-color:#2a2a2a; }
+.container.tm-active .dpill.on { color:white; background:#00c805; border-color:#00c805; }
+.container.tm-active .ta-btn { color:#e0e0e0; background:#1b1b1b; border-color:#2a2a2a; }
+.container.tm-active .ta-btn:hover { background:#2a2a2a; }
+.container.tm-active .ta-btn.red { background:#ff3b3b; color:white; border-color:#ff3b3b; }
+.container.tm-active .tp { background:#0d0d0d; }
+.container.tm-active .tp-bar { background:#1b1b1b; }
+.container.tm-active .tp-txt { color:#808080; }
+.container.tm-active .streak-d { color:#ffb300; }
+.container.tm-active .qp { background:#1b1b1b; border:1px solid #2a2a2a; border-radius:8px; margin:8px 16px; padding:16px; }
+.container.tm-active .qp-num { color:#00c805; }
+.container.tm-active .qp-txt { color:#e0e0e0; }
+.container.tm-active .qo { background:#2a2a2a; color:#e0e0e0; border-color:#3a3a3a; }
+.container.tm-active .qo:hover { background:#3a3a3a; border-color:#00c805; }
+.container.tm-active .qo.ok { background:#00c805; color:white; border-color:#00c805; }
+.container.tm-active .qo.no { background:#ff3b3b; color:white; border-color:#ff3b3b; }
+.container.tm-active .fb { margin:0 16px 8px; border-radius:8px; }
+.container.tm-active .fb.ok { background:rgba(0,200,5,0.12); border-color:#00c805; }
+.container.tm-active .fb.no { background:rgba(255,59,59,0.12); border-color:#ff3b3b; }
+.container.tm-active .fb-hd { color:#e0e0e0; }
+.container.tm-active .fb-tx { color:#a0a0a0; }
+
+.wb-sim { display:grid; grid-template-columns:230px 1fr 310px; gap:0; background:#000000; border-radius:0; overflow:hidden; min-height:85vh; box-shadow:0 4px 24px rgba(0,0,0,.6); margin:0; }
 
 /* ============================== */
 /* LEFT SIDEBAR — Watchlist       */
@@ -2826,14 +2855,26 @@ function xAnno(){document.getElementById('anno').style.display='none';callout=nu
 
 // ---- QUESTION GENERATORS ----
 function genQ(){
-  const n=diff==='easy'?10:diff==='medium'?16:24;
-  const needPat=mode==='sd'||mode==='zm'||mode==='of'||mode==='seq';
-  const allBars=genChart(n,{forcePatterns:needPat});
-  const zones=findZones(allBars);
+  // Retry up to 5 times to ensure questions are generated
+  for(let attempt=0;attempt<5;attempt++){
+    const n=diff==='easy'?10:diff==='medium'?16:24;
+    const needPat=mode==='sd'||mode==='zm'||mode==='of'||mode==='seq';
+    const allBars=genChart(n,{forcePatterns:needPat});
+    const zones=findZones(allBars);
+    const qs=[];
+    // Try up to 30 times to get at least 5 questions
+    for(let q=0;q<30&&qs.length<10;q++){
+      const question=genOneQ(allBars,zones,q);
+      if(question)qs.push(question);
+    }
+    if(qs.length>=3)return{bars:allBars,questions:qs};
+  }
+  // Final fallback: use ohlc-style questions which always work
+  const allBars=genChart(10,{});
   const qs=[];
-  for(let q=0;q<10;q++){
-    const question=genOneQ(allBars,zones,q);
-    if(question)qs.push(question);
+  for(let i=0;i<allBars.length&&qs.length<5;i++){
+    const bar=allBars[i];
+    qs.push({type:'mc',con:'o_bull',bars:allBars,hlb:i,txt:`Is Bar ${i+1} bullish or bearish?`,opts:['Bullish','Bearish'],cor:bar.bull?'Bullish':'Bearish',fc:`Correct! ${bar.bull?'Close > Open = Bullish':'Close < Open = Bearish'}.`,fw:`Incorrect. ${bar.bull?'Close > Open = Bullish':'Close < Open = Bearish'}.`});
   }
   return{bars:allBars,questions:qs};
 }
@@ -2967,20 +3008,29 @@ function startMode(m){
   if(sQ.length===0){sQ=[{type:'mc',con:'seq',bars:animBars,txt:'No questions generated. Click Next for a new chart.',opts:['OK'],cor:'OK',fc:'',fw:''}];}
   document.getElementById('train-dash').style.display='none';
   document.getElementById('train-arena').classList.add('active');
+  // Activate full-width dark training mode
+  const ctr=document.querySelector('#tab-training .container');
+  if(ctr)ctr.classList.add('tm-active');
   // Show Webull simulator
   const wbSim=document.getElementById('wb-sim');
   if(wbSim){wbSim.style.display='grid';if(typeof WB!=='undefined')WB.init();}
   const titles={ohlc:'📊 OHLC Mastery',sd:'🏗️ Supply & Demand',seq:'📅 Three-Day Sequence',zm:'🎨 Zone Marking',of:'⚡ Order Flow'};
   document.getElementById('ar-title').textContent=titles[m]||'Training';
-  initCV();setupEv();
-  // Animate chart in, then load question
-  animate(animBars,()=>loadQ());
+  // Wait one frame for layout to calculate after display:grid
+  requestAnimationFrame(()=>{
+    initCV();setupEv();
+    // Animate chart in, then load question
+    animate(animBars,()=>loadQ());
+  });
 }
 
 function back(){
   stopAnim();removeEv();
   document.getElementById('train-dash').style.display='block';
   document.getElementById('train-arena').classList.remove('active');
+  // Remove full-width dark mode
+  const ctr=document.querySelector('#tab-training .container');
+  if(ctr)ctr.classList.remove('tm-active');
   // Hide Webull simulator
   const wbSim=document.getElementById('wb-sim');
   if(wbSim)wbSim.style.display='none';
@@ -3012,8 +3062,8 @@ function loadQ(){
   // Options
   const od=document.getElementById('qp-opts');od.innerHTML='';
   if(q.type==='mc'){q.opts.forEach(o=>{const btn=document.createElement('button');btn.className='qo';btn.textContent=o;btn.onclick=()=>handleMC(o,q);od.appendChild(btn);});}
-  else if(q.type==='zone_draw'){od.innerHTML='<div style="font-size:12px;color:var(--gray-500);padding:6px 0;">Click and drag on the chart to draw your zone.</div><button class="qo sel" onclick="TM.submitZone()">Submit Zone</button>';}
-  else{od.innerHTML='<div style="font-size:12px;color:var(--chart-text);padding:6px 0;">👆 Click directly on the chart to answer</div>';}
+  else if(q.type==='zone_draw'){od.innerHTML='<div style="font-size:12px;color:#808080;padding:6px 0;">Click and drag on the chart to draw your zone.</div><button class="qo sel" onclick="TM.submitZone()">Submit Zone</button>';}
+  else{od.innerHTML='<div style="font-size:12px;color:#808080;padding:6px 0;">👆 Click directly on the chart to answer</div>';}
 }
 
 function nextQ(){if(!answered&&qI<sQ.length)return;qI++;loadQ();}
