@@ -334,16 +334,58 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .tut-pb:hover { background:#E5E7EB; }
 .tut-nb { padding:7px 18px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; border:none; background:var(--emerald); color:white; }
 
-/* --- Session Modal --- */
-.sess-m { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; display:none; align-items:center; justify-content:center; }
+/* --- Session Complete Modal (Polished) --- */
+.sess-m { position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:1000; display:none; align-items:center; justify-content:center; animation:fadeIn .3s ease; }
 .sess-m.show { display:flex; }
-.sess-b { background:white; border-radius:16px; padding:28px; max-width:420px; width:90%; text-align:center; }
-.sess-b h3 { font-size:18px; font-weight:800; color:var(--navy); margin-bottom:12px; }
-.ss-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
-.ss-i { padding:10px; background:var(--mint-bg); border-radius:8px; }
-.ss-i .ss-v { font-size:20px; font-weight:800; color:var(--emerald); }
-.ss-i .ss-l { font-size:10px; color:var(--gray-500); font-weight:600; text-transform:uppercase; }
-.sess-b button { margin-top:10px; padding:9px 24px; background:var(--emerald); color:white; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+@keyframes slideUp { from{transform:translateY(30px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+@keyframes confetti { 0%{transform:translateY(0) rotate(0);opacity:1;} 100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+.sess-b { background:white; border-radius:20px; padding:0; max-width:580px; width:95%; text-align:center; overflow:hidden; animation:slideUp .4s ease; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:90vh; overflow-y:auto; }
+.sess-hero { padding:28px 24px 18px; position:relative; overflow:hidden; }
+.sess-hero.great { background:linear-gradient(135deg,#059669,#10B981); }
+.sess-hero.good { background:linear-gradient(135deg,#2563EB,#3B82F6); }
+.sess-hero.try { background:linear-gradient(135deg,#D97706,#F59E0B); }
+.sess-hero .sh-icon { font-size:48px; margin-bottom:6px; }
+.sess-hero .sh-title { font-size:22px; font-weight:900; color:white; margin:0; }
+.sess-hero .sh-sub { font-size:13px; color:rgba(255,255,255,.85); margin-top:4px; }
+.sess-body { padding:20px 24px; }
+.ss-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 0 16px; }
+.ss-i { padding:12px 8px; background:var(--mint-bg); border-radius:10px; }
+.ss-i .ss-v { font-size:22px; font-weight:800; color:var(--emerald); }
+.ss-i .ss-l { font-size:9px; color:var(--gray-500); font-weight:700; text-transform:uppercase; letter-spacing:.3px; margin-top:2px; }
+.ss-i.wrong .ss-v { color:#EF4444; }
+.sess-cat { margin:14px 0; text-align:left; }
+.sess-cat h4 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--gray-500); margin:0 0 8px; }
+.sc-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.sc-bar-wrap { flex:1; height:8px; background:#E5E7EB; border-radius:4px; overflow:hidden; }
+.sc-bar { height:100%; border-radius:4px; transition:width .6s ease; }
+.sc-bar.green { background:var(--emerald); }
+.sc-bar.red { background:#EF4444; }
+.sc-bar.yellow { background:#F59E0B; }
+.sc-lbl { font-size:11px; font-weight:600; color:var(--gray-700); min-width:100px; }
+.sc-pct { font-size:11px; font-weight:700; color:var(--navy); min-width:36px; text-align:right; }
+.sess-review { margin:14px 0; text-align:left; }
+.sess-review h4 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--gray-500); margin:0 0 8px; cursor:pointer; }
+.sess-review h4::after { content:' \25BC'; font-size:9px; }
+.sr-list { max-height:200px; overflow-y:auto; }
+.sr-item { display:flex; align-items:flex-start; gap:8px; padding:8px 10px; border-radius:8px; margin-bottom:4px; font-size:12px; line-height:1.5; }
+.sr-item.ok { background:#ECFDF5; }
+.sr-item.no { background:#FEF2F2; }
+.sr-icon { font-size:14px; flex-shrink:0; margin-top:1px; }
+.sr-txt { flex:1; color:var(--gray-700); }
+.sr-txt strong { color:var(--navy); }
+.sess-msg { background:var(--mint-bg); border-radius:10px; padding:12px 16px; margin:14px 0; text-align:left; }
+.sess-msg .sm-title { font-size:12px; font-weight:700; color:var(--emerald); margin-bottom:4px; }
+.sess-msg .sm-body { font-size:12px; line-height:1.6; color:var(--gray-700); }
+.sess-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; padding:0 0 4px; }
+.sess-btn { padding:11px 16px; border:none; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; transition:all .15s; }
+.sess-btn:hover { transform:scale(1.02); }
+.sess-btn.primary { background:var(--emerald); color:white; grid-column:span 2; font-size:14px; padding:13px; }
+.sess-btn.primary:hover { background:#059669; }
+.sess-btn.secondary { background:var(--mint-bg); color:var(--navy); border:1px solid var(--border); }
+.sess-btn.secondary:hover { background:#E0F2FE; }
+.sess-badges-area { margin:10px 0; }
+@media(max-width:480px){ .ss-grid{grid-template-columns:1fr 1fr;} .sess-actions{grid-template-columns:1fr;} .sess-btn.primary{grid-column:span 1;} }
 
 /* --- Daily Challenge --- */
 .daily-c { background:linear-gradient(135deg,var(--navy),#2D4A7A); border-radius:12px; padding:16px 20px; color:white; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
@@ -894,13 +936,22 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     </div>
   </div>
 
-  <!-- Session Summary -->
+  <!-- Session Complete -->
   <div class="sess-m" id="sess-m">
     <div class="sess-b">
-      <h3 id="sess-t">Session Complete!</h3>
-      <div class="ss-grid" id="sess-g"></div>
-      <div id="sess-badges"></div>
-      <button onclick="TM.closeSess()">Continue Training</button>
+      <div class="sess-hero" id="sess-hero">
+        <div class="sh-icon" id="sess-icon"></div>
+        <h3 class="sh-title" id="sess-t">Session Complete!</h3>
+        <div class="sh-sub" id="sess-sub"></div>
+      </div>
+      <div class="sess-body">
+        <div class="ss-grid" id="sess-g"></div>
+        <div class="sess-cat" id="sess-cat"></div>
+        <div class="sess-review" id="sess-review"></div>
+        <div class="sess-msg" id="sess-msg"></div>
+        <div class="sess-badges-area" id="sess-badges"></div>
+        <div class="sess-actions" id="sess-actions"></div>
+      </div>
     </div>
   </div>
 
@@ -1742,6 +1793,7 @@ const TM = (function(){
 'use strict';
 
 let mode=null,diff='easy',sQ=[],qI=0,sC=0,streak=0,bStreak=0,answered=false;
+let sessResults=[]; // Per-question results for accurate tracking
 let explore=true,canvas,ctx,W,H;
 let bars=[],animBars=[],animIdx=0,isAnim=false,animFrame=null;
 let hovBar=-1,callout=null,userZone=null,isDraw=false,drawSt=null,drawnZ=[];
@@ -2121,6 +2173,7 @@ function genOneQ(allBars,zones,qNum){
 // ---- GRADING ----
 function grade(correct,q,score){
   if(answered)return;answered=true;
+  sessResults.push({qIdx:qI,q:q,ok:correct,con:q.con||'',streak:streak+(correct?1:0)});
   const p=ldP();p.tQ++;
   if(q.con){p.a[q.con]=(p.a[q.con]||0)+1;}
   if(correct){sC++;streak++;if(streak>bStreak)bStreak=streak;if(q.con)p.c[q.con]=(p.c[q.con]||0)+1;p.tC++;}else{streak=0;}
@@ -2180,7 +2233,7 @@ function getMastery(p,m){const k={ohlc:['o_o','o_c','o_h','o_l','o_bull','o_bear
 // ---- ENGINE: start, events, navigation ----
 let evClick,evMove,evDown,evUp;
 function startMode(m){
-  mode=m;qI=0;sC=0;streak=0;bStreak=0;answered=false;drawnZ=[];
+  mode=m;qI=0;sC=0;streak=0;bStreak=0;answered=false;drawnZ=[];sessResults=[];
   const data=genQ();
   animBars=data.bars;sQ=data.questions;
   if(sQ.length===0){sQ=[{type:'mc',con:'seq',bars:animBars,txt:'No questions generated. Click Next for a new chart.',opts:['OK'],cor:'OK',fc:'',fw:''}];}
@@ -2202,7 +2255,7 @@ function back(){
 
 function newChart(){
   stopAnim();answered=false;drawnZ=[];xAnno();
-  const data=genQ();animBars=data.bars;sQ=data.questions;qI=0;sC=0;streak=0;
+  const data=genQ();animBars=data.bars;sQ=data.questions;qI=0;sC=0;streak=0;sessResults=[];
   animate(animBars,()=>loadQ());
 }
 
@@ -2290,11 +2343,99 @@ function removeEv(){hideHoverTip();if(canvas){if(evClick)canvas.removeEventListe
 // ---- SESSION END ----
 function endSess(){
   const p=ldP();p.sess++;svP(p);
-  const pct=sQ.length>0?(sC/sQ.length*100).toFixed(0):0;
-  document.getElementById('sess-t').textContent=pct>=80?'🏆 Outstanding!':pct>=60?'👏 Good Work!':'💪 Keep Practicing!';
-  document.getElementById('sess-g').innerHTML=`<div class="ss-i"><div class="ss-v">${sC}/${sQ.length}</div><div class="ss-l">Correct</div></div><div class="ss-i"><div class="ss-v">${pct}%</div><div class="ss-l">Accuracy</div></div><div class="ss-i"><div class="ss-v">🔥 ${bStreak}</div><div class="ss-l">Best Streak</div></div><div class="ss-i"><div class="ss-v">${getLevel(p)}</div><div class="ss-l">Level</div></div>`;
-  const nb=p.badges.filter(b=>b.s===p.sess);
-  document.getElementById('sess-badges').innerHTML=nb.length?'<div style="margin-top:6px;font-size:12px;color:var(--emerald);font-weight:600;">New Badges:</div>'+nb.map(b=>`<span class="gbadge on">${b.i} ${b.n}</span>`).join(''):'';
+  const total=sQ.length;
+  const correct=sC;
+  const incorrect=total-correct;
+  const pct=total>0?Math.round(correct/total*100):0;
+  const level=getLevel(p);
+  const mastery=getMastery(p,mode);
+
+  // Hero section — gradient color based on performance
+  const hero=document.getElementById('sess-hero');
+  const icon=document.getElementById('sess-icon');
+  const title=document.getElementById('sess-t');
+  const sub=document.getElementById('sess-sub');
+  if(pct>=90){hero.className='sess-hero great';icon.textContent='\ud83c\udfc6';title.textContent='Outstanding Performance!';sub.textContent=pct+'% accuracy \u2014 You crushed it!';}
+  else if(pct>=70){hero.className='sess-hero great';icon.textContent='\ud83c\udf1f';title.textContent='Great Work!';sub.textContent=pct+'% accuracy \u2014 Solid understanding.';}
+  else if(pct>=50){hero.className='sess-hero good';icon.textContent='\ud83d\udcaa';title.textContent='Good Effort!';sub.textContent=pct+'% accuracy \u2014 You\'re building skills.';}
+  else{hero.className='sess-hero try';icon.textContent='\ud83d\udd25';title.textContent='Keep Practicing!';sub.textContent=pct+'% accuracy \u2014 Every mistake is a lesson.';}
+
+  // Stats grid — 6 metrics
+  document.getElementById('sess-g').innerHTML=
+    '<div class="ss-i"><div class="ss-v">'+correct+'/'+total+'</div><div class="ss-l">Score</div></div>'+
+    '<div class="ss-i"><div class="ss-v">'+pct+'%</div><div class="ss-l">Accuracy</div></div>'+
+    '<div class="ss-i"><div class="ss-v">\ud83d\udd25 '+bStreak+'</div><div class="ss-l">Best Streak</div></div>'+
+    '<div class="ss-i"><div class="ss-v">'+correct+'</div><div class="ss-l">Correct</div></div>'+
+    '<div class="ss-i wrong"><div class="ss-v">'+incorrect+'</div><div class="ss-l">Incorrect</div></div>'+
+    '<div class="ss-i"><div class="ss-v">'+level+'</div><div class="ss-l">Level</div></div>';
+
+  // Category/concept performance breakdown from sessResults
+  const catEl=document.getElementById('sess-cat');
+  const conMap={};
+  sessResults.forEach(function(r){
+    if(!r.con)return;
+    if(!conMap[r.con])conMap[r.con]={t:0,c:0};
+    conMap[r.con].t++;
+    if(r.ok)conMap[r.con].c++;
+  });
+  const conLabels={
+    o_o:'Open (OHLC)',o_c:'Close (OHLC)',o_h:'High (OHLC)',o_l:'Low (OHLC)',
+    o_bull:'Bull/Bear ID',o_bear:'Bull/Bear ID',o_body:'Body Reading',o_wick:'Wick Reading',
+    sd_d:'Demand Zones',sd_s:'Supply Zones',sd_base:'Base Detection',sd_dept:'Departure Detection',sd_ret:'Zone Retest',
+    of_bal:'Balance Reading',of_imb:'Imbalance Reading',of_mov:'Movement Reading',of_pres:'Pressure Reading',
+    seq:'Three-Day Sequence',zm:'Zone Marking'
+  };
+  const conKeys=Object.keys(conMap);
+  if(conKeys.length>0){
+    let catH='<h4>\ud83c\udfaf Concept Performance</h4>';
+    conKeys.forEach(function(k){
+      const c=conMap[k];const cp=Math.round(c.c/c.t*100);
+      const label=conLabels[k]||k;
+      const barClass=cp>=80?'green':cp>=50?'yellow':'red';
+      catH+='<div class="sc-row"><span class="sc-lbl">'+label+'</span><div class="sc-bar-wrap"><div class="sc-bar '+barClass+'" style="width:'+cp+'%"></div></div><span class="sc-pct">'+c.c+'/'+c.t+'</span></div>';
+    });
+    catEl.innerHTML=catH;
+  }else{catEl.innerHTML='';}
+
+  // Question-by-question review (collapsible)
+  const revEl=document.getElementById('sess-review');
+  if(sessResults.length>0){
+    let revH='<h4 onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';">\ud83d\udcdd Review Answers (click to expand)</h4><div class="sr-list" style="display:none;">';
+    sessResults.forEach(function(r,i){
+      const qTxt=r.q.txt||('Question '+(i+1));
+      const short=qTxt.length>80?qTxt.substring(0,80)+'...':qTxt;
+      revH+='<div class="sr-item '+(r.ok?'ok':'no')+'"><span class="sr-icon">'+(r.ok?'\u2705':'\u274c')+'</span><div class="sr-txt"><strong>Q'+(i+1)+':</strong> '+short+(!r.ok&&r.q.fc?'<br><em style="color:#059669;font-size:11px;">'+r.q.fc+'</em>':'')+'</div></div>';
+    });
+    revH+='</div>';
+    revEl.innerHTML=revH;
+  }else{revEl.innerHTML='';}
+
+  // Performance message with encouragement
+  const msgEl=document.getElementById('sess-msg');
+  let msgTitle='',msgBody='';
+  if(pct>=90){msgTitle='\ud83c\udfc6 Master Performance';msgBody='You answered '+correct+' out of '+total+' correctly with '+pct+'% accuracy. Your chart reading skills are sharp. '+(mastery>=80?'You\'re approaching mastery in this category!':'Keep going to reach mastery status.')+' Try increasing difficulty or moving to the next training mode.';}
+  else if(pct>=70){msgTitle='\ud83d\udcaa Strong Foundation';msgBody='You got '+correct+' right out of '+total+' ('+pct+'% accuracy). You understand the core concepts. Focus on the concepts you missed \u2014 review the red bars above.';}
+  else if(pct>=50){msgTitle='\ud83d\udca1 Building Skills';msgBody=correct+' out of '+total+' correct ('+pct+'%). You\'re making progress! Pay close attention to the concept breakdown above \u2014 areas below 50% need focused practice. Remember: every mistake teaches you something.';}
+  else{msgTitle='\ud83d\udd25 Every Expert Was a Beginner';msgBody=correct+' out of '+total+' correct ('+pct+'%). Don\'t get discouraged \u2014 this is where real learning happens. Try switching to Easy mode and use the hover tips to study each bar before answering. The Five Pillars: Be coachable, Be disciplined, Stack the odds.';}
+  msgEl.innerHTML='<div class="sm-title">'+msgTitle+'</div><div class="sm-body">'+msgBody+'</div>';
+
+  // Badges earned this session
+  const nb=p.badges.filter(function(b){return b.s===p.sess;});
+  document.getElementById('sess-badges').innerHTML=nb.length?'<div style="margin:6px 0;font-size:12px;color:var(--emerald);font-weight:700;">New Badges Earned:</div>'+nb.map(function(b){return '<span class="gbadge on" style="margin:2px;">'+b.i+' '+b.n+'</span>';}).join(''):'';
+
+  // Action buttons — retry, next mode, dashboard
+  const titles={ohlc:'\ud83d\udcca OHLC Mastery',sd:'\ud83c\udfd7\ufe0f Supply & Demand',seq:'\ud83d\udcc5 Sequence',zm:'\ud83c\udfa8 Zone Marking',of:'\u26a1 Order Flow'};
+  const nextModes={ohlc:'sd',sd:'seq',seq:'zm',zm:'of',of:'ohlc'};
+  const nextMode=nextModes[mode]||'ohlc';
+  const actEl=document.getElementById('sess-actions');
+  actEl.innerHTML=
+    '<button class="sess-btn primary" onclick="TM.closeSess();TM.startMode(\''+mode+'\');">\ud83d\udd01 Practice Again ('+(titles[mode]||mode)+')</button>'+
+    '<button class="sess-btn secondary" onclick="TM.closeSess();TM.startMode(\''+nextMode+'\');">Next: '+(titles[nextMode]||nextMode)+'</button>'+
+    '<button class="sess-btn secondary" onclick="TM.closeSess();">\u2190 Back to Dashboard</button>';
+
+  // Auto-expand review if score < 70%
+  if(pct<70){const rl=revEl.querySelector('.sr-list');if(rl)rl.style.display='block';}
+
   document.getElementById('sess-m').classList.add('show');
 }
 function closeSess(){document.getElementById('sess-m').classList.remove('show');back();}
@@ -2318,7 +2459,7 @@ function initTraining(){updateDash();}
 
 function resetProgress(){
   if(!confirm('Reset ALL training progress? This clears your stats, badges, streaks, and mastery. This cannot be undone.'))return;
-  localStorage.removeItem('tm_progress');
+  localStorage.removeItem('tm3');
   updateDash();
 }
 
