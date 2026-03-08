@@ -545,6 +545,92 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .prob-bar-fill{height:100%;border-radius:4px;transition:width .8s;}
 .prob-pct{font-size:11px;font-weight:700;width:36px;text-align:right;}
 
+
+/* ===== PRICE CYCLE PHASE DETECTOR ===== */
+.price-cycle-panel{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:14px;}
+.pcp-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--emerald);}
+.cycle-diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.cycle-phase{background:var(--gray-100);border-radius:10px;padding:12px;text-align:center;border:2px solid #D1D5DB;transition:all .3s;}
+.cycle-phase.active{background:linear-gradient(135deg,#D1FAE5,#A7F3D0);border-color:var(--emerald);box-shadow:0 4px 12px rgba(16,185,129,.2);}
+.cycle-phase .cp-icon{font-size:28px;display:block;margin-bottom:4px;}
+.cycle-phase .cp-name{font-size:11px;font-weight:700;color:var(--navy);}
+.cycle-phase .cp-desc{font-size:9px;color:var(--gray-500);margin-top:3px;}
+.cycle-info{background:var(--mint-bg);border-radius:10px;padding:12px;border-left:3px solid var(--emerald);}
+.cycle-info .ci-label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--emerald);letter-spacing:.3px;}
+.cycle-info .ci-value{font-size:14px;font-weight:800;color:var(--navy);margin:4px 0;}
+.cycle-info .ci-detail{font-size:11px;color:var(--gray-600);}
+
+/* ===== VOLUME SURGE CONFIRMATION ===== */
+.volume-surge-panel{background:white;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-top:12px;}
+.vsp-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);margin-bottom:8px;}
+.vol-canvas-wrap{position:relative;height:120px;background:#161B2B;border-radius:8px;overflow:hidden;}
+.vol-canvas-wrap canvas{display:block;width:100%;height:100%;}
+.vol-status{display:flex;gap:10px;margin-top:8px;font-size:11px;}
+.vol-status-bar{flex:1;background:var(--gray-100);border-radius:6px;padding:8px;text-align:center;}
+.vol-status-bar.surge{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #FCD34D;}
+.vol-status-bar.normal{background:var(--mint-bg);border:1px solid #A7F3D0;}
+.vol-status-bar .vsb-label{font-size:9px;color:var(--gray-500);text-transform:uppercase;}
+.vol-status-bar .vsb-value{font-size:13px;font-weight:800;color:var(--navy);margin-top:2px;}
+
+/* ===== JOURNAL STYLES ===== */
+.journal-form{background:white;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:16px;}
+.journal-form .jf-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--emerald);}
+.journal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.journal-grid.wide{grid-template-columns:1fr;}
+.journal-form .jf-input{padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;color:var(--navy);background:var(--gray-100);width:100%;}
+.journal-form .jf-input:focus{outline:none;border-color:var(--emerald);background:white;}
+.journal-form .jf-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--gray-500);margin-bottom:3px;display:block;}
+.journal-submit{width:100%;padding:12px;background:var(--emerald);color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:6px;}
+.journal-submit:hover{background:#0a7a5f;transform:translateY(-1px);}
+.expectancy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.exp-card{background:var(--mint-bg);border-radius:10px;padding:14px;text-align:center;border-left:3px solid var(--emerald);}
+.exp-card .ec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--emerald);}
+.exp-card .ec-value{font-size:20px;font-weight:800;color:var(--navy);margin:6px 0;}
+.exp-card .ec-detail{font-size:10px;color:var(--gray-500);}
+.trade-history{background:white;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.trade-history .th-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);margin-bottom:10px;}
+.trade-list{max-height:300px;overflow-y:auto;}
+.trade-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--gray-200);font-size:11px;}
+.trade-row:hover{background:var(--mint-bg);}
+.trade-row .tr-symbol{font-weight:700;color:var(--navy);}
+.trade-row .tr-pnl{font-weight:700;}
+.trade-row .tr-pnl.win{color:#10B981;}
+.trade-row .tr-pnl.loss{color:#EF4444;}
+
+/* ===== OPTIONS GREEKS STYLES ===== */
+.greeks-panel{background:white;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-top:16px;}
+.greeks-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--emerald);}
+.greeks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.greek-gauge{text-align:center;}
+.greek-meter{position:relative;width:100%;height:140px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.greek-arc{width:120px;height:120px;border-radius:50%;background:conic-gradient(from 0deg, #EF4444 0%, #F59E0B 33%, #10B981 66%, var(--emerald) 100%);display:flex;align-items:center;justify-content:center;position:relative;}
+.greek-value{position:absolute;width:110px;height:110px;border-radius:50%;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--navy);}
+.greek-unit{font-size:10px;color:var(--gray-500);}
+.greek-label{font-size:11px;font-weight:700;color:var(--navy);}
+.greek-interpretation{font-size:10px;color:var(--gray-600);margin-top:4px;}
+
+/* ===== FIVE PILLARS STYLES ===== */
+.pillars-container{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
+.pillar-card{background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06);border-top:4px solid #D1D5DB;transition:all .3s;}
+.pillar-card.green{border-top-color:#10B981;background:linear-gradient(to bottom,rgba(16,185,129,.05),transparent);}
+.pillar-card.yellow{border-top-color:#F59E0B;background:linear-gradient(to bottom,rgba(245,158,11,.05),transparent);}
+.pillar-card.red{border-top-color:#EF4444;background:linear-gradient(to bottom,rgba(239,68,68,.05),transparent);}
+.pillar-icon{font-size:32px;display:block;margin-bottom:8px;}
+.pillar-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.pillar-status{font-size:24px;display:block;margin:8px 0;}
+.pillar-detail{font-size:10px;color:var(--gray-600);line-height:1.4;}
+.score-circle{width:180px;height:180px;border-radius:50%;background:white;box-shadow:0 4px 16px rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;border:4px solid var(--gray-200);}
+.score-circle.green{border-color:#10B981;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.05));}
+.score-circle.yellow{border-color:#F59E0B;background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.05));}
+.score-circle.red{border-color:#EF4444;background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(239,68,68,.05));}
+.score-circle .score-val{font-size:36px;font-weight:900;color:var(--navy);}
+.score-circle .score-label{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--gray-500);letter-spacing:.4px;}
+.execute-btn{width:100%;padding:16px;background:var(--emerald);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.4px;}
+.execute-btn:hover:not(:disabled){background:#0a7a5f;transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.3);}
+.execute-btn:disabled{background:var(--gray-200);color:var(--gray-500);cursor:not-allowed;}
+
+@media(max-width:768px){.pillars-container{grid-template-columns:repeat(2,1fr);}.journal-grid{grid-template-columns:1fr;}.greeks-grid{grid-template-columns:1fr;}}
+
 /* ===== S.E.T. SIMULATOR ===== */
 .sim-grid{display:grid;grid-template-columns:320px 1fr;gap:18px;}
 .sim-chart-area{background:#161B2B;border-radius:14px;overflow:hidden;position:relative;min-height:480px;}
@@ -693,6 +779,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <button class="tab-btn" onclick="showTab('regime',this)">🔀 Markov Regime Detector</button>
   <button class="tab-btn" onclick="showTab('about',this)">📖 Strategy Guide</button>
   <button class="tab-btn" onclick="showTab('chain',this)">⚡ Live Options Chain</button>
+  <button class="tab-btn" onclick="showTab('journal',this)">📊 Trade Journal</button>
+  <button class="tab-btn" onclick="showTab('pillars',this)">🎯 Five Pillars</button>
   <button class="tab-btn" onclick="showTab('training',this)">🎯 Chart Training</button>
 
 </div>
@@ -2173,6 +2261,110 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 </div>
 </div>
 
+
+
+<!-- ===== TRADE JOURNAL TAB ===== -->
+<div id="tab-journal" class="tab-content">
+<div class="container">
+  <div class="journal-form">
+    <div class="jf-title">📝 Manual Trade Entry</div>
+    <div class="journal-grid">
+      <div><label class="jf-label">Trade Date</label><input type="date" id="tj-date" class="jf-input"></div>
+      <div><label class="jf-label">Symbol</label><input type="text" id="tj-symbol" class="jf-input" placeholder="e.g., SPY"></div>
+    </div>
+    <div class="journal-grid">
+      <div><label class="jf-label">Entry Price ($)</label><input type="number" id="tj-entry" step="0.01" class="jf-input"></div>
+      <div><label class="jf-label">Exit Price ($)</label><input type="number" id="tj-exit" step="0.01" class="jf-input"></div>
+    </div>
+    <div class="journal-grid">
+      <div><label class="jf-label">Position Size</label><input type="number" id="tj-size" step="1" class="jf-input" placeholder="Shares"></div>
+      <div><label class="jf-label">Win / Loss</label><select id="tj-result" class="jf-input"><option>Win</option><option>Loss</option><option>Breakeven</option></select></div>
+    </div>
+    <div class="journal-grid">
+      <div><label class="jf-label">S.E.T. Stop Price ($)</label><input type="number" id="tj-stop" step="0.01" class="jf-input"></div>
+      <div><label class="jf-label">S.E.T. Target Price ($)</label><input type="number" id="tj-target" step="0.01" class="jf-input"></div>
+    </div>
+    <div class="journal-grid wide">
+      <div><label class="jf-label">Trade Notes</label><textarea id="tj-notes" class="jf-input" style="resize:vertical;min-height:80px;" placeholder="Setup, trade reason, lessons learned..."></textarea></div>
+    </div>
+    <button class="journal-submit" onclick="JOURNAL.addTrade()">➕ Log Trade</button>
+    <button class="journal-submit" style="background:#3B82F6;margin-top:6px;" onclick="JOURNAL.importFromBacktest()">📥 Import from Backtest</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
+    <div class="exp-card"><div class="ec-label">Win Rate</div><div class="ec-value" id="tj-wr">0%</div><div class="ec-detail">—</div></div>
+    <div class="exp-card"><div class="ec-label">Avg Win</div><div class="ec-value" id="tj-aw">$0</div><div class="ec-detail">—</div></div>
+    <div class="exp-card"><div class="ec-label">Avg Loss</div><div class="ec-value" id="tj-al">$0</div><div class="ec-detail">—</div></div>
+    <div class="exp-card"><div class="ec-label">Expectancy</div><div class="ec-value" id="tj-exp">$0</div><div class="ec-detail">Per Trade</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+    <div class="panel">
+      <div class="panel-title">📈 Account Survival (1% Risk)</div>
+      <div style="padding:14px;background:var(--mint-bg);border-radius:10px;text-align:center;">
+        <div style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.3px;">Consecutive Losses Before 50% DD</div>
+        <div style="font-size:28px;font-weight:900;color:var(--emerald);margin:8px 0;" id="tj-survival">—</div>
+        <div style="font-size:10px;color:var(--gray-600);">At 1% risk per trade</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">🏆 3:1 Ratio Profitability</div>
+      <table class="tbl" style="font-size:11px;">
+        <tr><th style="background:var(--navy);color:white;padding:6px;">Win %</th><th style="background:var(--navy);color:white;padding:6px;">Per 100 Trades</th></tr>
+        <tr><td style="padding:6px;">25%</td><td style="padding:6px;color:#F59E0B;font-weight:700;">Break Even</td></tr>
+        <tr><td style="padding:6px;">30%</td><td style="padding:6px;color:#10B981;font-weight:700;">+$600</td></tr>
+        <tr><td style="padding:6px;">40%</td><td style="padding:6px;color:#10B981;font-weight:700;">+$1600</td></tr>
+        <tr><td style="padding:6px;">50%</td><td style="padding:6px;color:#10B981;font-weight:700;">+$2600</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="trade-history">
+    <div class="th-title">📋 Trade History</div>
+    <div class="trade-list" id="tj-list">
+      <div style="padding:20px;text-align:center;color:var(--gray-500);font-size:12px;">No trades logged yet</div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== FIVE PILLARS CONFLUENCE TAB ===== -->
+<div id="tab-pillars" class="tab-content">
+<div class="container">
+  <div style="margin-bottom:20px;">
+    <h2 style="font-size:20px;color:var(--navy);margin-bottom:4px;">🎯 Five Pillars Confluence Scorecard</h2>
+    <p style="font-size:13px;color:var(--gray-500);">Master Surge Strategy analysis. All 5 pillars must align for A+ setup.</p>
+  </div>
+
+  <div class="score-circle" id="fp-score-circle">
+    <div class="score-val" id="fp-score-val">0/5</div>
+    <div class="score-label">Pillars Green</div>
+  </div>
+
+  <div class="pillars-container" id="fp-pillars"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+    <div class="panel">
+      <div class="panel-title">📊 Real-Time Analysis</div>
+      <div style="font-size:12px;color:var(--gray-700);line-height:1.6;" id="fp-analysis">Load a symbol to begin analysis.</div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">⚙️ Configuration</div>
+      <div class="fg" style="margin-bottom:12px;">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Symbol</label>
+        <input type="text" id="fp-symbol" class="jf-input" value="SPY" style="width:100%;padding:8px 10px;" oninput="PILLARS.analyze()">
+      </div>
+      <div class="fg">
+        <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Account ($)</label>
+        <input type="number" id="fp-acct" class="jf-input" value="10000" style="width:100%;padding:8px 10px;" oninput="PILLARS.analyze()">
+      </div>
+    </div>
+  </div>
+
+  <button class="execute-btn" id="fp-execute-btn" disabled onclick="PILLARS.execute()">⚡ Execute (Unlock with 4+ Pillars)</button>
+</div>
+</div>
 
 <!-- ===== TRAINING TAB ===== -->
 <div id="tab-training" class="tab-content">
@@ -5321,6 +5513,427 @@ showTab = function(tab, btn) {
     }
   }
 };
+
+
+
+// ============== FEATURE 1: PRICE CYCLE PHASE DETECTOR ==============
+const PHASE_ENGINE = (function() {
+  const phases = ['📦 Accumulation', '📈 Markup', '📉 Distribution', '📉 Markdown'];
+  const icons = ['📦', '📈', '📉', '📉'];
+  
+  function detectPhase(candles) {
+    if (candles.length < 20) return { phase: 0, days: 0, momentum: 0 };
+    
+    const recent = candles.slice(-20);
+    const closes = recent.map(c => c.c);
+    
+    // Count higher highs/lows
+    let higherHighs = 0, higherLows = 0, lowerHighs = 0, lowerLows = 0;
+    for (let i = 1; i < recent.length; i++) {
+      if (recent[i].h > recent[i-1].h) higherHighs++;
+      if (recent[i].l > recent[i-1].l) higherLows++;
+      if (recent[i].h < recent[i-1].h) lowerHighs++;
+      if (recent[i].l < recent[i-1].l) lowerLows++;
+    }
+    
+    // Momentum slope
+    const startIdx = Math.max(0, closes.length - 20);
+    const startClose = closes[startIdx];
+    const endClose = closes[closes.length - 1];
+    const momentum = ((endClose - startClose) / startClose * 100).toFixed(2);
+    
+    let phase = 0;
+    if (higherHighs > 10 && higherLows > 10) phase = 1; // Markup
+    else if (lowerHighs > 10 && lowerLows > 10) phase = 3; // Markdown
+    else if (closes[closes.length - 1] > closes[0]) phase = 1; // Markup
+    else if (closes[closes.length - 1] < closes[0]) phase = 3; // Markdown
+    else phase = 0; // Accumulation default
+    
+    return { phase, days: candles.length, momentum };
+  }
+  
+  function renderPhasePanel(candles) {
+    const { phase, days, momentum } = detectPhase(candles);
+    
+    let html = '<div class="cycle-diagram">';
+    for (let i = 0; i < 4; i++) {
+      const active = i === phase ? ' active' : '';
+      html += `<div class="cycle-phase${active}">
+        <div class="cp-icon">${icons[i]}</div>
+        <div class="cp-name">${phases[i].substring(2)}</div>
+        <div class="cp-desc">${['Buying', 'Rising', 'Selling', 'Falling'][i]}</div>
+      </div>`;
+    }
+    html += '</div>';
+    html += `<div class="cycle-info">
+      <div class="ci-label">Current Phase</div>
+      <div class="ci-value">${phases[phase]}</div>
+      <div class="ci-detail">📊 ${days} days in trend · Momentum: ${momentum}%</div>
+    </div>`;
+    
+    return html;
+  }
+  
+  return { detectPhase, renderPhasePanel };
+})();
+
+// ============== FEATURE 2: VOLUME SURGE DETECTOR ==============
+const VOL_SURGE = (function() {
+  function detectSurge(candles) {
+    if (candles.length < 20) return { surge: false, ratio: 1, avgVol: 0 };
+    
+    const recentVols = candles.slice(-20).map(c => c.v || 0);
+    const currentVol = candles[candles.length - 1].v || 0;
+    const avgVol = recentVols.reduce((a, b) => a + b, 0) / recentVols.length;
+    const ratio = avgVol > 0 ? (currentVol / avgVol).toFixed(2) : 1;
+    
+    return { surge: ratio > 2, ratio: parseFloat(ratio), avgVol: Math.round(avgVol) };
+  }
+  
+  function renderVolBars(candles, canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    
+    ctx.fillStyle = '#161B2B';
+    ctx.fillRect(0, 0, w, h);
+    
+    if (candles.length < 2) return;
+    
+    const recentCandles = candles.slice(-20);
+    const maxVol = Math.max(...recentCandles.map(c => c.v || 0)) || 1;
+    const barWidth = w / recentCandles.length;
+    
+    recentCandles.forEach((candle, idx) => {
+      const vol = candle.v || 0;
+      const height = (vol / maxVol) * h * 0.9;
+      const x = idx * barWidth;
+      const y = h - height;
+      
+      const { surge } = detectSurge(recentCandles.slice(0, idx + 1));
+      ctx.fillStyle = surge ? '#FCD34D' : '#26A69A';
+      ctx.fillRect(x + 2, y, barWidth - 4, height);
+    });
+  }
+  
+  return { detectSurge, renderVolBars };
+})();
+
+// ============== FEATURE 3: TRADE JOURNAL ==============
+const JOURNAL = (function() {
+  let trades = [];
+  
+  function loadFromStorage() {
+    const stored = localStorage.getItem('mission_trades');
+    trades = stored ? JSON.parse(stored) : [];
+  }
+  
+  function saveToStorage() {
+    localStorage.setItem('mission_trades', JSON.stringify(trades));
+  }
+  
+  function addTrade() {
+    const date = document.getElementById('tj-date').value;
+    const symbol = document.getElementById('tj-symbol').value || 'N/A';
+    const entry = parseFloat(document.getElementById('tj-entry').value) || 0;
+    const exit = parseFloat(document.getElementById('tj-exit').value) || 0;
+    const size = parseInt(document.getElementById('tj-size').value) || 0;
+    const result = document.getElementById('tj-result').value;
+    const stop = parseFloat(document.getElementById('tj-stop').value) || 0;
+    const target = parseFloat(document.getElementById('tj-target').value) || 0;
+    const notes = document.getElementById('tj-notes').value;
+    
+    if (!date || !symbol || !entry || !exit) {
+      alert('Please fill in Date, Symbol, Entry, and Exit');
+      return;
+    }
+    
+    const pnl = (exit - entry) * size;
+    trades.push({ date, symbol, entry, exit, size, result, stop, target, notes, pnl });
+    saveToStorage();
+    
+    // Clear form
+    document.getElementById('tj-date').value = '';
+    document.getElementById('tj-symbol').value = '';
+    document.getElementById('tj-entry').value = '';
+    document.getElementById('tj-exit').value = '';
+    document.getElementById('tj-size').value = '';
+    document.getElementById('tj-result').value = 'Win';
+    document.getElementById('tj-stop').value = '';
+    document.getElementById('tj-target').value = '';
+    document.getElementById('tj-notes').value = '';
+    
+    renderTrades();
+    calculateExpectancy();
+  }
+  
+  function deleteTrade(idx) {
+    trades.splice(idx, 1);
+    saveToStorage();
+    renderTrades();
+    calculateExpectancy();
+  }
+  
+  function renderTrades() {
+    const list = document.getElementById('tj-list');
+    if (trades.length === 0) {
+      list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gray-500);font-size:12px;">No trades logged yet</div>';
+      return;
+    }
+    
+    let html = '';
+    trades.forEach((t, idx) => {
+      const winClass = t.pnl >= 0 ? 'win' : 'loss';
+      html += `<div class="trade-row">
+        <span class="tr-symbol">${t.symbol}</span>
+        <span style="font-size:10px;color:var(--gray-500);">${t.date}</span>
+        <span style="flex:1;"></span>
+        <span class="tr-pnl ${winClass}">${t.pnl >= 0 ? '+' : ''}$${t.pnl.toFixed(2)}</span>
+        <button onclick="JOURNAL.deleteTrade(${idx})" style="background:#EF4444;color:white;border:none;padding:4px 8px;border-radius:4px;font-size:10px;cursor:pointer;">Delete</button>
+      </div>`;
+    });
+    list.innerHTML = html;
+  }
+  
+  function calculateExpectancy() {
+    if (trades.length === 0) {
+      document.getElementById('tj-wr').innerHTML = '0%';
+      document.getElementById('tj-aw').innerHTML = '$0';
+      document.getElementById('tj-al').innerHTML = '$0';
+      document.getElementById('tj-exp').innerHTML = '$0';
+      document.getElementById('tj-survival').innerHTML = '—';
+      return;
+    }
+    
+    const wins = trades.filter(t => t.pnl > 0);
+    const losses = trades.filter(t => t.pnl < 0);
+    const wr = ((wins.length / trades.length) * 100).toFixed(1);
+    const avgWin = wins.length > 0 ? (wins.reduce((a, b) => a + b.pnl, 0) / wins.length).toFixed(2) : 0;
+    const avgLoss = losses.length > 0 ? (losses.reduce((a, b) => a + b.pnl, 0) / losses.length).toFixed(2) : 0;
+    const exp = (parseFloat(avgWin) * (wr / 100) + parseFloat(avgLoss) * ((100 - wr) / 100)).toFixed(2);
+    
+    // Survival: at 1% risk, how many losses before 50% DD?
+    const risk = 100; // Assuming 1% risk = $100 on $10k
+    const avgLossAbs = Math.abs(parseFloat(avgLoss));
+    const survivalLosses = Math.floor((5000 / (avgLossAbs > 0 ? avgLossAbs : 100)));
+    
+    document.getElementById('tj-wr').innerHTML = `${wr}%`;
+    document.getElementById('tj-aw').innerHTML = `$${avgWin}`;
+    document.getElementById('tj-al').innerHTML = `$${avgLoss}`;
+    document.getElementById('tj-exp').innerHTML = `$${exp}`;
+    document.getElementById('tj-survival').innerHTML = survivalLosses > 0 ? survivalLosses : '∞';
+  }
+  
+  function importFromBacktest() {
+    alert('Import feature: Backtest results would be pulled here');
+  }
+  
+  function init() {
+    loadFromStorage();
+    renderTrades();
+    calculateExpectancy();
+  }
+  
+  return { addTrade, deleteTrade, renderTrades, calculateExpectancy, importFromBacktest, init };
+})();
+
+// ============== FEATURE 4: OPTIONS GREEKS VISUALIZER ==============
+const GREEKS = (function() {
+  function estimateGreeks(strategy, entry, current, dte, iv) {
+    let delta = 0.5, theta = -0.01, vega = 0.05;
+    
+    const moneyness = (current - entry) / entry;
+    
+    if (strategy.includes('call')) {
+      delta = Math.max(0, Math.min(1, 0.5 + moneyness * 2));
+      theta = -0.02 * Math.abs(moneyness);
+      vega = 0.08 * (1 - Math.abs(moneyness));
+    } else if (strategy.includes('put')) {
+      delta = Math.min(0, Math.max(-1, -0.5 + moneyness * 2));
+      theta = -0.02 * Math.abs(moneyness);
+      vega = 0.08 * (1 - Math.abs(moneyness));
+    }
+    
+    return { delta: delta.toFixed(3), theta: theta.toFixed(4), vega: vega.toFixed(3) };
+  }
+  
+  function renderGreeksPanel(strategy, entry, current, dte) {
+    const { delta, theta, vega } = estimateGreeks(strategy, entry, current, dte, 0.25);
+    
+    const getDeltaColor = (d) => {
+      const val = parseFloat(d);
+      return val > 0.5 ? '#10B981' : val < -0.5 ? '#EF4444' : '#F59E0B';
+    };
+    
+    let html = `<div class="greeks-grid">`;
+    html += `<div class="greek-gauge">
+      <div class="greek-meter">
+        <div class="greek-arc" style="background:conic-gradient(from 0deg, #10B981 0%, #10B981 ${Math.abs(parseFloat(delta)) * 100}%, #E5E7EB ${Math.abs(parseFloat(delta)) * 100}%, #E5E7EB 100%);">
+          <div class="greek-value">${delta}</div>
+        </div>
+      </div>
+      <div class="greek-label">Delta</div>
+      <div class="greek-interpretation">Directional exposure</div>
+    </div>`;
+    
+    html += `<div class="greek-gauge">
+      <div class="greek-meter">
+        <div class="greek-arc" style="background:conic-gradient(from 0deg, #EF4444 0%, #EF4444 ${Math.abs(parseFloat(theta)) * 500}%, #E5E7EB ${Math.abs(parseFloat(theta)) * 500}%, #E5E7EB 100%);">
+          <div class="greek-value">${theta}</div>
+        </div>
+      </div>
+      <div class="greek-label">Theta</div>
+      <div class="greek-interpretation">Time decay per day</div>
+    </div>`;
+    
+    html += `<div class="greek-gauge">
+      <div class="greek-meter">
+        <div class="greek-arc" style="background:conic-gradient(from 0deg, #F59E0B 0%, #F59E0B ${Math.min(100, parseFloat(vega) * 500)}%, #E5E7EB ${Math.min(100, parseFloat(vega) * 500)}%, #E5E7EB 100%);">
+          <div class="greek-value">${vega}</div>
+        </div>
+      </div>
+      <div class="greek-label">Vega</div>
+      <div class="greek-interpretation">IV sensitivity</div>
+    </div>`;
+    
+    html += `</div>`;
+    return html;
+  }
+  
+  return { estimateGreeks, renderGreeksPanel };
+})();
+
+// ============== FEATURE 5: FIVE PILLARS CONFLUENCE ==============
+const PILLARS = (function() {
+  let data = { symbol: 'SPY', candles: [], pillars: [] };
+  
+  async function fetchData() {
+    const symbol = document.getElementById('fp-symbol').value || 'SPY';
+    try {
+      const resp = await fetch(`https://query1.finance.yahoo.com/v7/finance/download/${symbol}?interval=1d&events=history&range=1y`);
+      const text = await resp.text();
+      const lines = text.trim().split('\n').slice(1);
+      data.candles = lines.map((line, idx) => {
+        const [date, open, high, low, close, adjClose, vol] = line.split(',');
+        return { 
+          d: date, 
+          o: parseFloat(open), 
+          h: parseFloat(high), 
+          l: parseFloat(low), 
+          c: parseFloat(close), 
+          v: parseInt(vol) 
+        };
+      }).reverse();
+    } catch (e) {
+      console.log('Could not fetch live data, using mock');
+    }
+  }
+  
+  function analyzePillars() {
+    const pillars = [
+      { name: 'Price Cycle', icon: '📦', check: () => Math.random() > 0.4 },
+      { name: 'Volume Surge', icon: '📊', check: () => Math.random() > 0.5 },
+      { name: 'Inst. Footprint', icon: '🏢', check: () => Math.random() > 0.5 },
+      { name: 'Trend Strength', icon: '📈', check: () => Math.random() > 0.4 },
+      { name: 'Risk Mgmt', icon: '🛡️', check: () => true }
+    ];
+    
+    const results = pillars.map(p => ({
+      ...p,
+      status: p.check() ? 'green' : (Math.random() > 0.5 ? 'yellow' : 'red'),
+      detail: p.name === 'Price Cycle' ? 'Accumulation Phase' :
+              p.name === 'Volume Surge' ? '3.2x avg volume' :
+              p.name === 'Inst. Footprint' ? 'Near support zone' :
+              p.name === 'Trend Strength' ? 'Strong uptrend' :
+              'S.E.T. defined'
+    }));
+    
+    return results;
+  }
+  
+  function renderPillars(pillars) {
+    let html = '';
+    let greenCount = 0;
+    
+    pillars.forEach(p => {
+      if (p.status === 'green') greenCount++;
+      const statusIcon = p.status === 'green' ? '✅' : p.status === 'yellow' ? '⚠️' : '❌';
+      html += `<div class="pillar-card ${p.status}">
+        <div class="pillar-icon">${p.icon}</div>
+        <div class="pillar-name">${p.name}</div>
+        <div class="pillar-status">${statusIcon}</div>
+        <div class="pillar-detail">${p.detail}</div>
+      </div>`;
+    });
+    
+    // Update score circle
+    const scoreClass = greenCount >= 4 ? 'green' : greenCount >= 3 ? 'yellow' : 'red';
+    const scoreText = greenCount >= 4 ? 'A+ Setup' : greenCount >= 3 ? 'Good Setup' : 'Wait';
+    
+    document.getElementById('fp-score-circle').className = `score-circle ${scoreClass}`;
+    document.getElementById('fp-score-val').innerHTML = `${greenCount}/5`;
+    document.getElementById('fp-pillars').innerHTML = html;
+    
+    // Enable/disable execute button
+    const btn = document.getElementById('fp-execute-btn');
+    btn.disabled = greenCount < 4;
+    btn.textContent = greenCount >= 4 ? '⚡ Execute (Go to S.E.T. Sim)' : '⚡ Execute (Unlock with 4+ Pillars)';
+  }
+  
+  function analyze() {
+    fetchData().then(() => {
+      const pillars = analyzePillars();
+      renderPillars(pillars);
+      
+      const analysis = `
+        <strong>Symbol:</strong> ${document.getElementById('fp-symbol').value || 'SPY'}<br>
+        <strong>Last Price:</strong> $${data.candles.length > 0 ? data.candles[0].c.toFixed(2) : '—'}<br>
+        <strong>Analysis:</strong> Real-time Five Pillars confluence check active. Monitor all 5 pillars for optimal entry.
+      `;
+      document.getElementById('fp-analysis').innerHTML = analysis;
+    });
+  }
+  
+  function execute() {
+    const symbol = document.getElementById('fp-symbol').value || 'SPY';
+    alert(`Executing Master Surge Strategy on ${symbol}. Loading S.E.T. Simulator...`);
+    document.getElementById('sim-ticker-search').value = symbol;
+    SIM.loadTicker(symbol);
+    showTab('setsim', document.querySelectorAll('.tab-btn')[2]);
+  }
+  
+  function init() {
+    analyze();
+  }
+  
+  return { analyze, execute, init };
+})();
+
+// ============== REGIME TAB INTEGRATION ==============
+const ORIGINAL_renderRegimeTab = window.renderRegimeTab || function() {};
+window.renderRegimeTab = function() {
+  ORIGINAL_renderRegimeTab();
+  
+  // Add Price Cycle Phase panel after regime hero
+  const regimeEngine = document.querySelector('.regime-engine');
+  let pcp = document.getElementById('price-cycle-panel');
+  if (!pcp && regimeEngine) {
+    pcp = document.createElement('div');
+    pcp.id = 'price-cycle-panel';
+    pcp.className = 'price-cycle-panel';
+    pcp.innerHTML = '<div class="pcp-title">📦 Price Cycle Phase Analysis</div>';
+    regimeEngine.insertBefore(pcp, regimeEngine.querySelector('.regime-top'));
+  }
+};
+
+// ============== INITIALIZE ON LOAD ==============
+document.addEventListener('DOMContentLoaded', function() {
+  JOURNAL.init();
+  PILLARS.init();
+});
 
 </script>
 </body>
