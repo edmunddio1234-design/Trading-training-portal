@@ -775,6 +775,65 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 #hover-tip-box.visible { opacity: 1; }
 [data-tip] { cursor: help; }
 
+/* ---- FLIPBOOK LINK BUTTON (per-tab) ---- */
+.flipbook-link { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,#1B2A4A,#1D3461); color:#10B981; padding:8px 16px; border-radius:8px; font-size:12px; font-weight:700; text-decoration:none; border:1px solid rgba(16,185,129,0.25); transition:all .2s; cursor:pointer; margin:8px 0; }
+.flipbook-link:hover { background:linear-gradient(135deg,#0D9373,#065F46); color:white; border-color:#10B981; transform:translateY(-1px); box-shadow:0 4px 12px rgba(13,147,115,0.3); }
+.flipbook-link svg { width:14px; height:14px; fill:currentColor; }
+
+/* ---- DOCUMENT LIBRARY TAB ---- */
+.lib-hero { background:linear-gradient(135deg,#1B2A4A 0%,#1D3461 60%,#0D9373 100%); border-radius:16px; padding:36px 40px; margin-bottom:32px; position:relative; overflow:hidden; }
+.lib-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:180px; height:180px; background:rgba(13,147,115,0.12); border-radius:50%; }
+.lib-hero::after { content:''; position:absolute; bottom:-50px; right:80px; width:120px; height:120px; background:rgba(13,147,115,0.08); border-radius:50%; }
+.lib-hero h2 { color:white; font-size:24px; font-weight:800; margin:0 0 8px 0; position:relative; z-index:1; }
+.lib-hero p { color:#94A3B8; font-size:13px; margin:0; line-height:1.7; position:relative; z-index:1; max-width:700px; }
+
+/* Bookshelf */
+.bookshelf { margin-bottom:32px; }
+.shelf-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; color:#94A3B8; margin:0 0 14px 4px; display:flex; align-items:center; gap:8px; }
+.shelf-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(148,163,184,0.3),transparent); }
+.shelf-row { display:flex; gap:0; padding:0 12px 0 12px; position:relative; margin-bottom:6px; overflow-x:auto; }
+.shelf-row::after { content:''; position:absolute; bottom:0; left:0; right:0; height:14px; background:linear-gradient(180deg,#8B6F47 0%,#6B5235 40%,#5A4429 100%); border-radius:0 0 4px 4px; box-shadow:0 4px 8px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.08); z-index:0; }
+
+/* Book spine */
+.book { width:64px; min-height:200px; cursor:pointer; position:relative; z-index:1; margin-bottom:14px; transition:all .25s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; align-items:center; justify-content:flex-end; border-radius:3px 6px 6px 3px; box-shadow:2px 2px 6px rgba(0,0,0,0.3), inset -2px 0 4px rgba(0,0,0,0.15); overflow:hidden; }
+.book:hover { transform:translateY(-18px) scale(1.04); box-shadow:4px 8px 20px rgba(0,0,0,0.4), inset -2px 0 4px rgba(0,0,0,0.15); z-index:10; }
+.book:active { transform:translateY(-12px) scale(1.02); }
+.book-spine-text { writing-mode:vertical-rl; text-orientation:mixed; font-size:10px; font-weight:700; color:white; padding:12px 4px; text-align:center; flex:1; display:flex; align-items:center; justify-content:center; text-shadow:0 1px 2px rgba(0,0,0,0.4); letter-spacing:0.3px; line-height:1.3; }
+.book-icon { font-size:16px; margin-bottom:8px; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+.book-edge { position:absolute; left:0; top:0; bottom:0; width:4px; background:rgba(0,0,0,0.15); border-radius:3px 0 0 3px; }
+.book-highlight { position:absolute; right:4px; top:8px; bottom:8px; width:1px; background:rgba(255,255,255,0.1); }
+
+/* Book colors */
+.book-navy { background:linear-gradient(180deg,#1B2A4A 0%,#152238 100%); }
+.book-emerald { background:linear-gradient(180deg,#0D9373 0%,#065F46 100%); }
+.book-teal { background:linear-gradient(180deg,#0F766E 0%,#115E59 100%); }
+.book-indigo { background:linear-gradient(180deg,#3730A3 0%,#312E81 100%); }
+.book-slate { background:linear-gradient(180deg,#334155 0%,#1E293B 100%); }
+.book-amber { background:linear-gradient(180deg,#92400E 0%,#78350F 100%); }
+.book-rose { background:linear-gradient(180deg,#9F1239 0%,#881337 100%); }
+.book-purple { background:linear-gradient(180deg,#6B21A8 0%,#581C87 100%); }
+.book-cyan { background:linear-gradient(180deg,#0E7490 0%,#155E75 100%); }
+.book-green { background:linear-gradient(180deg,#166534 0%,#14532D 100%); }
+.book-gold { background:linear-gradient(180deg,#854D0E 0%,#713F12 100%); }
+
+/* Flipbook viewer overlay */
+.fb-viewer { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter:blur(4px); }
+.fb-viewer.open { display:flex; }
+.fb-viewer-bar { display:flex; align-items:center; gap:12px; padding:12px 24px; width:100%; max-width:1100px; }
+.fb-viewer-title { color:white; font-size:15px; font-weight:700; flex:1; }
+.fb-viewer-close { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; }
+.fb-viewer-close:hover { background:rgba(239,68,68,0.8); border-color:rgba(239,68,68,0.8); }
+.fb-viewer-frame { width:100%; max-width:1100px; aspect-ratio:16/9; border-radius:12px; overflow:hidden; border:2px solid rgba(255,255,255,0.1); box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+.fb-viewer-frame iframe { width:100%; height:100%; border:none; }
+
+/* Master guide banner */
+.master-guide { border:2px solid #10B981; border-radius:16px; overflow:hidden; margin-top:32px; }
+.master-guide-header { background:linear-gradient(135deg,#065F46,#0D9373); padding:20px 28px; display:flex; align-items:center; gap:14px; }
+.master-guide-header h3 { color:white; font-size:17px; font-weight:800; margin:0; }
+.master-guide-header p { color:rgba(255,255,255,0.7); font-size:11px; margin:3px 0 0 0; }
+.master-guide-open { background:white; color:#065F46; padding:8px 18px; border-radius:8px; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap; margin-left:auto; transition:all .2s; }
+.master-guide-open:hover { background:#F0FDF4; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+
 </style>
 </head>
 <body>
@@ -807,12 +866,14 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <button class="tab-btn" onclick="showTab('journal',this)">📊 Trade Journal</button>
   <button class="tab-btn" onclick="showTab('pillars',this)">🎯 Five Pillars</button>
   <button class="tab-btn" onclick="showTab('training',this)">🎯 Chart Training</button>
+  <button class="tab-btn" onclick="showTab('docs',this)">📚 Document Library</button>
 
 </div>
 
 <!-- ===== BACKTESTER TAB ===== -->
 <div id="tab-backtester" class="tab-content active">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/aa3282dce5.html" target="_blank" class="flipbook-link">📖 Open Backtester Guide</a>
   <div class="bt-grid">
 
     <!-- LEFT: CONTROLS -->
@@ -967,6 +1028,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== POSITION SIZER TAB ===== -->
 <div id="tab-sizer" class="tab-content">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/268f581233.html" target="_blank" class="flipbook-link">📖 Open Position Sizer Guide</a>
   <div class="pillars">
     <div class="pillar"><span>🧠</span>Stack Odds</div>
     <div class="pillar"><span>📏</span>Follow Rules</div>
@@ -1035,6 +1097,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== S.E.T. SIMULATOR TAB ===== -->
 <div id="tab-setsim" class="tab-content">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/c0201f19f3.html" target="_blank" class="flipbook-link">📖 Open S.E.T. Simulator Guide</a>
   <div class="sim-grid">
 
     <!-- LEFT: SETUP PANEL -->
@@ -1196,6 +1259,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== MARKOV REGIME TAB ===== -->
 <div id="tab-regime" class="tab-content">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/1c43588293.html" target="_blank" class="flipbook-link">📖 Open Markov Regime Guide</a>
   <div class="regime-engine">
     <!-- HERO: Current Regime Banner -->
     <div class="regime-hero bear" id="regime-hero">
@@ -1273,6 +1337,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
 <div id="tab-chain" class="tab-content">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/5791933449.html" target="_blank" class="flipbook-link">📖 Open Options Tester Guide</a>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
     <span class="live-dot"></span>
     <span style="font-size:13px;font-weight:700;color:var(--navy);">Live Market Data — Yahoo Finance</span>
@@ -1319,6 +1384,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== ABOUT TAB ===== -->
 <div id="tab-about" class="tab-content">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/13bbfffa11.html" target="_blank" class="flipbook-link">📖 Open Strategy Guide Manual</a>
 
   <!-- Quick Reference Cards (Original 7) -->
   <button class="guide-btn guide-hidden" onclick="GUIDE.show('strategy-guide')">🔍</button>
@@ -2314,6 +2380,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== TRADE JOURNAL TAB ===== -->
 <div id="tab-journal" class="tab-content">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/60ee154e24.html" target="_blank" class="flipbook-link">📖 Open Trade Journal Guide</a>
   <div class="journal-form">
     <div class="jf-title">📝 Manual Trade Entry</div>
 <button class="guide-btn guide-hidden" onclick="GUIDE.show('trade-entry')">🔍</button>
@@ -2385,6 +2452,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== FIVE PILLARS CONFLUENCE TAB ===== -->
 <div id="tab-pillars" class="tab-content">
 <div class="container">
+  <a href="https://heyzine.com/flip-book/a8ffa25c14.html" target="_blank" class="flipbook-link">📖 Open Five Pillars Guide</a>
   <div style="margin-bottom:20px;">
     <button class="guide-btn guide-hidden" onclick="GUIDE.show('five-pillars')">🔍</button>
 <div id="guide-five-pillars" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('five-pillars')">✕</button><div class="guide-title">📚 Five Pillars Confluence Scorecard</div><div class="guide-item"><div class="label">What</div><div class="content">The Master Surge Strategy's Five Pillars analyzed in real-time using live market data.</div></div><div class="guide-item"><div class="label">How</div><div class="content">The system automatically fetches Yahoo Finance data and checks each pillar: Price Cycle, Volume Surge, Institutional Footprint, Trend Strength, and Risk Management.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 3 teaches: NEVER execute unless 4+ pillars are green. This scorecard enforces that discipline with real data.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">The score circle (X/5) tells you setup quality. Green = confirmed, Yellow = caution, Red = not met. The Execute button only unlocks at 4+ pillars.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Price Cycle uses Wyckoff analysis — Markup (HH+HL) is bullish, Markdown (LH+LL) is bearish</div><div class="guide-tip">• Volume Surge needs 2x+ average volume to confirm institutional activity</div><div class="guide-tip">• Institutional Footprint checks proximity to the 50-day SMA — institutions defend these levels</div><div class="guide-tip">• The Execute button sends you to S.E.T. Simulator with the symbol pre-loaded — it's the full workflow</div></div></div>
@@ -2430,6 +2498,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     <button class="guide-btn guide-hidden" onclick="GUIDE.show('chart-training')">🔍</button>
 <div id="guide-chart-training" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('chart-training')">✕</button><div class="guide-title">📚 OHLC + Supply/Demand Training</div><div class="guide-item"><div class="label">What</div><div class="content">Interactive chart reading practice with 5 training modes and an achievement system.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Choose a mode (OHLC Mastery, Supply & Demand Zones, etc.). Click "Learn First" for tutorials or "Practice" for quizzes. Answer questions about randomly generated candlestick charts.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 3 teaches the Five Pillars of the Master Surge Strategy. Chart reading is Pillar 1 — Price Cycles. You must be able to read candles instantly.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Build streaks to unlock achievements. Aim for 80%+ accuracy before moving to harder modes. The achievement badges track your progress.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Start with OHLC Mastery — it's the foundation for everything else</div><div class="guide-tip">• Green candles = buyers won (close above open). Red = sellers won (close below open)</div><div class="guide-tip">• Supply zones = where sellers overwhelm buyers. Demand zones = where buyers overwhelm sellers</div><div class="guide-tip">• The 'Learn First' tutorials explain each concept with visual examples before you practice</div></div></div>
 <h2>🎯 OHLC + Supply/Demand Interactive Training</h2>
+    <a href="https://heyzine.com/flip-book/bd8175614e.html" target="_blank" class="flipbook-link">📖 Open Chart Training Guide</a>
     <p class="td-sub">Master chart reading through hands-on practice with realistic live candlestick charts. Always random — never the same chart twice.</p>
 
     <div class="t-stats" id="t-stats">
@@ -2587,6 +2656,145 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div class="sess-msg" id="sess-msg"></div>
         <div class="sess-badges-area" id="sess-badges"></div>
         <div class="sess-actions" id="sess-actions"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== DOCUMENT LIBRARY TAB ===== -->
+<div id="tab-docs" class="tab-content">
+<div class="container" style="padding:30px 20px;">
+
+  <!-- Master Guide Banner -->
+  <div class="master-guide-banner" style="background:linear-gradient(135deg,#1B2A4A 0%,#0D9373 100%);border-radius:16px;padding:28px 32px;margin-bottom:32px;display:flex;align-items:center;gap:24px;border:1px solid rgba(16,185,129,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+    <div style="font-size:48px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📖</div>
+    <div style="flex:1;">
+      <h2 style="margin:0 0 6px 0;color:#fff;font-size:22px;font-weight:800;letter-spacing:-0.3px;">Options Backtester Complete Manual Guide</h2>
+      <p style="margin:0;color:rgba(255,255,255,0.8);font-size:13px;">The comprehensive master reference covering every feature, tool, and strategy in the Options Backtester platform.</p>
+    </div>
+    <a href="https://heyzine.com/flip-book/b72fd3cc20.html" target="_blank" class="flipbook-link" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:12px 24px;font-size:14px;">📖 Open Master Guide</a>
+  </div>
+
+  <h2 style="color:#E8F5F1;font-size:18px;font-weight:700;margin:0 0 8px 0;">📚 Document Library</h2>
+  <p style="color:#94A3B8;font-size:13px;margin:0 0 28px 0;">Click any book to open its interactive flipbook guide.</p>
+
+  <!-- Bookshelf -->
+  <div class="bookshelf" style="background:linear-gradient(180deg,#0F1A2E 0%,#162032 100%);border-radius:16px;padding:36px 32px 20px;border:1px solid rgba(255,255,255,0.06);">
+
+    <!-- Shelf Row 1 -->
+    <div class="shelf-row" style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding-bottom:18px;margin-bottom:32px;position:relative;">
+      <!-- Book 1: Options Backtester -->
+      <a href="https://heyzine.com/flip-book/aa3282dce5.html" target="_blank" class="book book-navy" style="width:64px;min-height:210px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">📊</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Options Backtester</div>
+      </a>
+      <!-- Book 2: Position Sizer -->
+      <a href="https://heyzine.com/flip-book/268f581233.html" target="_blank" class="book book-emerald" style="width:64px;min-height:195px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🎯</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Position Sizer S.E.T.</div>
+      </a>
+      <!-- Book 3: S.E.T. Simulator -->
+      <a href="https://heyzine.com/flip-book/c0201f19f3.html" target="_blank" class="book book-teal" style="width:64px;min-height:200px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">⚡</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">S.E.T. Simulator</div>
+      </a>
+      <!-- Book 4: Markov Regime -->
+      <a href="https://heyzine.com/flip-book/1c43588293.html" target="_blank" class="book book-indigo" style="width:64px;min-height:215px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🔀</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Markov Regime Detector</div>
+      </a>
+      <!-- Book 5: Strategy Guide -->
+      <a href="https://heyzine.com/flip-book/13bbfffa11.html" target="_blank" class="book book-slate" style="width:64px;min-height:205px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">📖</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Strategy Guide</div>
+      </a>
+      <!-- Wooden shelf plank -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:12px;background:linear-gradient(180deg,#8B6F47 0%,#6B5235 40%,#5A4429 100%);border-radius:2px;box-shadow:0 4px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);"></div>
+    </div>
+
+    <!-- Shelf Row 2 -->
+    <div class="shelf-row" style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding-bottom:18px;position:relative;">
+      <!-- Book 6: Options Tester -->
+      <a href="https://heyzine.com/flip-book/5791933449.html" target="_blank" class="book book-amber" style="width:64px;min-height:200px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">⚡</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Options Tester</div>
+      </a>
+      <!-- Book 7: Trade Journal -->
+      <a href="https://heyzine.com/flip-book/60ee154e24.html" target="_blank" class="book book-rose" style="width:64px;min-height:210px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">📊</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Trade Journal</div>
+      </a>
+      <!-- Book 8: Five Pillars -->
+      <a href="https://heyzine.com/flip-book/a8ffa25c14.html" target="_blank" class="book book-purple" style="width:64px;min-height:205px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🎯</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Five Pillars</div>
+      </a>
+      <!-- Book 9: Chart Training -->
+      <a href="https://heyzine.com/flip-book/bd8175614e.html" target="_blank" class="book book-cyan" style="width:64px;min-height:195px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
+        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🎯</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Chart Training</div>
+      </a>
+      <!-- Book 10: Master Guide (featured) -->
+      <a href="https://heyzine.com/flip-book/b72fd3cc20.html" target="_blank" class="book book-gold" style="width:72px;min-height:220px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2),0 0 20px rgba(245,158,11,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);background:linear-gradient(180deg,#B45309 0%,#92400E 50%,#78350F 100%);border:1px solid rgba(245,158,11,0.3);">
+        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
+        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.15);"></div>
+        <div class="book-icon" style="font-size:18px;margin-bottom:8px;">⭐</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:#FDE68A;padding:12px 4px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);">Complete Manual</div>
+      </a>
+      <!-- Wooden shelf plank -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:12px;background:linear-gradient(180deg,#8B6F47 0%,#6B5235 40%,#5A4429 100%);border-radius:2px;box-shadow:0 4px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);"></div>
+    </div>
+
+  </div>
+
+  <!-- Quick Reference Cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:24px;">
+    <div style="background:#1D3461;border-radius:12px;padding:20px;border:1px solid rgba(16,185,129,0.15);">
+      <div style="font-size:14px;font-weight:700;color:#E8F5F1;margin-bottom:8px;">📊 Trading Tools</div>
+      <p style="color:#94A3B8;font-size:12px;margin:0 0 12px 0;">Backtester, Position Sizer, S.E.T. Simulator, Options Tester</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <a href="https://heyzine.com/flip-book/aa3282dce5.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Backtester</a>
+        <a href="https://heyzine.com/flip-book/268f581233.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Position Sizer</a>
+        <a href="https://heyzine.com/flip-book/c0201f19f3.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">S.E.T. Sim</a>
+        <a href="https://heyzine.com/flip-book/5791933449.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Options Tester</a>
+      </div>
+    </div>
+    <div style="background:#1D3461;border-radius:12px;padding:20px;border:1px solid rgba(16,185,129,0.15);">
+      <div style="font-size:14px;font-weight:700;color:#E8F5F1;margin-bottom:8px;">📖 Strategy & Analysis</div>
+      <p style="color:#94A3B8;font-size:12px;margin:0 0 12px 0;">Strategy Guide, Markov Regime, Five Pillars, Chart Training</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <a href="https://heyzine.com/flip-book/13bbfffa11.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Strategy Guide</a>
+        <a href="https://heyzine.com/flip-book/1c43588293.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Markov Regime</a>
+        <a href="https://heyzine.com/flip-book/a8ffa25c14.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Five Pillars</a>
+        <a href="https://heyzine.com/flip-book/bd8175614e.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Chart Training</a>
+      </div>
+    </div>
+    <div style="background:#1D3461;border-radius:12px;padding:20px;border:1px solid rgba(16,185,129,0.15);">
+      <div style="font-size:14px;font-weight:700;color:#E8F5F1;margin-bottom:8px;">📝 Tracking & Reference</div>
+      <p style="color:#94A3B8;font-size:12px;margin:0 0 12px 0;">Trade Journal and Complete Manual Guide</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <a href="https://heyzine.com/flip-book/60ee154e24.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">Trade Journal</a>
+        <a href="https://heyzine.com/flip-book/b72fd3cc20.html" target="_blank" style="font-size:10px;color:#10B981;text-decoration:none;background:rgba(16,185,129,0.1);padding:4px 8px;border-radius:4px;">⭐ Complete Manual</a>
       </div>
     </div>
   </div>
