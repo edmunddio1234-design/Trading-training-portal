@@ -131,6 +131,49 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .acard p { font-size:12px; color:var(--gray-500); line-height:1.5; margin-bottom:6px; }
 .tag { display:inline-block; padding:2px 7px; border-radius:20px; font-size:10px; font-weight:600; background:var(--mint-bg); color:var(--emerald); margin-right:3px; margin-bottom:2px; }
 
+/* Strategy Deep Dive Cards */
+.strat-section{margin-top:24px;}
+.strat-section h2{font-size:20px;color:var(--navy);margin-bottom:4px;}
+.strat-section .strat-sub{font-size:13px;color:var(--gray-500);margin-bottom:16px;}
+.strat-card{background:white;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:16px;overflow:hidden;border-left:5px solid var(--emerald);}
+.strat-card.income{border-left-color:#3B82F6;}
+.strat-card.directional{border-left-color:#F59E0B;}
+.strat-card.hedge{border-left-color:#8B5CF6;}
+.strat-card.advanced{border-left-color:#EF4444;}
+.strat-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;transition:background .15s;}
+.strat-hdr:hover{background:#F8FAFC;}
+.strat-hdr h3{font-size:16px;font-weight:700;color:var(--navy);margin:0;display:flex;align-items:center;gap:8px;}
+.strat-hdr .strat-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.strat-hdr .strat-arrow{font-size:18px;color:var(--gray-500);transition:transform .2s;}
+.strat-card.open .strat-arrow{transform:rotate(180deg);}
+.strat-body{display:none;padding:0 20px 20px;animation:stratFade .2s ease;}
+.strat-card.open .strat-body{display:block;}
+@keyframes stratFade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.strat-box{background:#F8FAFC;border-radius:10px;padding:14px 16px;}
+.strat-box h4{font-size:13px;font-weight:700;color:var(--navy);margin:0 0 6px;display:flex;align-items:center;gap:6px;}
+.strat-box p,.strat-box li{font-size:12.5px;color:#4B5563;line-height:1.6;margin:3px 0;}
+.strat-box ul{padding-left:16px;margin:4px 0;}
+.strat-box .val{color:var(--emerald);font-weight:700;}
+.strat-box .warn{color:#EF4444;font-weight:600;}
+.strat-box .hl{background:#FEF3C7;padding:1px 6px;border-radius:4px;font-weight:600;}
+.strat-example{background:linear-gradient(135deg,#0B1426 0%,#1B2A4A 100%);border-radius:12px;padding:18px 20px;color:white;margin-bottom:14px;}
+.strat-example h4{font-size:14px;font-weight:700;color:#26A69A;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
+.strat-example .ex-row{display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px;line-height:1.7;}
+.strat-example .ex-col{flex:1;min-width:200px;}
+.strat-example .ex-label{color:#9BA3C2;font-weight:600;display:block;}
+.strat-example .ex-val{color:#E0E4F0;font-weight:400;}
+.strat-example .ex-set{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px;margin-top:8px;}
+.strat-example .ex-set dt{color:#F59E0B;font-weight:700;}
+.strat-example .ex-set dd{color:#E0E4F0;margin:0;}
+.strat-mistakes{background:#FEF2F2;border-radius:10px;padding:14px 16px;border:1px solid #FECACA;}
+.strat-mistakes h4{font-size:13px;font-weight:700;color:#991B1B;margin:0 0 6px;}
+.strat-mistakes li{font-size:12.5px;color:#7F1D1D;line-height:1.6;}
+.strat-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.strat-filter button{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:2px solid var(--border);background:white;color:var(--gray-500);transition:all .15s;}
+.strat-filter button.active{background:var(--emerald);color:white;border-color:var(--emerald);}
+@media(max-width:700px){.strat-grid{grid-template-columns:1fr;}.strat-example .ex-row{flex-direction:column;gap:10px;}}
+
 /* ---- NO RESULTS ---- */
 .nores { text-align:center; padding:50px 20px; color:var(--gray-500); }
 .nores .ico { font-size:44px; margin-bottom:10px; }
@@ -451,10 +494,10 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     <div class="logo">MM</div>
     <div>
       <div class="hdr-title">Mission Metrics — Options Backtester</div>
-      <div class="hdr-sub">Impact Trading Academy · 7 Strategies · Markov Regime Detection · S.E.T. Risk Engine</div>
+      <div class="hdr-sub">Impact Trading Academy · 17 Strategies · Markov Regime Detection · S.E.T. Risk Engine</div>
     </div>
   </div>
-  <div class="hdr-badge">⚡ 7 Strategies Loaded</div>
+  <div class="hdr-badge">⚡ 17 Strategies Loaded</div>
 </div>
 
 <!-- TABS -->
@@ -779,6 +822,10 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== ABOUT TAB ===== -->
 <div id="tab-about" class="tab-content">
 <div class="container">
+
+  <!-- Quick Reference Cards (Original 7) -->
+  <h2 style="font-size:20px;color:var(--navy);margin-bottom:4px;">Quick Strategy Reference</h2>
+  <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">Your 7 core options strategies at a glance. Scroll down for 10 fully detailed strategy playbooks with real setup examples.</p>
   <div class="acards">
     <div class="acard">
       <h3>📈 Covered Call</h3>
@@ -824,6 +871,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     </div>
   </div>
 
+  <!-- Core Risk Rules -->
   <div class="panel" style="margin-top:18px;">
     <div class="panel-title">⚖️ Impact Trading Academy — Core Risk Rules</div>
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px; font-size:13px; color:var(--gray-700); line-height:1.7;">
@@ -844,6 +892,904 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       </div>
     </div>
   </div>
+
+  <!-- ===== 10 DETAILED STRATEGY PLAYBOOKS ===== -->
+  <div class="strat-section" id="strategy-playbooks">
+    <h2>📚 Strategy Playbooks — 10 Complete Setups</h2>
+    <p class="strat-sub">Each strategy below is a full teaching module. Click any strategy to expand the complete playbook with purpose, conditions, step-by-step setup, real example, confirmations, and mistakes to avoid.</p>
+
+    <div class="strat-filter">
+      <button class="active" onclick="filterStrats('all',this)">All (10)</button>
+      <button onclick="filterStrats('income',this)">💰 Income</button>
+      <button onclick="filterStrats('directional',this)">🎯 Directional</button>
+      <button onclick="filterStrats('hedge',this)">🛡️ Hedge</button>
+      <button onclick="filterStrats('advanced',this)">🔥 Advanced</button>
+    </div>
+
+    <!-- STRATEGY 1: Demand Zone Bounce (Long) -->
+    <div class="strat-card directional" data-cat="directional">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>📈 1. Demand Zone Bounce (Long Entry)</h3>
+        <div class="strat-tags"><span class="tag">Directional</span><span class="tag">Swing</span><span class="tag">Beginner-Friendly</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Enter a long position when price returns to a proven demand zone where unfilled institutional buy orders sit. You are buying where big money already placed orders — riding the wave of institutional support.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When price pulls back into a demand zone after a prior sharp rally (departure). The zone must be <span class="hl">fresh</span> (not yet retested) or on its first retest. Works best in uptrending or range-bound markets.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Overall market trending up or sideways</li>
+              <li>Stock in an uptrend with higher highs/higher lows</li>
+              <li>Demand zone formed by <span class="val">tight consolidation → sharp upward departure</span></li>
+              <li>Low-to-moderate IV environment</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>Price touches or enters the demand zone</li>
+              <li>A <span class="val">bullish rejection candle</span> forms (hammer, engulfing, pin bar)</li>
+              <li>Volume decreases on the pullback (sellers exhausted)</li>
+              <li>The departure from this zone was sharp (3+ large green bars)</li>
+              <li>Zone is fresh or first retest only</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Scan for stocks that previously rallied sharply from a consolidation area (the demand zone)</li>
+            <li><strong>Step 2:</strong> Draw the zone — mark the base (small tight bars) before the departure (big green bars)</li>
+            <li><strong>Step 3:</strong> Set an alert for when price returns to the zone</li>
+            <li><strong>Step 4:</strong> When price enters the zone, wait for a bullish confirmation candle (do NOT enter blindly)</li>
+            <li><strong>Step 5:</strong> Calculate your S.E.T. — Stop below the zone low, Entry at the confirmation close, Target at 3:1 ratio</li>
+            <li><strong>Step 6:</strong> Size your position using the 1% rule</li>
+            <li><strong>Step 7:</strong> Enter the trade and immediately set your stop loss order</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">AAPL consolidated at $172-$174 for 4 days (the base), then exploded to $185 in 2 days (the departure). Price has now pulled back to $173.50 — right into the demand zone. A bullish engulfing candle just printed on the daily chart.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Entry:</dt><dd>$173.80 (close of the engulfing candle)</dd>
+                <dt>Stop:</dt><dd>$171.50 (below the zone low at $172)</dd>
+                <dt>Target:</dt><dd>$180.70 (3:1 ratio = $6.90 above entry)</dd>
+                <dt>Risk/Share:</dt><dd>$2.30</dd>
+                <dt>Account:</dt><dd>$10,000 → 1% = $100 max risk</dd>
+                <dt>Position Size:</dt><dd>$100 ÷ $2.30 = 43 shares</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>The sharp departure proved that institutional buy orders exist at this price level. When price returns, those <span class="val">unfilled orders activate again</span>, creating buying pressure. You are aligning with the biggest players in the market. The confirmation candle proves buyers have shown up — you are not guessing.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Entering before a confirmation candle — price can slice through a weak zone</li>
+            <li>Using zones that have been retested 2-3+ times (orders get filled, zone weakens)</li>
+            <li>Ignoring the overall market trend — demand zones fail more often in strong downtrends</li>
+            <li>Setting stops too tight inside the zone instead of below it</li>
+            <li>Skipping position sizing — risking more than 1% because "the setup looks perfect"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 2: Supply Zone Rejection (Short) -->
+    <div class="strat-card directional" data-cat="directional">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>📉 2. Supply Zone Rejection (Short Entry)</h3>
+        <div class="strat-tags"><span class="tag">Directional</span><span class="tag">Short Selling</span><span class="tag">Intermediate</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Enter a short position when price rallies into a supply zone where unfilled institutional sell orders sit. You are selling where big money already placed sell orders — profiting as price falls away from resistance.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When price rallies into a supply zone after a prior sharp selloff. The zone must be <span class="hl">fresh</span> or first retest. Works best in downtrending or range-bound markets.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Overall market trending down or sideways</li>
+              <li>Stock making lower highs and lower lows</li>
+              <li>Supply zone formed by <span class="warn">tight consolidation → sharp downward departure</span></li>
+              <li>Rising IV can increase premium on put options</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>Price rallies into the supply zone</li>
+              <li>A <span class="warn">bearish rejection candle</span> forms (shooting star, bearish engulfing)</li>
+              <li>Volume decreases on the rally (buyers exhausted)</li>
+              <li>The original departure from this zone was sharp (3+ large red bars)</li>
+              <li>Zone is fresh or first retest only</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Scan for stocks that previously sold off sharply from a consolidation area (the supply zone)</li>
+            <li><strong>Step 2:</strong> Draw the zone — mark the base before the downward departure</li>
+            <li><strong>Step 3:</strong> Set an alert for when price rallies back to the zone</li>
+            <li><strong>Step 4:</strong> When price enters the zone, wait for bearish confirmation (do NOT short blindly)</li>
+            <li><strong>Step 5:</strong> Calculate S.E.T. — Stop above the zone high, Entry at confirmation close, Target at 3:1 ratio below</li>
+            <li><strong>Step 6:</strong> Size your position using the 1% rule</li>
+            <li><strong>Step 7:</strong> Enter short and set your stop loss immediately</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">TSLA consolidated at $248-$252 for 3 days, then crashed to $228 in 2 sessions. Price has now rallied back to $250 — into the supply zone. A shooting star candle just formed with a long upper wick at $251.80.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Entry:</dt><dd>$249.50 (close of shooting star)</dd>
+                <dt>Stop:</dt><dd>$253.00 (above zone high at $252)</dd>
+                <dt>Target:</dt><dd>$239.00 (3:1 ratio = $10.50 below entry)</dd>
+                <dt>Risk/Share:</dt><dd>$3.50</dd>
+                <dt>Account:</dt><dd>$10,000 → 1% = $100 max risk</dd>
+                <dt>Position Size:</dt><dd>$100 ÷ $3.50 = 28 shares (short)</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>The sharp downward departure proved massive institutional sell orders exist at this price. When price returns, those <span class="warn">unfilled sell orders activate</span>, creating selling pressure. You are shorting exactly where the biggest sellers already committed.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Shorting into a strong uptrend — supply zones fail when bulls are dominant</li>
+            <li>Entering before confirmation — price can break through supply zones</li>
+            <li>Forgetting that short positions have unlimited risk without stops</li>
+            <li>Using ETFs or futures without understanding short mechanics</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 3: Covered Call Income Engine -->
+    <div class="strat-card income" data-cat="income">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>💰 3. Covered Call Income Engine</h3>
+        <div class="strat-tags"><span class="tag">Income</span><span class="tag">Weekly/Monthly</span><span class="tag">Beginner</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Generate consistent income by selling call options against shares you already own. You collect premium every week or month while holding the stock. Think of it as <span class="val">renting out your shares</span>.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When you own 100+ shares of a stock you plan to hold long-term, and the stock is moving sideways or slowly up. Ideal for generating income in neutral-to-bullish markets.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Stock trending sideways or slowly bullish</li>
+              <li>IV at moderate-to-high levels (more premium to collect)</li>
+              <li>No major earnings or events before expiration</li>
+              <li>You are OK with potentially selling at the strike price</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>You own at least 100 shares of the stock</li>
+              <li>Stock is NOT about to gap up on earnings</li>
+              <li>Strike price is above a supply zone (natural resistance)</li>
+              <li>Premium collected meets your income target (aim for 1-2% of stock price per month)</li>
+              <li>Expiration is 7-45 days out</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Verify you own 100 shares (or multiples of 100)</li>
+            <li><strong>Step 2:</strong> Check the options chain — find calls 1-2 strikes above current price</li>
+            <li><strong>Step 3:</strong> Choose an expiration 7-30 days out (weekly for more frequent income, monthly for more premium)</li>
+            <li><strong>Step 4:</strong> Sell 1 call contract per 100 shares you own</li>
+            <li><strong>Step 5:</strong> Set an alert at 80% of max profit to consider buying back early</li>
+            <li><strong>Step 6:</strong> If price stays below strike → option expires worthless → you keep premium + shares</li>
+            <li><strong>Step 7:</strong> Repeat next week/month for consistent income</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">You own 100 shares of MSFT at $415. Stock is moving sideways between $410-$420. Supply zone exists at $425. You sell the $425 call expiring in 14 days for $3.20 per share.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Premium Collected:</dt><dd>$3.20 × 100 = $320</dd>
+                <dt>Strike Price:</dt><dd>$425 (above supply zone)</dd>
+                <dt>Breakeven:</dt><dd>$415 - $3.20 = $411.80</dd>
+                <dt>Max Profit:</dt><dd>($425-$415) + $3.20 = $13.20/sh = $1,320</dd>
+                <dt>Monthly Yield:</dt><dd>$320 / $41,500 = 0.77%</dd>
+                <dt>Annual Pace:</dt><dd>~9.2% income on top of stock gains</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>You already own the shares, so the call you sell is <span class="val">fully covered</span> — no naked risk. Time decay (theta) works in your favor every single day. If the stock stays below your strike, you keep the full premium and repeat. Over 12 months, this can add 8-15% income on top of any stock appreciation.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Selling calls before earnings — stock can gap past your strike and you lose upside</li>
+            <li>Choosing a strike too close to current price — high premium but likely to get called away</li>
+            <li>Not having a plan for assignment — know in advance if you are OK selling at that price</li>
+            <li>Selling calls when the stock is in a strong uptrend — you cap your gains</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 4: Cash-Secured Put for Discounted Entry -->
+    <div class="strat-card income" data-cat="income">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>💵 4. Cash-Secured Put — Buy Stocks at a Discount</h3>
+        <div class="strat-tags"><span class="tag">Income</span><span class="tag">Entry Strategy</span><span class="tag">Beginner</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Get paid to wait for a stock to drop to your desired price. You sell a put at a strike price where you would happily buy. If the stock drops there, you buy at a discount. If it does not, you keep the premium as income.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When you want to own a stock but think it is slightly overpriced. Place your put at a demand zone level — you are essentially saying "I will buy here if price drops." Works great in neutral-to-bullish markets.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Stock you want to own at a lower price</li>
+              <li>A demand zone exists near your desired entry price</li>
+              <li>IV elevated (more premium to collect)</li>
+              <li>You have cash available equal to 100 × strike price</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>You genuinely want to own 100 shares at the strike price</li>
+              <li>Strike price aligns with a demand zone</li>
+              <li>You have the cash secured (100 × strike)</li>
+              <li>Premium collected is at least 1% of the strike price</li>
+              <li>No catastrophic event risk (bankruptcy, delisting)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Identify a stock you want to own — check fundamentals</li>
+            <li><strong>Step 2:</strong> Find the nearest demand zone on the chart (institutional buy area)</li>
+            <li><strong>Step 3:</strong> Choose a put strike at or near that demand zone</li>
+            <li><strong>Step 4:</strong> Sell 1 put contract, collect the premium</li>
+            <li><strong>Step 5:</strong> Keep cash reserved (strike × 100) in your account</li>
+            <li><strong>Step 6:</strong> If stock stays above strike → option expires → keep premium → repeat</li>
+            <li><strong>Step 7:</strong> If assigned → you now own 100 shares at your desired price minus the premium</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">NVDA is trading at $880. You want to own it at $850 where a demand zone sits. You sell the $850 put expiring in 30 days for $12.00 per share. You hold $85,000 cash.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Premium Collected:</dt><dd>$12.00 × 100 = $1,200</dd>
+                <dt>Effective Buy Price:</dt><dd>$850 - $12 = $838 if assigned</dd>
+                <dt>Discount vs Current:</dt><dd>$880 → $838 = 4.8% discount</dd>
+                <dt>If NOT Assigned:</dt><dd>Keep $1,200 = 1.4% return in 30 days</dd>
+                <dt>Cash Required:</dt><dd>$85,000 (strike × 100 shares)</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>You are placing your buy order at a <span class="val">demand zone</span> where institutions already have buy orders. If price drops there, you are buying where the smart money buys — and at an even better price because you collected premium. If price never drops, you still earn income from the premium. It is a win-win when used on quality stocks.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Selling puts on stocks you would not actually want to own</li>
+            <li>Not having the cash secured — margin call risk</li>
+            <li>Selling puts during earnings when the stock can gap through your strike</li>
+            <li>Choosing strikes too close to current price — high assignment risk with small premium</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 5: Iron Condor Income Trap -->
+    <div class="strat-card income" data-cat="income">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>🦅 5. Iron Condor — Range-Bound Income Trap</h3>
+        <div class="strat-tags"><span class="tag">Income</span><span class="tag">Neutral</span><span class="tag">Intermediate</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Profit from a stock staying within a price range. You sell both a call spread above and a put spread below, collecting premium from both sides. Time decay is your best friend — as long as price stays in the range, you win.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When a stock is trapped between a <span class="val">supply zone above</span> and a <span class="val">demand zone below</span>. The market is range-bound with no clear direction. IV is elevated (more premium to sell).</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Low volatility / sideways / range-bound</li>
+              <li>IV Rank above 30% (premium is worth selling)</li>
+              <li>No major catalysts (earnings, Fed) before expiration</li>
+              <li>Clear supply zone above and demand zone below</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>Stock has traded in a range for 5+ days</li>
+              <li>Short strikes placed beyond the supply/demand zones</li>
+              <li>Credit collected is at least 1/3 of spread width</li>
+              <li>45 DTE or less for optimal time decay</li>
+              <li>No earnings within the expiration window</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Find a range-bound stock between supply and demand zones</li>
+            <li><strong>Step 2:</strong> Sell a call spread above the supply zone (sell lower call, buy higher call)</li>
+            <li><strong>Step 3:</strong> Sell a put spread below the demand zone (sell higher put, buy lower put)</li>
+            <li><strong>Step 4:</strong> Collect combined premium from both spreads</li>
+            <li><strong>Step 5:</strong> Set profit target at 50% of max credit (close early when reached)</li>
+            <li><strong>Step 6:</strong> Set a stop loss at 2× credit received</li>
+            <li><strong>Step 7:</strong> Let time decay work — manage at 21 DTE if still open</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">SPY is ranging between $540-$555. Supply zone at $556. Demand zone at $538. IV Rank is 35%. You set up the iron condor at 30 DTE.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Sell Call:</dt><dd>$558 (above supply)</dd>
+                <dt>Buy Call:</dt><dd>$563 ($5 wide)</dd>
+                <dt>Sell Put:</dt><dd>$536 (below demand)</dd>
+                <dt>Buy Put:</dt><dd>$531 ($5 wide)</dd>
+                <dt>Credit Collected:</dt><dd>$1.80 × 100 = $180</dd>
+                <dt>Max Loss:</dt><dd>($5.00 - $1.80) × 100 = $320</dd>
+                <dt>Profit Target:</dt><dd>Close at $90 profit (50%)</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>You are placing your short strikes beyond the supply and demand zones — institutional levels where price is likely to reverse. Both sides of the trade benefit from <span class="val">time decay</span>. As long as price stays between your short strikes, you keep the premium. The zones act as natural walls that contain the price.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Setting strikes too narrow for bigger premium — increases loss probability</li>
+            <li>Holding through earnings — one gap destroys the trade</li>
+            <li>Not closing at 50% profit — greed turns winners into losers</li>
+            <li>Trading iron condors in trending markets — they need range-bound conditions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 6: LEAPS Wealth Builder -->
+    <div class="strat-card directional" data-cat="directional">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>🏗️ 6. LEAPS Wealth Builder — Long-Term Leverage</h3>
+        <div class="strat-tags"><span class="tag">Directional</span><span class="tag">Long-Term</span><span class="tag">10-20× Leverage</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Control 100 shares of a high-quality stock for a fraction of the cost using long-term options (LEAPS). Build wealth with 10-20× leverage while your max loss is limited to the premium paid — perfect for the 1% rule.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When you are bullish on a quality stock over the next 6-24 months but do not want to tie up $10,000-$50,000 buying shares outright. Best after a pullback to a demand zone on the weekly chart.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Stock in a long-term uptrend (weekly chart)</li>
+              <li>Currently pulling back to a demand zone or moving average</li>
+              <li>IV relatively low (cheaper premium)</li>
+              <li>Strong fundamentals (earnings growing, sector strong)</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>Weekly chart shows higher highs and higher lows</li>
+              <li>Price is at or near a demand zone on weekly timeframe</li>
+              <li>Expiration is 12-24 months out (minimum)</li>
+              <li>Strike is ITM or ATM (delta 0.70+)</li>
+              <li>Premium fits within 1% account risk if total loss</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Identify a stock with strong long-term fundamentals in an uptrend</li>
+            <li><strong>Step 2:</strong> Wait for a pullback to a weekly demand zone (patience pays)</li>
+            <li><strong>Step 3:</strong> Choose a LEAPS call with 12-24 months until expiration</li>
+            <li><strong>Step 4:</strong> Select a strike price that is ITM or ATM (delta 0.70+) for higher probability</li>
+            <li><strong>Step 5:</strong> Calculate: premium must be ≤ 1% of account (your max loss)</li>
+            <li><strong>Step 6:</strong> Buy the LEAPS contract</li>
+            <li><strong>Step 7:</strong> Hold — let the long-term trend work. Consider selling covered calls against it monthly for income</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">AMZN is at $185, pulled back to the weekly demand zone at $182-$186. You buy a LEAPS call with a $175 strike expiring in 18 months for $25.00 per share ($2,500 total).</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Cost:</dt><dd>$25.00 × 100 = $2,500</dd>
+                <dt>Controls:</dt><dd>100 shares of AMZN (~$18,500 worth)</dd>
+                <dt>Leverage:</dt><dd>$18,500 / $2,500 = 7.4×</dd>
+                <dt>Max Loss:</dt><dd>$2,500 (the premium paid)</dd>
+                <dt>Break-Even:</dt><dd>$175 + $25 = $200 at expiration</dd>
+                <dt>If AMZN hits $220:</dt><dd>Value = ($220-$175) × 100 = $4,500 → 80% gain</dd>
+                <dt>Account:</dt><dd>$50,000 → 1% = $500 per trade (buy 1 contract for ~5% allocation)</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>LEAPS give you <span class="val">time</span> — 12-24 months for the stock to move. Unlike weekly options that decay rapidly, LEAPS decay slowly. A deep ITM strike (delta 0.70+) moves almost dollar-for-dollar with the stock. Your max loss is capped at the premium, making risk management clean. You control the same 100 shares for a fraction of the capital.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Buying OTM LEAPS for cheaper premium — low delta means the stock needs a huge move</li>
+            <li>Buying when IV is high — you overpay for the contract</li>
+            <li>Not giving enough time — choose at least 12 months expiration</li>
+            <li>Risking more than 1% of account — LEAPS can still go to zero</li>
+            <li>Ignoring the weekly trend — LEAPS on downtrending stocks is a losing game</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 7: Futures Micro E-mini Scalp -->
+    <div class="strat-card advanced" data-cat="advanced">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>⚡ 7. Micro E-mini S&P 500 Scalp</h3>
+        <div class="strat-tags"><span class="tag">Advanced</span><span class="tag">Daily Income</span><span class="tag">Futures</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Generate daily income by trading the Micro E-mini S&P 500 (MES) futures contract. Each point = $5. Trade 23 hours a day with no $25K PDT rule. Use the 60/40 tax advantage to keep more profits.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>During active market hours (8:30 AM - 3:00 PM CST) when volume is highest. Look for demand/supply zone bounces on the 5-minute chart after the market establishes direction in the first 30 minutes.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Clear direction established in first 30 minutes</li>
+              <li>Volatility present but not extreme (VIX 15-25)</li>
+              <li>No major economic data release in next 30 minutes</li>
+              <li>Price respecting intraday supply/demand zones</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>5-min chart shows a clear demand or supply zone</li>
+              <li>Price touches the zone and prints a reversal candle</li>
+              <li>Volume confirms (spike on the reversal bar)</li>
+              <li>S.E.T. is calculated BEFORE entering</li>
+              <li>Risk per trade ≤ 1% of futures account</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Mark overnight high/low and key supply/demand zones on the 5-min chart before market open</li>
+            <li><strong>Step 2:</strong> Wait for the first 30 minutes to establish direction — do NOT trade the open</li>
+            <li><strong>Step 3:</strong> Identify a pullback to a demand zone (for longs) or rally to a supply zone (for shorts)</li>
+            <li><strong>Step 4:</strong> Wait for a reversal candle at the zone (hammer, engulfing)</li>
+            <li><strong>Step 5:</strong> Calculate S.E.T.: Stop = 4 points from entry ($20/contract risk), Target = 12 points ($60/contract reward)</li>
+            <li><strong>Step 6:</strong> Enter 1 MES contract, set stop loss immediately</li>
+            <li><strong>Step 7:</strong> Take profit at target or trail stop after 8+ points in your favor</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">MES (S&P 500 micro) is trading at 5,520. A demand zone formed at 5,505-5,510 during the first hour. Price pulls back to 5,508 and prints a bullish engulfing on the 5-min chart at 10:15 AM CST.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Entry:</dt><dd>5,510 (close of engulfing bar)</dd>
+                <dt>Stop:</dt><dd>5,506 (4 pts below = $20 risk)</dd>
+                <dt>Target:</dt><dd>5,522 (12 pts above = $60 reward)</dd>
+                <dt>Ratio:</dt><dd>3:1 reward-to-risk</dd>
+                <dt>Account:</dt><dd>$2,000 → 1% = $20 max risk → 1 contract</dd>
+                <dt>Tax Advantage:</dt><dd>60% at 15% + 40% at 22% = ~17.8% blended rate</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>MES lets you trade the S&P 500 with as little as $2,000 — no PDT rule. The <span class="val">60/40 tax treatment</span> means you keep more profits than stock day traders. Intraday supply/demand zones on the 5-min chart are the same institutional footprints as daily zones — just on a shorter timeframe. The 3:1 ratio means you only need to win 26%+ of trades to be profitable.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Trading the first 30 minutes — the open is choppy and unpredictable</li>
+            <li>Overleveraging — trading multiple contracts before mastering 1 contract</li>
+            <li>No stop loss — futures losses are UNLIMITED unlike options</li>
+            <li>Trading during major data releases (FOMC, jobs report, CPI)</li>
+            <li>Revenge trading after a loss — walk away and come back tomorrow</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 8: Bull Put Spread -->
+    <div class="strat-card income" data-cat="income">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>🐂 8. Bull Put Spread — Bullish Credit Strategy</h3>
+        <div class="strat-tags"><span class="tag">Income</span><span class="tag">Bullish</span><span class="tag">Defined Risk</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Collect premium by selling a put spread below a demand zone. You profit if the stock stays above your short strike. Defined risk, defined reward — you know your max loss before entering.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When you are bullish on a stock but want to generate income instead of buying shares. Place your short strike below a demand zone — you are betting the zone will hold as support.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Stock trending up or range-bound with strong demand below</li>
+              <li>IV elevated (more premium to collect on the spread)</li>
+              <li>45 DTE or less for best time decay</li>
+              <li>No earnings before expiration</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>Clear demand zone visible on the chart</li>
+              <li>Short put strike is below the demand zone</li>
+              <li>Credit received is at least 1/3 of spread width</li>
+              <li>Max loss fits within 1% account risk</li>
+              <li>Bullish bias confirmed by higher timeframe trend</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Find a bullish stock with a clear demand zone below current price</li>
+            <li><strong>Step 2:</strong> Sell a put at a strike below the demand zone</li>
+            <li><strong>Step 3:</strong> Buy a put 5-10 points lower (defines your max loss)</li>
+            <li><strong>Step 4:</strong> Collect the net credit (sell premium - buy premium)</li>
+            <li><strong>Step 5:</strong> Close at 50% profit or let expire if well out of the money</li>
+            <li><strong>Step 6:</strong> Set a stop: close if loss reaches 2× credit received</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">GOOGL at $175. Demand zone at $168-$170. You sell the $167/$162 put spread expiring in 30 days. Short $167 put collects $2.80, long $162 put costs $1.30. Net credit = $1.50.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Credit Collected:</dt><dd>$1.50 × 100 = $150</dd>
+                <dt>Max Loss:</dt><dd>($5.00 - $1.50) × 100 = $350</dd>
+                <dt>Breakeven:</dt><dd>$167 - $1.50 = $165.50</dd>
+                <dt>Win Condition:</dt><dd>GOOGL stays above $167 at expiration</dd>
+                <dt>Probability:</dt><dd>~75% (short strike well below demand zone)</dd>
+                <dt>Account:</dt><dd>$10,000 → max loss $350 = 3.5% (trade 1 contract)</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>Your short strike is placed below a demand zone — meaning <span class="val">institutional buy orders</span> sit between current price and your short strike. For you to lose, price must break through the demand zone AND keep going. The probability is in your favor. Time decay works for you every day.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Placing the short strike too close to the demand zone — leaves no buffer</li>
+            <li>Selling spreads too wide for the premium — risk/reward becomes unfavorable</li>
+            <li>Holding losers hoping for recovery — close at your predetermined stop</li>
+            <li>Ignoring earnings dates — a gap down can blow through both strikes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 9: Bear Call Spread -->
+    <div class="strat-card hedge" data-cat="hedge">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>🐻 9. Bear Call Spread — Bearish Credit Strategy</h3>
+        <div class="strat-tags"><span class="tag">Hedge</span><span class="tag">Bearish</span><span class="tag">Defined Risk</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Collect premium by selling a call spread above a supply zone. You profit if the stock stays below your short strike. This is the bearish version of the bull put spread — income generation when you expect price to stay flat or drop.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>When you are bearish or neutral and a supply zone exists above. Place your short call strike above the supply zone — betting the zone will hold as resistance and reject price downward.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Stock trending down or sideways with supply zone overhead</li>
+              <li>IV elevated for better premium</li>
+              <li>30-45 DTE for optimal time decay</li>
+              <li>Higher timeframe confirms bearish or neutral bias</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>Clear supply zone visible above current price</li>
+              <li>Short call strike is above the supply zone</li>
+              <li>Credit is at least 1/3 of spread width</li>
+              <li>Max loss fits within 1% account risk</li>
+              <li>No catalysts that could cause a breakout above the zone</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Find a stock with a supply zone above current price</li>
+            <li><strong>Step 2:</strong> Sell a call at a strike above the supply zone</li>
+            <li><strong>Step 3:</strong> Buy a call 5-10 points higher (caps your max loss)</li>
+            <li><strong>Step 4:</strong> Collect the net credit</li>
+            <li><strong>Step 5:</strong> Close at 50% profit or let expire worthless</li>
+            <li><strong>Step 6:</strong> Set stop: close if loss reaches 2× credit</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">META at $510. Supply zone at $525-$530 where a sharp selloff started previously. You sell the $532/$537 call spread at 30 DTE. Net credit = $1.40.</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Credit Collected:</dt><dd>$1.40 × 100 = $140</dd>
+                <dt>Max Loss:</dt><dd>($5.00 - $1.40) × 100 = $360</dd>
+                <dt>Breakeven:</dt><dd>$532 + $1.40 = $533.40</dd>
+                <dt>Win Condition:</dt><dd>META stays below $532</dd>
+                <dt>Buffer:</dt><dd>$22 above current price + supply zone wall</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>The supply zone acts as a <span class="warn">ceiling</span> — institutional sell orders sit there ready to push price back down. Your short strike is placed above this ceiling, so price must break through institutional resistance to threaten your trade. The odds are stacked in your favor.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Selling call spreads in a strong uptrend — supply zones fail when momentum is bullish</li>
+            <li>Holding through a breakout — if the supply zone fails, close immediately</li>
+            <li>Ignoring earnings or acquisition rumors — these can blow through any zone</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY 10: Straddle Earnings Play -->
+    <div class="strat-card advanced" data-cat="advanced">
+      <div class="strat-hdr" onclick="toggleStrat(this)">
+        <h3>🎰 10. Pre-Earnings Straddle — Volatility Expansion Play</h3>
+        <div class="strat-tags"><span class="tag">Advanced</span><span class="tag">Volatility</span><span class="tag">Event-Driven</span></div>
+        <span class="strat-arrow">▼</span>
+      </div>
+      <div class="strat-body">
+        <div class="strat-grid">
+          <div class="strat-box">
+            <h4>🎯 Purpose</h4>
+            <p>Profit from a large price move in either direction around earnings. You buy both a call and a put at the same strike. You do not care which direction — you just need a big move. The move must be larger than the combined premium paid.</p>
+          </div>
+          <div class="strat-box">
+            <h4>⏱️ When To Use</h4>
+            <p>5-10 days before a major earnings announcement, when IV is still building but has not yet peaked. The key is buying before the IV surge makes options too expensive. Exit before or right after the announcement.</p>
+          </div>
+          <div class="strat-box">
+            <h4>🌤️ Best Market Conditions</h4>
+            <ul>
+              <li>Stock has history of large post-earnings moves (5%+)</li>
+              <li>IV is rising but has not peaked yet</li>
+              <li>Stock is coiling in a tight range before earnings (balance phase)</li>
+              <li>Analyst expectations are divergent (uncertainty = bigger move)</li>
+            </ul>
+          </div>
+          <div class="strat-box">
+            <h4>✅ Confirmation Checklist</h4>
+            <ul>
+              <li>Historical earnings moves average 5%+ for this stock</li>
+              <li>Current IV percentile is below 60% (still cheap-ish)</li>
+              <li>Price is in a tight range (balance) leading into earnings</li>
+              <li>Combined premium is less than expected move size</li>
+              <li>Total cost fits within 1% account risk</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>📋 Step-by-Step Setup</h4>
+          <ul>
+            <li><strong>Step 1:</strong> Research: pull up the stock's last 4-8 earnings — what was the average move?</li>
+            <li><strong>Step 2:</strong> Check current IV — if IV percentile is above 70%, the move may already be priced in (skip)</li>
+            <li><strong>Step 3:</strong> Buy 1 ATM call + 1 ATM put at the same strike (the straddle)</li>
+            <li><strong>Step 4:</strong> Choose expiration that covers the earnings date + 1 week buffer</li>
+            <li><strong>Step 5:</strong> Total premium = your max risk (must be ≤ 1% of account)</li>
+            <li><strong>Step 6 (Option A):</strong> Sell the straddle right before earnings if IV has spiked enough (profit from IV expansion)</li>
+            <li><strong>Step 7 (Option B):</strong> Hold through earnings — close the winning leg, cut the losing leg</li>
+          </ul>
+        </div>
+
+        <div class="strat-example">
+          <h4>💡 Real Setup Example</h4>
+          <div class="ex-row">
+            <div class="ex-col">
+              <span class="ex-label">Scenario:</span>
+              <span class="ex-val">NFLX is at $680, earnings in 7 days. Last 4 earnings moved: +8%, -6%, +11%, -5% (avg 7.5%). IV percentile is 45% (still cheap). NFLX has been coiling between $670-$690 for 2 weeks (balance phase).</span>
+            </div>
+            <div class="ex-col">
+              <dl class="ex-set">
+                <dt>Buy $680 Call:</dt><dd>$18.00 × 100 = $1,800</dd>
+                <dt>Buy $680 Put:</dt><dd>$17.50 × 100 = $1,750</dd>
+                <dt>Total Cost:</dt><dd>$3,550 (max loss)</dd>
+                <dt>Break-Even Up:</dt><dd>$680 + $35.50 = $715.50 (+5.2%)</dd>
+                <dt>Break-Even Down:</dt><dd>$680 - $35.50 = $644.50 (-5.2%)</dd>
+                <dt>Expected Move:</dt><dd>7.5% = $51 → $731 or $629</dd>
+                <dt>Potential Profit:</dt><dd>~$1,500-$2,000 on a 7.5% move</dd>
+                <dt>Account:</dt><dd>$50,000 → total cost within risk tolerance</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-box" style="margin-bottom:14px;">
+          <h4>🧠 Why This Setup Works</h4>
+          <p>Earnings are the ultimate <span class="val">imbalance event</span> — the balance phase (tight range) breaks decisively in one direction. By owning both sides, you profit regardless of direction. The key is entering when IV is still building (cheap) and either selling before earnings (profit from IV expansion alone) or holding through for the directional move. History shows that stocks with large average earnings moves tend to keep moving big.</p>
+        </div>
+
+        <div class="strat-mistakes">
+          <h4>⚠️ Common Mistakes</h4>
+          <ul>
+            <li>Buying when IV is already at peak — you overpay and the "IV crush" after earnings kills both legs</li>
+            <li>Not checking historical move sizes — if the stock only moves 2% on earnings, a straddle rarely profits</li>
+            <li>Holding too long after earnings — time decay accelerates rapidly after the event</li>
+            <li>Risking more than 1% — straddles are expensive; they can go to zero if the stock barely moves</li>
+            <li>Not having an exit plan — decide before earnings whether you are selling before or holding through</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end strategy-playbooks -->
 </div>
 </div>
 
@@ -2765,6 +3711,20 @@ return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,sub
 })();
 
 
+
+// ---- STRATEGY PLAYBOOK INTERACTIONS ----
+function toggleStrat(hdr){
+  const card=hdr.closest('.strat-card');
+  card.classList.toggle('open');
+}
+function filterStrats(cat,btn){
+  document.querySelectorAll('.strat-filter button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.strat-card').forEach(card=>{
+    if(cat==='all')card.style.display='';
+    else card.style.display=card.dataset.cat===cat?'':'none';
+  });
+}
 </script>
 </body>
 </html>
