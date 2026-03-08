@@ -271,6 +271,44 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .reset-btn:hover { background:#EF4444; color:white; }
 
 
+/* Mode Toggle */
+.mode-toggle{display:flex;align-items:center;gap:10px;background:var(--navy);border-radius:10px;padding:8px 14px;margin-bottom:10px;}
+.mode-sw{position:relative;width:48px;height:26px;background:#374151;border-radius:13px;cursor:pointer;transition:background .2s;border:none;}
+.mode-sw.on{background:var(--emerald);}
+.mode-sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .2s;}
+.mode-sw.on::after{transform:translateX(22px);}
+.mode-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;}
+.mode-badge.learn{background:#D1FAE5;color:#065F46;}
+.mode-badge.test{background:#DBEAFE;color:#1E40AF;}
+.mt-label{font-size:12px;color:#9BA3C2;font-weight:600;}
+
+/* Explainer Overlay */
+.expl-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:none;overflow-y:auto;}
+.expl-overlay.show{display:flex;align-items:flex-start;justify-content:center;padding:20px 10px;}
+.expl-panel{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;width:95vw;max-width:860px;max-height:none;margin:auto;}
+.expl-top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.expl-top h3{margin:0;font-size:18px;color:var(--navy);}
+.expl-top .verdict{font-size:14px;font-weight:700;padding:4px 12px;border-radius:8px;}
+.expl-top .verdict.ok{background:#D1FAE5;color:#065F46;}
+.expl-top .verdict.no{background:#FEE2E2;color:#991B1B;}
+.expl-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-500);padding:4px 8px;}
+.expl-body{padding:20px;display:flex;flex-direction:column;gap:16px;}
+.expl-chart-area{background:#0B1426;border-radius:12px;padding:10px;text-align:center;}
+.expl-chart-area canvas{width:100%;max-width:780px;border-radius:8px;}
+.expl-section{background:#F8FAFC;border-radius:10px;padding:14px 16px;}
+.expl-section h4{margin:0 0 8px;font-size:14px;color:var(--navy);display:flex;align-items:center;gap:6px;}
+.expl-section p,.expl-section ul{margin:4px 0;font-size:13px;color:#4B5563;line-height:1.55;}
+.expl-section ul{padding-left:18px;}
+.expl-section li{margin-bottom:4px;}
+.expl-section .highlight{background:#FEF3C7;padding:2px 6px;border-radius:4px;font-weight:600;}
+.expl-section .term{color:var(--emerald);font-weight:700;}
+.expl-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;}
+.expl-footer button{padding:8px 20px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:none;}
+.expl-btn-next{background:var(--emerald);color:white;}
+.expl-btn-next:hover{background:#1E8E7E;}
+@media(max-width:600px){.expl-panel{width:98vw;border-radius:10px;}.expl-body{padding:12px;}.mode-toggle{flex-wrap:wrap;gap:6px;}}
+
+
 /* --- Question Panel --- */
 .qp { background:white; border-radius:12px; padding:16px 20px; box-shadow:0 2px 10px rgba(0,0,0,.05); margin-bottom:12px; }
 .qp .qp-num { font-size:11px; font-weight:600; color:var(--emerald); text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
@@ -911,6 +949,11 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
           <div class="anno-det" id="anno-det"></div>
         </div>
       </div>
+      <div class="mode-toggle" id="mode-toggle">
+        <span class="mt-label">Mode:</span>
+        <div class="mode-sw on" id="hints-sw" onclick="TM.toggleHints()"></div>
+        <span class="mode-badge learn" id="hints-badge">LEARNING</span>
+      </div>
       <div class="explore-bar">
         <span>🔍 Explore Mode</span>
         <button class="etoggle on" id="etoggle" onclick="TM.toggleExplore()"></button>
@@ -925,6 +968,24 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       <div class="qp-opts" id="qp-opts"></div>
     </div>
     <div class="fb" id="fb"><div class="fb-hd" id="fb-hd"></div><div class="fb-tx" id="fb-tx"></div></div>
+  </div>
+
+  <!-- Explainer Overlay -->
+  <div class="expl-overlay" id="expl-ov" onclick="if(event.target===this)TM.closeExpl()">
+    <div class="expl-panel">
+      <div class="expl-top">
+        <h3 id="expl-title">Explanation</h3>
+        <span class="verdict" id="expl-verdict"></span>
+        <button class="expl-close" onclick="TM.closeExpl()">&times;</button>
+      </div>
+      <div class="expl-body" id="expl-body">
+        <div class="expl-chart-area"><canvas id="expl-canvas" width="780" height="300"></canvas></div>
+        <div id="expl-text"></div>
+      </div>
+      <div class="expl-footer">
+        <button class="expl-btn-next" onclick="TM.closeExpl()">Got it &rarr;</button>
+      </div>
+    </div>
   </div>
 
   <!-- Tutorial Overlay -->
@@ -1794,6 +1855,7 @@ const TM = (function(){
 
 let mode=null,diff='easy',sQ=[],qI=0,sC=0,streak=0,bStreak=0,answered=false;
 let sessResults=[]; // Per-question results for accurate tracking
+let hintsOn=true;
 let explore=true,canvas,ctx,W,H;
 let bars=[],animBars=[],animIdx=0,isAnim=false,animFrame=null;
 let hovBar=-1,callout=null,userZone=null,isDraw=false,drawSt=null,drawnZ=[];
@@ -2055,6 +2117,7 @@ function getHoverHTML(hit){
 
 let hoverTipEl=null;
 function showHoverTip(hit,px,py){
+  if(!hintsOn)return;
   if(!hoverTipEl){
     hoverTipEl=document.getElementById('hover-tip');
     if(!hoverTipEl){
@@ -2198,6 +2261,7 @@ function showFB(ok,q,sc){
   let t=ok?(q.fc||'Great!'):(q.fw||'Try again.');
   if(sc!==undefined&&sc>0)t+=` (Zone quality: ${(sc*100).toFixed(0)}%)`;
   document.getElementById('fb-tx').textContent=t;
+  setTimeout(function(){showExplanation(ok,q,sc);},400);
 }
 
 // ---- ZONE GRADING ----
@@ -2231,7 +2295,7 @@ function getLevel(p){const a=p.tQ>0?p.tC/p.tQ:0;if(p.tQ>=200&&a>=0.85)return'Exp
 function getMastery(p,m){const k={ohlc:['o_o','o_c','o_h','o_l','o_bull','o_bear','o_body','o_wick'],sd:['sd_d','sd_s','sd_base','sd_dept','sd_ret'],seq:['of_bal','of_imb','of_mov','seq'],zm:['zm'],of:['of_bal','of_imb','of_mov','of_pres']};const ks=k[m]||[];let t=0,c=0;ks.forEach(k=>{if(p.a[k]>=2){t+=p.c[k]/p.a[k];c++;}});return c>0?(t/c*100):0;}
 
 // ---- ENGINE: start, events, navigation ----
-let evClick,evMove,evDown,evUp;
+let evClick,evMove,evDown,evUp,evDblClick;
 function startMode(m){
   mode=m;qI=0;sC=0;streak=0;bStreak=0;answered=false;drawnZ=[];sessResults=[];
   const data=genQ();
@@ -2295,6 +2359,211 @@ function toggleExplore(){
   document.getElementById('ehint').textContent=explore?'Click any part of a candle to learn':'Explore mode off';
 }
 
+function toggleHints(){
+  hintsOn=!hintsOn;
+  const sw=document.getElementById('hints-sw');
+  if(sw)sw.classList.toggle('on',hintsOn);
+  const badge=document.getElementById('hints-badge');
+  if(badge){badge.className='mode-badge '+(hintsOn?'learn':'test');badge.textContent=hintsOn?'LEARNING':'TEST';}
+  if(!hintsOn)hideHoverTip();
+}
+
+// ====================== EXPLAINER ENGINE ======================
+function showExplanation(ok,q,sc){
+  const ov=document.getElementById('expl-ov');if(!ov)return;
+  // Title
+  const title=document.getElementById('expl-title');
+  if(title)title.textContent=ok?'Correct! Here\'s Why':'Incorrect - Let\'s Learn';
+  // Verdict badge
+  const vd=document.getElementById('expl-verdict');
+  if(vd){vd.className='verdict '+(ok?'ok':'no');vd.textContent=ok?'CORRECT':'INCORRECT';}
+  // Build explanation text
+  const textEl=document.getElementById('expl-text');
+  if(textEl)textEl.innerHTML=buildExplanation(ok,q,sc);
+  // Draw marked-up chart
+  try{drawExplChart(q,ok);}catch(e){console.log('expl chart err',e);}
+  // Show
+  ov.classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeExpl(){
+  const ov=document.getElementById('expl-ov');if(ov)ov.classList.remove('show');
+  document.body.style.overflow='';
+}
+
+function drawExplChart(q,ok){
+  const ec=document.getElementById('expl-canvas');if(!ec||!bars||bars.length===0)return;
+  const ectx=ec.getContext('2d');
+  const ew=ec.width,eh=ec.height;
+  ectx.clearRect(0,0,ew,eh);
+  // Background
+  ectx.fillStyle='#0B1426';ectx.fillRect(0,0,ew,eh);
+  // Compute scale
+  let lo=Infinity,hi=-Infinity;
+  bars.forEach(b=>{if(b.l<lo)lo=b.l;if(b.h>hi)hi=b.h;});
+  const pad={t:20,r:50,b:30,l:10};
+  const range=hi-lo||1;
+  const scaleY=v=>pad.t+(hi-v)/range*(eh-pad.t-pad.b);
+  const bw=Math.max(3,Math.floor((ew-pad.l-pad.r)/bars.length)-2);
+  // Draw bars
+  bars.forEach((b,i)=>{
+    const x=pad.l+i*(bw+2);
+    const bull=b.c>=b.o;
+    // Wick
+    ectx.strokeStyle=bull?'#26A69A':'#EF5350';ectx.lineWidth=1;
+    ectx.beginPath();ectx.moveTo(x+bw/2,scaleY(b.h));ectx.lineTo(x+bw/2,scaleY(b.l));ectx.stroke();
+    // Body
+    const top=scaleY(Math.max(b.o,b.c)),bot=scaleY(Math.min(b.o,b.c));
+    ectx.fillStyle=bull?'#26A69A':'#EF5350';
+    ectx.fillRect(x,top,bw,Math.max(1,bot-top));
+  });
+  // Highlight relevant bar if question references one
+  if(q&&q.bi!==undefined&&q.bi>=0&&q.bi<bars.length){
+    const b=bars[q.bi];const x=pad.l+q.bi*(bw+2);
+    ectx.strokeStyle='#F59E0B';ectx.lineWidth=2;
+    ectx.strokeRect(x-2,scaleY(b.h)-2,bw+4,scaleY(b.l)-scaleY(b.h)+4);
+    // Arrow label
+    ectx.fillStyle='#F59E0B';ectx.font='bold 11px Inter,sans-serif';
+    ectx.fillText('\u25BC This bar',x-5,scaleY(b.h)-6);
+  }
+  // If zone question, highlight the zone
+  if(q&&q.type==='zone_draw'&&q.zones){
+    const zones=findZones(bars).filter(z=>z.type===q.zt);
+    zones.forEach(z=>{
+      const x1=pad.l+z.s*(bw+2);const x2=pad.l+z.e*(bw+2)+bw;
+      const yt=scaleY(z.hi);const yb=scaleY(z.lo);
+      ectx.fillStyle=q.zt==='demand'?'rgba(38,166,154,0.15)':'rgba(239,83,80,0.15)';
+      ectx.fillRect(x1,yt,x2-x1,yb-yt);
+      ectx.strokeStyle=q.zt==='demand'?'#26A69A':'#EF5350';
+      ectx.lineWidth=1;ectx.setLineDash([4,3]);
+      ectx.strokeRect(x1,yt,x2-x1,yb-yt);
+      ectx.setLineDash([]);
+      ectx.fillStyle='white';ectx.font='bold 10px Inter,sans-serif';
+      ectx.fillText(q.zt==='demand'?'DEMAND ZONE':'SUPPLY ZONE',x1+4,yt-4);
+    });
+  }
+}
+
+function buildExplanation(ok,q,sc){
+  let html='';
+  const b=q.bi!==undefined&&q.bi>=0&&q.bi<bars.length?bars[q.bi]:null;
+  // Section 1: What the question asked
+  html+='<div class="expl-section"><h4>\u{1F4CB} What Was Asked</h4>';
+  html+='<p>'+q.q+'</p>';
+  if(q.type==='mc')html+='<p><strong>Correct answer:</strong> <span class="term">'+q.cor+'</span></p>';
+  html+='</div>';
+  // Section 2: Why correct/incorrect
+  html+='<div class="expl-section"><h4>'+(ok?'\u2705 Why You Were Right':'\u274C Why That Was Wrong')+'</h4>';
+  if(ok){
+    html+='<p>'+(q.fc||'You correctly identified the pattern.')+'</p>';
+  } else {
+    html+='<p>'+(q.fw||'The correct answer was different.')+'</p>';
+    if(q.type==='mc')html+='<p>The correct answer is <span class="highlight">'+q.cor+'</span>.</p>';
+  }
+  html+='</div>';
+  // Section 3: What the chart showed
+  html+='<div class="expl-section"><h4>\u{1F4CA} What The Chart Showed</h4>';
+  if(b){
+    const bull=b.c>=b.o;
+    html+='<p>The highlighted bar was a <span class="term">'+(bull?'bullish (green)':'bearish (red)')+'</span> candle.</p>';
+    html+='<ul>';
+    html+='<li><strong>Open:</strong> $'+b.o.toFixed(2)+' &rarr; <strong>Close:</strong> $'+b.c.toFixed(2)+'</li>';
+    html+='<li><strong>High:</strong> $'+b.h.toFixed(2)+' &rarr; <strong>Low:</strong> $'+b.l.toFixed(2)+'</li>';
+    html+='<li><strong>Body size:</strong> $'+Math.abs(b.c-b.o).toFixed(2)+' | <strong>Range:</strong> $'+(b.h-b.l).toFixed(2)+'</li>';
+    const upperWick=bull?(b.h-b.c):(b.h-b.o);const lowerWick=bull?(b.o-b.l):(b.c-b.l);
+    html+='<li><strong>Upper wick:</strong> $'+upperWick.toFixed(2)+' | <strong>Lower wick:</strong> $'+lowerWick.toFixed(2)+'</li>';
+    html+='</ul>';
+  } else {
+    html+='<p>This question tested your understanding of the overall chart pattern and price action.</p>';
+  }
+  html+='</div>';
+  // Section 4: Clues to notice
+  html+='<div class="expl-section"><h4>\u{1F50D} Clues To Notice</h4><ul>';
+  if(b){
+    const bull=b.c>=b.o;const body=Math.abs(b.c-b.o);const range=b.h-b.l;
+    const upperW=bull?(b.h-b.c):(b.h-b.o);const lowerW=bull?(b.o-b.l):(b.c-b.l);
+    if(body<range*0.2)html+='<li>The body is small relative to the range &mdash; indicates <span class="term">indecision</span> (possible doji)</li>';
+    if(lowerW>body*2)html+='<li>Long lower wick suggests <span class="term">buying pressure / rejection of lower prices</span></li>';
+    if(upperW>body*2)html+='<li>Long upper wick suggests <span class="term">selling pressure / rejection of higher prices</span></li>';
+    if(body>range*0.7)html+='<li>Large body with small wicks shows <span class="term">strong conviction</span> in the move</li>';
+    html+='<li>Always compare the bar to surrounding bars for <span class="term">context</span></li>';
+  }
+  html+='<li>Look at volume patterns and sequence of candles, not just individual bars</li>';
+  html+='</ul></div>';
+  // Section 5: Module connection
+  html+='<div class="expl-section"><h4>\u{1F393} Module Connection</h4>';
+  const con=q.con||'General';
+  html+='<p>This question connects to: <span class="term">'+con+'</span></p>';
+  if(con.includes('OHLC'))html+='<p>Review Module 3 for OHLC bar anatomy and candlestick reading fundamentals.</p>';
+  else if(con.includes('Supply')||con.includes('Demand'))html+='<p>Review Modules on Supply &amp; Demand zones and institutional footprints.</p>';
+  else if(con.includes('Trend'))html+='<p>Review trend identification and the Balance &rarr; Imbalance &rarr; Movement framework.</p>';
+  else html+='<p>Continue practicing to build pattern recognition skills.</p>';
+  html+='</div>';
+  // Section 6: Zone quality (if applicable)
+  if(sc!==undefined&&sc>0){
+    html+='<div class="expl-section"><h4>\u{1F3AF} Zone Accuracy</h4>';
+    html+='<p>Your zone drawing scored <span class="highlight">'+(sc*100).toFixed(0)+'%</span> accuracy.</p>';
+    if(sc>0.8)html+='<p>Excellent zone identification!</p>';
+    else if(sc>0.5)html+='<p>Good attempt. Try to tighten the zone boundaries to match the consolidation area more precisely.</p>';
+    else html+='<p>Review how to identify the base of the move. Look for the consolidation before the explosive move.</p>';
+    html+='</div>';
+  }
+  return html;
+}
+
+function showBarExplainer(hit){
+  const b=hit.bar;const i=hit.idx;
+  const bull=b.c>=b.o;
+  const body=Math.abs(b.c-b.o);const range=b.h-b.l;
+  const upperW=bull?(b.h-b.c):(b.h-b.o);const lowerW=bull?(b.o-b.l):(b.c-b.l);
+  // Build a fake question object for the explainer
+  const fakeQ={q:'Deep Analysis: Bar '+(i+1),bi:i,cor:'N/A',type:'info',con:'OHLC Anatomy',
+    fc:'This is a detailed breakdown of bar '+(i+1)+'.',fw:''};
+  // Populate
+  const ov=document.getElementById('expl-ov');if(!ov)return;
+  const title=document.getElementById('expl-title');
+  if(title)title.textContent='Deep Analysis: Bar '+(i+1)+' of '+bars.length;
+  const vd=document.getElementById('expl-verdict');
+  if(vd){vd.className='verdict '+(bull?'ok':'no');vd.textContent=bull?'BULLISH':'BEARISH';}
+  // Build detailed analysis
+  let html='';
+  html+='<div class="expl-section"><h4>\u{1F4CA} Bar Anatomy</h4>';
+  html+='<ul>';
+  html+='<li><strong>Type:</strong> <span class="term">'+(bull?'Bullish (buyers won)':'Bearish (sellers won)')+'</span></li>';
+  html+='<li><strong>Open:</strong> $'+b.o.toFixed(2)+' | <strong>Close:</strong> $'+b.c.toFixed(2)+'</li>';
+  html+='<li><strong>High:</strong> $'+b.h.toFixed(2)+' | <strong>Low:</strong> $'+b.l.toFixed(2)+'</li>';
+  html+='<li><strong>Body:</strong> $'+body.toFixed(2)+' ('+(range>0?(body/range*100).toFixed(0):0)+'% of range)</li>';
+  html+='<li><strong>Upper Wick:</strong> $'+upperW.toFixed(2)+' | <strong>Lower Wick:</strong> $'+lowerW.toFixed(2)+'</li>';
+  html+='<li><strong>Total Range:</strong> $'+range.toFixed(2)+'</li>';
+  html+='</ul></div>';
+  // Pattern hints
+  html+='<div class="expl-section"><h4>\u{1F50D} Pattern Clues</h4><ul>';
+  if(body<range*0.15)html+='<li><span class="highlight">Doji-like</span> &mdash; Very small body suggests indecision between buyers and sellers</li>';
+  else if(body>range*0.75)html+='<li><span class="highlight">Marubozu-like</span> &mdash; Large body with tiny wicks shows strong '+(bull?'buying':'selling')+' conviction</li>';
+  if(lowerW>body*2.5)html+='<li><span class="highlight">Hammer/Pin Bar</span> &mdash; Long lower wick shows rejection of lower prices (bullish signal)</li>';
+  if(upperW>body*2.5)html+='<li><span class="highlight">Shooting Star</span> &mdash; Long upper wick shows rejection of higher prices (bearish signal)</li>';
+  if(i>0){
+    const prev=bars[i-1];const prevBull=prev.c>=prev.o;
+    if(bull&&!prevBull&&b.c>prev.o)html+='<li><span class="highlight">Bullish Engulfing potential</span> &mdash; This green bar\'s close exceeds the previous red bar\'s open</li>';
+    if(!bull&&prevBull&&b.c<prev.o)html+='<li><span class="highlight">Bearish Engulfing potential</span> &mdash; This red bar\'s close is below the previous green bar\'s open</li>';
+  }
+  html+='<li>Always confirm patterns with the <span class="term">next 1-2 bars</span> for validation</li>';
+  html+='</ul></div>';
+  // Context
+  html+='<div class="expl-section"><h4>\u{1F393} Learning Note</h4>';
+  html+='<p>Double-click any bar in <span class="term">Learning Mode</span> to get this deep analysis. ';
+  html+='Understanding individual bar anatomy is the foundation of all chart reading.</p></div>';
+  const textEl=document.getElementById('expl-text');
+  if(textEl)textEl.innerHTML=html;
+  try{drawExplChart(fakeQ,true);}catch(e){}
+  ov.classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+
+
+
 // ---- EVENT HANDLERS ----
 function setupEv(){
   removeEv();
@@ -2335,10 +2604,17 @@ function setupEv(){
         const sb=Math.max(0,Math.floor((x1-PAD.l)/(barW+GAP)));const eb=Math.min(bars.length-1,Math.floor((x2-PAD.l)/(barW+GAP)));
         userZone={sb,eb,hp:y2p(y1),lp:y2p(y2),x:x1,y:y1,w:x2-x1,h:y2-y1};}drawSt=null;}
   };
-  canvas.addEventListener('click',evClick);canvas.addEventListener('mousemove',evMove);
+    evDblClick=function(e){
+    if(!hintsOn)return;
+    var r=canvas.getBoundingClientRect();var px=e.clientX-r.left,py=e.clientY-r.top;
+    var hit=hitTest(px,py);
+    if(hit)showBarExplainer(hit);
+  };
+canvas.addEventListener('click',evClick);canvas.addEventListener('mousemove',evMove);
   canvas.addEventListener('mousedown',evDown);canvas.addEventListener('mouseup',evUp);
+  canvas.addEventListener('dblclick',evDblClick);
 }
-function removeEv(){hideHoverTip();if(canvas){if(evClick)canvas.removeEventListener('click',evClick);if(evMove)canvas.removeEventListener('mousemove',evMove);if(evDown)canvas.removeEventListener('mousedown',evDown);if(evUp)canvas.removeEventListener('mouseup',evUp);}}
+function removeEv(){hideHoverTip();if(canvas){if(evClick)canvas.removeEventListener('click',evClick);if(evMove)canvas.removeEventListener('mousemove',evMove);if(evDown)canvas.removeEventListener('mousedown',evDown);if(evUp)canvas.removeEventListener('mouseup',evUp);if(evDblClick)canvas.removeEventListener('dblclick',evDblClick);}}
 
 // ---- SESSION END ----
 function endSess(){
@@ -2463,7 +2739,7 @@ function resetProgress(){
   updateDash();
 }
 
-return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,xAnno,initTraining,genChart,resetProgress};
+return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,toggleHints,closeExpl,xAnno,initTraining,genChart,resetProgress};
 })();
 
 // Hash-based tab switching (for iframe embedding)
