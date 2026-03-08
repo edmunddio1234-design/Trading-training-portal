@@ -2100,7 +2100,7 @@ function newChart(){
   animate(animBars,()=>loadQ());
 }
 
-function setDiff(d,el){diff=d;document.querySelectorAll('.dpill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+function setDiff(d,el){diff=d;document.querySelectorAll('.dpill').forEach(p=>p.classList.remove('on'));if(el&&el.classList)el.classList.add('on');}
 
 function loadQ(){
   if(qI>=sQ.length){endSess();return;}
