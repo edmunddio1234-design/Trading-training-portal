@@ -770,6 +770,12 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .guide-overlay .guide-tip { font-size: 12px; line-height: 1.5; color: #D1E7F0; margin-bottom: 8px; }
 .guide-overlay .guide-close { float: right; background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 18px; }
 
+/* ===== HOVER TIPS ===== */
+[data-tip] { position: relative; }
+[data-tip]::after { content: attr(data-tip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #FFD700; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.3); max-width: 280px; white-space: normal; text-align: center; line-height: 1.4; }
+[data-tip]:hover::after { opacity: 1; }
+.guide-tips-off [data-tip]::after { display: none !important; }
+
 </style>
 </head>
 <body>
@@ -818,7 +824,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
         <div class="fg">
           <label>Symbol</label>
-          <select id="sym">
+          <select id="sym" data-tip="Pick the stock to backtest your strategy on">
             <option value="SPY">SPY — S&P 500 ETF</option>
             <option value="QQQ">QQQ — Nasdaq ETF</option>
             <option value="AAPL">AAPL — Apple</option>
@@ -830,23 +836,23 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <div class="fg">
             <label>Start Date</label>
-            <input type="date" id="dt-start" value="2023-01-01">
+            <input type="date" id="dt-start" value="2023-01-01" data-tip="Start date for historical simulation">
           </div>
           <div class="fg">
             <label>End Date</label>
-            <input type="date" id="dt-end" value="2025-01-01">
+            <input type="date" id="dt-end" value="2025-01-01" data-tip="End date for historical simulation">
           </div>
         </div>
 
         <div class="fg">
           <label>Account Size ($)</label>
-          <input type="number" id="acct" value="10000" min="1000" step="500" oninput="updateMaxRisk()">
+          <input type="number" id="acct" value="10000" min="1000" step="500" oninput="updateMaxRisk()" data-tip="Your simulated account balance — 1% = max risk per trade">
           <div class="tip">1% Rule: Max risk per trade = $<span id="maxrisk-disp">100</span></div>
         </div>
 
         <div class="fg">
           <label>Options Strategy</label>
-          <select id="strat" onchange="loadParams()">
+          <select id="strat" onchange="loadParams()" data-tip="Choose which options strategy to simulate">
             <option value="covered_call">Covered Call</option>
             <option value="cash_secured_put">Cash-Secured Put</option>
             <option value="iron_condor">Iron Condor</option>
@@ -861,7 +867,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
         <div class="fg">
           <label>Expiration Cycle (DTE)</label>
-          <select id="dte">
+          <select id="dte" data-tip="Days to expiration — how long until the option contract expires">
             <option value="30">Monthly — 30 DTE</option>
             <option value="45">45 DTE</option>
             <option value="7">Weekly — 7 DTE</option>
@@ -869,7 +875,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
           </select>
         </div>
 
-        <button class="run-btn" onclick="runBacktest()">▶ RUN BACKTEST</button>
+        <button class="run-btn" onclick="runBacktest()" data-tip="Runs the backtest simulation on historical data">▶ RUN BACKTEST</button>
 
         <div class="riskwarn">
           ⚠️ <strong>Impact Trading Academy:</strong> Never risk more than 1% per trade.
@@ -976,23 +982,23 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <div id="guide-set-calc" class="guide-overlay guide-hidden"><button class="guide-close" onclick="GUIDE.hide('set-calc')">✕</button><div class="guide-title">📚 S.E.T. Position Calculator</div><div class="guide-item"><div class="label">What</div><div class="content">The S.E.T. Rule calculator — your risk management command center.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Enter your account balance, entry price, stop loss, and target price. Select instrument type. Click "Calculate S.E.T." to get your position size.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">The S.E.T. Rule (Stop, Entry, Target) is the foundation of risk management from Module 1. NEVER enter a trade without defining all three levels first.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Position Size tells you EXACTLY how many shares to buy. Risk:Reward should be at least 3:1. Max Risk shows your 1% rule amount.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• The 1% Rule: Max risk = 1% of account. On a $10,000 account, that's $100 max loss per trade</div><div class="guide-tip">• 3:1 Ratio means for every $1 you risk, you target $3 profit. This is non-negotiable</div><div class="guide-tip">• Capital Deployed shows how much of your account this trade uses — keep it manageable</div></div></div>
       <div class="fg">
         <label>Account Balance ($)</label>
-        <input type="number" id="sz-acct" value="10000" oninput="calcSET()">
+        <input type="number" id="sz-acct" value="10000" oninput="calcSET()" data-tip="Your real account balance for position sizing">
       </div>
       <div class="fg">
         <label>Entry Price ($)</label>
-        <input type="number" id="sz-entry" value="150.00" step="0.01" oninput="calcSET()">
+        <input type="number" id="sz-entry" value="150.00" step="0.01" oninput="calcSET()" data-tip="The price where you plan to enter the trade">
       </div>
       <div class="fg">
         <label>Stop Loss Price ($)</label>
-        <input type="number" id="sz-stop" value="147.00" step="0.01" oninput="calcSET()">
+        <input type="number" id="sz-stop" value="147.00" step="0.01" oninput="calcSET()" data-tip="Your protective floor — exit here to limit losses">
       </div>
       <div class="fg">
         <label>Your Target Price ($)</label>
-        <input type="number" id="sz-target" value="159.00" step="0.01" oninput="calcSET()">
+        <input type="number" id="sz-target" value="159.00" step="0.01" oninput="calcSET()" data-tip="Your profit goal — aim for 3:1 reward-to-risk">
       </div>
       <div class="fg">
         <label>Instrument</label>
-        <select id="sz-type" onchange="calcSET()">
+        <select id="sz-type" onchange="calcSET()" data-tip="Stock, option, or futures — affects position sizing math">
           <option value="stock">Stock (per share)</option>
           <option value="options">Options (1 contract = 100 shares)</option>
         </select>
@@ -1039,7 +1045,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <div id="guide-stock-selection" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('stock-selection')">✕</button><div class="guide-title">📚 Stock Selection</div><div class="guide-item"><div class="label">What</div><div class="content">Live stock data loader — pulls real price history from Yahoo Finance.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Type a ticker symbol or click a quick-select button (SPY, QQQ, etc.). Choose your date range. The chart will load with real OHLC candles.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Practice reading real charts and setting S.E.T. levels on actual market data before trading live.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Look for clear support/resistance levels, supply/demand zones, and trend direction before setting your Entry, Stop, and Target.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Start with SPY to practice — it moves predictably and has the most data</div><div class="guide-tip">• Use the 1 Year range to see the full picture before zooming into shorter timeframes</div><div class="guide-tip">• The price auto-fills your Entry near the last close — adjust it based on your analysis</div></div></div>
         <div class="sim-search-wrap">
           <span class="sim-search-icon">🔎</span>
-          <input class="sim-search" id="sim-ticker-search" type="text" placeholder="Search ticker (e.g. AAPL, TSLA)..." autocomplete="off">
+          <input class="sim-search" id="sim-ticker-search" type="text" placeholder="Search ticker (e.g. AAPL, TSLA)..." autocomplete="off" data-tip="Type any stock ticker to load real chart data">
           <div class="sim-results" id="sim-search-results"></div>
         </div>
         <div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;" id="sim-quick-tickers">
@@ -1051,7 +1057,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         </div>
         <div style="margin-top:8px;">
           <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Date Range</label>
-          <select id="sim-range" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:12px;background:var(--gray-100);color:var(--navy);margin-top:3px;" onchange="SIM.loadTicker(SIM.state.symbol)">
+          <select id="sim-range" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:12px;background:var(--gray-100);color:var(--navy);margin-top:3px;" onchange="SIM.loadTicker(SIM.state.symbol)" data-tip="Time period of price data to display">
             <option value="6mo">6 Months</option>
             <option value="1y" selected>1 Year</option>
             <option value="2y">2 Years</option>
@@ -1066,22 +1072,22 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <div id="guide-set-setup" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('set-setup')">✕</button><div class="guide-title">📚 S.E.T. Rule Setup</div><div class="guide-item"><div class="label">What</div><div class="content">Your trade planning panel where you define Stop, Entry, and Target on the live chart.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Set Entry (your trigger price), Stop (your protective floor), and Target (your goal). Click "Auto 3:1" to automatically calculate a 3:1 target. The chart updates with colored lines.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 1 teaches: Stop first, Entry second, Target last. This simulator lets you practice the discipline of planning BEFORE entering.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Watch the Risk/Share and Reward/Share metrics. The dashed lines on the chart show your exact S.E.T. levels visually.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Red dashed line = Stop (protective floor). Blue = Entry (trigger). Green = Target (goal)</div><div class="guide-tip">• The 'Auto 3:1' button calculates your target automatically based on your stop distance</div><div class="guide-tip">• Trade Commentary below the chart gives educational feedback as you interact</div></div></div>
         <div class="fg" style="margin-bottom:8px;">
           <label style="font-size:10px;font-weight:600;color:var(--gray-500);text-transform:uppercase;">Account Balance ($)</label>
-          <input type="number" id="sim-acct" value="10000" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:var(--gray-100);color:var(--navy);" oninput="SIM.calcMetrics()">
+          <input type="number" id="sim-acct" value="10000" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:var(--gray-100);color:var(--navy);" oninput="SIM.calcMetrics()" data-tip="Account size for calculating position limits">
         </div>
         <div class="set-input-row">
           <label class="s-entry">⬆ ENTRY $</label>
-          <input type="number" id="sim-entry" step="0.01" placeholder="Entry price" oninput="SIM.calcMetrics()">
+          <input type="number" id="sim-entry" step="0.01" placeholder="Entry price" oninput="SIM.calcMetrics()" data-tip="Your trigger price — where you enter the trade">
         </div>
         <div class="set-input-row">
           <label class="s-stop">🛑 STOP $</label>
-          <input type="number" id="sim-stop" step="0.01" placeholder="Stop loss" oninput="SIM.calcMetrics()">
+          <input type="number" id="sim-stop" step="0.01" placeholder="Stop loss" oninput="SIM.calcMetrics()" data-tip="Your stop loss — always set BEFORE entering">
         </div>
         <div class="set-input-row">
           <label class="s-target">🎯 TARGET $</label>
-          <input type="number" id="sim-target" step="0.01" placeholder="Profit target" oninput="SIM.calcMetrics()">
+          <input type="number" id="sim-target" step="0.01" placeholder="Profit target" oninput="SIM.calcMetrics()" data-tip="Your profit target — 3x your risk distance">
         </div>
         <div style="display:flex;gap:6px;margin-top:4px;">
-          <button class="sim-btn reset" onclick="SIM.autoSET()" style="flex:1;font-size:11px;">🤖 Auto 3:1</button>
+          <button class="sim-btn reset" onclick="SIM.autoSET()" style="flex:1;font-size:11px;" data-tip="Auto-calculates a 3:1 target from your stop">🤖 Auto 3:1</button>
           <button class="sim-btn reset" onclick="SIM.clearSET()" style="flex:1;font-size:11px;">✕ Clear</button>
         </div>
         <div class="riskwarn" style="margin-top:8px;font-size:10px;">
@@ -1110,7 +1116,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div class="spb-sub" id="sim-pnl-sub">—</div>
       </div>
 
-      <button class="run-btn" id="sim-run-btn" onclick="SIM.start()" style="margin-top:4px;">▶ RUN SIMULATION</button>
+      <button class="run-btn" id="sim-run-btn" onclick="SIM.start()" style="margin-top:4px;" data-tip="Starts the price simulation with your S.E.T. levels">▶ RUN SIMULATION</button>
     </div>
 
     <!-- RIGHT: CHART + EDUCATION -->
@@ -1195,7 +1201,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     <div class="regime-hero bear" id="regime-hero">
       <div class="regime-hero-icon" id="regime-hero-icon">🔴</div>
       <div class="regime-hero-text">
-        <h2 id="regime-hero-label">BEAR MARKET DETECTED</h2>
+        <h2 id="regime-hero-label" data-tip="Current market regime detected by HMM analysis">BEAR MARKET DETECTED</h2>
         <p id="regime-hero-sub">HMM 3-State Model · Live Yahoo Finance Data · 21-Day Rolling Window</p>
       </div>
       <div class="regime-hero-metrics">
@@ -1278,13 +1284,13 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:16px;">
     <div class="fg" style="margin:0;flex:0 0 180px;">
       <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Symbol</label>
-      <select id="chain-sym" onchange="populateExps()" style="margin-top:4px;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;color:var(--navy);background:var(--gray-100);width:100%;">
+      <select id="chain-sym" onchange="populateExps()" style="margin-top:4px;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;color:var(--navy);background:var(--gray-100);width:100%;" data-tip="Select which stock's options chain to view">
         <option>SPY</option><option>QQQ</option><option>AAPL</option><option>TSLA</option><option>NVDA</option>
       </select>
     </div>
     <div class="fg" style="margin:0;flex:0 0 220px;">
       <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Expiration</label>
-      <select id="chain-exp" onchange="renderChain()" style="margin-top:4px;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;color:var(--navy);background:var(--gray-100);width:100%;"></select>
+      <select id="chain-exp" onchange="renderChain()" style="margin-top:4px;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;color:var(--navy);background:var(--gray-100);width:100%;" data-tip="Choose expiration date — closer = more time decay"></select>
     </div>
   </div>
   <div class="chain-grid">
@@ -2313,20 +2319,20 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <button class="guide-btn guide-hidden" onclick="GUIDE.show('trade-entry')">🔍</button>
 <div id="guide-trade-entry" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('trade-entry')">✕</button><div class="guide-title">📚 Manual Trade Entry</div><div class="guide-item"><div class="label">What</div><div class="content">Your personal trade journal — log every trade with full S.E.T. details for performance tracking.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Enter trade date, symbol, entry/exit prices, position size, win/loss, S.E.T. levels, and notes. Click "Log Trade" to save. Use "Import from Backtest" to auto-populate from backtester results.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 1 teaches that tracking trades is essential for improvement. Your Expectancy number tells you if your overall strategy is profitable.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">The Expectancy formula: (Win Rate × Avg Win) - (Loss Rate × Avg Loss). Positive expectancy = profitable system over time.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Log EVERY trade, including losses — losses teach you more than wins</div><div class="guide-tip">• The 'Import from Backtest' button pulls your last backtest results directly into the journal</div><div class="guide-tip">• Trade Notes are crucial — write down WHY you entered and what you learned</div></div></div>
     <div class="journal-grid">
-      <div><label class="jf-label">Trade Date</label><input type="date" id="tj-date" class="jf-input"></div>
-      <div><label class="jf-label">Symbol</label><input type="text" id="tj-symbol" class="jf-input" placeholder="e.g., SPY"></div>
+      <div><label class="jf-label">Trade Date</label><input type="date" id="tj-date" class="jf-input" data-tip="Date you entered the trade"></div>
+      <div><label class="jf-label">Symbol</label><input type="text" id="tj-symbol" class="jf-input" placeholder="e.g., SPY" data-tip="Stock ticker symbol"></div>
     </div>
     <div class="journal-grid">
-      <div><label class="jf-label">Entry Price ($)</label><input type="number" id="tj-entry" step="0.01" class="jf-input"></div>
-      <div><label class="jf-label">Exit Price ($)</label><input type="number" id="tj-exit" step="0.01" class="jf-input"></div>
+      <div><label class="jf-label">Entry Price ($)</label><input type="number" id="tj-entry" step="0.01" class="jf-input" data-tip="Price at which you entered"></div>
+      <div><label class="jf-label">Exit Price ($)</label><input type="number" id="tj-exit" step="0.01" class="jf-input" data-tip="Price at which you exited"></div>
     </div>
     <div class="journal-grid">
-      <div><label class="jf-label">Position Size</label><input type="number" id="tj-size" step="1" class="jf-input" placeholder="Shares"></div>
-      <div><label class="jf-label">Win / Loss</label><select id="tj-result" class="jf-input"><option>Win</option><option>Loss</option><option>Breakeven</option></select></div>
+      <div><label class="jf-label">Position Size</label><input type="number" id="tj-size" step="1" class="jf-input" placeholder="Shares" data-tip="Number of shares or contracts"></div>
+      <div><label class="jf-label">Win / Loss</label><select id="tj-result" class="jf-input" data-tip="Trade result: profitable or loss"><option>Win</option><option>Loss</option><option>Breakeven</option></select></div>
     </div>
     <div class="journal-grid">
-      <div><label class="jf-label">S.E.T. Stop Price ($)</label><input type="number" id="tj-stop" step="0.01" class="jf-input"></div>
-      <div><label class="jf-label">S.E.T. Target Price ($)</label><input type="number" id="tj-target" step="0.01" class="jf-input"></div>
+      <div><label class="jf-label">S.E.T. Stop Price ($)</label><input type="number" id="tj-stop" step="0.01" class="jf-input" data-tip="Your stop loss price level"></div>
+      <div><label class="jf-label">S.E.T. Target Price ($)</label><input type="number" id="tj-target" step="0.01" class="jf-input" data-tip="Your profit target price level"></div>
     </div>
     <div class="journal-grid wide">
       <div><label class="jf-label">Trade Notes</label><textarea id="tj-notes" class="jf-input" style="resize:vertical;min-height:80px;" placeholder="Setup, trade reason, lessons learned..."></textarea></div>
@@ -2402,16 +2408,16 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       <div class="panel-title">⚙️ Configuration</div>
       <div class="fg" style="margin-bottom:12px;">
         <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Symbol</label>
-        <input type="text" id="fp-symbol" class="jf-input" value="SPY" style="width:100%;padding:8px 10px;" oninput="PILLARS.analyze()">
+        <input type="text" id="fp-symbol" class="jf-input" value="SPY" style="width:100%;padding:8px 10px;" oninput="PILLARS.analyze()" data-tip="Enter any ticker to analyze its Five Pillars confluence">
       </div>
       <div class="fg">
         <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Account ($)</label>
-        <input type="number" id="fp-acct" class="jf-input" value="10000" style="width:100%;padding:8px 10px;" oninput="PILLARS.analyze()">
+        <input type="number" id="fp-acct" class="jf-input" value="10000" style="width:100%;padding:8px 10px;" oninput="PILLARS.analyze()" data-tip="Account size for position sizing when executing">
       </div>
     </div>
   </div>
 
-  <button class="execute-btn" id="fp-execute-btn" disabled onclick="PILLARS.execute()">⚡ Execute (Unlock with 4+ Pillars)</button>
+  <button class="execute-btn" id="fp-execute-btn" disabled onclick="PILLARS.execute()" data-tip="Unlocks at 4+ green pillars — sends you to S.E.T. Simulator">⚡ Execute (Unlock with 4+ Pillars)</button>
 </div>
 </div>
 
@@ -6074,6 +6080,7 @@ const GUIDE = (function() {
       else { toggle.classList.remove('on'); toggle.textContent = '🔍 Guide Mode: OFF'; }
     }
     buttons.forEach(btn => { if (isOn) btn.classList.remove('guide-hidden'); else btn.classList.add('guide-hidden'); });
+    if (isOn) document.body.classList.remove('guide-tips-off'); else document.body.classList.add('guide-tips-off');
     overlays.forEach(overlay => { overlay.classList.add('guide-hidden'); overlay.style.display = 'none'; });
   }
   return { toggle, show, hide, init };
