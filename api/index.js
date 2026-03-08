@@ -937,6 +937,84 @@ app.post('/api/simulations/:moduleId/:exerciseId', async (req, res) => {
 });
 
 // =============================================================================
+// YAHOO FINANCE STOCK DATA — S.E.T. SIMULATOR
+// =============================================================================
+
+app.get('/api/stock-data', async (req, res) => {
+  const { symbol, range = '1y', interval = '1d' } = req.query;
+  if (!symbol) return res.status(400).json({ error: 'Symbol parameter is required' });
+
+  const allowed = /^[A-Z0-9.\-]{1,10}$/i;
+  if (!allowed.test(symbol)) return res.status(400).json({ error: 'Invalid symbol format' });
+
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol.toUpperCase())}?range=${encodeURIComponent(range)}&interval=${encodeURIComponent(interval)}&includePrePost=false`;
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MissionMetrics/1.0)' }
+    });
+    if (!resp.ok) {
+      return res.status(resp.status).json({ error: `Yahoo Finance returned ${resp.status}` });
+    }
+    const raw = await resp.json();
+    const result = raw?.chart?.result?.[0];
+    if (!result) return res.status(404).json({ error: 'No data found for symbol' });
+
+    const ts = result.timestamp || [];
+    const quote = result.indicators?.quote?.[0] || {};
+    const meta = result.meta || {};
+
+    // Build clean OHLCV array
+    const candles = [];
+    for (let i = 0; i < ts.length; i++) {
+      const o = quote.open?.[i], h = quote.high?.[i], l = quote.low?.[i], c = quote.close?.[i], v = quote.volume?.[i];
+      if (o != null && h != null && l != null && c != null) {
+        candles.push({
+          date: new Date(ts[i] * 1000).toISOString().slice(0, 10),
+          open: +o.toFixed(2),
+          high: +h.toFixed(2),
+          low: +l.toFixed(2),
+          close: +c.toFixed(2),
+          volume: v || 0
+        });
+      }
+    }
+
+    res.json({
+      symbol: meta.symbol || symbol.toUpperCase(),
+      currency: meta.currency || 'USD',
+      exchangeName: meta.exchangeName || '',
+      regularMarketPrice: meta.regularMarketPrice || candles[candles.length - 1]?.close || 0,
+      previousClose: meta.previousClose || 0,
+      candles
+    });
+  } catch (error) {
+    console.error('Stock data fetch error:', error.message);
+    res.status(500).json({ error: 'Failed to fetch stock data. Try again.' });
+  }
+});
+
+// Ticker search/autocomplete
+app.get('/api/stock-search', async (req, res) => {
+  const { q } = req.query;
+  if (!q || q.length < 1) return res.json([]);
+
+  try {
+    const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=8&newsCount=0&listsCount=0`;
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MissionMetrics/1.0)' }
+    });
+    if (!resp.ok) return res.json([]);
+    const data = await resp.json();
+    const results = (data.quotes || [])
+      .filter(r => r.quoteType === 'EQUITY' || r.quoteType === 'ETF')
+      .map(r => ({ symbol: r.symbol, name: r.shortname || r.longname || '', type: r.quoteType, exchange: r.exchange || '' }));
+    res.json(results);
+  } catch (error) {
+    res.json([]);
+  }
+});
+
+// =============================================================================
 // HEALTH CHECK
 // =============================================================================
 
