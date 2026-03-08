@@ -3384,19 +3384,19 @@ const REGIME_ENGINE = (function(){
       // Switch to backtester tab and select strategy
       const stratMap={covered_call:'covered_call',cash_secured_put:'cash_secured_put',iron_condor:'iron_condor',long_straddle:'straddle',long_strangle:'strangle',protective_put:'protective_put',bull_call_spread:'bull_call_spread'};
       const val=stratMap[stratId]||stratId;
-      showTab('bt',document.querySelectorAll('.tab-btn')[0]);
+      showTab('backtester',document.querySelectorAll('.tab-btn')[0]);
       setTimeout(()=>{
         const sel=document.getElementById('strat');
         if(sel){sel.value=val;loadParams&&loadParams();}
       },200);
     },
     launchSim: function(){
-      showTab('setsim',document.querySelectorAll('.tab-btn')[6]);
+      showTab('setsim',document.querySelectorAll('.tab-btn')[2]);
     },
     scrollToPlaybook: function(stratId){
       // Map to playbook index and switch to about tab
       const map={demand_zone_bounce:1,supply_zone_rejection:2,covered_call_engine:3,covered_call:3,csp_discount:4,cash_secured_put:4,iron_condor:5,leaps_wealth:6,micro_emini_scalp:7,bull_put_spread:8,bear_call_spread:9,pre_earnings_straddle:10};
-      showTab('about',document.querySelectorAll('.tab-btn')[5]);
+      showTab('about',document.querySelectorAll('.tab-btn')[4]);
       setTimeout(()=>{
         const cards=document.querySelectorAll('.strat-card');
         const idx=(map[stratId]||1)-1;
