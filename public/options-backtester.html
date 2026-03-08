@@ -223,6 +223,184 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .price-card .px{font-size:26px;font-weight:800;color:var(--emerald-light);}
 .price-cards-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
 
+
+
+/* ============================================ */
+/* TRAINING MODULE v3 — Webull-Style Dark Chart */
+/* Mission Metrics | Impact Trading Academy     */
+/* ============================================ */
+
+/* --- Webull Dark Theme Palette --- */
+.train-dark { --chart-bg:#161B2B; --chart-grid:#1F2640; --chart-text:#6B7394; --candle-up:#26A69A; --candle-up-fill:rgba(38,166,154,0.25); --candle-dn:#EF5350; --candle-dn-fill:#EF5350; --price-line:rgba(255,255,255,0.06); --crosshair:#4A5078; --axis-text:#7B83A6; --tooltip-bg:rgba(22,27,43,0.95); --panel-bg:#1A1F35; --panel-border:#262D47; --hover-glow:rgba(38,166,154,0.08); }
+
+/* --- Training Dashboard --- */
+.train-dash { padding:28px 0; }
+.train-dash h2 { font-size:22px; font-weight:800; color:var(--navy); margin-bottom:4px; }
+.train-dash .td-sub { color:var(--gray-500); font-size:14px; margin-bottom:22px; }
+.train-modes { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:16px; margin-bottom:24px; }
+.mode-card { background:white; border-radius:14px; padding:20px 18px; box-shadow:0 2px 12px rgba(0,0,0,.06); cursor:pointer; transition:all .22s; border:2px solid transparent; overflow:hidden; }
+.mode-card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(13,147,115,.15); border-color:var(--emerald); }
+.mc-icon { font-size:30px; display:block; margin-bottom:8px; }
+.mode-card h3 { font-size:15px; font-weight:700; color:var(--navy); margin-bottom:5px; }
+.mode-card p { font-size:12px; color:var(--gray-500); line-height:1.5; margin-bottom:10px; }
+.mc-level { display:inline-block; font-size:10px; font-weight:700; padding:2px 10px; border-radius:20px; }
+.mc-level.beg { background:#D1FAE5; color:#065F46; }
+.mc-level.int { background:#FEF3C7; color:#92400E; }
+.mc-level.adv { background:#FEE2E2; color:#991B1B; }
+.mc-bar { height:4px; background:#E5E7EB; border-radius:4px; margin-top:8px; }
+.mc-bar-fill { height:100%; background:var(--emerald); border-radius:4px; transition:width .4s; }
+.mc-actions { display:flex; gap:8px; margin-top:10px; }
+.mc-learn { padding:5px 12px; border-radius:7px; font-size:11px; font-weight:600; cursor:pointer; border:1.5px solid var(--emerald); color:var(--emerald); background:white; }
+.mc-learn:hover { background:var(--emerald); color:white; }
+.mc-go { padding:5px 12px; border-radius:7px; font-size:11px; font-weight:600; cursor:pointer; border:none; background:var(--emerald); color:white; }
+
+/* --- Stats Row --- */
+.t-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; margin-bottom:22px; }
+.ts { background:white; border-radius:10px; padding:12px 14px; text-align:center; box-shadow:0 1px 6px rgba(0,0,0,.04); }
+.ts .tv { font-size:20px; font-weight:800; color:var(--navy); }
+.ts .tl { font-size:10px; color:var(--gray-500); font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-top:2px; }
+.ts.em .tv { color:var(--emerald); }
+
+/* --- Badge Row --- */
+.badge-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.gbadge { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:16px; font-size:11px; font-weight:600; }
+.gbadge.on { background:linear-gradient(135deg,#FEF3C7,#FDE68A); color:#92400E; }
+.gbadge.off { background:#F3F4F6; color:#C0C0C0; }
+
+/* --- Training Arena --- */
+.train-arena { display:none; }
+.train-arena.active { display:block; }
+.ta-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+.ta-head h3 { font-size:17px; font-weight:700; color:var(--navy); }
+.ta-back { background:none; border:1px solid var(--gray-200); padding:6px 14px; border-radius:7px; font-size:12px; cursor:pointer; color:var(--gray-700); }
+.ta-back:hover { border-color:var(--emerald); color:var(--emerald); }
+.ta-ctrls { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.dpill { padding:4px 12px; border-radius:16px; font-size:11px; font-weight:600; cursor:pointer; border:1.5px solid var(--gray-200); background:white; color:var(--gray-500); }
+.dpill.on { border-color:var(--emerald); background:var(--emerald); color:white; }
+.ta-btn { padding:6px 14px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; border:none; background:var(--emerald); color:white; }
+.ta-btn:hover { background:#0B8268; }
+.ta-btn.red { background:#EF4444; }
+
+/* --- Webull-Style Chart Container --- */
+.chart-outer { background:var(--chart-bg); border-radius:14px; overflow:hidden; margin-bottom:14px; box-shadow:0 2px 16px rgba(0,0,0,.15); position:relative; }
+.chart-toolbar { display:flex; align-items:center; gap:12px; padding:8px 16px; background:var(--panel-bg); border-bottom:1px solid var(--panel-border); }
+.ct-sym { font-size:14px; font-weight:700; color:white; }
+.ct-price { font-size:13px; font-weight:600; margin-left:4px; }
+.ct-price.up { color:var(--candle-up); }
+.ct-price.dn { color:var(--candle-dn); }
+.ct-tag { font-size:10px; padding:2px 8px; border-radius:4px; font-weight:600; }
+.ct-tag.tut { background:rgba(59,130,246,0.15); color:#60A5FA; }
+.ct-tag.live { background:rgba(38,166,154,0.15); color:var(--candle-up); }
+.ct-ohlc { display:flex; gap:10px; margin-left:auto; font-size:11px; color:var(--chart-text); }
+.ct-ohlc span { font-weight:600; }
+.chart-canvas-wrap { position:relative; }
+.chart-canvas-wrap canvas { display:block; width:100%; cursor:crosshair; }
+
+/* --- Crosshair tooltip --- */
+.ch-tip { position:absolute; pointer-events:none; z-index:10; display:none; }
+.ch-tip-price { position:absolute; right:0; background:var(--candle-up); color:white; font-size:10px; font-weight:700; padding:2px 8px; border-radius:3px 0 0 3px; }
+.ch-tip-time { position:absolute; bottom:0; background:var(--crosshair); color:white; font-size:10px; font-weight:700; padding:2px 8px; border-radius:3px 3px 0 0; transform:translateX(-50%); }
+
+/* --- Annotation Callout (click-to-learn) --- */
+.anno { position:absolute; z-index:25; background:#1E2444; border:1px solid #323B5C; border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,.35); padding:14px 16px; min-width:280px; max-width:360px; color:white; animation:annoPop .2s ease-out; }
+@keyframes annoPop { from{opacity:0;transform:scale(.93) translateY(5px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.anno .anno-x { position:absolute; top:6px; right:8px; background:none; border:none; font-size:14px; cursor:pointer; color:#6B7394; }
+.anno .anno-x:hover { color:white; }
+.anno .anno-hd { font-size:14px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.anno .anno-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:8px; }
+.anno-badge.grn { background:rgba(38,166,154,0.2); color:#26A69A; }
+.anno-badge.red { background:rgba(239,83,80,0.2); color:#EF5350; }
+.anno-badge.blu { background:rgba(59,130,246,0.2); color:#60A5FA; }
+.anno .anno-txt { font-size:12px; color:#B0B8D4; line-height:1.55; margin-bottom:6px; }
+.anno .anno-det { font-size:11px; color:#7B83A6; padding-top:6px; border-top:1px solid #2A3154; }
+
+/* --- Question Panel --- */
+.qp { background:white; border-radius:12px; padding:16px 20px; box-shadow:0 2px 10px rgba(0,0,0,.05); margin-bottom:12px; }
+.qp .qp-num { font-size:11px; font-weight:600; color:var(--emerald); text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
+.qp .qp-txt { font-size:15px; font-weight:700; color:var(--navy); margin-bottom:12px; line-height:1.4; }
+.qp-hint { font-size:11px; color:var(--gray-500); font-style:italic; margin-bottom:8px; display:none; }
+.qp-opts { display:flex; flex-wrap:wrap; gap:7px; }
+.qo { padding:7px 16px; border-radius:7px; border:2px solid var(--gray-200); background:white; cursor:pointer; font-size:12px; font-weight:600; color:var(--gray-700); transition:all .15s; }
+.qo:hover { border-color:var(--emerald); color:var(--emerald); }
+.qo.sel { border-color:var(--emerald); background:var(--emerald); color:white; }
+.qo.ok { border-color:#10B981; background:#D1FAE5; color:#065F46; }
+.qo.no { border-color:#EF4444; background:#FEE2E2; color:#991B1B; }
+
+/* --- Feedback Panel --- */
+.fb { border-radius:12px; padding:14px 18px; margin-bottom:12px; display:none; animation:fbSlide .25s ease-out; }
+.fb.show { display:block; }
+.fb.ok { background:#D1FAE5; border:2px solid #10B981; }
+.fb.no { background:#FEE2E2; border:2px solid #EF4444; }
+.fb .fb-hd { font-size:14px; font-weight:700; margin-bottom:4px; }
+.fb.ok .fb-hd { color:#065F46; }
+.fb.no .fb-hd { color:#991B1B; }
+.fb .fb-tx { font-size:12px; line-height:1.55; color:var(--gray-700); }
+
+/* --- Progress Bar --- */
+.tp { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.tp-bar { flex:1; height:6px; background:#E5E7EB; border-radius:6px; overflow:hidden; }
+.tp-fill { height:100%; background:linear-gradient(90deg,var(--emerald),#10B981); border-radius:6px; transition:width .3s; }
+.tp-txt { font-size:11px; font-weight:700; color:var(--navy); white-space:nowrap; }
+.streak-d { font-size:13px; font-weight:700; color:#F59E0B; }
+
+/* --- Explore Mode Toggle --- */
+.explore-bar { display:flex; align-items:center; gap:10px; padding:8px 16px; background:var(--panel-bg); border-top:1px solid var(--panel-border); }
+.explore-bar span { color:#7B83A6; font-size:11px; font-weight:600; }
+.etoggle { position:relative; width:36px; height:20px; background:#3A4265; border-radius:10px; cursor:pointer; border:none; padding:0; transition:.2s; }
+.etoggle.on { background:var(--candle-up); }
+.etoggle::after { content:''; position:absolute; top:2px; left:2px; width:16px; height:16px; background:white; border-radius:50%; transition:.2s; }
+.etoggle.on::after { left:18px; }
+.explore-hint { color:var(--candle-up); font-size:10px; font-weight:600; margin-left:auto; }
+
+/* --- Tutorial Overlay --- */
+.tut-ov { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(3px); }
+.tut-ov.show { display:flex; }
+.tut-box { background:white; border-radius:16px; width:94%; max-width:880px; max-height:88vh; overflow-y:auto; }
+.tut-hd { display:flex; justify-content:space-between; align-items:center; padding:18px 24px 0; }
+.tut-hd h3 { font-size:18px; font-weight:800; color:var(--navy); }
+.tut-x { background:none; border:none; font-size:20px; cursor:pointer; color:var(--gray-500); }
+.tut-bd { padding:14px 24px 24px; }
+.tut-step { display:none; }
+.tut-step.active { display:block; }
+.tut-step-t { font-size:15px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+.tut-step-d { font-size:13px; color:var(--gray-700); line-height:1.6; margin-bottom:12px; }
+.tut-step-d strong { color:var(--emerald); }
+.tut-chart { background:var(--chart-bg); border-radius:10px; overflow:hidden; margin-bottom:10px; }
+.tut-chart canvas { display:block; width:100%; }
+.tut-tip { background:linear-gradient(135deg,#E8F5F1,#D1FAE5); border-radius:8px; padding:10px 14px; font-size:12px; color:#065F46; line-height:1.5; }
+.tut-tip strong { color:var(--navy); }
+.tut-nav { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; border-top:1px solid #E5E7EB; }
+.tut-dots { display:flex; gap:5px; }
+.tut-dot { width:7px; height:7px; border-radius:50%; background:#D1D5DB; }
+.tut-dot.on { background:var(--emerald); width:20px; border-radius:4px; }
+.tut-pb { padding:7px 18px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; border:none; background:#F3F4F6; color:var(--gray-700); }
+.tut-pb:hover { background:#E5E7EB; }
+.tut-nb { padding:7px 18px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; border:none; background:var(--emerald); color:white; }
+
+/* --- Session Modal --- */
+.sess-m { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; display:none; align-items:center; justify-content:center; }
+.sess-m.show { display:flex; }
+.sess-b { background:white; border-radius:16px; padding:28px; max-width:420px; width:90%; text-align:center; }
+.sess-b h3 { font-size:18px; font-weight:800; color:var(--navy); margin-bottom:12px; }
+.ss-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
+.ss-i { padding:10px; background:var(--mint-bg); border-radius:8px; }
+.ss-i .ss-v { font-size:20px; font-weight:800; color:var(--emerald); }
+.ss-i .ss-l { font-size:10px; color:var(--gray-500); font-weight:600; text-transform:uppercase; }
+.sess-b button { margin-top:10px; padding:9px 24px; background:var(--emerald); color:white; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+
+/* --- Daily Challenge --- */
+.daily-c { background:linear-gradient(135deg,var(--navy),#2D4A7A); border-radius:12px; padding:16px 20px; color:white; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.daily-c .dc-t { font-size:13px; font-weight:700; }
+.daily-c .dc-d { font-size:12px; opacity:.8; margin-top:2px; }
+.daily-c .dc-p { font-size:12px; font-weight:600; }
+
+@media(max-width:768px){
+  .train-modes{grid-template-columns:1fr;}
+  .t-stats{grid-template-columns:repeat(2,1fr);}
+  .ta-head{flex-direction:column;align-items:flex-start;}
+  .ct-ohlc{display:none;}
+}
+
 </style>
 </head>
 <body>
@@ -249,6 +427,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <button class="tab-btn" onclick="showTab('regime',this)">🔀 Markov Regime Detector</button>
   <button class="tab-btn" onclick="showTab('about',this)">📖 Strategy Guide</button>
   <button class="tab-btn" onclick="showTab('chain',this)">⚡ Live Options Chain</button>
+  <button class="tab-btn" onclick="showTab('training',this)">🎯 Chart Training</button>
+
 </div>
 
 <!-- ===== BACKTESTER TAB ===== -->
@@ -625,6 +805,143 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       </div>
     </div>
   </div>
+</div>
+</div>
+
+
+<!-- ===== TRAINING TAB ===== -->
+<div id="tab-training" class="tab-content">
+<div class="container train-dark">
+
+  <!-- DASHBOARD -->
+  <div id="train-dash" class="train-dash">
+    <h2>🎯 OHLC + Supply/Demand Interactive Training</h2>
+    <p class="td-sub">Master chart reading through hands-on practice with realistic live candlestick charts. Always random — never the same chart twice.</p>
+
+    <div class="t-stats" id="t-stats">
+      <div class="ts em"><div class="tv" id="ts-acc">0%</div><div class="tl">Accuracy</div></div>
+      <div class="ts"><div class="tv" id="ts-tot">0</div><div class="tl">Questions</div></div>
+      <div class="ts"><div class="tv" id="ts-str">0</div><div class="tl">🔥 Best Streak</div></div>
+      <div class="ts"><div class="tv" id="ts-lvl">Beginner</div><div class="tl">Level</div></div>
+      <div class="ts em"><div class="tv" id="ts-mas">0%</div><div class="tl">Mastery</div></div>
+    </div>
+
+    <div class="badge-row" id="badge-row"></div>
+
+    <div class="train-modes">
+      <div class="mode-card" onclick="TM.startMode('ohlc')">
+        <span class="mc-icon">📊</span><h3>OHLC Mastery</h3>
+        <p>Click directly on live candlesticks to identify Open, High, Low, Close. Learn bullish vs bearish, body vs wick, and bar anatomy.</p>
+        <span class="mc-level beg">Beginner → Advanced</span>
+        <div class="mc-bar"><div class="mc-bar-fill" id="m-ohlc" style="width:0%"></div></div>
+        <div class="mc-actions"><button class="mc-learn" onclick="event.stopPropagation();TUT.open('ohlc')">📖 Learn First</button><button class="mc-go" onclick="event.stopPropagation();TM.startMode('ohlc')">▶ Practice</button></div>
+      </div>
+      <div class="mode-card" onclick="TM.startMode('sd')">
+        <span class="mc-icon">🏗️</span><h3>Supply & Demand Zones</h3>
+        <p>Spot demand zones (institutional buy orders) and supply zones (sell orders). Identify bases, sharp departures, and retests.</p>
+        <span class="mc-level int">Intermediate</span>
+        <div class="mc-bar"><div class="mc-bar-fill" id="m-sd" style="width:0%"></div></div>
+        <div class="mc-actions"><button class="mc-learn" onclick="event.stopPropagation();TUT.open('sd')">📖 Learn First</button><button class="mc-go" onclick="event.stopPropagation();TM.startMode('sd')">▶ Practice</button></div>
+      </div>
+      <div class="mode-card" onclick="TM.startMode('seq')">
+        <span class="mc-icon">📅</span><h3>Three-Day Sequence</h3>
+        <p>Analyze multi-session sequences. Identify balance, imbalance, and movement. See how institutional orders drive price.</p>
+        <span class="mc-level int">Intermediate</span>
+        <div class="mc-bar"><div class="mc-bar-fill" id="m-seq" style="width:0%"></div></div>
+        <div class="mc-actions"><button class="mc-learn" onclick="event.stopPropagation();TUT.open('seq')">📖 Learn First</button><button class="mc-go" onclick="event.stopPropagation();TM.startMode('seq')">▶ Practice</button></div>
+      </div>
+      <div class="mode-card" onclick="TM.startMode('zm')">
+        <span class="mc-icon">🎨</span><h3>Zone Marking</h3>
+        <p>Draw supply and demand rectangles on the chart. System grades zone quality, placement accuracy, and retest logic.</p>
+        <span class="mc-level adv">Advanced</span>
+        <div class="mc-bar"><div class="mc-bar-fill" id="m-zm" style="width:0%"></div></div>
+        <div class="mc-actions"><button class="mc-learn" onclick="event.stopPropagation();TUT.open('zm')">📖 Learn First</button><button class="mc-go" onclick="event.stopPropagation();TM.startMode('zm')">▶ Practice</button></div>
+      </div>
+      <div class="mode-card" onclick="TM.startMode('of')">
+        <span class="mc-icon">⚡</span><h3>Order Flow & Movement</h3>
+        <p>Understand how orders create movement. Identify balance vs imbalance, buying vs selling pressure, predict reactions.</p>
+        <span class="mc-level adv">Advanced</span>
+        <div class="mc-bar"><div class="mc-bar-fill" id="m-of" style="width:0%"></div></div>
+        <div class="mc-actions"><button class="mc-learn" onclick="event.stopPropagation();TUT.open('of')">📖 Learn First</button><button class="mc-go" onclick="event.stopPropagation();TM.startMode('of')">▶ Practice</button></div>
+      </div>
+    </div>
+
+    <div class="daily-c">
+      <div><div class="dc-t">🏆 Daily Challenge</div><div class="dc-d" id="dc-desc">Complete 10 questions with 70%+ accuracy</div></div>
+      <div class="dc-p" id="dc-prog">0 / 10</div>
+    </div>
+  </div>
+
+  <!-- ARENA -->
+  <div id="train-arena" class="train-arena">
+    <div class="ta-head">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="ta-back" onclick="TM.back()">← Back</button>
+        <h3 id="ar-title">OHLC Mastery</h3>
+      </div>
+      <div class="ta-ctrls">
+        <div class="dpill on" onclick="TM.diff('easy',this)">Easy</div>
+        <div class="dpill" onclick="TM.diff('medium',this)">Medium</div>
+        <div class="dpill" onclick="TM.diff('hard',this)">Hard</div>
+        <button class="ta-btn" onclick="TM.next()">Next →</button>
+        <button class="ta-btn" onclick="TM.newChart()">🔄 New Chart</button>
+        <button class="ta-btn red" onclick="TM.end()">End</button>
+      </div>
+    </div>
+    <div class="tp"><div class="tp-bar"><div class="tp-fill" id="tp-f" style="width:0%"></div></div><div class="tp-txt" id="tp-t">0/10</div><div class="streak-d" id="ar-str">🔥 0</div></div>
+
+    <!-- Webull-Style Chart -->
+    <div class="chart-outer" id="chart-outer">
+      <div class="chart-toolbar">
+        <span class="ct-sym" id="ct-sym">SIM</span>
+        <span class="ct-price up" id="ct-price">$0.00</span>
+        <span class="ct-tag live" id="ct-tag">LIVE SIM</span>
+        <div class="ct-ohlc" id="ct-ohlc">O: <span>—</span> H: <span>—</span> L: <span>—</span> C: <span>—</span></div>
+      </div>
+      <div class="chart-canvas-wrap" id="chart-wrap">
+        <canvas id="train-canvas" width="900" height="420"></canvas>
+        <div class="anno" id="anno" style="display:none;">
+          <button class="anno-x" onclick="TM.xAnno()">✕</button>
+          <div class="anno-hd" id="anno-hd"></div>
+          <div class="anno-txt" id="anno-txt"></div>
+          <div class="anno-det" id="anno-det"></div>
+        </div>
+      </div>
+      <div class="explore-bar">
+        <span>🔍 Explore Mode</span>
+        <button class="etoggle on" id="etoggle" onclick="TM.toggleExplore()"></button>
+        <span class="explore-hint" id="ehint">Click any part of a candle to learn</span>
+      </div>
+    </div>
+
+    <div class="qp" id="qp">
+      <div class="qp-num" id="qp-num">Question 1 of 10</div>
+      <div class="qp-txt" id="qp-txt">Watch the chart form, then answer...</div>
+      <div class="qp-hint" id="qp-hint"></div>
+      <div class="qp-opts" id="qp-opts"></div>
+    </div>
+    <div class="fb" id="fb"><div class="fb-hd" id="fb-hd"></div><div class="fb-tx" id="fb-tx"></div></div>
+  </div>
+
+  <!-- Tutorial Overlay -->
+  <div class="tut-ov" id="tut-ov">
+    <div class="tut-box">
+      <div class="tut-hd"><h3 id="tut-t">Learn: OHLC Anatomy</h3><button class="tut-x" onclick="TUT.close()">✕</button></div>
+      <div class="tut-bd" id="tut-bd"></div>
+      <div class="tut-nav"><button class="tut-pb" onclick="TUT.prev()">← Prev</button><div class="tut-dots" id="tut-dots"></div><button class="tut-nb" id="tut-nb" onclick="TUT.next()">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- Session Summary -->
+  <div class="sess-m" id="sess-m">
+    <div class="sess-b">
+      <h3 id="sess-t">Session Complete!</h3>
+      <div class="ss-grid" id="sess-g"></div>
+      <div id="sess-badges"></div>
+      <button onclick="TM.closeSess()">Continue Training</button>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -1069,6 +1386,7 @@ function showTab(tab, btn) {
   btn.classList.add('active');
   if (tab === 'regime') renderRegimeTab();
 if (tab === 'chain') { renderPriceCards(); populateExps(); }
+if (tab === 'training') { TM.initTraining(); }
 }
 
 // ---- POSITION SIZER ----
@@ -1206,12 +1524,694 @@ function renderRegimeTab() {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       btns.forEach(el => el.classList.remove('active'));
       tabEl.classList.add('active');
-      btns.forEach(btn => { if (btn.textContent.toLowerCase().includes(hash === 'backtester' ? 'backtester' : hash === 'sizer' ? 'position' : hash === 'regime' ? 'markov' : hash === 'chain' ? 'live' : hash === 'about' ? 'strategy' : '')) btn.classList.add('active'); });
+      btns.forEach(btn => { if (btn.textContent.toLowerCase().includes(hash === 'backtester' ? 'backtester' : hash === 'sizer' ? 'position' : hash === 'regime' ? 'markov' : hash === 'chain' ? 'live' : hash === 'training' ? 'chart' : hash === 'about' ? 'strategy' : '')) btn.classList.add('active'); });
       if (hash === 'regime') renderRegimeTab();
       if (hash === 'chain') { renderPriceCards(); populateExps(); }
+      if (hash === 'training') { TM.initTraining(); }
     }
   }
 })();
+
+
+// ============================================================
+// TRAINING MODULE v3 — Webull-Style Live Candlestick Trainer
+// Mission Metrics | Impact Trading Academy
+// ============================================================
+
+// ==================== TUTORIAL SYSTEM ====================
+const TUT = (function(){
+  let mode=null, step=0, steps=[];
+  const TUTORIALS = {
+    ohlc: {
+      title:'Learn: OHLC Bar Anatomy',
+      steps:[
+        { t:'What is an OHLC Bar?', d:'Every candlestick tells the story of a trading session. It captures four key prices: <strong>Open</strong> (where price started), <strong>High</strong> (highest price reached), <strong>Low</strong> (lowest price reached), and <strong>Close</strong> (where price ended).', tip:'The Close is the most important price — it tells you who won the battle between buyers and sellers at session end.' },
+        { t:'Bullish vs Bearish', d:'A <strong>bullish (green)</strong> bar means the Close is ABOVE the Open — buyers pushed price higher. A <strong>bearish (red)</strong> bar means the Close is BELOW the Open — sellers pushed price lower. The color instantly tells you who controlled the session.', tip:'On a bullish bar: Open is at the BOTTOM of the body, Close is at the TOP. On a bearish bar: it\'s reversed.' },
+        { t:'The Body', d:'The thick rectangle is the <strong>body</strong>. It represents the range between Open and Close. A large body means strong conviction — one side clearly dominated. A small body means indecision — neither side won convincingly.', tip:'Body size relative to total range tells you conviction. 70%+ body = strong control. Under 30% = contested session.' },
+        { t:'The Wicks (Shadows)', d:'The thin lines above and below the body are <strong>wicks</strong> or shadows. The upper wick shows prices that were reached but REJECTED — price went there but couldn\'t hold. The lower wick shows the same below. Long wicks = strong rejection.', tip:'A long lower wick is bullish (buyers rejected lower prices). A long upper wick is bearish (sellers rejected higher prices).' },
+        { t:'Reading a Complete Bar', d:'Put it all together: Look at the body color (who won), body size (how convincing), wick lengths (what got rejected), and close position (where in the range did price finish). Every bar is a complete story.', tip:'In Explore Mode, click ANY part of a candle and the app will teach you exactly what that element means with real numbers.' }
+      ]
+    },
+    sd: {
+      title:'Learn: Supply & Demand Zones',
+      steps:[
+        { t:'The #1 Law: Supply & Demand', d:'When supply is low and demand is high, price goes up. When supply is high and demand is low, price goes down. <strong>Demand zones</strong> form where institutional buy orders created upward movement. <strong>Supply zones</strong> form where institutional sell orders created downward movement.', tip:'Institutions control 80-90% of market volume. Their unfilled orders create the zones we trade.' },
+        { t:'How Zones Form', d:'A zone forms in three stages: First, price moves sideways in a tight range (the <strong>base</strong>). This is where institutions accumulate orders. Then price departs sharply (the <strong>departure</strong>). The base area becomes the zone — it contains unfilled orders.', tip:'The sharper and cleaner the departure from the base, the more significant the zone. Fast departures mean aggressive institutional activity.' },
+        { t:'Demand Zones', d:'A <strong>demand zone</strong> is created when price bases, then departs SHARPLY UPWARD. The base area below the move contains leftover institutional buy orders. When price returns to this area, those orders often trigger a bounce up.', tip:'Look for small, tight candles followed by a large green candle. The small candle area is your demand zone.' },
+        { t:'Supply Zones', d:'A <strong>supply zone</strong> is created when price bases, then departs SHARPLY DOWNWARD. The base area above the move contains leftover institutional sell orders. When price returns, those orders often trigger a drop.', tip:'Look for small candles followed by a large red candle. The small candle area is your supply zone.' },
+        { t:'Retests & Reactions', d:'When price revisits a zone, unfilled institutional orders activate. This is called a <strong>retest</strong>. The <strong>proximal line</strong> (nearest edge of the zone) is where the strongest reaction occurs — it\'s where the orders begin.', tip:'The first retest of a fresh zone is typically the strongest reaction. Each subsequent retest weakens the zone as orders get filled.' }
+      ]
+    },
+    seq: {
+      title:'Learn: Balance → Imbalance → Movement',
+      steps:[
+        { t:'How Price Develops', d:'All price movement follows one sequence: <strong>Balance → Imbalance → Movement</strong>. Balance means supply equals demand (sideways). Imbalance means one side overwhelms (the tipping point). Movement is the directional expansion that follows.', tip:'This three-step sequence is the foundation of how institutional orders create every move you see on a chart.' },
+        { t:'Balance (Equilibrium)', d:'During balance, buyers and sellers are evenly matched. Price moves sideways in a tight range. Candles are small with overlapping bodies. This is where institutions are quietly accumulating positions.', tip:'Balance areas often precede the biggest moves. The longer the balance, the more powerful the eventual departure.' },
+        { t:'Imbalance (The Trigger)', d:'Imbalance occurs when one side overwhelms the other. A large-bodied candle appears — buyers or sellers ran out of opposing orders at that price. This is the institutional footprint showing aggressive participation.', tip:'Imbalance candles have large bodies (70%+ of total range) and small or no wicks on the departure side.' },
+        { t:'Movement (Expansion)', d:'Once imbalance triggers, price must expand to find new opposing orders. This creates the directional movement — a series of candles in the same direction. Movement continues until a new balance is established.', tip:'Sharp moves often reflect aggressive institutional participation. The faster the move, the more unfilled orders left behind.' }
+      ]
+    },
+    zm: {
+      title:'Learn: Drawing Accurate Zones',
+      steps:[
+        { t:'What Makes a Good Zone', d:'A good zone precisely covers the <strong>base area</strong> — the consolidation candles BEFORE the departure. It should NOT include the departure candle itself. The zone boundaries should be the highest high and lowest low of the base candles.', tip:'Common mistake: drawing the zone too large. The zone is ONLY the base — the small tight candles, not the big move.' },
+        { t:'How Zone Quality is Graded', d:'The system grades your zone on: <strong>Precision</strong> (is your zone covering only the correct area?), <strong>Coverage</strong> (did you capture the full base?), and <strong>Price accuracy</strong> (do your vertical boundaries match the base highs/lows?).', tip:'To score well: draw a tight rectangle around ONLY the small candles that come just before the big directional departure.' },
+        { t:'Identifying the Strongest Zones', d:'Stronger zones have: a tighter base (fewer, smaller candles), a sharper departure (bigger candle, stronger direction), and a clean first departure (price left quickly). Weaker zones have sloppy bases and gradual departures.', tip:'When comparing zones, the one with the fastest, cleanest departure is usually the stronger zone with more unfilled orders.' }
+      ]
+    },
+    of: {
+      title:'Learn: How Orders Create Movement',
+      steps:[
+        { t:'Who Really Moves the Market?', d:'Institutional investors control <strong>80-90% of all market volume</strong>. When they buy or sell in large quantities, they create the moves we see. Retail traders (10-20%) follow along. Understanding this is the key to reading charts.', tip:'Peter Lynch said to follow the "footprints in the sand" — look at what big money is doing, not what retail is saying.' },
+        { t:'How Orders Create Movement', d:'At any price, there are buy orders and sell orders. When all sell orders are consumed (buyers bought everything available), price MUST rise to find more sellers. When all buy orders are consumed, price MUST fall. This is how orders create directional movement.', tip:'Every price bar represents thousands of filled orders. The body direction tells you which side had more aggressive orders.' },
+        { t:'Buying vs Selling Pressure', d:'<strong>Buying pressure</strong> appears as bullish candles — close above open, especially with large bodies and long lower wicks (buyers rejected lows). <strong>Selling pressure</strong> shows as bearish candles with large bodies and long upper wicks (sellers rejected highs).', tip:'A single bar\'s body-to-range ratio tells you pressure: >60% body in one direction = clear pressure from that side.' },
+        { t:'Unfilled Orders & Zones', d:'When price moves quickly from an area, not all orders get filled. These unfilled orders remain in the market. When price returns to that area, the orders activate. This is why supply and demand zones work — they mark areas of unfilled institutional orders.', tip:'Click on base areas in Explore Mode — the callout will show you the relationship between small bars and the institutional accumulation happening inside them.' }
+      ]
+    }
+  };
+  function open(m) {
+    mode=m; step=0; steps=TUTORIALS[m].steps;
+    document.getElementById('tut-t').textContent=TUTORIALS[m].title;
+    render();
+    document.getElementById('tut-ov').classList.add('show');
+  }
+  function close() { document.getElementById('tut-ov').classList.remove('show'); mode=null; }
+  function next() { if(step<steps.length-1){step++;render();}else{close();TM.startMode(mode);} }
+  function prev() { if(step>0){step--;render();} }
+  function render() {
+    const bd=document.getElementById('tut-bd');
+    const s=steps[step];
+    bd.innerHTML=`<div class="tut-step active"><div class="tut-step-t">${s.t}</div><div class="tut-step-d">${s.d}</div><div class="tut-chart"><canvas id="tut-cv" width="840" height="260"></canvas></div><div class="tut-tip"><strong>💡 Key Insight:</strong> ${s.tip}</div></div>`;
+    // Render tutorial chart
+    setTimeout(()=>renderTutChart(mode,step),50);
+    // Dots
+    const dots=document.getElementById('tut-dots');
+    dots.innerHTML=steps.map((_,i)=>`<div class="tut-dot${i===step?' on':''}"></div>`).join('');
+    // Button text
+    document.getElementById('tut-nb').textContent = step===steps.length-1 ? 'Start Practice →' : 'Next →';
+  }
+  function renderTutChart(m,s) {
+    const cv=document.getElementById('tut-cv');
+    if(!cv)return;
+    const c=cv.getContext('2d');
+    const dpr=window.devicePixelRatio||1;
+    const pw=cv.parentElement.getBoundingClientRect().width;
+    cv.width=pw*dpr; cv.height=260*dpr;
+    cv.style.width=pw+'px'; cv.style.height='260px';
+    c.scale(dpr,dpr);
+    const W=pw,H=260;
+    // Generate example bars for this tutorial step
+    const bars = TM.genChart(8,{vol:0.018,forcePatterns:m==='sd'||m==='zm'||m==='of'||m==='seq'});
+    // Draw
+    c.fillStyle='#161B2B'; c.fillRect(0,0,W,H);
+    // Grid
+    c.strokeStyle='#1F2640'; c.lineWidth=0.5;
+    for(let i=0;i<5;i++){const y=20+(H-40)/4*i;c.beginPath();c.moveTo(20,y);c.lineTo(W-60,y);c.stroke();}
+    // Price range
+    let mn=Infinity,mx=-Infinity;
+    bars.forEach(b=>{mn=Math.min(mn,b.l);mx=Math.max(mx,b.h);});
+    const rng=mx-mn||1;mn-=rng*0.1;mx+=rng*0.1;
+    const cH=H-50,cW=W-80;
+    const py=p=>25+cH*(1-(p-mn)/(mx-mn));
+    const bw=Math.min(36,(cW-bars.length*5)/bars.length);
+    const bx=i=>25+i*(bw+5)+5;
+    // Bars with annotations
+    bars.forEach((bar,i)=>{
+      const x=bx(i),mid=x+bw/2;
+      const oY=py(bar.o),cY=py(bar.c),hY=py(bar.h),lY=py(bar.l);
+      const bull=bar.c>=bar.o;
+      const bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
+      // Wick
+      c.strokeStyle=bull?'#26A69A':'#EF5350';c.lineWidth=1.5;
+      c.beginPath();c.moveTo(mid,hY);c.lineTo(mid,lY);c.stroke();
+      // Body
+      if(bull){c.fillStyle='rgba(38,166,154,0.2)';c.fillRect(x,bTop,bw,bodyH);c.strokeStyle='#26A69A';c.lineWidth=1.5;c.strokeRect(x,bTop,bw,bodyH);}
+      else{c.fillStyle='#EF5350';c.fillRect(x,bTop,bw,bodyH);}
+    });
+    // Annotations based on tutorial step
+    c.font='bold 10px system-ui';
+    if(m==='ohlc') {
+      const b0=bars[3],x0=bx(3),mid0=x0+bw/2;
+      if(s===0||s===4) { // OHLC labels
+        const pts=[['Open',b0.o],['High',b0.h],['Low',b0.l],['Close',b0.c]];
+        const colors=['#60A5FA','#EF5350','#26A69A','#FBBF24'];
+        pts.forEach(([label,price],j)=>{
+          const y=py(price);
+          c.fillStyle=colors[j]; c.beginPath();c.arc(mid0,y,5,0,Math.PI*2);c.fill();
+          c.strokeStyle='white';c.lineWidth=1.5;c.stroke();
+          const tx=mid0+(j%2===0?bw+8:-40);
+          c.fillStyle=colors[j];c.fillText(label,tx,y+4);
+          // Connecting line
+          c.strokeStyle=colors[j];c.lineWidth=1;c.setLineDash([3,2]);
+          c.beginPath();c.moveTo(mid0+(j%2===0?6:-6),y);c.lineTo(tx-2,y);c.stroke();
+          c.setLineDash([]);
+        });
+      }
+      if(s===1) { // Bullish/Bearish labels
+        bars.forEach((b,i)=>{
+          const x=bx(i)+bw/2;
+          c.fillStyle=b.bull?'#26A69A':'#EF5350';c.font='bold 9px system-ui';c.textAlign='center';
+          c.fillText(b.bull?'BULL':'BEAR',x,H-8);c.textAlign='left';
+        });
+      }
+      if(s===2) { // Body highlight
+        const b=bars[3],x=bx(3),oY=py(b.o),cY=py(b.c);
+        const bTop=Math.min(oY,cY),bBot=Math.max(oY,cY);
+        c.strokeStyle='#FBBF24';c.lineWidth=2.5;c.setLineDash([5,3]);c.strokeRect(x-2,bTop-2,bw+4,bBot-bTop+4);c.setLineDash([]);
+        c.fillStyle='#FBBF24';c.fillText('← BODY',x+bw+8,(bTop+bBot)/2+4);
+      }
+      if(s===3) { // Wick highlight
+        const b=bars[3],x=bx(3),mid=x+bw/2,oY=py(b.o),cY=py(b.c),hY=py(b.h),lY=py(b.l);
+        const bTop=Math.min(oY,cY);const bBot=Math.max(oY,cY);
+        c.strokeStyle='#F59E0B';c.lineWidth=3;
+        c.beginPath();c.moveTo(mid,hY);c.lineTo(mid,bTop);c.stroke();
+        c.fillStyle='#F59E0B';c.fillText('Upper Wick →',mid-70,hY+(bTop-hY)/2+4);
+        c.beginPath();c.moveTo(mid,bBot);c.lineTo(mid,lY);c.stroke();
+        c.fillStyle='#F59E0B';c.fillText('Lower Wick →',mid-70,bBot+(lY-bBot)/2+4);
+      }
+    }
+    if(m==='sd'||m==='of') {
+      // Highlight zones
+      const zones=[];
+      for(let i=0;i<bars.length;i++){
+        if(bars[i].phase==='base'){
+          let e=i;while(e<bars.length-1&&bars[e+1].phase==='base'&&bars[e+1].patIdx===bars[i].patIdx)e++;
+          if(e<bars.length-1&&bars[e+1].phase==='departure'){
+            const baseBars=bars.slice(i,e+1);
+            const type=bars[e+1].phaseDir==='up'?'demand':'supply';
+            zones.push({type,s:i,e,hi:Math.max(...baseBars.map(x=>x.h)),lo:Math.min(...baseBars.map(x=>x.l))});
+            i=e;
+          }
+        }
+      }
+      zones.forEach(z=>{
+        const x1=bx(z.s)-2,x2=bx(z.e)+bw+2;
+        const y1=py(z.hi),y2=py(z.lo);
+        c.fillStyle=z.type==='demand'?'rgba(38,166,154,0.12)':'rgba(239,83,80,0.12)';
+        c.fillRect(x1,y1,x2-x1,y2-y1);
+        c.strokeStyle=z.type==='demand'?'#26A69A':'#EF5350';
+        c.lineWidth=1.5;c.setLineDash([4,3]);c.strokeRect(x1,y1,x2-x1,y2-y1);c.setLineDash([]);
+        c.fillStyle=z.type==='demand'?'#26A69A':'#EF5350';c.font='bold 10px system-ui';
+        c.fillText(z.type==='demand'?'DEMAND ZONE':'SUPPLY ZONE',x1,y1-5);
+      });
+    }
+    if(m==='seq') {
+      // Label balance/imbalance/movement
+      bars.forEach((b,i)=>{
+        const x=bx(i)+bw/2;
+        let label='',color='';
+        if(b.phase==='base'){label='Balance';color='#60A5FA';}
+        else if(b.phase==='departure'){label='Imbalance';color='#FBBF24';}
+        else{label='Movement';color='#A78BFA';}
+        c.fillStyle=color;c.font='bold 8px system-ui';c.textAlign='center';
+        c.fillText(label,x,H-6);c.textAlign='left';
+      });
+    }
+  }
+  return {open,close,next,prev};
+})();
+
+// ==================== MAIN TRAINING MODULE ====================
+const TM = (function(){
+'use strict';
+
+let mode=null,diff='easy',sQ=[],qI=0,sC=0,streak=0,bStreak=0,answered=false;
+let explore=true,canvas,ctx,W,H;
+let bars=[],animBars=[],animIdx=0,isAnim=false,animFrame=null;
+let hovBar=-1,callout=null,userZone=null,isDraw=false,drawSt=null,drawnZ=[];
+const PAD={t:30,r:68,b:40,l:20},GAP=5;
+let barW=0,p2y,y2p,bx,mn,mx;
+
+// ---- localStorage progress ----
+function ldP(){try{return JSON.parse(localStorage.getItem('tm3'))||defP();}catch(e){return defP();}}
+function svP(p){localStorage.setItem('tm3',JSON.stringify(p));}
+function defP(){return{tQ:0,tC:0,bStr:0,c:{o_o:0,o_c:0,o_h:0,o_l:0,o_bull:0,o_bear:0,o_body:0,o_wick:0,sd_d:0,sd_s:0,sd_base:0,sd_dept:0,sd_ret:0,of_bal:0,of_imb:0,of_mov:0,of_pres:0,seq:0,zm:0},a:{o_o:0,o_c:0,o_h:0,o_l:0,o_bull:0,o_bear:0,o_body:0,o_wick:0,sd_d:0,sd_s:0,sd_base:0,sd_dept:0,sd_ret:0,of_bal:0,of_imb:0,of_mov:0,of_pres:0,seq:0,zm:0},badges:[],dDate:'',dDone:0,sess:0,ms:{ohlc:{q:0,c:0},sd:{q:0,c:0},seq:{q:0,c:0},zm:{q:0,c:0},of:{q:0,c:0}}};}
+
+// ---- CHART GENERATOR (always random) ----
+function genChart(n,opts={}){
+  const b=[];let price=80+Math.random()*120;
+  const vol=opts.vol||(0.008+Math.random()*0.015);
+  let trend=(Math.random()-0.5)*0.004;
+  const pats=[];
+  if(opts.forcePatterns){let p=1+Math.floor(Math.random()*3);while(p<n-4){const bl=2+Math.floor(Math.random()*3);pats.push({start:p,bl,dir:Math.random()>0.5?'up':'down'});p+=bl+3+Math.floor(Math.random()*4);}}
+  for(let i=0;i<n;i++){
+    let pat=null,phase=null;
+    for(const p of pats){if(i>=p.start&&i<p.start+p.bl){pat=p;phase='base';break;}if(i>=p.start+p.bl&&i<p.start+p.bl+2){pat=p;phase='departure';break;}}
+    let bs,wu,wd,dir;
+    if(phase==='base'){bs=price*vol*0.25*(0.2+Math.random()*0.5);wu=price*vol*0.12*Math.random();wd=price*vol*0.12*Math.random();dir=Math.random()>0.5?1:-1;}
+    else if(phase==='departure'){bs=price*vol*(2.5+Math.random()*2.5);if(pat.dir==='up'){wd=price*vol*0.2*Math.random();wu=price*vol*0.08*Math.random();dir=1;}else{wu=price*vol*0.2*Math.random();wd=price*vol*0.08*Math.random();dir=-1;}}
+    else{bs=price*vol*(0.4+Math.random()*1.4);wu=price*vol*Math.random()*0.7;wd=price*vol*Math.random()*0.7;const d=trend+(Math.random()-0.5)*vol*2.5;dir=d>0?1:-1;if(Math.random()<0.25)dir*=-1;if(Math.random()<0.08)bs*=0.1;if(Math.random()<0.06)bs*=2.5;}
+    let o=price,c,h,l;
+    if(dir>0){c=o+bs;h=c+wu;l=o-wd;}else{c=o-bs;h=o+wu;l=c-wd;}
+    if(l<1)l=0.5+Math.random();if(c<1)c=l+Math.random()*0.5;
+    b.push({o:+o.toFixed(2),h:+h.toFixed(2),l:+l.toFixed(2),c:+c.toFixed(2),bull:c>=o,idx:i,phase,phaseDir:pat?pat.dir:null,patIdx:pat?pats.indexOf(pat):-1});
+    price=c+(Math.random()-0.5)*price*vol*0.4;if(price<3)price=3+Math.random()*5;
+    if(Math.random()<0.08)trend=(Math.random()-0.5)*0.005;
+  }
+  return b;
+}
+
+function findZones(bars){
+  const z=[];for(let i=0;i<bars.length;i++){if(bars[i].phase==='base'){let e=i;while(e<bars.length-1&&bars[e+1].phase==='base'&&bars[e+1].patIdx===bars[i].patIdx)e++;if(e<bars.length-1&&bars[e+1].phase==='departure'){const bb=bars.slice(i,e+1);const dept=bars[e+1];z.push({type:dept.phaseDir==='up'?'demand':'supply',s:i,e,hi:Math.max(...bb.map(x=>x.h)),lo:Math.min(...bb.map(x=>x.l)),str:Math.abs(dept.c-dept.o)/(dept.h-dept.l+0.001)});i=e;}}}return z;
+}
+
+// ---- CANVAS INIT ----
+function initCV(){
+  canvas=document.getElementById('train-canvas');if(!canvas)return;
+  ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const r=canvas.parentElement.getBoundingClientRect();
+  W=r.width;H=420;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  ctx.scale(dpr,dpr);
+}
+
+function calcL(bb){
+  const cW=W-PAD.l-PAD.r;barW=Math.max(8,Math.min(42,(cW-bb.length*GAP)/bb.length));
+  mn=Infinity;mx=-Infinity;bb.forEach(b=>{mn=Math.min(mn,b.l);mx=Math.max(mx,b.h);});
+  const rng=mx-mn||1;mn-=rng*0.08;mx+=rng*0.08;
+  const cH=H-PAD.t-PAD.b;
+  p2y=p=>PAD.t+cH*(1-(p-mn)/(mx-mn));
+  y2p=y=>mn+(mx-mn)*(1-(y-PAD.t)/cH);
+  bx=i=>PAD.l+i*(barW+GAP)+GAP;
+}
+
+// ---- WEBULL-STYLE CHART DRAW ----
+function draw(bb,opts={}){
+  if(!ctx)return;
+  const cW=W-PAD.l-PAD.r,cH=H-PAD.t-PAD.b;
+  ctx.clearRect(0,0,W,H);
+  // Dark background
+  ctx.fillStyle='#161B2B';ctx.fillRect(0,0,W,H);
+  // Grid
+  ctx.strokeStyle='#1F2640';ctx.lineWidth=0.5;
+  for(let i=0;i<=6;i++){const y=PAD.t+(cH/6)*i;ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(W-PAD.r,y);ctx.stroke();ctx.fillStyle='#6B7394';ctx.font='10px system-ui';ctx.textAlign='left';ctx.fillText('$'+y2p(y).toFixed(2),W-PAD.r+6,y+4);}
+  // Time axis
+  bb.forEach((bar,i)=>{if(bb.length<=20||i%Math.ceil(bb.length/15)===0){const x=bx(i)+barW/2;ctx.fillStyle='#4A5078';ctx.font='9px system-ui';ctx.textAlign='center';ctx.fillText('Bar '+(i+1),x,H-PAD.b+16);}});
+  // Zones
+  if(opts.zones)opts.zones.forEach(z=>{const x1=bx(z.s)-2,x2=bx(z.e)+barW+2,y1=p2y(z.hi),y2=p2y(z.lo);ctx.fillStyle=z.type==='demand'?'rgba(38,166,154,0.08)':'rgba(239,83,80,0.08)';ctx.fillRect(x1,y1,x2-x1,y2-y1);ctx.strokeStyle=z.type==='demand'?'#26A69A':'#EF5350';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.strokeRect(x1,y1,x2-x1,y2-y1);ctx.setLineDash([]);if(opts.zLabels!==false){ctx.fillStyle=z.type==='demand'?'#26A69A':'#EF5350';ctx.font='bold 9px system-ui';ctx.textAlign='left';ctx.fillText(z.type==='demand'?'Demand':'Supply',x1,y1-4);}});
+  // User drawn zones
+  drawnZ.forEach(uz=>{ctx.fillStyle=uz.type==='demand'?'rgba(38,166,154,0.14)':'rgba(239,83,80,0.14)';ctx.fillRect(uz.x,uz.y,uz.w,uz.h);ctx.strokeStyle=uz.type==='demand'?'#26A69A':'#EF5350';ctx.lineWidth=2;ctx.strokeRect(uz.x,uz.y,uz.w,uz.h);});
+  // Candles
+  bb.forEach((bar,i)=>{
+    const x=bx(i),mid=x+barW/2;
+    const oY=p2y(bar.o),cY=p2y(bar.c),hY=p2y(bar.h),lY=p2y(bar.l);
+    const bull=bar.c>=bar.o,bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
+    const isH=(hovBar===i);const hl=opts.hl?opts.hl.find(h=>h.b===i):null;
+    if(isH){ctx.fillStyle='rgba(38,166,154,0.04)';ctx.fillRect(x-3,PAD.t,barW+6,cH);}
+    const col=hl?(hl.c||'#60A5FA'):bull?'#26A69A':'#EF5350';
+    ctx.strokeStyle=col;ctx.lineWidth=isH?2.5:1.5;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
+    if(bull){ctx.fillStyle=hl?'rgba(96,165,250,0.2)':'rgba(38,166,154,0.18)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(x,bTop,barW,bodyH);}
+    else{ctx.fillStyle=col;ctx.fillRect(x,bTop,barW,bodyH);}
+    if(hl&&hl.mk){hl.mk.forEach(mk=>{const my=mk==='open'?oY:mk==='close'?cY:mk==='high'?hY:lY;ctx.beginPath();ctx.arc(mid,my,6,0,Math.PI*2);ctx.fillStyle=hl.c||'#60A5FA';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='white';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.fillText(mk.charAt(0).toUpperCase(),mid,my+3);ctx.textAlign='left';});}
+  });
+  // Forming bar
+  if(opts.forming){
+    const fb=opts.forming,x=bx(fb.idx),mid=x+barW/2;
+    const oY=p2y(fb.o),cY=p2y(fb.cp),hY=p2y(fb.ch),lY=p2y(fb.cl);
+    const bull=fb.cp>=fb.o,bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
+    const pulse=0.3+Math.sin(Date.now()/300)*0.15;
+    ctx.shadowColor=bull?'rgba(38,166,154,'+pulse+')':'rgba(239,83,80,'+pulse+')';ctx.shadowBlur=14;
+    ctx.strokeStyle=bull?'#26A69A':'#EF5350';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
+    if(bull){ctx.fillStyle='rgba(38,166,154,0.25)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeRect(x,bTop,barW,bodyH);}
+    else{ctx.fillStyle='#EF5350';ctx.fillRect(x,bTop,barW,bodyH);}
+    ctx.shadowBlur=0;ctx.shadowColor='transparent';
+    // Price line
+    ctx.strokeStyle=bull?'rgba(38,166,154,0.35)':'rgba(239,83,80,0.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(PAD.l,cY);ctx.lineTo(W-PAD.r,cY);ctx.stroke();ctx.setLineDash([]);
+    // Price badge
+    ctx.fillStyle=bull?'#26A69A':'#EF5350';const bw2=52;ctx.fillRect(W-PAD.r,cY-9,bw2,18);ctx.fillStyle='white';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText('$'+fb.cp.toFixed(2),W-PAD.r+4,cY+4);
+  }
+  // Update toolbar OHLC
+  if(hovBar>=0&&hovBar<bb.length){
+    const hb=bb[hovBar];
+    const ohlcEl=document.getElementById('ct-ohlc');
+    if(ohlcEl)ohlcEl.innerHTML=`O: <span style="color:${hb.bull?'#26A69A':'#EF5350'}">${hb.o.toFixed(2)}</span> H: <span style="color:#26A69A">${hb.h.toFixed(2)}</span> L: <span style="color:#EF5350">${hb.l.toFixed(2)}</span> C: <span style="color:${hb.bull?'#26A69A':'#EF5350'}">${hb.c.toFixed(2)}</span>`;
+  }
+}
+
+// ---- LIVE CANDLE ANIMATION ----
+function animate(allBars,cb){
+  isAnim=true;animBars=allBars;animIdx=0;bars=[];
+  const spd=diff==='easy'?700:diff==='medium'?450:250;
+  function formNext(){
+    if(animIdx>=animBars.length){isAnim=false;if(cb)cb();updateToolbar();return;}
+    const tgt=animBars[animIdx];
+    const f={idx:animIdx,o:tgt.o,cp:tgt.o,ch:tgt.o,cl:tgt.o};
+    let step=0;const steps=18;const ps=(tgt.c-tgt.o)/steps;
+    const hr=Math.random()*0.5,lr=Math.random()*0.5;
+    function tick(){
+      if(step>=steps){bars.push(tgt);calcL(animBars);draw(bars);animIdx++;setTimeout(formNext,spd*0.25);return;}
+      const pct=step/steps;const noise=(Math.random()-0.5)*Math.abs(tgt.h-tgt.l)*0.25;
+      f.cp=tgt.o+ps*step+noise;f.ch=Math.max(f.ch,f.cp);f.cl=Math.min(f.cl,f.cp);
+      if(pct>hr)f.ch=Math.max(f.ch,tgt.h);if(pct>lr)f.cl=Math.min(f.cl,tgt.l);
+      if(step>=steps-3){f.cp=tgt.o+ps*step;f.ch=tgt.h;f.cl=tgt.l;}
+      calcL(animBars);
+      const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(animBars.slice(0,animIdx+1)):undefined;
+      draw(bars,{forming:f,zones,zLabels:diff==='easy'});
+      step++;animFrame=requestAnimationFrame(()=>setTimeout(tick,spd/steps));
+    }
+    tick();
+  }
+  calcL(animBars);formNext();
+}
+
+function stopAnim(){isAnim=false;if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}}
+
+function updateToolbar(){
+  if(bars.length>0){
+    const last=bars[bars.length-1];
+    const symEl=document.getElementById('ct-sym');if(symEl)symEl.textContent='SIM '+String.fromCharCode(65+Math.floor(Math.random()*26))+String.fromCharCode(65+Math.floor(Math.random()*26))+String.fromCharCode(65+Math.floor(Math.random()*26));
+    const prEl=document.getElementById('ct-price');if(prEl){prEl.textContent='$'+last.c.toFixed(2);prEl.className='ct-price '+(last.bull?'up':'dn');}
+    const tagEl=document.getElementById('ct-tag');if(tagEl){tagEl.textContent='PRACTICE';tagEl.className='ct-tag live';}
+  }
+}
+
+// ---- HIT TEST ----
+function hitTest(px,py){
+  for(let i=0;i<bars.length;i++){
+    const x=bx(i);if(px>=x-4&&px<=x+barW+4){
+      const b=bars[i],oY=p2y(b.o),cY=p2y(b.c),hY=p2y(b.h),lY=p2y(b.l);
+      const bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),tol=10;
+      let el='bar';
+      if(Math.abs(py-hY)<tol)el='high';
+      else if(Math.abs(py-lY)<tol)el='low';
+      else if(py>=bTop&&py<=bBot){
+        if(Math.abs(py-oY)<6)el='open';else if(Math.abs(py-cY)<6)el='close';else el='body';
+      }else if(py<bTop&&py>=hY)el='upper_wick';
+      else if(py>bBot&&py<=lY)el='lower_wick';
+      else{if(Math.abs(py-oY)<tol)el='open';else if(Math.abs(py-cY)<tol)el='close';}
+      return{b:i,d:bars[i],el,x:px,y:py,pr:y2p(py)};
+    }
+  }return null;
+}
+
+// ---- EXPLORE CALLOUT ----
+const EI={
+  high:{t:'📍 HIGH',bg:'red',tx:'The highest price reached. Represents maximum buyer willingness before sellers pushed back.',dt:b=>`High: $${b.h.toFixed(2)} | Upper wick: $${(b.h-Math.max(b.o,b.c)).toFixed(2)} | ${(b.h-Math.max(b.o,b.c))/(b.h-b.l)*100<20?'Short wick = strong close near high':'Long wick = sellers rejected these prices'}`},
+  low:{t:'📍 LOW',bg:'grn',tx:'The lowest price reached. Shows where sellers pushed down before buyers defended.',dt:b=>`Low: $${b.l.toFixed(2)} | Lower wick: $${(Math.min(b.o,b.c)-b.l).toFixed(2)} | ${(Math.min(b.o,b.c)-b.l)/(b.h-b.l)*100<20?'Short wick = sellers held control':'Long wick = buyers rejected lows (bullish)'}`},
+  open:{t:'📍 OPEN',bg:'blu',tx:b=>`Where price started this session. On this ${b.bull?'BULLISH':'BEARISH'} bar, the Open is at the ${b.bull?'BOTTOM':'TOP'} of the body.`,dt:b=>`Open: $${b.o.toFixed(2)} | Session ${b.bull?'gained':'lost'} $${Math.abs(b.c-b.o).toFixed(2)} (${(Math.abs(b.c-b.o)/b.o*100).toFixed(1)}%)`},
+  close:{t:'📍 CLOSE',bg:'blu',tx:'The final traded price — most important. Tells you who won the battle between buyers and sellers.',dt:b=>{const pct=((b.c-b.l)/(b.h-b.l)*100).toFixed(0);return`Close: $${b.c.toFixed(2)} at ${pct}% of range | ${pct>65?'Buyers dominated':'Sellers dominated'}`;}},
+  body:{t:b=>b.bull?'🟩 BULLISH BODY':'🟥 BEARISH BODY',bg:b=>b.bull?'grn':'red',tx:b=>b.bull?'Close ABOVE Open = buyers won. The body shows the Open-to-Close range. Large body = strong conviction.':'Close BELOW Open = sellers won. The body shows the Open-to-Close range. Large body = strong conviction.',dt:b=>{const bp=(Math.abs(b.c-b.o)/(b.h-b.l)*100).toFixed(0);return`Body: $${Math.abs(b.c-b.o).toFixed(2)} (${bp}% of range) | ${bp>70?'Strong conviction':'Contested session'}`;}},
+  upper_wick:{t:'📍 UPPER WICK',bg:'red',tx:'Prices reached but NOT held. Long upper wick = sellers rejected higher prices. This is a bearish rejection signal.',dt:b=>{const w=b.h-Math.max(b.o,b.c);return`Wick: $${w.toFixed(2)} (${(w/(b.h-b.l)*100).toFixed(0)}% of range) | ${w/(b.h-b.l)>0.3?'Strong selling rejection':'Minimal rejection'}`;}},
+  lower_wick:{t:'📍 LOWER WICK',bg:'grn',tx:'Prices reached but NOT held. Long lower wick = buyers rejected lower prices. This is a bullish support signal.',dt:b=>{const w=Math.min(b.o,b.c)-b.l;return`Wick: $${w.toFixed(2)} (${(w/(b.h-b.l)*100).toFixed(0)}% of range) | ${w/(b.h-b.l)>0.3?'Strong buying support':'Minimal support'}`;}}
+};
+
+function showAnno(hit){
+  const info=EI[hit.el]||EI.body;const b=hit.d;const el=document.getElementById('anno');if(!el)return;
+  const t=typeof info.t==='function'?info.t(b):info.t;
+  const bg=typeof info.bg==='function'?info.bg(b):info.bg;
+  const tx=typeof info.tx==='function'?info.tx(b):info.tx;
+  const dt=typeof info.dt==='function'?info.dt(b):'';
+  document.getElementById('anno-hd').innerHTML=t+` <span class="anno-badge ${bg}">${hit.el.replace('_',' ').toUpperCase()}</span>`;
+  document.getElementById('anno-txt').textContent=tx;
+  document.getElementById('anno-det').textContent=dt;
+  let left=hit.x+20,top=hit.y+20;
+  if(left+320>W)left=hit.x-310;if(top+150>H)top=hit.y-140;
+  if(left<10)left=10;if(top<10)top=10;
+  el.style.left=left+'px';el.style.top=top+'px';el.style.display='block';
+  // Highlight
+  const hl=[{b:hit.b,c:'#60A5FA',mk:hit.el==='body'||hit.el==='bar'?['open','close','high','low']:[hit.el==='upper_wick'?'high':hit.el==='lower_wick'?'low':hit.el]}];
+  const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;
+  draw(bars,{hl,zones});callout=hit;
+}
+function xAnno(){document.getElementById('anno').style.display='none';callout=null;const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;draw(bars,{zones});}
+
+// ---- QUESTION GENERATORS ----
+function genQ(){
+  const n=diff==='easy'?10:diff==='medium'?16:24;
+  const needPat=mode==='sd'||mode==='zm'||mode==='of'||mode==='seq';
+  const allBars=genChart(n,{forcePatterns:needPat});
+  const zones=findZones(allBars);
+  const qs=[];
+  for(let q=0;q<10;q++){
+    const question=genOneQ(allBars,zones,q);
+    if(question)qs.push(question);
+  }
+  return{bars:allBars,questions:qs};
+}
+
+function genOneQ(allBars,zones,qNum){
+  const bi=Math.floor(Math.random()*allBars.length);
+  const bar=allBars[bi];
+  if(mode==='ohlc'){
+    const types=diff==='easy'?['click_o','click_c','click_h','click_l','bull_bear']:['click_o','click_c','click_h','click_l','bull_bear','click_body','click_wick','range','close_pos','control'];
+    const type=types[Math.floor(Math.random()*types.length)];
+    switch(type){
+      case 'click_o':return{type:'click',con:'o_o',bars:allBars,tb:bi,txt:`Click the OPEN on Bar ${bi+1}`,ans:'open',fc:'Correct! The Open is where price started this session.',fw:`Incorrect. The Open on this ${bar.bull?'bullish':'bearish'} bar is at $${bar.o.toFixed(2)} — the ${bar.bull?'bottom':'top'} of the body.`};
+      case 'click_c':return{type:'click',con:'o_c',bars:allBars,tb:bi,txt:`Click the CLOSE on Bar ${bi+1}`,ans:'close',fc:'Correct! The Close is the final traded price — who won the session.',fw:`Incorrect. The Close is at $${bar.c.toFixed(2)} — the ${bar.bull?'top':'bottom'} of the body.`};
+      case 'click_h':return{type:'click',con:'o_h',bars:allBars,tb:bi,txt:`Click the HIGH on Bar ${bi+1}`,ans:'high',fc:'Correct! The High is the peak — very top of the wick.',fw:`Incorrect. The High ($${bar.h.toFixed(2)}) is the very top of the bar.`};
+      case 'click_l':return{type:'click',con:'o_l',bars:allBars,tb:bi,txt:`Click the LOW on Bar ${bi+1}`,ans:'low',fc:'Correct! The Low is the floor — very bottom of the wick.',fw:`Incorrect. The Low ($${bar.l.toFixed(2)}) is the very bottom of the bar.`};
+      case 'bull_bear':{const hasBull=allBars.some(b=>b.bull);if(!hasBull)return null;return{type:'click_bar',con:'o_bull',bars:allBars,txt:'Click a BULLISH (green/up) bar.',chk:h=>h&&h.d.bull,fc:'Correct! Bullish = Close above Open. Buyers won.',fw:'Incorrect. Bullish bars have Close > Open (green).'};};
+      case 'click_body':return{type:'click_el',con:'o_body',bars:allBars,tb:bi,txt:`Click the BODY of Bar ${bi+1}`,ans:'body',fc:'Correct! The body = Open-to-Close range. Shows session conviction.',fw:'Incorrect. The body is the thick rectangle between Open and Close.'};
+      case 'click_wick':return{type:'click_el',con:'o_wick',bars:allBars,tb:bi,txt:`Click a WICK on Bar ${bi+1}`,ans:'wick',fc:'Correct! Wicks show price rejection. Long wicks = strong rejection.',fw:'Incorrect. Wicks are the thin lines above/below the body.'};
+      case 'range':{const r=(bar.h-bar.l).toFixed(2);const opts=[r,(bar.h-bar.l+Math.random()*2).toFixed(2),Math.abs(bar.c-bar.o).toFixed(2),((bar.h-bar.l)*0.5).toFixed(2)].sort(()=>Math.random()-0.5);return{type:'mc',con:'o_body',bars:allBars,hlb:bi,txt:`What is the total range of Bar ${bi+1}?`,opts,cor:r,fc:`Correct! Range = $${bar.h.toFixed(2)} - $${bar.l.toFixed(2)} = $${r}`,fw:`Incorrect. Range = High - Low = $${r}`};};
+      case 'close_pos':{const pct=((bar.c-bar.l)/(bar.h-bar.l)*100).toFixed(0);let cor;if(pct>=75)cor='Top quarter';else if(pct>=50)cor='Upper half';else if(pct>=35)cor='Middle';else if(pct>=15)cor='Lower half';else cor='Bottom quarter';return{type:'mc',con:'o_c',bars:allBars,hlb:bi,txt:`Where did Bar ${bi+1} close within its range?`,opts:['Top quarter','Upper half','Middle','Lower half','Bottom quarter'],cor,fc:`Correct! Close at ${pct}% — ${pct>50?'buyers controlled':'sellers controlled'} session end.`,fw:`Incorrect. Close at ${pct}% = ${cor}.`};};
+      case 'control':{const bp=Math.abs(bar.c-bar.o)/(bar.h-bar.l)*100;let cor;if(bar.bull&&bp>60)cor='Strong buyer control';else if(!bar.bull&&bp>60)cor='Strong seller control';else cor='Indecision';return{type:'mc',con:'o_body',bars:allBars,hlb:bi,txt:`What does Bar ${bi+1} tell you about control?`,opts:['Strong buyer control','Strong seller control','Indecision'],cor,fc:`Correct! Body is ${bp.toFixed(0)}% of range. ${cor}.`,fw:`Incorrect. ${cor}. Body = ${bp.toFixed(0)}% of range.`};};
+    }
+  }
+  if(mode==='sd'){
+    const types=diff==='easy'?['id_demand','id_supply','which_type']:['id_demand','id_supply','which_type','find_base','find_dept','retest','stronger'];
+    const type=types[Math.floor(Math.random()*types.length)];
+    const dz=zones.filter(z=>z.type==='demand'),sz=zones.filter(z=>z.type==='supply');
+    switch(type){
+      case 'id_demand':if(!dz.length)return null;return{type:'click_zone',con:'sd_d',bars:allBars,zones,txt:'Click inside a DEMAND ZONE (base before upward departure).',chk:h=>h&&dz.some(z=>h.b>=z.s&&h.b<=z.e),fc:'Correct! Demand zone — institutional buy orders created the upward move. Unfilled orders remain here.',fw:'Incorrect. Demand zones are the small tight bars BEFORE a sharp upward move.'};
+      case 'id_supply':if(!sz.length)return null;return{type:'click_zone',con:'sd_s',bars:allBars,zones,txt:'Click inside a SUPPLY ZONE (base before downward departure).',chk:h=>h&&sz.some(z=>h.b>=z.s&&h.b<=z.e),fc:'Correct! Supply zone — institutional sell orders here.',fw:'Incorrect. Supply zones = small bars before a sharp drop.'};
+      case 'which_type':if(!zones.length)return null;{const z=zones[Math.floor(Math.random()*zones.length)];return{type:'mc',con:z.type==='demand'?'sd_d':'sd_s',bars:allBars,zones:[{...z}],txt:'The highlighted zone — Supply or Demand?',opts:['Demand Zone','Supply Zone'],cor:z.type==='demand'?'Demand Zone':'Supply Zone',fc:`Correct! ${z.type} zone. Price departed ${z.type==='demand'?'upward (buy orders)':'downward (sell orders)'}.`,fw:`Incorrect. This is ${z.type}. Look at departure direction.`};}
+      case 'find_base':if(!zones.length)return null;return{type:'click_bar',con:'sd_base',bars:allBars,txt:'Click a bar in a BASE area (tight consolidation before a departure).',chk:h=>h&&allBars[h.b].phase==='base',fc:'Correct! The base is where institutions accumulated orders before the move.',fw:'Incorrect. Bases are clusters of small, tight bars before a sharp move.'};
+      case 'find_dept':return{type:'click_bar',con:'sd_dept',bars:allBars,txt:'Click the DEPARTURE bar (first big move from a base).',chk:h=>h&&allBars[h.b].phase==='departure',fc:'Correct! The departure shows institutional imbalance — aggressive orders overwhelmed.',fw:'Incorrect. Look for the first large bar breaking out of a consolidation.'};
+      case 'retest':if(!zones.length)return null;{const z=zones[0];return{type:'mc',con:'sd_ret',bars:allBars,zones:[z],txt:`If price returns to this ${z.type} zone, most likely reaction?`,opts:[z.type==='demand'?'Bounce up (buy orders fill)':'Drop down (sell orders fill)','Break straight through','No reaction'],cor:z.type==='demand'?'Bounce up (buy orders fill)':'Drop down (sell orders fill)',fc:`Correct! Unfilled ${z.type==='demand'?'buy':'sell'} orders activate on retest.`,fw:`Incorrect. ${z.type} zones cause ${z.type==='demand'?'bullish bounces':'bearish rejections'} on retest.`};}
+      case 'stronger':if(zones.length<2)return null;{const z1=zones[0],z2=zones[1];const s=z1.str>=z2.str?'Zone A':'Zone B';return{type:'mc',con:'sd_d',bars:allBars,zones:[{...z1,label:'Zone A'},{...z2,label:'Zone B'}],txt:'Which zone is STRONGER (sharper departure)?',opts:['Zone A','Zone B'],cor:s,fc:`Correct! ${s} has a sharper departure = more unfilled orders.`,fw:`Incorrect. ${s} is stronger. Sharper departure = more conviction.`};}
+    }
+  }
+  if(mode==='seq'){
+    const types=['id_balance','id_imbalance','id_movement','sequence','who_control'];
+    const type=types[Math.floor(Math.random()*types.length)];
+    switch(type){
+      case 'id_balance':return{type:'click_bar',con:'of_bal',bars:allBars,txt:'Click a bar showing BALANCE (sideways, small body, supply=demand).',chk:h=>h&&allBars[h.b].phase==='base',fc:'Correct! Balance = supply equals demand. Small bars, sideways movement.',fw:'Incorrect. Balance bars are small and sideways — look for tight consolidation.'};
+      case 'id_imbalance':return{type:'click_bar',con:'of_imb',bars:allBars,txt:'Click a bar showing IMBALANCE (one side overwhelms).',chk:h=>h&&allBars[h.b].phase==='departure',fc:'Correct! Imbalance = one side overwhelmed. Large directional bar.',fw:'Incorrect. Imbalance bars are large-bodied and directional.'};
+      case 'id_movement':return{type:'click_bar',con:'of_mov',bars:allBars,txt:'Click a bar in the MOVEMENT phase (directional expansion).',chk:h=>h&&(allBars[h.b].phase==='departure'),fc:'Correct! Movement follows imbalance — directional expansion.',fw:'Incorrect. Movement bars follow the departure from balance.'};
+      case 'sequence':return{type:'mc',con:'seq',bars:allBars,txt:'What is the correct sequence of price development?',opts:['Balance → Imbalance → Movement','Movement → Balance → Imbalance','Imbalance → Movement → Balance'],cor:'Balance → Imbalance → Movement',fc:'Correct! Balance (equal) → Imbalance (overwhelm) → Movement (expansion).',fw:'Incorrect. The sequence is always Balance → Imbalance → Movement.'};
+      case 'who_control':{const mi=Math.floor(Math.random()*allBars.length);const mb=allBars[mi];return{type:'mc',con:'of_pres',bars:allBars,hlb:mi,txt:`Who controlled Bar ${mi+1}?`,opts:['Buyers','Sellers','Neither'],cor:mb.bull?'Buyers':'Sellers',fc:`Correct! ${mb.bull?'Buyers':'Sellers'} — close ${mb.bull?'above':'below'} open.`,fw:`Incorrect. ${mb.bull?'Buyers':'Sellers'} controlled. Close ${mb.bull?'above':'below'} open.`};}
+    }
+  }
+  if(mode==='zm'){
+    return{type:'zone_draw',con:'zm',bars:allBars,zones,txt:qNum%2===0?'Draw a DEMAND ZONE rectangle (base before upward move). Click and drag.':'Draw a SUPPLY ZONE rectangle (base before downward move). Click and drag.',zt:qNum%2===0?'demand':'supply',fc:'Good zone marking! Covers the base area accurately.',fw:'Zone needs work. Remember: mark ONLY the base (small bars) before the sharp departure.'};
+  }
+  if(mode==='of'){
+    const types=['bal_imb','caused','pressure','predict','unfilled'];
+    const type=types[Math.floor(Math.random()*types.length)];
+    switch(type){
+      case 'bal_imb':{const mi=Math.floor(Math.random()*allBars.length);const mb=allBars[mi];const isBal=mb.phase==='base';return{type:'mc',con:isBal?'of_bal':'of_imb',bars:allBars,hlb:mi,txt:`Bar ${mi+1}: Balance or Imbalance?`,opts:['Balance','Imbalance'],cor:isBal?'Balance':'Imbalance',fc:`Correct! ${isBal?'Balance — small body, supply ≈ demand':'Imbalance — large body, one side overwhelmed'}.`,fw:`Incorrect. ${isBal?'Balance (small, no direction)':'Imbalance (strong directional)'}.`};}
+      case 'caused':{const depts=allBars.filter(b=>b.phase==='departure');if(!depts.length)return null;const d=depts[0];return{type:'mc',con:'of_pres',bars:allBars,hlb:d.idx,txt:`What caused the sharp move at Bar ${d.idx+1}?`,opts:['Aggressive institutional buying','Aggressive institutional selling','Random noise'],cor:d.phaseDir==='up'?'Aggressive institutional buying':'Aggressive institutional selling',fc:`Correct! ${d.phaseDir==='up'?'Buying':'Selling'} overwhelmed. No more ${d.phaseDir==='up'?'sellers':'buyers'} at this price.`,fw:`Incorrect. Sharp ${d.phaseDir==='up'?'upward':'downward'} = aggressive institutional ${d.phaseDir==='up'?'buying':'selling'}.`};}
+      case 'pressure':{const mi=Math.floor(Math.random()*allBars.length);const mb=allBars[mi];return{type:'mc',con:'of_pres',bars:allBars,hlb:mi,txt:`Bar ${mi+1}: Buying or Selling pressure?`,opts:['Buying','Selling'],cor:mb.bull?'Buying':'Selling',fc:`Correct! ${mb.bull?'Buying':'Selling'} pressure — close ${mb.bull?'above':'below'} open.`,fw:`Incorrect. ${mb.bull?'Buying':'Selling'} pressure.`};}
+      case 'predict':if(!zones.length)return null;{const z=zones[0];return{type:'mc',con:'sd_ret',bars:allBars,zones:[z],txt:`If price returns to this ${z.type} zone, predict the reaction.`,opts:[z.type==='demand'?'Bounce up':'Drop down','Break through','No reaction'],cor:z.type==='demand'?'Bounce up':'Drop down',fc:`Correct! Unfilled ${z.type==='demand'?'buy':'sell'} orders activate.`,fw:`Incorrect. ${z.type} zones cause ${z.type==='demand'?'bullish':'bearish'} reactions.`};}
+      case 'unfilled':if(!zones.length)return null;return{type:'click_zone',con:zones[0].type==='demand'?'sd_d':'sd_s',bars:allBars,zones,txt:'Click the area with likely UNFILLED INSTITUTIONAL ORDERS.',chk:h=>h&&zones.some(z=>h.b>=z.s&&h.b<=z.e),fc:'Correct! Base areas before sharp departures contain unfilled orders.',fw:'Incorrect. Unfilled orders exist in consolidation areas before sharp moves.'};
+    }
+  }
+  return null;
+}
+
+// ---- GRADING ----
+function grade(correct,q,score){
+  if(answered)return;answered=true;
+  const p=ldP();p.tQ++;
+  if(q.con){p.a[q.con]=(p.a[q.con]||0)+1;}
+  if(correct){sC++;streak++;if(streak>bStreak)bStreak=streak;if(q.con)p.c[q.con]=(p.c[q.con]||0)+1;p.tC++;}else{streak=0;}
+  if(mode&&p.ms[mode]){p.ms[mode].q++;if(correct)p.ms[mode].c++;}
+  if(bStreak>p.bStr)p.bStr=bStreak;
+  const today=new Date().toDateString();if(p.dDate!==today){p.dDate=today;p.dDone=0;}if(correct)p.dDone++;
+  chkBadges(p);svP(p);
+  showFB(correct,q,score);
+  document.getElementById('ar-str').textContent='🔥 '+streak;
+  if(q.tb!==undefined){
+    const hl=[{b:q.tb,c:correct?'#26A69A':'#EF5350',mk:[q.ans||'open']}];
+    draw(bars,{hl,zones:q.zones});
+  }
+  if(q.type==='mc'){document.querySelectorAll('.qo').forEach(btn=>{btn.disabled=true;if(btn.textContent===q.cor)btn.classList.add('ok');});}
+}
+
+function handleMC(sel,q){if(answered)return;document.querySelectorAll('.qo').forEach(btn=>{if(btn.textContent===sel&&sel!==q.cor)btn.classList.add('no');});grade(sel===q.cor,q);}
+
+function showFB(ok,q,sc){
+  const el=document.getElementById('fb');el.className='fb show '+(ok?'ok':'no');
+  document.getElementById('fb-hd').textContent=ok?'✅ Correct!':'❌ Incorrect';
+  let t=ok?(q.fc||'Great!'):(q.fw||'Try again.');
+  if(sc!==undefined&&sc>0)t+=` (Zone quality: ${(sc*100).toFixed(0)}%)`;
+  document.getElementById('fb-tx').textContent=t;
+}
+
+// ---- ZONE GRADING ----
+function gradeZone(uz,zones,zType){
+  if(!uz||uz.sb===undefined)return{ok:false,sc:0};
+  const match=zones.filter(z=>z.type===zType);let best=0;
+  match.forEach(cz=>{
+    const os=Math.max(uz.sb,cz.s),oe=Math.min(uz.eb,cz.e);if(os>oe)return;
+    const ob=oe-os+1,ub=uz.eb-uz.sb+1,cb=cz.e-cz.s+1;
+    const pr=ob/ub,re=ob/cb,f1=2*(pr*re)/(pr+re||1);
+    const ph=Math.min(uz.hp,cz.hi),pl=Math.max(uz.lp,cz.lo);
+    const ps=ph>pl?0.5:0;const sc=f1*0.6+ps*0.4;if(sc>best)best=sc;
+  });
+  return{ok:best>0.35,sc:best};
+}
+
+// ---- BADGES ----
+const BADGES=[
+  {id:'first',n:'First Steps',i:'🌱',ck:p=>p.tQ>=1},{id:'ten',n:'Getting Started',i:'📚',ck:p=>p.tQ>=10},
+  {id:'fifty',n:'Dedicated',i:'🎓',ck:p=>p.tQ>=50},{id:'hundred',n:'Century',i:'💯',ck:p=>p.tQ>=100},
+  {id:'s5',n:'Hot Streak',i:'🔥',ck:p=>p.bStr>=5},{id:'s10',n:'On Fire',i:'🔥',ck:p=>p.bStr>=10},
+  {id:'s20',n:'Unstoppable',i:'⚡',ck:p=>p.bStr>=20},
+  {id:'ohlc_m',n:'OHLC Master',i:'📊',ck:p=>['o_o','o_c','o_h','o_l'].every(k=>p.a[k]>=5&&p.c[k]/p.a[k]>=0.8)},
+  {id:'zone_s',n:'Zone Spotter',i:'🎯',ck:p=>['sd_d','sd_s'].every(k=>p.a[k]>=5&&p.c[k]/p.a[k]>=0.7)},
+  {id:'flow',n:'Flow Reader',i:'🌊',ck:p=>['of_bal','of_imb','of_mov'].every(k=>p.a[k]>=3&&p.c[k]/p.a[k]>=0.7)},
+  {id:'daily',n:'Daily Champ',i:'🏆',ck:p=>p.dDone>=10},{id:'all',n:'Well Rounded',i:'🌟',ck:p=>Object.values(p.ms).every(m=>m.q>=5)},
+  {id:'sharp',n:'Sharp Eye',i:'👁️',ck:p=>p.tQ>=20&&p.tC/p.tQ>=0.85},{id:'s10s',n:'Committed',i:'💎',ck:p=>p.sess>=10},
+];
+function chkBadges(p){BADGES.forEach(b=>{if(!p.badges.find(x=>x.id===b.id)&&b.ck(p))p.badges.push({id:b.id,n:b.n,i:b.i,s:p.sess+1});});}
+function getLevel(p){const a=p.tQ>0?p.tC/p.tQ:0;if(p.tQ>=200&&a>=0.85)return'Expert';if(p.tQ>=100&&a>=0.75)return'Advanced';if(p.tQ>=50&&a>=0.65)return'Intermediate';if(p.tQ>=10)return'Beginner+';return'Beginner';}
+function getMastery(p,m){const k={ohlc:['o_o','o_c','o_h','o_l','o_bull','o_bear','o_body','o_wick'],sd:['sd_d','sd_s','sd_base','sd_dept','sd_ret'],seq:['of_bal','of_imb','of_mov','seq'],zm:['zm'],of:['of_bal','of_imb','of_mov','of_pres']};const ks=k[m]||[];let t=0,c=0;ks.forEach(k=>{if(p.a[k]>=2){t+=p.c[k]/p.a[k];c++;}});return c>0?(t/c*100):0;}
+
+// ---- ENGINE: start, events, navigation ----
+let evClick,evMove,evDown,evUp;
+function startMode(m){
+  mode=m;qI=0;sC=0;streak=0;bStreak=0;answered=false;drawnZ=[];
+  const data=genQ();
+  animBars=data.bars;sQ=data.questions;
+  if(sQ.length===0){sQ=[{type:'mc',con:'seq',bars:animBars,txt:'No questions generated. Click Next for a new chart.',opts:['OK'],cor:'OK',fc:'',fw:''}];}
+  document.getElementById('train-dash').style.display='none';
+  document.getElementById('train-arena').classList.add('active');
+  const titles={ohlc:'📊 OHLC Mastery',sd:'🏗️ Supply & Demand',seq:'📅 Three-Day Sequence',zm:'🎨 Zone Marking',of:'⚡ Order Flow'};
+  document.getElementById('ar-title').textContent=titles[m]||'Training';
+  initCV();setupEv();
+  // Animate chart in, then load question
+  animate(animBars,()=>loadQ());
+}
+
+function back(){
+  stopAnim();removeEv();
+  document.getElementById('train-dash').style.display='block';
+  document.getElementById('train-arena').classList.remove('active');
+  mode=null;updateDash();
+}
+
+function newChart(){
+  stopAnim();answered=false;drawnZ=[];xAnno();
+  const data=genQ();animBars=data.bars;sQ=data.questions;qI=0;sC=0;streak=0;
+  animate(animBars,()=>loadQ());
+}
+
+function setDiff(d,el){diff=d;document.querySelectorAll('.dpill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+
+function loadQ(){
+  if(qI>=sQ.length){endSess();return;}
+  answered=false;drawnZ=[];userZone=null;xAnno();hovBar=-1;
+  const q=sQ[qI];
+  document.getElementById('qp-num').textContent=`Question ${qI+1} of ${sQ.length}`;
+  document.getElementById('qp-txt').textContent=q.txt;
+  document.getElementById('tp-f').style.width=(qI/sQ.length*100)+'%';
+  document.getElementById('tp-t').textContent=`${qI}/${sQ.length}`;
+  document.getElementById('ar-str').textContent='🔥 '+streak;
+  document.getElementById('fb').className='fb';
+  // Redraw chart (bars already formed)
+  const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;
+  const hl=q.hlb!==undefined?[{b:q.hlb,c:'#60A5FA'}]:undefined;
+  draw(bars,{zones:q.zones||zones,hl,zLabels:diff==='easy'});
+  // Options
+  const od=document.getElementById('qp-opts');od.innerHTML='';
+  if(q.type==='mc'){q.opts.forEach(o=>{const btn=document.createElement('button');btn.className='qo';btn.textContent=o;btn.onclick=()=>handleMC(o,q);od.appendChild(btn);});}
+  else if(q.type==='zone_draw'){od.innerHTML='<div style="font-size:12px;color:var(--gray-500);padding:6px 0;">Click and drag on the chart to draw your zone.</div><button class="qo sel" onclick="TM.submitZone()">Submit Zone</button>';}
+  else{od.innerHTML='<div style="font-size:12px;color:var(--chart-text);padding:6px 0;">👆 Click directly on the chart to answer</div>';}
+}
+
+function nextQ(){if(!answered&&qI<sQ.length)return;qI++;loadQ();}
+
+function submitZone(){
+  if(answered||!userZone)return;const q=sQ[qI];if(!q||q.type!=='zone_draw')return;
+  const result=gradeZone(userZone,findZones(bars),q.zt);grade(result.ok,q,result.sc);
+}
+
+function toggleExplore(){
+  explore=!explore;
+  const btn=document.getElementById('etoggle');btn.classList.toggle('on',explore);
+  document.getElementById('ehint').textContent=explore?'Click any part of a candle to learn':'Explore mode off';
+}
+
+// ---- EVENT HANDLERS ----
+function setupEv(){
+  removeEv();
+  evClick=e=>{
+    const r=canvas.getBoundingClientRect();const px=e.clientX-r.left,py=e.clientY-r.top;
+    const hit=hitTest(px,py);
+    // Explore mode: show annotation
+    if(explore&&hit&&(answered||sQ[qI]?.type==='mc')){showAnno(hit);return;}
+    if(answered)return;
+    const q=sQ[qI];if(!q)return;
+    if(q.type==='click'){
+      if(hit&&hit.b===q.tb){
+        const bar=q.bars[q.tb];const tgtY=p2y(bar[q.ans]);
+        grade(Math.abs(py-tgtY)<12||hit.el===q.ans,q);
+      }else if(hit){grade(false,q);}
+    }else if(q.type==='click_bar'||q.type==='click_zone'){
+      if(hit&&q.chk){grade(q.chk(hit),q);}else if(hit){grade(false,q);}
+    }else if(q.type==='click_el'){
+      if(hit&&hit.b===q.tb){
+        const isBody=hit.el==='body',isWick=hit.el==='upper_wick'||hit.el==='lower_wick';
+        if(q.ans==='body'&&isBody)grade(true,q);else if(q.ans==='wick'&&isWick)grade(true,q);else grade(false,q);
+      }else if(hit){grade(false,q);}
+    }else if(explore&&hit){showAnno(hit);}
+  };
+  evMove=e=>{
+    const r=canvas.getBoundingClientRect();const px=e.clientX-r.left,py=e.clientY-r.top;
+    const hit=hitTest(px,py);const nh=hit?hit.b:-1;
+    if(nh!==hovBar){hovBar=nh;const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;const q=sQ[qI];const hl=q&&q.hlb!==undefined?[{b:q.hlb,c:'#60A5FA'}]:undefined;draw(bars,{zones:q?.zones||zones,hl,zLabels:diff==='easy'});}
+    // Zone draw drag
+    if(isDraw&&drawSt){const q=sQ[qI];if(q&&q.type==='zone_draw'){drawnZ=[{x:Math.min(drawSt.x,px),y:Math.min(drawSt.y,py),w:Math.abs(px-drawSt.x),h:Math.abs(py-drawSt.y),type:q.zt}];const zones=findZones(bars);draw(bars,{zones,zLabels:diff==='easy'});}}
+  };
+  evDown=e=>{const q=sQ[qI];if(q&&q.type==='zone_draw'&&!answered){const r=canvas.getBoundingClientRect();drawSt={x:e.clientX-r.left,y:e.clientY-r.top};isDraw=true;}};
+  evUp=e=>{
+    if(isDraw){isDraw=false;const r=canvas.getBoundingClientRect();const px=e.clientX-r.left,py=e.clientY-r.top;
+      if(drawSt){const x1=Math.min(drawSt.x,px),x2=Math.max(drawSt.x,px),y1=Math.min(drawSt.y,py),y2=Math.max(drawSt.y,py);
+        const sb=Math.max(0,Math.floor((x1-PAD.l)/(barW+GAP)));const eb=Math.min(bars.length-1,Math.floor((x2-PAD.l)/(barW+GAP)));
+        userZone={sb,eb,hp:y2p(y1),lp:y2p(y2),x:x1,y:y1,w:x2-x1,h:y2-y1};}drawSt=null;}
+  };
+  canvas.addEventListener('click',evClick);canvas.addEventListener('mousemove',evMove);
+  canvas.addEventListener('mousedown',evDown);canvas.addEventListener('mouseup',evUp);
+}
+function removeEv(){if(canvas){if(evClick)canvas.removeEventListener('click',evClick);if(evMove)canvas.removeEventListener('mousemove',evMove);if(evDown)canvas.removeEventListener('mousedown',evDown);if(evUp)canvas.removeEventListener('mouseup',evUp);}}
+
+// ---- SESSION END ----
+function endSess(){
+  const p=ldP();p.sess++;svP(p);
+  const pct=sQ.length>0?(sC/sQ.length*100).toFixed(0):0;
+  document.getElementById('sess-t').textContent=pct>=80?'🏆 Outstanding!':pct>=60?'👏 Good Work!':'💪 Keep Practicing!';
+  document.getElementById('sess-g').innerHTML=`<div class="ss-i"><div class="ss-v">${sC}/${sQ.length}</div><div class="ss-l">Correct</div></div><div class="ss-i"><div class="ss-v">${pct}%</div><div class="ss-l">Accuracy</div></div><div class="ss-i"><div class="ss-v">🔥 ${bStreak}</div><div class="ss-l">Best Streak</div></div><div class="ss-i"><div class="ss-v">${getLevel(p)}</div><div class="ss-l">Level</div></div>`;
+  const nb=p.badges.filter(b=>b.s===p.sess);
+  document.getElementById('sess-badges').innerHTML=nb.length?'<div style="margin-top:6px;font-size:12px;color:var(--emerald);font-weight:600;">New Badges:</div>'+nb.map(b=>`<span class="gbadge on">${b.i} ${b.n}</span>`).join(''):'';
+  document.getElementById('sess-m').classList.add('show');
+}
+function closeSess(){document.getElementById('sess-m').classList.remove('show');back();}
+
+// ---- DASHBOARD ----
+function updateDash(){
+  const p=ldP();
+  document.getElementById('ts-acc').textContent=(p.tQ>0?(p.tC/p.tQ*100).toFixed(0):'0')+'%';
+  document.getElementById('ts-tot').textContent=p.tQ;
+  document.getElementById('ts-str').textContent=p.bStr;
+  document.getElementById('ts-lvl').textContent=getLevel(p);
+  const modes=['ohlc','sd','seq','zm','of'];let tm=0,cm=0;
+  modes.forEach(m=>{const v=getMastery(p,m);const el=document.getElementById('m-'+m);if(el)el.style.width=v.toFixed(0)+'%';if(v>0){tm+=v;cm++;}});
+  document.getElementById('ts-mas').textContent=cm>0?(tm/cm).toFixed(0)+'%':'0%';
+  document.getElementById('badge-row').innerHTML=BADGES.map(b=>{const e=p.badges.find(x=>x.id===b.id);return`<span class="gbadge ${e?'on':'off'}">${b.i} ${b.n}</span>`;}).join('');
+  const today=new Date().toDateString();const dd=p.dDate===today?p.dDone:0;
+  document.getElementById('dc-prog').textContent=`${Math.min(dd,10)} / 10`;
+}
+
+function initTraining(){updateDash();}
+
+return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,xAnno,initTraining,genChart};
+})();
+
+
 </script>
 </body>
 </html>
