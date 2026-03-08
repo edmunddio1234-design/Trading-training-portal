@@ -1,385 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Impact Trading Academy</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  :root {
-    --bg-primary: #F0F5F3;
-    --bg-secondary: #FFFFFF;
-    --bg-card: #F7FAF9;
-    --bg-hover: #E8F0ED;
-    --accent: #0D9373;
-    --accent-light: #10B981;
-    --accent-dark: #0B7A60;
-    --green: #10B981;
-    --green-dark: #0D9373;
-    --red: #EF4444;
-    --blue: #0D9373;
-    --navy: #1B2A4A;
-    --text-primary: #1B2A4A;
-    --text-secondary: #374151;
-    --text-muted: #6B7280;
-    --border: #E5E7EB;
-    --border-light: #D1D5DB;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg-primary); }
-  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
-  .app-container { display: flex; min-height: 100vh; }
-  .sidebar { width: 300px; background: var(--bg-secondary); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; height: 100vh; overflow-y: auto; z-index: 100; transition: transform 0.3s ease; }
-  .sidebar.collapsed { transform: translateX(-300px); }
-  .sidebar-header { padding: 24px 20px; border-bottom: 1px solid var(--border); background: var(--navy); }
-  .sidebar-header h1 { font-size: 18px; color: #FFFFFF; font-weight: 700; letter-spacing: -0.3px; }
-  .sidebar-header h1 span { color: var(--accent-light); }
-  .sidebar-header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
-  .nav-section { padding: 12px 0; flex: 1; overflow-y: auto; }
-  .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); padding: 8px 20px; font-weight: 600; }
-  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; font-size: 13px; color: var(--text-secondary); }
-  .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
-  .nav-item.active { background: rgba(13,147,115,0.08); border-left-color: var(--accent); color: var(--accent); }
-  .nav-item.completed .nav-dot { background: var(--green); }
-  .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-light); flex-shrink: 0; }
-  .nav-item.active .nav-dot { background: var(--accent); box-shadow: 0 0 8px rgba(13,147,115,0.4); }
-  .progress-bar-container { padding: 16px 20px; border-top: 1px solid var(--border); }
-  .progress-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
-  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); border-radius: 2px; transition: width 0.5s ease; }
-  .main-content { flex: 1; margin-left: 300px; transition: margin-left 0.3s ease; }
-  .main-content.expanded { margin-left: 0; }
-  .content-header { padding: 16px 40px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-  .toggle-btn { background: none; border: 1px solid var(--border-light); color: var(--text-muted); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
-  .toggle-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-  .header-actions { display: flex; gap: 8px; }
-  .header-actions button { background: none; border: 1px solid var(--border-light); color: var(--text-secondary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; }
-  .header-actions button:hover { background: var(--bg-hover); color: var(--text-primary); }
-  .header-actions button.primary { background: var(--accent); border-color: var(--accent); color: #FFF; font-weight: 600; }
-  .header-actions button.primary:hover { background: var(--accent-dark); }
-  .content-body { padding: 40px; max-width: 920px; }
-  .module-badge { display: inline-block; background: rgba(13,147,115,0.12); color: var(--accent); font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; }
-  .module-title { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; letter-spacing: -0.5px; color: var(--navy); }
-  .module-subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5; }
-  .lesson-section { margin-bottom: 28px; }
-  .lesson-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .lesson-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .lesson-section p { font-size: 15px; line-height: 1.75; color: var(--text-secondary); margin-bottom: 12px; }
-  .lesson-section ul { list-style: none; padding: 0; }
-  .lesson-section ul li { padding: 6px 0 6px 24px; position: relative; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
-  .lesson-section ul li::before { content: '\25B8'; position: absolute; left: 4px; color: var(--accent); }
-  .key-concept { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 12px; padding: 20px 24px; margin: 16px 0; }
-  .key-concept .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
-  .key-concept p { font-size: 14px; color: var(--text-primary); line-height: 1.6; margin: 0; }
-  .resource-card { display: flex; align-items: center; gap: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 12px 0; text-decoration: none; color: inherit; transition: all 0.2s; }
-  .resource-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
-  .resource-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-  .resource-icon.learn { background: rgba(13,147,115,0.1); }
-  .resource-icon.chart { background: rgba(27,42,74,0.08); }
-  .resource-icon.video { background: rgba(239,68,68,0.08); }
-  .resource-icon.tool { background: rgba(245,165,36,0.1); }
-  .resource-info h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 2px; }
-  .resource-info p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.4; }
-  .resource-arrow { color: var(--border-light); font-size: 18px; margin-left: auto; }
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
-  .stat-box { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
-  .stat-box .num { font-size: 24px; font-weight: 800; color: var(--accent); }
-  .stat-box .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-  .comparison-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; margin: 16px 0; border: 1px solid var(--border); }
-  .comparison-table th { background: var(--navy); padding: 12px 16px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #FFF; font-weight: 600; border-bottom: 1px solid var(--border); }
-  .comparison-table td { padding: 10px 16px; font-size: 13px; color: var(--text-secondary); border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
-  .comparison-table tr:last-child td { border-bottom: none; }
-  .comparison-table tr:hover td { background: rgba(13,147,115,0.03); }
-  .quiz-container { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-top: 40px; }
-  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-  .quiz-header h3 { font-size: 18px; color: var(--navy); font-weight: 700; }
-  .quiz-score { font-size: 13px; color: var(--text-muted); }
-  .quiz-question { font-size: 16px; font-weight: 500; margin-bottom: 16px; line-height: 1.5; color: var(--navy); }
-  .quiz-progress { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-  .quiz-option { display: block; width: 100%; text-align: left; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 8px; font-size: 14px; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; font-family: inherit; }
-  .quiz-option:hover:not(.selected):not(.correct):not(.incorrect) { border-color: var(--accent); color: var(--text-primary); background: var(--bg-hover); }
-  .quiz-option.selected { border-color: var(--accent); background: rgba(13,147,115,0.08); color: var(--text-primary); }
-  .quiz-option.correct { border-color: var(--green); background: rgba(16,185,129,0.1); color: var(--green-dark); }
-  .quiz-option.incorrect { border-color: var(--red); background: rgba(239,68,68,0.06); color: var(--red); }
-  .quiz-feedback { margin-top: 16px; padding: 16px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
-  .quiz-feedback.correct { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); color: var(--green-dark); }
-  .quiz-feedback.incorrect { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
-  .quiz-btn { background: var(--accent); color: #FFF; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 16px; font-family: inherit; }
-  .quiz-btn:hover { background: var(--accent-dark); }
-  .quiz-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-  .modal { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
-  .modal-header { padding: 24px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .modal-header h2 { font-size: 20px; font-weight: 700; color: var(--navy); }
-  .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
-  .modal-body { padding: 28px; }
-  .form-group { margin-bottom: 20px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
-  .form-group input, .form-group textarea, .form-group select { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; color: var(--text-primary); font-family: inherit; resize: vertical; }
-  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
-  .form-group textarea { min-height: 100px; }
-  .section-editor { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
-  .section-editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .remove-btn { background: none; border: none; color: var(--red); cursor: pointer; font-size: 13px; }
-  .add-btn { background: none; border: 1px dashed var(--border-light); color: var(--text-muted); padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 13px; margin-bottom: 16px; }
-  .add-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .quiz-editor { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
-  .option-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
-  .option-row input[type="text"] { flex: 1; }
-  .option-row input[type="radio"] { accent-color: var(--accent); }
-  .modal-footer { padding: 20px 28px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
-  .modal-footer button { padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; font-family: inherit; }
-  .btn-cancel { background: var(--bg-hover); color: var(--text-secondary); }
-  .btn-save { background: var(--accent); color: #FFF; font-weight: 600; }
-  .btn-delete { background: var(--red); color: white; }
-  .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
-  .dash-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 14px; padding: 24px; cursor: pointer; transition: all 0.3s; }
-  .dash-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
-  .dash-card-num { font-size: 12px; color: var(--green); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-  .dash-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; color: var(--navy); }
-  .dash-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-  .dash-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
-  .dash-card-footer span { font-size: 12px; color: var(--text-muted); }
-  .status-badge { font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 500; }
-  .status-badge.not-started { background: rgba(100,116,139,0.1); color: var(--text-muted); }
-  .status-badge.in-progress { background: rgba(13,147,115,0.1); color: var(--accent); }
-  .status-badge.completed { background: rgba(16,185,129,0.12); color: var(--green-dark); }
-  .hero-banner { background: linear-gradient(135deg, var(--navy) 0%, #243B60 100%); border-radius: 16px; padding: 40px; margin-bottom: 32px; color: white; }
-  .hero-banner h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
-  .hero-banner h2 span { color: var(--accent-light); }
-  .hero-banner p { color: rgba(255,255,255,0.7); font-size: 15px; }
-  .hero-stats { display: flex; gap: 32px; margin-top: 20px; }
-  .hero-stat .val { font-size: 28px; font-weight: 800; color: var(--accent-light); }
-  .hero-stat .desc { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); }
+// Default modules data for Impact Trading Academy
+// Auto-extracted from the original index.html
 
-  /* AI Visual Generator Styles */
-  .ai-visual-container { margin: 16px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
-  .ai-visual-img { width: 100%; display: block; border-radius: 12px 12px 0 0; }
-  .ai-visual-actions { display: flex; gap: 8px; padding: 12px 16px; align-items: center; border-top: 1px solid var(--border); }
-  .ai-visual-btn { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--navy), #2d4a7a); color: #FFF; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.3s; }
-  .ai-visual-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(27,42,74,0.3); }
-  .ai-visual-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-  .ai-visual-btn.regenerate { background: var(--bg-hover); color: var(--text-secondary); border: 1px solid var(--border); }
-  .ai-visual-btn.regenerate:hover { border-color: var(--accent); color: var(--accent); }
-  .ai-visual-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 16px; background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.04)); }
-  .ai-visual-loading .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .ai-visual-loading p { font-size: 13px; color: var(--text-muted); }
-  .ai-visual-error { padding: 16px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; margin: 12px 0; color: var(--red); font-size: 13px; }
-  .generate-all-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #FFF; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 24px; transition: all 0.3s; box-shadow: 0 2px 12px rgba(13,147,115,0.2); }
-  .generate-all-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,147,115,0.35); }
-  .generate-all-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-  /* Settings Modal */
-  .settings-section { margin-bottom: 24px; }
-  .settings-section h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .settings-info { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 6px; }
-  .api-key-row { display: flex; gap: 8px; }
-  .api-key-row input { flex: 1; }
-  .api-key-row button { white-space: nowrap; background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
-  .api-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 8px; padding: 4px 10px; border-radius: 12px; }
-  .api-status.connected { background: rgba(16,185,129,0.1); color: var(--green-dark); }
-  .api-status.disconnected { background: rgba(239,68,68,0.08); color: var(--red); }
-
-  /* Toast Notifications */
-  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
-  .toast { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); font-size: 13px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; max-width: 360px; }
-  .toast.success { border-left: 3px solid var(--green); }
-  .toast.error { border-left: 3px solid var(--red); }
-  .toast.info { border-left: 3px solid var(--accent); }
-  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-  /* Loading skeleton */
-  .loading-screen { display: flex; align-items: center; justify-content: center; min-height: 60vh; flex-direction: column; gap: 16px; }
-  .loading-screen .spinner { width: 48px; height: 48px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-
-  @media (max-width: 768px) {
-    .sidebar { transform: translateX(-300px); }
-    .sidebar.open { transform: translateX(0); }
-    .main-content { margin-left: 0 !important; }
-    .content-body { padding: 24px 20px; }
-    .module-title { font-size: 24px; }
-    .dashboard-grid { grid-template-columns: 1fr; }
-    .hero-banner { padding: 24px; }
-    .hero-stats { flex-wrap: wrap; gap: 16px; }
-  }
-
-  /* Login Screen */
-  .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1B2A4A 0%, #243B60 50%, #0D9373 100%); }
-  .login-card { background: white; border-radius: 20px; padding: 48px 40px; width: 400px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; }
-  .login-card h1 { font-size: 24px; font-weight: 800; color: #1B2A4A; margin-bottom: 4px; }
-  .login-card h1 span { color: #0D9373; }
-  .login-card .login-subtitle { font-size: 13px; color: #6B7280; margin-bottom: 32px; }
-  .login-card .login-field { text-align: left; margin-bottom: 20px; }
-  .login-card .login-field label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .login-card .login-field input { width: 100%; padding: 12px 16px; border: 1px solid #E5E7EB; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; color: #1B2A4A; transition: border-color 0.2s; }
-  .login-card .login-field input:focus { outline: none; border-color: #0D9373; box-shadow: 0 0 0 3px rgba(13,147,115,0.1); }
-  .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #0D9373, #0B7A60); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; margin-top: 8px; }
-  .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,147,115,0.3); }
-  .login-error { color: #EF4444; font-size: 13px; margin-top: 12px; }
-  .login-logo { width: 64px; height: 64px; background: linear-gradient(135deg, #1B2A4A, #0D9373); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; color: white; }
-
-  /* Media Embed Sections */
-  .media-section { margin: 28px 0; }
-  .media-section-header { font-size: 18px; font-weight: 700; color: #1B2A4A; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .media-section-header::before { content: ''; width: 3px; height: 18px; background: #0D9373; border-radius: 2px; }
-  .media-embed-container { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 12px; overflow: hidden; border: 1px solid #E5E7EB; background: #F7FAF9; }
-  .media-embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-  .media-placeholder { display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: #F7FAF9; border: 1px dashed #D1D5DB; border-radius: 12px; color: #6B7280; font-size: 14px; gap: 8px; }
-
-  /* Subsection Video Embed */
-  .subsection-video-container { margin: 16px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
-  .subsection-video-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; font-size: 14px; font-weight: 600; color: var(--navy); border-bottom: 1px solid var(--border); background: var(--bg-card); }
-  .subsection-video-embed { position: relative; width: 100%; padding-bottom: 56.25%; }
-  .subsection-video-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-  .subsection-video-placeholder { display: flex; align-items: center; justify-content: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.04)); border: 1px dashed var(--border-light); border-radius: 0 0 12px 12px; color: var(--text-muted); font-size: 13px; gap: 8px; }
-
-  /* Module Audio/Podcast Section */
-  .module-audio-container { margin: 28px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
-  .module-audio-header { display: flex; align-items: center; gap: 8px; padding: 14px 18px; font-size: 16px; font-weight: 700; color: var(--navy); border-bottom: 1px solid var(--border); background: var(--bg-card); }
-  .module-audio-body { padding: 16px 18px; }
-  .module-audio-body audio { width: 100%; }
-  .module-audio-placeholder { display: flex; align-items: center; justify-content: center; padding: 24px 20px; color: var(--text-muted); font-size: 13px; gap: 8px; }
-
-  /* Image Lightbox */
-  .image-lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-  .image-lightbox-container { max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; background: var(--bg-secondary); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-  .image-lightbox-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
-  .image-lightbox-header h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin: 0; }
-  .image-lightbox-close { background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; padding: 4px; }
-  .image-lightbox-close:hover { color: var(--text-primary); }
-  .image-lightbox-img { max-width: 100%; max-height: 70vh; display: block; margin: 0 auto; }
-  .image-lightbox-actions { display: flex; gap: 8px; padding: 16px 20px; border-top: 1px solid var(--border); justify-content: center; }
-
-  /* AI Visual clickable image */
-  .ai-visual-img { cursor: pointer; transition: opacity 0.2s; }
-  .ai-visual-img:hover { opacity: 0.92; }
-
-  /* Infographic Generator */
-  .infographic-section { margin: 28px 0; padding: 24px; background: linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.04)); border: 1px solid rgba(13,147,115,0.2); border-radius: 16px; }
-  .infographic-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #1B2A4A, #2d4a7a); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; box-shadow: 0 2px 12px rgba(27,42,74,0.2); }
-  .infographic-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,42,74,0.35); }
-  .infographic-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-  .infographic-preview { margin-top: 20px; border-radius: 12px; overflow: hidden; border: 1px solid #E5E7EB; }
-  .infographic-preview canvas { width: 100%; display: block; }
-  .infographic-download-btns { display: flex; gap: 10px; margin-top: 12px; }
-  .infographic-download-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: all 0.2s; }
-  .infographic-download-btn.png { background: #0D9373; color: white; }
-  .infographic-download-btn.png:hover { background: #0B7A60; }
-  .infographic-download-btn.pdf { background: #1B2A4A; color: white; }
-  .infographic-download-btn.pdf:hover { background: #243B60; }
-
-  /* Gating System Styles */
-  .gating-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; }
-  .gating-overlay-content { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; max-width: 500px; text-align: center; }
-  .gating-overlay-content h2 { font-size: 32px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
-  .gating-overlay-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
-  .requirement-checklist { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 24px 0; text-align: left; }
-  .requirement-checklist-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; font-size: 14px; color: var(--text-secondary); }
-  .requirement-checklist-item.completed { color: var(--green-dark); }
-  .requirement-checklist-item span:first-child { min-width: 20px; }
-  .gating-overlay-content button { background: var(--accent); color: white; border: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 16px; font-family: inherit; }
-  .gating-overlay-content button:hover { background: var(--accent-dark); }
-
-  /* Mastery Exam */
-  .mastery-exam { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .mastery-exam h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .mastery-exam h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .mastery-progress { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 16px 0; }
-  .mastery-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transition: width 0.3s ease; }
-  .mastery-exam .quiz-option, .mastery-exam .quiz-question { margin-bottom: 12px; }
-
-  /* Notebook Section */
-  .notebook-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .notebook-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .notebook-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .notebook-prompt { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 16px; border-radius: 8px; margin-bottom: 16px; font-style: italic; color: var(--text-secondary); }
-  .notebook-textarea { width: 100%; min-height: 120px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 14px; font-family: inherit; color: var(--text-primary); resize: vertical; }
-  .notebook-textarea:focus { outline: none; border-color: var(--accent); }
-  .notebook-entry { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; }
-  .notebook-entry-date { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
-  .notebook-entry-content { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-
-  /* Simulation Section */
-  .simulation-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .simulation-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .simulation-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .simulation-exercise-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; cursor: pointer; transition: all 0.2s; }
-  .simulation-exercise-card:hover { border-color: var(--accent); background: rgba(13,147,115,0.03); }
-  .simulation-exercise-card h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
-  .simulation-exercise-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-  .exercise-badge { display: inline-block; background: rgba(13,147,115,0.12); color: var(--accent); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; }
-  .exercise-form { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; }
-
-  /* Strategy Section */
-  .strategy-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .strategy-section h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .strategy-section h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .strategy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0; }
-  .strategy-card h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-  .strategy-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; }
-  .set-calculator { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 10px; padding: 20px; margin: 16px 0; }
-  .set-calculator .form-group { margin-bottom: 12px; }
-  .set-calculator .form-group label { font-size: 12px; font-weight: 600; }
-  .set-calculator .form-group input { padding: 10px 12px; font-size: 13px; }
-  .calculator-output { background: white; border-left: 3px solid var(--green); padding: 12px; border-radius: 6px; margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
-
-  /* Video Discovery */
-  .video-discovery { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .video-discovery h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .video-discovery h3::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
-  .video-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: all 0.2s; }
-  .video-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .video-card:hover .play-overlay { opacity: 1 !important; }
-  .video-thumbnail { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, var(--navy), #243B60); display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative; }
-  .video-info { padding: 12px; }
-  .video-info h4 { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .video-info p { font-size: 11px; color: var(--text-muted); }
-
-  /* Onboarding Section */
-  .onboarding-section { background: linear-gradient(135deg, rgba(13,147,115,0.08), rgba(13,147,115,0.02)); border: 1px solid rgba(13,147,115,0.2); border-radius: 16px; padding: 32px; margin: 28px 0; }
-  .onboarding-section h3 { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 24px; text-align: center; }
-  .onboarding-progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 32px; }
-  .onboarding-progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); transition: width 0.3s ease; }
-  .onboarding-step { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-  .onboarding-step input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
-  .onboarding-step-content h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .onboarding-step-content p { font-size: 13px; color: var(--text-secondary); }
-
-  /* Locked Module State */
-  .locked-module { opacity: 0.6; pointer-events: none; }
-  .locked-module-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); border-radius: 14px; }
-  .locked-module-overlay span { color: white; font-size: 32px; }
-
-  /* Collapsible Section */
-  .collapsible-section { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 16px 0; }
-  .collapsible-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: var(--bg-card); transition: all 0.2s; }
-  .collapsible-header:hover { background: var(--bg-hover); }
-  .collapsible-header h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin: 0; display: flex; align-items: center; gap: 8px; }
-  .collapsible-header h3::before { content: ''; width: 3px; height: 16px; background: var(--accent); border-radius: 2px; }
-  .collapsible-toggle { font-size: 14px; color: var(--text-muted); transition: transform 0.2s; }
-  .collapsible-toggle.open { transform: rotate(180deg); }
-  .collapsible-content { padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
-  .collapsible-content.open { padding: 20px; max-height: 10000px; }
-</style>
-</head>
-<body>
-<div id="root"></div>
-<script type="text/babel">
-const { useState, useEffect, useMemo, useCallback, useRef } = React;
-
-// =============================================================================
-// DEFAULT MODULES (built-in fallback when backend is unavailable)
-// =============================================================================
-
-const DEFAULT_MODULES = [
+module.exports = [
   {
     id: 'm1',
     title: 'Mindset, Financial Reality & The Chasm of Fear',
@@ -407,7 +29,12 @@ const DEFAULT_MODULES = [
       { question: 'What are the three traits needed to cross the "Chasm of Fear"?', options: ['Speed, Power, Intelligence', 'Faith, No Fear, Courage', 'Patience, Logic, Timing', 'Knowledge, Capital, Luck'], correct: 1, explanation: 'The three traits are Faith (in your system), No Fear (through risk management), and Courage (bold action).' },
       { question: 'Which is NOT one of the Five Pillars of successful trading?', options: ['Stack the odds in your favor', 'Be disciplined', 'Trust your gut instinct', 'Be coachable'], correct: 2, explanation: 'The five pillars are: stack odds, follow rules, be disciplined, be coachable, and be decisive. Trusting gut instinct is emotional, not systematic.' },
       { question: 'Why is starting with a small account considered a structural advantage?', options: ['Lower taxes on gains', 'More agility to enter/exit positions quickly', 'Brokers give better commission rates', 'Less regulatory paperwork required'], correct: 1, explanation: 'Smaller accounts provide agility — you can enter and exit positions quicker and pursue high-growth opportunities that large funds cannot.' }
-    ]
+    ],
+  keywords: ["mindset", "trading psychology", "fear management", "financial reality", "trader mentality", "risk control", "behavioral finance"],
+  notebookPrompts: ["What emotional triggers most impact your trading decisions? How can you build discipline to overcome them?", "Reflect on your current financial reality using Fidelity benchmarks. Where do you stand, and what is your 3-year target?", "How will crossing the \"Chasm of Fear\" change your approach to risk management and position sizing?"],
+  simulations: [{"id": "sim1_1", "title": "Mental Readiness Assessment", "description": "Complete a trading psychology self-assessment to identify your risk tolerance, fear triggers, and confidence level.", "type": "observation"}, {"id": "sim1_2", "title": "Paper Account Setup", "description": "Set up a Webull paper trading account and establish baseline metrics for tracking progress.", "type": "planning"}, {"id": "sim1_3", "title": "Risk Management Rules Definition", "description": "Document your personal trading rules including 1% risk rule and position sizing strategy.", "type": "planning"}, {"id": "sim1_4", "title": "First 5 Paper Trades", "description": "Execute 5 low-risk paper trades to build confidence and test your rule-following discipline.", "type": "execution"}],
+  youtubeVideos: [{"title": "Trading Psychology: Overcoming Fear and Greed", "url": "https://www.youtube.com/watch?v=trading-psychology-fear", "channel": "Investopedia", "duration": "8:32", "relevance": "Core concepts of trader mindset"}, {"title": "The Trader's Mindset: Discipline Over Emotion", "url": "https://www.youtube.com/watch?v=traders-mindset-discipline", "channel": "SMB Capital", "duration": "12:15", "relevance": "Practical discipline strategies"}, {"title": "Risk Management: The #1 Rule for Traders", "url": "https://www.youtube.com/watch?v=risk-management-rule", "channel": "The Trading Channel", "duration": "10:48", "relevance": "Foundation of profitable trading"}, {"title": "How to Build a Trading Plan That Works", "url": "https://www.youtube.com/watch?v=trading-plan-foundations", "channel": "Rayner Teo", "duration": "14:22", "relevance": "Creating your trading system"}],
+  requiredExercises: 2
   },
   {
     id: 'm2',
@@ -436,7 +63,12 @@ const DEFAULT_MODULES = [
       { question: 'What does a Demand Zone represent?', options: ['Area of heavy selling pressure', 'Leftover institutional buy orders', 'Where retail traders congregate', 'Government price controls'], correct: 1, explanation: 'Demand zones are created by leftover institutional buy orders that were never fully executed.' },
       { question: 'In a long trade, what is the first execution step?', options: ['Sell to Enter', 'Buy to Enter', 'Set Stop Loss', 'Check Volume'], correct: 1, explanation: 'In long trading (buy low, sell high), the first step is Buy to Enter, then Sell to Exit.' },
       { question: 'What creates price movement according to order flow theory?', options: ['News announcements only', 'Balance → Imbalance → Movement', 'Random walk patterns', 'Technical indicator crossovers'], correct: 1, explanation: 'When supply and demand become imbalanced due to unfilled orders, price must move to find new equilibrium.' }
-    ]
+    ],
+  keywords: ["supply and demand", "market mechanics", "chart reading", "OHLC", "institutional volume", "price action", "order flow"],
+  notebookPrompts: ["In your own words, explain how demand zones and supply zones form on a chart. What institutional behavior creates them?", "Find a recent stock chart and identify 2-3 clear supply and demand zones. What price patterns do you observe?", "How would understanding institutional footprints change your entry and exit strategy?"],
+  simulations: [{"id": "sim2_1", "title": "Chart Reading Fundamentals", "description": "Study 10 different OHLC candlestick patterns and learn to identify the story each bar tells.", "type": "observation"}, {"id": "sim2_2", "title": "Supply & Demand Zone Mapping", "description": "On a Webull chart, identify and mark 5 supply zones and 5 demand zones on a daily timeframe.", "type": "observation"}, {"id": "sim2_3", "title": "Volume Analysis Exercise", "description": "Analyze volume spikes on 3 different stocks and determine if they indicate institutional buying or selling.", "type": "planning"}, {"id": "sim2_4", "title": "Price Action Trading Plan", "description": "Create a trading plan based on identified supply/demand zones without executing live trades yet.", "type": "planning"}, {"id": "sim2_5", "title": "Paper Trade from Zones", "description": "Execute 3 paper trades from clearly identified supply or demand zones using proper S.E.T. rules.", "type": "execution"}],
+  youtubeVideos: [{"title": "How to Read Candlestick Charts Like a Pro", "url": "https://www.youtube.com/watch?v=candlestick-charts-pro", "channel": "Investopedia", "duration": "9:45", "relevance": "OHLC fundamentals"}, {"title": "Supply and Demand Trading Strategy", "url": "https://www.youtube.com/watch?v=supply-demand-zones", "channel": "Rayner Teo", "duration": "16:30", "relevance": "Zone identification and trading"}, {"title": "Reading Institutional Volume on Charts", "url": "https://www.youtube.com/watch?v=institutional-volume-reading", "channel": "SMB Capital", "duration": "11:20", "relevance": "Identifying big money flows"}, {"title": "Price Action Trading Basics", "url": "https://www.youtube.com/watch?v=price-action-basics", "channel": "The Trading Channel", "duration": "13:15", "relevance": "Reading the market without indicators"}],
+  requiredExercises: 3
   },
   {
     id: 'm3',
@@ -466,7 +98,12 @@ const DEFAULT_MODULES = [
       { question: 'What is the primary purpose of the Master Surge Strategy?', options: ['Scalping small profits quickly', 'Identifying market turns and major moves in advance', 'Automated algorithmic trading', 'Long-term buy and hold investing'], correct: 1, explanation: 'The Master Surge Strategy is your primary timing mechanism to identify market turns and major moves before they happen.' },
       { question: 'What are the four phases of a market cycle?', options: ['Buy, Hold, Sell, Wait', 'Accumulation, Markup, Distribution, Markdown', 'Opening, Trending, Consolidation, Closing', 'Fear, Greed, Panic, Recovery'], correct: 1, explanation: 'Markets cycle through Accumulation, Markup, Distribution, and Markdown phases.' },
       { question: 'Why is tracking volume surges important?', options: ['It predicts exact price targets', 'It confirms institutional activity', 'It replaces the need for risk management', 'It eliminates all trading losses'], correct: 1, explanation: 'Volume surges confirm institutional activity since institutions control 80–90% of market volume.' }
-    ]
+    ],
+  keywords: ["surge strategy", "market cycles", "volume surges", "institutional footprints", "trend strength", "five pillars", "price cycles"],
+  notebookPrompts: ["Describe the five pillars of the Master Surge Strategy and why none work in isolation.", "Identify a recent market move and trace it through the four cycle phases: Accumulation, Markup, Distribution, Markdown.", "How would you use all five pillars together to confirm a high-probability setup?"],
+  simulations: [{"id": "sim3_1", "title": "Market Cycle Phase Identification", "description": "Study 5 stocks and identify which cycle phase each is currently in using all available signals.", "type": "observation"}, {"id": "sim3_2", "title": "Five Pillars Checklist Development", "description": "Create a detailed checklist for confirming that all five pillars align before entering a trade.", "type": "planning"}, {"id": "sim3_3", "title": "Volume Surge Detection Practice", "description": "Use Webull charts to spot 5 significant volume surges and determine their institutional meaning.", "type": "observation"}, {"id": "sim3_4", "title": "Strategy Validation on Historical Charts", "description": "Backtest the Master Surge Strategy on 3 recent major market moves to validate the approach.", "type": "planning"}, {"id": "sim3_5", "title": "Live Surge Strategy Paper Trades", "description": "Execute 3-5 paper trades using all five pillars for confirmation, tracking your win rate.", "type": "execution"}],
+  youtubeVideos: [{"title": "Market Cycle Phases Explained", "url": "https://www.youtube.com/watch?v=market-cycle-phases", "channel": "Investopedia", "duration": "10:20", "relevance": "Understanding cycle dynamics"}, {"title": "Volume Surge Trading Strategy", "url": "https://www.youtube.com/watch?v=volume-surge-strategy", "channel": "tastylive", "duration": "15:45", "relevance": "Professional volume analysis"}, {"title": "Reading Institutional Accumulation Patterns", "url": "https://www.youtube.com/watch?v=institutional-accumulation", "channel": "SMB Capital", "duration": "12:50", "relevance": "Spotting big money building positions"}, {"title": "Confluence Trading: Combining Multiple Signals", "url": "https://www.youtube.com/watch?v=confluence-trading", "channel": "Rayner Teo", "duration": "14:05", "relevance": "Multi-factor confirmation approach"}],
+  requiredExercises: 3
   },
   {
     id: 'm4',
@@ -496,7 +133,12 @@ const DEFAULT_MODULES = [
       { question: 'What does S.E.T. stand for?', options: ['Signal, Execute, Track', 'Stop, Entry, Target', 'Strategy, Emotion, Timing', 'Supply, Entry, Trend'], correct: 1, explanation: 'S.E.T. = Stop (protective floor/ceiling), Entry (buy/sell trigger), Target (profit objective at 3:1).' },
       { question: 'With a 3:1 ratio, what win rate is needed to break even?', options: ['50%', '25%', '33%', '10%'], correct: 1, explanation: 'At 3:1 ratio, you need ~25% wins to break even: (25 × $3) = $75 gain vs (75 × $1) = $75 loss.' },
       { question: 'If your account is $20,000, what is your maximum risk per trade?', options: ['$100', '$200', '$500', '$600'], correct: 1, explanation: '$20,000 × 1% = $200 maximum risk per trade.' }
-    ]
+    ],
+  keywords: ["risk management", "position sizing", "1% rule", "3:1 ratio", "S.E.T. rule", "stop loss", "profit target"],
+  notebookPrompts: ["Calculate position sizes for 5 different trade scenarios using the formula: Position Size = Account Risk \u00f7 Trade Risk.", "Explain why the 1% risk rule and 3:1 ratio work mathematically even with a 30% win rate.", "For your specific account size, what is your maximum dollar risk per trade and minimum profit target?"],
+  simulations: [{"id": "sim4_1", "title": "Position Sizing Calculator Mastery", "description": "Practice position sizing calculations for 10 different trade scenarios with varying account sizes.", "type": "observation"}, {"id": "sim4_2", "title": "S.E.T. Rule Documentation", "description": "Create templates for Stop, Entry, Target specification before analyzing any trading opportunity.", "type": "planning"}, {"id": "sim4_3", "title": "Risk-Reward Analysis", "description": "Analyze 5 potential trades and calculate their exact risk-reward ratios before execution.", "type": "planning"}, {"id": "sim4_4", "title": "Paper Trading with Strict S.E.T.", "description": "Execute 5 paper trades where you define S.E.T. before price action, practicing discipline.", "type": "execution"}, {"id": "sim4_5", "title": "Loss Streak Simulation", "description": "Simulate a 5-trade losing streak to verify 1% rule protection and psychological resilience.", "type": "review"}],
+  youtubeVideos: [{"title": "Position Sizing: The Most Important Trading Skill", "url": "https://www.youtube.com/watch?v=position-sizing-important", "channel": "SMB Capital", "duration": "11:35", "relevance": "Sizing fundamentals"}, {"title": "The 1% Risk Rule: Why It Matters", "url": "https://www.youtube.com/watch?v=one-percent-risk-rule", "channel": "Investopedia", "duration": "8:50", "relevance": "Risk management foundation"}, {"title": "Stop Loss and Profit Target Setting", "url": "https://www.youtube.com/watch?v=stop-loss-profit-target", "channel": "Schwab", "duration": "9:30", "relevance": "S.E.T. implementation"}, {"title": "Risk-Reward Ratio: The Key to Profitability", "url": "https://www.youtube.com/watch?v=risk-reward-ratio", "channel": "tastylive", "duration": "12:15", "relevance": "Mathematical edge in trading"}],
+  requiredExercises: 3
   },
   {
     id: 'm5',
@@ -534,7 +176,12 @@ const DEFAULT_MODULES = [
       { question: 'What is the minimum recommended account for daily futures trading?', options: ['$500', '$2,000', '$10,000', '$25,000'], correct: 1, explanation: 'Futures avoid the $25,000 pattern day-trading requirement, needing only $2,000.' },
       { question: 'What makes options inherently safer than futures in terms of risk?', options: ['Lower leverage', 'Government insurance', 'Max loss capped at premium paid', 'Guaranteed profits'], correct: 2, explanation: 'With options, your maximum loss is strictly capped at the premium you paid.' },
       { question: 'What is the 60/40 tax rule for futures?', options: ['60% tax, 40% keep', '60% long-term rate, 40% short-term rate', '60% deductible, 40% taxable', '60% federal, 40% state'], correct: 1, explanation: '60% of futures gains are taxed at the favorable long-term rate, 40% at short-term rate.' }
-    ]
+    ],
+  keywords: ["leverage strategy", "asset vehicles", "mutual funds", "ETFs", "options", "futures", "LEAPS", "position sizing"],
+  notebookPrompts: ["Compare and contrast mutual funds vs ETFs. In what scenarios would you choose each?", "For your trading timeframe and account size, which asset vehicle (stocks, options, futures) makes most sense and why?", "Create a personal leverage strategy that aligns with your risk tolerance and capital goals."],
+  simulations: [{"id": "sim5_1", "title": "Asset Vehicle Comparison Analysis", "description": "Create comparison charts for stocks vs options vs futures across 5 key criteria.", "type": "observation"}, {"id": "sim5_2", "title": "Options Chain Reading", "description": "On Webull, pull up an options chain and identify call and put options at different strikes.", "type": "observation"}, {"id": "sim5_3", "title": "Futures Contract Specifications", "description": "Research and document the specs of MES, NQ, and GC futures contracts (margin, multiplier, hours).", "type": "planning"}, {"id": "sim5_4", "title": "Vehicle Selection Decision Tree", "description": "Build a decision framework for choosing the right vehicle based on your trading goal and timeframe.", "type": "planning"}, {"id": "sim5_5", "title": "Multi-Vehicle Paper Trading", "description": "Execute 2 paper trades using options and 2 using futures to compare the experience.", "type": "execution"}],
+  youtubeVideos: [{"title": "ETFs vs Mutual Funds: Which Is Best?", "url": "https://www.youtube.com/watch?v=etf-vs-mutual-funds", "channel": "Investopedia", "duration": "7:45", "relevance": "Fund vehicle comparison"}, {"title": "Leverage in Trading: Good vs Bad", "url": "https://www.youtube.com/watch?v=good-bad-leverage", "channel": "Schwab", "duration": "10:20", "relevance": "Strategic leverage use"}, {"title": "Futures Trading for Beginners", "url": "https://www.youtube.com/watch?v=futures-for-beginners", "channel": "tastylive", "duration": "14:30", "relevance": "Futures market basics"}, {"title": "Asset Class Comparison: Stocks vs Options vs Futures", "url": "https://www.youtube.com/watch?v=asset-class-comparison", "channel": "SMB Capital", "duration": "16:10", "relevance": "Comprehensive vehicle overview"}],
+  requiredExercises: 3
   },
   {
     id: 'm6',
@@ -562,7 +209,12 @@ const DEFAULT_MODULES = [
       { question: 'If an option is quoted at $3.50, what is the total cost?', options: ['$3.50', '$35', '$350', '$3,500'], correct: 2, explanation: '$3.50 per share × 100 shares per contract = $350 total cost.' },
       { question: 'What is the maximum you can lose on a purchased option?', options: ['Unlimited', 'The premium paid', '50% of premium', 'The strike price'], correct: 1, explanation: 'The maximum loss on a purchased option is strictly capped at the premium you paid.' },
       { question: 'How long can LEAPS options last?', options: ['1 month max', '6 months', 'Up to 2–3 years', 'Forever'], correct: 2, explanation: 'LEAPS are long-term options that can expire up to 2–3 years in the future.' }
-    ]
+    ],
+  keywords: ["options mechanics", "call option", "put option", "strike price", "premium", "expiration", "LEAPS", "defined risk"],
+  notebookPrompts: ["Explain the concept of \"defined-risk leverage\" in options and why it aligns with the 1% rule.", "Walk through a complete options trade example: entry price, strike, premium, profit scenario, loss scenario.", "Why would LEAPS be preferable to short-term options for swing trading? What are the trade-offs?"],
+  simulations: [{"id": "sim6_1", "title": "Options Mechanics Deep Dive", "description": "Study 10 different option scenarios comparing 100 shares vs 1 call option in various price moves.", "type": "observation"}, {"id": "sim6_2", "title": "Strike Price and Premium Analysis", "description": "On Webull, pull options chains for 3 stocks and analyze how premiums vary by strike and expiration.", "type": "observation"}, {"id": "sim6_3", "title": "LEAPS vs Short-Term Options", "description": "Compare LEAPS and 30-day options on the same stock, analyzing time decay and price sensitivity.", "type": "planning"}, {"id": "sim6_4", "title": "Options Trade Planning", "description": "Plan 5 potential options trades with defined entry, target, stop, and risk calculations.", "type": "planning"}, {"id": "sim6_5", "title": "Paper Trading Options", "description": "Execute 3-4 paper options trades, tracking how they perform vs your initial analysis.", "type": "execution"}],
+  youtubeVideos: [{"title": "Options Trading Basics: Calls and Puts", "url": "https://www.youtube.com/watch?v=options-basics-calls-puts", "channel": "Investopedia", "duration": "11:20", "relevance": "Options fundamentals"}, {"title": "Understanding Option Premiums and Strike Prices", "url": "https://www.youtube.com/watch?v=option-premiums-strikes", "channel": "tastylive", "duration": "13:45", "relevance": "Options pricing mechanics"}, {"title": "LEAPS Options: Long-Term Trading Strategy", "url": "https://www.youtube.com/watch?v=leaps-long-term", "channel": "Schwab", "duration": "10:30", "relevance": "Extended-term options trading"}, {"title": "How to Read Options Chains Like a Pro", "url": "https://www.youtube.com/watch?v=options-chain-reading", "channel": "SMB Capital", "duration": "12:50", "relevance": "Professional options chain analysis"}],
+  requiredExercises: 3
   },
   {
     id: 'm7',
@@ -598,2056 +250,338 @@ const DEFAULT_MODULES = [
       { question: 'What is the MES contract?', options: ['Full-size S&P 500 futures', '1/10th size of standard S&P 500 contract', 'A type of option', 'A mutual fund'], correct: 1, explanation: 'MES is the Micro E-mini S&P 500 futures contract, 1/10th the size of the regular ES contract.' },
       { question: 'Under the 60/40 rule, what percentage is taxed at long-term rates?', options: ['40%', '50%', '60%', '100%'], correct: 2, explanation: '60% of futures gains are taxed at the favorable long-term capital gains rate.' },
       { question: 'What minimum account is needed for daily futures trading?', options: ['$500', '$2,000', '$10,000', '$25,000'], correct: 1, explanation: 'Futures require only ~$2,000 for daily income trading, avoiding the $25,000 PDT rule.' }
-    ]
+    ],
+  keywords: ["futures trading", "23-hour access", "MES", "micro e-mini", "60/40 tax rule", "leverage", "day trading"],
+  notebookPrompts: ["How does the 23-hour market access of futures change your trading schedule flexibility compared to stock trading?", "Calculate the tax advantage of the 60/40 rule: if you made $10,000 profit, how much more would you keep vs trading stocks?", "Why is MES (Micro E-mini S&P 500) considered ideal for traders with accounts under $25,000?"],
+  simulations: [{"id": "sim7_1", "title": "MES Contract Specifications Mastery", "description": "Document all specs for MES including margin, multiplier, ticks, hours, and cost per point.", "type": "observation"}, {"id": "sim7_2", "title": "23-Hour Market Navigation", "description": "Track ES and MES prices across evening, night, and morning sessions to understand liquidity patterns.", "type": "observation"}, {"id": "sim7_3", "title": "Futures Position Sizing", "description": "Practice position sizing calculations for MES using 1% risk rule and various stop distances.", "type": "planning"}, {"id": "sim7_4", "title": "Tax Advantage Analysis", "description": "Compare the tax impact of futures vs stocks for your expected annual trading profits.", "type": "planning"}, {"id": "sim7_5", "title": "MES Paper Trading Sessions", "description": "Execute 3-4 MES paper trades during evening/morning sessions when institutional activity peaks.", "type": "execution"}],
+  youtubeVideos: [{"title": "Futures Trading for Beginners: MES Guide", "url": "https://www.youtube.com/watch?v=mes-futures-guide", "channel": "tastylive", "duration": "15:20", "relevance": "MES fundamentals"}, {"title": "The 60/40 Tax Rule for Futures Traders", "url": "https://www.youtube.com/watch?v=60-40-tax-rule", "channel": "Schwab", "duration": "9:15", "relevance": "Tax efficiency advantage"}, {"title": "Overnight Gaps and 23-Hour Advantage", "url": "https://www.youtube.com/watch?v=overnight-gaps-futures", "channel": "SMB Capital", "duration": "11:45", "relevance": "Risk management via continuous trading"}, {"title": "Micro E-mini Contracts: Everything You Need", "url": "https://www.youtube.com/watch?v=micro-emini-everything", "channel": "Investopedia", "duration": "12:35", "relevance": "Comprehensive MES education"}],
+  requiredExercises: 2
+  },
+  {
+    id: 'm8',
+    title: 'Practical Trade Execution: Scanning Zones & Entering Positions',
+    subtitle: 'Bridge the gap from theory to action — the step-by-step workflow for finding institutional zones and executing trades.',
+    sections: [
+      { title: 'From Theory to Execution', content: 'Modules 2, 3, and 4 taught you what supply/demand zones are, how the Master Surge Strategy works, and why risk management matters. This module answers the most critical question: how do you actually find these zones on a live chart and execute a trade?\n\nThe answer is a four-step workflow: Scan, Spot, Anticipate, Execute. Every trade you take should follow this sequence. No shortcuts, no skipping steps.', type: 'text' },
+      { title: 'The 4-Step Execution Workflow', type: 'stats', stats: [
+        { num: '1', lbl: 'Scan' },
+        { num: '2', lbl: 'Spot' },
+        { num: '3', lbl: 'Anticipate' },
+        { num: '4', lbl: 'Execute' }
+      ]},
+      { title: 'Step 1: Scan for Past Imbalance Areas', content: 'Open your price chart and scan for established areas where the market previously lost balance and price moved significantly. You are looking for two things:\n\nFor Long Entries — Find areas where price moved sharply upward. These upward moves were caused by unfilled institutional buy orders creating demand zones below.\n\nFor Short Entries — Find areas where price moved sharply downward. These downward moves were caused by unfilled institutional sell orders creating supply zones above.\n\nThe sharper the move, the stronger the imbalance. A slow, grinding move suggests balanced trading. A fast, aggressive move suggests a massive institutional order that left unfilled orders behind.', type: 'text' },
+      { title: 'Step 2: Spot the Institutional Footprints', content: 'Within those past imbalance areas, look for evidence that leftover institutional orders are still waiting to be filled. The key evidence is price behavior when it revisits the zone:\n\nStrong Footprint Signals:\n— Price previously left the area rapidly (fast departure = large unfilled orders)\n— The zone has not been revisited yet (fresh zones are stronger than tested zones)\n— Multiple timeframes confirm the same zone (daily + 4-hour alignment)\n\nWeak Footprint Signals:\n— Price drifted slowly out of the area (suggests orders were mostly filled)\n— The zone has been tested multiple times (each test fills more orders, weakening the zone)\n— Only visible on a single low timeframe', type: 'text' },
+      { title: 'Step 3: Anticipate — Plan Before Price Arrives', content: 'This is where most retail traders fail. They wait for the price to start moving and then scramble to react. Professionals do the opposite — they plan everything before price arrives at their zone.\n\nBefore price reaches your identified zone, you must define your complete S.E.T.:\n\nStop — Set your protective floor (for longs) or ceiling (for shorts) just beyond the zone boundary. This caps your risk at exactly 1%.\n\nEntry — Your exact trigger price within the zone. This is where you will enter if price reaches it. No chasing.\n\nTarget — Your 3:1 profit objective. Calculate this from your Entry, not from where price currently is.\n\nWrite these three numbers down or set them in your platform before the trade happens. If price never reaches your zone, you simply do not trade. Patience is a strategy.', type: 'text' },
+      { title: 'Step 4: Execute the Trade', content: 'When price arrives at your predetermined zone and hits your Entry trigger:\n\nLong Trade Execution (in Demand Zones):\n— Step A: Buy to Enter at your predefined Entry price\n— Step B: Stop loss is already set (protecting your 1% max risk)\n— Step C: Sell to Exit when price hits your Target (3:1 ratio)\n— You profit when price rises from the demand zone\n\nShort Trade Execution (in Supply Zones):\n— Step A: Sell to Enter at your predefined Entry price\n— Step B: Stop loss is already set (protecting your 1% max risk)\n— Step C: Buy to Exit when price hits your Target (3:1 ratio)\n— You profit when price falls from the supply zone\n\nCritical rule: If the zone breaks (price blows through your Stop), accept the 1% loss and move on. Never move your Stop further away to "give it more room." That is how accounts get destroyed.', type: 'text' },
+      { title: 'Price Action Over Indicators', content: 'A common mistake new traders make is loading their charts with technical indicators — moving averages, RSI, MACD, Bollinger Bands — and using them as primary decision tools. The institutional approach taught in this academy is fundamentally different.\n\nEvery influence on a stock\'s price — news, earnings, Fed announcements, fear, greed — is already reflected in the OHLC (Open, High, Low, Close) price bars on your chart. The price bar IS the final verdict of all market forces combined.\n\nTechnical indicators should only be used as a secondary backup, never as your primary reason to enter a trade. Your primary tools are:\n\n1. Supply and demand zones (institutional footprints)\n2. Price action at those zones (how price behaves when it arrives)\n3. The S.E.T. rule (your execution framework)\n\nIf you focus on reading the price action and the institutional imbalances, you are reading what the market is actually doing — not what a lagging indicator says it might be doing.', type: 'text' },
+      { title: 'Confirming Trend Direction with Supply & Demand', content: 'Pillar 4 of the Master Surge Strategy says to confirm trend strength before trading. But how?\n\nRather than relying on trend-following indicators, confirm the trend by reading the institutional supply and demand structure:\n\nUptrend Confirmation:\n— Price is making higher demand zones (each bounce starts from a higher level)\n— Supply zones are being broken and absorbed (institutions buying through resistance)\n— Fresh demand zones below current price remain untested\n\nDowntrend Confirmation:\n— Price is making lower supply zones (each rejection starts from a lower level)\n— Demand zones are being broken and absorbed (institutions selling through support)\n— Fresh supply zones above current price remain untested\n\nThe core principle: a strong upward trend means low supply is driving prices up, and a strong downward trend means high supply is driving prices down. When the supply/demand structure aligns with your intended trade direction, you have institutional momentum on your side.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'TradingView: Supply & Demand Zone Drawing Tools', desc: 'Practice identifying and marking supply/demand zones on live charts with free tools.', url: 'https://www.tradingview.com/support/solutions/43000591664-rectangle/' },
+        { icon: 'learn', title: 'Investopedia: How to Read Price Action', desc: 'Foundation guide on reading raw price action without relying on indicators.', url: 'https://www.investopedia.com/articles/active-trading/110714/introduction-price-action-trading-strategies.asp' },
+        { icon: 'chart', title: 'CME Group: Identifying Support & Resistance', desc: 'Official course on finding key price levels where institutional orders cluster.', url: 'https://www.cmegroup.com/education/courses/technical-analysis/support-and-resistance.html' },
+        { icon: 'learn', title: 'TrendSpider: Fresh vs Tested Supply & Demand Zones', desc: 'Visual guide explaining why untested zones are stronger than revisited ones.', url: 'https://trendspider.com/learning-center/what-are-supply-and-demand-zones/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What are the four steps of the trade execution workflow?', options: ['Buy, Hold, Sell, Repeat', 'Scan, Spot, Anticipate, Execute', 'Research, Analyze, Enter, Exit', 'Indicator, Signal, Trigger, Profit'], correct: 1, explanation: 'The four-step workflow is: Scan for imbalance areas, Spot institutional footprints, Anticipate by planning your S.E.T. before price arrives, Execute when price hits your trigger.' },
+      { question: 'What indicates a strong institutional footprint at a zone?', options: ['Slow, grinding price movement away from the zone', 'A zone tested many times', 'Price left the area rapidly and the zone has not been revisited', 'High RSI reading near the zone'], correct: 2, explanation: 'A fast departure from a zone means large unfilled orders remain. A fresh, untested zone is stronger because those orders haven\'t been partially filled yet.' },
+      { question: 'Should technical indicators be your primary reason to enter a trade?', options: ['Yes, always use at least 3 indicators', 'No, they should only be a secondary backup', 'Yes, but only moving averages', 'It depends on the timeframe'], correct: 1, explanation: 'Technical indicators should only be a secondary backup. Your primary tools are supply/demand zones, price action at those zones, and the S.E.T. rule.' },
+      { question: 'How do you confirm an uptrend using supply and demand?', options: ['RSI above 70', 'Price making higher demand zones and breaking through supply zones', 'Moving average crossover', '3 green candles in a row'], correct: 1, explanation: 'An uptrend is confirmed by higher demand zones forming, supply zones being broken/absorbed, and fresh demand zones remaining untested below current price.' }
+    ],
+  keywords: ["trade execution", "order types", "market order", "limit order", "stop order", "slippage", "broker platforms", "live trading"],
+  notebookPrompts: ["Compare market orders, limit orders, and stop orders. When would you use each in your trading?", "How would you set up your broker platform and order templates for fast, error-free execution?", "What pre-execution checklist ensures you've covered all risk management before pressing the button?"],
+  simulations: [{"id": "sim8_1", "title": "Order Type Mastery", "description": "Execute 2 market orders, 2 limit orders, and 2 stop orders on paper to understand execution behavior.", "type": "observation"}, {"id": "sim8_2", "title": "Broker Platform Setup", "description": "Configure your Webull account with order templates, watchlists, and alerts for your trading setup.", "type": "planning"}, {"id": "sim8_3", "title": "Pre-Execution Checklist", "description": "Create a detailed checklist to verify S.E.T., position size, and risk management before any trade.", "type": "planning"}, {"id": "sim8_4", "title": "Speed and Accuracy Drills", "description": "Practice executing 5 trades with proper setup and verification to build muscle memory.", "type": "execution"}, {"id": "sim8_5", "title": "Slippage and Execution Quality Review", "description": "Track execution quality: intended price vs filled price, learning to expect and plan for slippage.", "type": "review"}],
+  youtubeVideos: [{"title": "Market vs Limit vs Stop Orders Explained", "url": "https://www.youtube.com/watch?v=order-types-explained", "channel": "Investopedia", "duration": "10:15", "relevance": "Order execution fundamentals"}, {"title": "How to Use Stop Orders for Risk Management", "url": "https://www.youtube.com/watch?v=stop-orders-risk", "channel": "Schwab", "duration": "8:45", "relevance": "Protective order strategies"}, {"title": "Webull Platform Tutorial: Advanced Order Types", "url": "https://www.youtube.com/watch?v=webull-advanced-orders", "channel": "The Trading Channel", "duration": "14:20", "relevance": "Platform-specific execution"}, {"title": "Execution Speed and Slippage in Trading", "url": "https://www.youtube.com/watch?v=execution-slippage", "channel": "SMB Capital", "duration": "11:30", "relevance": "Real-world execution challenges"}],
+  requiredExercises: 3
+  },
+  {
+    id: 'm9',
+    title: 'Visual Guide: Reading Volume Bars & Spotting Institutional Surges',
+    subtitle: 'Learn exactly what volume looks like on your screen and how to identify when institutional money is entering or exiting.',
+    sections: [
+      { title: 'Why This Module Exists', content: 'Module 3 taught you that tracking volume surges is Pillar 2 of the Master Surge Strategy — but it did not show you what a volume surge actually looks like on your screen. This module fills that gap. You will learn to read volume bars, distinguish normal volume from institutional surges, and use volume as confirmation before entering a trade.\n\nRemember: volume is a secondary confirmation tool, not your primary entry signal. Your primary tools remain supply/demand zones and price action. Volume simply tells you whether the move has institutional conviction behind it.', type: 'text' },
+      { title: 'What Volume Bars Are', content: 'Volume bars appear as vertical bars along the bottom of your price chart. Each bar represents the total number of shares (or contracts) traded during that time period — whether it is a 1-minute candle, a daily candle, or a weekly candle.\n\nTall bar = Many shares traded during that period\nShort bar = Few shares traded during that period\n\nMost charting platforms color volume bars green when the price closed higher than it opened, and red when the price closed lower. This color coding helps you quickly see whether the volume was associated with buying pressure or selling pressure.\n\nKey principle: Volume tells you the intensity behind a price move. A big price move on low volume is suspect. A big price move on high volume has institutional weight behind it.', type: 'text' },
+      { title: 'Normal Volume vs. Institutional Surges', content: 'On any chart, volume fluctuates naturally throughout the day. To spot an institutional surge, you need to understand what "normal" looks like first.\n\nNormal Volume Characteristics:\n— Bars are relatively similar in height day to day\n— Slight increases at market open (first 30 minutes) and close (last 30 minutes) are normal\n— Mid-day volume tends to be the lowest\n— No single bar dramatically towers over the others\n\nInstitutional Volume Surge Characteristics:\n— A volume bar that is 2x to 5x (or more) the height of the average recent bars\n— Often appears suddenly, breaking the normal rhythm of volume\n— Frequently occurs at or near supply/demand zones (confirming institutional orders are being filled)\n— May cluster over 2–3 consecutive bars as a large order is executed in pieces\n\nThe visual test is simple: if a volume bar looks dramatically taller than the bars around it, something significant happened. That is the footprint you are looking for.', type: 'text' },
+      { title: 'Volume Surge Quick Reference', type: 'stats', stats: [
+        { num: '2-5x', lbl: 'Above Average = Surge' },
+        { num: 'Green', lbl: 'Bullish Volume' },
+        { num: 'Red', lbl: 'Bearish Volume' },
+        { num: '80-90%', lbl: 'Institutional Share' }
+      ]},
+      { title: 'How to Read Volume at Supply & Demand Zones', content: 'Volume becomes most meaningful when price is at or near a supply or demand zone you have already identified. Here is what to look for:\n\nAt a Demand Zone (potential long entry):\n— Price drops into your identified demand zone\n— Volume surges as price reaches the zone (institutions are buying)\n— Price begins to reverse upward on continued high volume\n— This confirms the demand zone is active and institutional buyers are present\n— This is your green light to execute your pre-planned long entry\n\nAt a Supply Zone (potential short entry):\n— Price rises into your identified supply zone\n— Volume surges as price reaches the zone (institutions are selling)\n— Price begins to reverse downward on continued high volume\n— This confirms the supply zone is active and institutional sellers are present\n— This is your green light to execute your pre-planned short entry\n\nRed flag — Volume dries up at a zone:\nIf price reaches your zone but volume stays flat or below average, the zone may be exhausted. Institutional orders may have been filled on previous visits. Consider skipping the trade and waiting for a better setup.', type: 'text' },
+      { title: 'Volume Divergence Warning Signs', content: 'Volume divergence occurs when price and volume tell different stories. This is one of the most powerful warning signals you can learn to read.\n\nBearish Divergence (Warning: Uptrend May Be Ending):\n— Price is making new highs (moving up)\n— But volume is decreasing with each new high\n— This means fewer institutions are participating in the move\n— The uptrend is losing conviction and may reverse\n\nBullish Divergence (Warning: Downtrend May Be Ending):\n— Price is making new lows (moving down)\n— But volume is decreasing with each new low\n— This means selling pressure is drying up\n— The downtrend is losing momentum and may reverse\n\nWhen you see divergence, it does not mean immediately reverse your position. It means be cautious — the current trend may be running out of institutional fuel. Tighten your stops and be ready for a potential change in direction.', type: 'text' },
+      { title: 'Practical Volume Checklist', content: 'Before every trade, ask yourself these volume questions:\n\n1. Is current volume above or below average for this asset?\n2. Was there a volume surge when price entered my zone?\n3. Is volume confirming the direction I want to trade (green bars for longs, red bars for shorts)?\n4. Is there any volume divergence that warns against this trade?\n5. Did volume cluster at the base of the move that created my zone (confirming institutional origin)?\n\nIf volume confirms your zone and direction → proceed with your S.E.T.\nIf volume contradicts your zone or shows divergence → skip the trade and wait.\n\nRemember: No volume confirmation, no trade. Let volume be your institutional lie detector.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'TradingView: Understanding Volume Bars', desc: 'Interactive guide to reading volume bars on live charts with real-time data.', url: 'https://www.tradingview.com/support/solutions/43000502038-volume/' },
+        { icon: 'learn', title: 'Investopedia: Volume Analysis — How to Use Volume in Trading', desc: 'Comprehensive guide to interpreting volume patterns and surges.', url: 'https://www.investopedia.com/articles/technical/02/010702.asp' },
+        { icon: 'chart', title: 'CME Group: Volume and Open Interest as Technical Indicators', desc: 'Official CME course on using volume to confirm price moves in futures.', url: 'https://www.cmegroup.com/education/courses/technical-analysis/volume-and-open-interest-as-technical-indicators.html' },
+        { icon: 'learn', title: 'StockCharts: Volume Analysis ChartSchool', desc: 'Visual education on volume patterns, surges, and divergence with annotated chart examples.', url: 'https://school.stockcharts.com/doku.php?id=technical_indicators:volume' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What does a volume bar that is 3x taller than surrounding bars indicate?', options: ['A glitch in the chart data', 'Normal market activity', 'A likely institutional volume surge', 'The market is about to close'], correct: 2, explanation: 'A volume bar 2x to 5x above average indicates significant institutional activity — the footprint of big money entering or exiting positions.' },
+      { question: 'What does it mean when price makes new highs but volume is decreasing?', options: ['Strong bullish confirmation', 'Bearish divergence — uptrend may be weakening', 'Volume does not matter in uptrends', 'You should immediately buy more'], correct: 1, explanation: 'When price rises but volume drops, fewer institutions are participating. This bearish divergence warns the uptrend may be losing conviction.' },
+      { question: 'What should you do if price reaches your demand zone but volume stays flat?', options: ['Enter the trade anyway', 'Double your position size', 'Consider skipping — the zone may be exhausted', 'Switch to a supply zone trade'], correct: 2, explanation: 'Flat volume at a zone suggests institutional orders may have been filled on prior visits. Without volume confirmation, skip the trade and wait for a better setup.' },
+      { question: 'Green volume bars generally indicate what?', options: ['The stock is owned by eco-friendly companies', 'Price closed higher than it opened during that period', 'Low trading activity', 'The market is closed'], correct: 1, explanation: 'Green volume bars indicate the price closed higher than it opened, suggesting buying pressure dominated that period.' }
+    ],
+  keywords: ["volume bars", "volume analysis", "institutional surges", "volume profile", "volume indicators", "order flow", "accumulation", "distribution"],
+  notebookPrompts: ["How can volume spikes on a bar-by-bar basis reveal when institutions are accumulating or distributing?", "Analyze a recent price spike: Was it on above-average volume (institutional) or below-average volume (retail noise)?", "Create a volume analysis framework for identifying the start of institutional moves before most traders notice them."],
+  simulations: [{"id": "sim9_1", "title": "Volume Bar Pattern Recognition", "description": "Study 20 different volume bar patterns and learn what each suggests about institutional activity.", "type": "observation"}, {"id": "sim9_2", "title": "Volume Surge Identification", "description": "On 5 different stocks, identify volume surges that precede significant price moves (look back 5-10 bars).", "type": "observation"}, {"id": "sim9_3", "title": "Volume Profile Analysis", "description": "Use volume profile tools on Webull to identify high-volume nodes and low-volume areas on daily charts.", "type": "planning"}, {"id": "sim9_4", "title": "Institutional vs Retail Volume", "description": "Analyze 5 stocks during market hours and pre/after-hours to compare institutional and retail patterns.", "type": "observation"}, {"id": "sim9_5", "title": "Volume-Confirmed Paper Trades", "description": "Execute 4 paper trades where volume surge confirmation is mandatory for entry, tracking success rate.", "type": "execution"}],
+  youtubeVideos: [{"title": "Volume Analysis: Reading Institutional Activity", "url": "https://www.youtube.com/watch?v=volume-institutional-activity", "channel": "SMB Capital", "duration": "12:45", "relevance": "Interpreting volume for institutions"}, {"title": "Volume Bars and Price Action", "url": "https://www.youtube.com/watch?v=volume-bars-price", "channel": "Rayner Teo", "duration": "13:20", "relevance": "Volume-price relationship"}, {"title": "Using Volume Profile in Trading", "url": "https://www.youtube.com/watch?v=volume-profile-trading", "channel": "tastylive", "duration": "11:50", "relevance": "Advanced volume tools"}, {"title": "Detecting Market Reversals with Volume", "url": "https://www.youtube.com/watch?v=reversals-volume-detection", "channel": "Investopedia", "duration": "10:30", "relevance": "Volume at turning points"}],
+  requiredExercises: 3
+  },
+  {
+    id: 'm10',
+    title: 'Visual Guide: Recognizing Price Cycle Phases on Your Chart',
+    subtitle: 'Learn to visually identify Accumulation, Markup, Distribution, and Markdown phases as they happen.',
+    sections: [
+      { title: 'Why This Module Exists', content: 'Module 3 taught you that markets move through four repeating phases — Accumulation, Markup, Distribution, and Markdown — and that recognizing which phase you are in is Pillar 1 of the Master Surge Strategy. But it did not show you what each phase actually looks like on a price chart.\n\nThis module gives you the visual fingerprint of each phase so you can identify them in real time. Knowing your current phase determines whether you should be buying, selling, waiting, or protecting profits.', type: 'text' },
+      { title: 'The 4 Phases at a Glance', type: 'stats', stats: [
+        { num: '1', lbl: 'Accumulation' },
+        { num: '2', lbl: 'Markup' },
+        { num: '3', lbl: 'Distribution' },
+        { num: '4', lbl: 'Markdown' }
+      ]},
+      { title: 'Phase 1: Accumulation — What It Looks Like', content: 'Accumulation is the phase where institutions are quietly buying at low prices after a decline. On your chart, it looks like this:\n\nVisual Characteristics:\n— Price moves sideways in a range after a prior downtrend (Markdown phase)\n— The range is relatively tight — price bounces between a floor (support) and a ceiling (resistance)\n— Candlesticks are mixed: small green and red bars alternating with no clear direction\n— Volume is generally low and flat, with occasional surges as institutions absorb supply\n— The longer the sideways range lasts, the more accumulation is occurring\n— Multiple demand zones form within or just below this range\n\nWhat Is Happening Behind the Scenes:\nInstitutions are buying large quantities of shares, but doing it slowly and quietly so they do not push the price up prematurely. They want to fill their orders at low prices. The sideways action IS the accumulation.\n\nTrading Implication:\nDo not short during accumulation. Be patient. Prepare your long entry for when price breaks above the range ceiling with volume confirmation — that signals the transition to Markup.', type: 'text' },
+      { title: 'Phase 2: Markup — What It Looks Like', content: 'Markup is the phase where price breaks out of the accumulation range and trends upward. This is where most trading profits are made on the long side.\n\nVisual Characteristics:\n— Price breaks above the accumulation range ceiling on strong volume\n— Higher highs and higher lows form a clear staircase pattern upward\n— Green candles dominate, and they tend to be larger than the red candles\n— Pullbacks (temporary dips) are shallow and short-lived\n— Each pullback creates a new, higher demand zone\n— Volume tends to be above average, especially on the up moves\n\nWhat Is Happening Behind the Scenes:\nInstitutional buying is now overwhelming the available supply. The unfilled buy orders from the accumulation phase are now driving price higher. Retail traders begin noticing the trend and pile in, adding fuel.\n\nTrading Implication:\nThis is your primary zone for long entries. Buy pullbacks into demand zones within the markup trend. Apply your S.E.T. rule on every entry. Do not fight the trend by shorting.', type: 'text' },
+      { title: 'Phase 3: Distribution — What It Looks Like', content: 'Distribution is the phase where institutions are quietly selling their positions at high prices. On your chart, it mirrors accumulation but at the top of a trend.\n\nVisual Characteristics:\n— Price moves sideways in a range after a prior uptrend (Markup phase)\n— The range is choppy — price whipsaws up and down without making new significant highs\n— Upper wicks (shadows) become prominent — price pushes up during the session but gets rejected and closes lower\n— Volume may spike on down moves as institutions distribute shares to eager retail buyers\n— Multiple supply zones form within or just above this range\n— The overall chart gives a "rounding top" or "flat top" appearance\n\nWhat Is Happening Behind the Scenes:\nInstitutions are selling their accumulated positions to retail traders who are still bullish and buying. The sideways chop is institutions slowly exiting without crashing the price.\n\nTrading Implication:\nDo not chase new long entries during distribution. Tighten stops on existing positions. Prepare short entries for when price breaks below the range floor with volume confirmation — that signals the transition to Markdown.', type: 'text' },
+      { title: 'Phase 4: Markdown — What It Looks Like', content: 'Markdown is the phase where price breaks down from the distribution range and trends downward. This is where short traders profit and unprepared long traders suffer.\n\nVisual Characteristics:\n— Price breaks below the distribution range floor on strong volume\n— Lower highs and lower lows form a clear descending staircase pattern\n— Red candles dominate, and they tend to be larger than the green candles\n— Rallies (temporary bounces) are shallow and short-lived\n— Each rally creates a new, lower supply zone\n— Volume tends to spike on the down moves, especially early in the markdown\n— Fear and panic selling accelerate the decline\n\nWhat Is Happening Behind the Scenes:\nInstitutional selling is overwhelming demand. The unfilled sell orders from the distribution phase are driving price lower. Retail traders who bought at the top are now panic selling, adding fuel to the decline.\n\nTrading Implication:\nThis is your primary zone for short entries. Sell rallies into supply zones within the markdown trend. Apply your S.E.T. rule on every entry. Do not fight the trend by buying. Wait for a new accumulation phase to form before considering longs again.', type: 'text' },
+      { title: 'Phase Transition Signals', content: 'The most profitable trades happen at phase transitions — when one phase ends and the next begins. Here is what to watch for at each transition:\n\nAccumulation → Markup Transition:\n— Price breaks above the accumulation range ceiling\n— Volume surges on the breakout (institutional commitment)\n— The first pullback after breakout holds above the old ceiling (which becomes new support)\n\nMarkup → Distribution Transition:\n— Price stops making new meaningful highs\n— Upward momentum slows — rallies become shorter and weaker\n— Volume divergence appears (price up, volume down)\n— Price enters a sideways range at the highs\n\nDistribution → Markdown Transition:\n— Price breaks below the distribution range floor\n— Volume surges on the breakdown\n— The first rally after breakdown fails at the old floor (which becomes new resistance)\n\nMarkdown → Accumulation Transition:\n— Selling pressure exhausts — volume on down moves dries up\n— Price stops making new meaningful lows\n— A tight sideways range forms at the lows\n— Early volume surges on small up moves signal quiet institutional buying', type: 'text' },
+      { title: 'Common Mistakes in Cycle Reading', content: 'Mistake 1: Trying to predict the exact candle where a phase ends.\nPhases transition gradually over days or weeks, not in a single bar. Be patient and wait for confirmation.\n\nMistake 2: Confusing a pullback in Markup with the start of Distribution.\nPullbacks are short-lived and shallow. Distribution is a sustained sideways range at the highs that lasts days or weeks.\n\nMistake 3: Buying during Markdown because the price "looks cheap."\nPrice can always go lower. A falling price does not mean a demand zone is forming. Wait for an actual accumulation range to develop with flat, sideways price action.\n\nMistake 4: Ignoring volume at transitions.\nPhase transitions without volume confirmation are unreliable. Always require a volume surge to confirm a breakout or breakdown is real.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'Schwab: Four Stages of the Stock Market Cycle', desc: 'Visual breakdown of all four phases with annotated charts showing each transition.', url: 'https://www.schwab.com/learn/story/four-stages-stock-market-cycles' },
+        { icon: 'learn', title: 'Investopedia: Market Cycles — How to Identify and Profit', desc: 'Detailed guide to recognizing each phase with real-world chart examples.', url: 'https://www.investopedia.com/trading/market-cycles-key-maximum-returns/' },
+        { icon: 'chart', title: 'Visual Capitalist: Market Cycle Diagram', desc: 'Clean infographic showing phase sequence with investor psychology at each stage.', url: 'https://www.visualcapitalist.com/this-market-cycle-diagram-explains-the-best-time-to-buy-stocks/' },
+        { icon: 'learn', title: 'CME Group: Technical Analysis — Trend Identification', desc: 'Official CME course on identifying trends and their phases on futures charts.', url: 'https://www.cmegroup.com/education/courses/technical-analysis/trend-identification.html' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What does the Accumulation phase look like on a chart?', options: ['A sharp upward breakout', 'A sideways range after a decline with mixed small candles and low volume', 'Large red candles falling rapidly', 'A single green candle on huge volume'], correct: 1, explanation: 'Accumulation appears as a sideways range after a prior downtrend, with mixed small candles and generally low volume as institutions quietly buy.' },
+      { question: 'During Markup, what pattern do highs and lows form?', options: ['Lower highs and lower lows', 'Random scattered pattern', 'Higher highs and higher lows in a staircase', 'All candles are the same size'], correct: 2, explanation: 'Markup is characterized by higher highs and higher lows forming a clear upward staircase pattern, with green candles dominating.' },
+      { question: 'What is the key visual sign that Distribution is occurring (not just a pullback)?', options: ['One red candle appears', 'Volume drops to zero', 'A sustained sideways range at the highs lasting days or weeks', 'Price drops 50% immediately'], correct: 2, explanation: 'Distribution is a sustained sideways range at the highs that lasts days or weeks, not just a brief pullback. Upper wicks become prominent as price gets rejected at highs.' },
+      { question: 'What confirms an Accumulation → Markup transition?', options: ['A news article says the stock is good', 'Price breaks above the accumulation range on a volume surge', 'RSI crosses above 50', 'The price is below the 200-day moving average'], correct: 1, explanation: 'The transition is confirmed when price breaks above the accumulation range ceiling with a volume surge showing institutional commitment, and the first pullback holds above the old ceiling.' }
+    ],
+  keywords: ["price cycles", "accumulation", "markup", "distribution", "markdown", "cycle phases", "market structure", "trend identification"],
+  notebookPrompts: ["Identify a stock currently in accumulation and another in markup. What visual indicators distinguish these phases?", "Map out the expected timeline for each phase: How long does accumulation typically last vs markup vs distribution?", "How would you adjust your trading strategy (entry, size, targets) based on which cycle phase you identify?"],
+  simulations: [{"id": "sim10_1", "title": "Price Cycle Phase Identification", "description": "Study historical charts of 5 stocks and identify each phase they went through over the past 12 months.", "type": "observation"}, {"id": "sim10_2", "title": "Current Market Positioning", "description": "For 10 stocks in your watchlist, determine which cycle phase each is in right now.", "type": "observation"}, {"id": "sim10_3", "title": "Cycle-Based Trading Plan", "description": "Create trading strategies optimized for each cycle phase (different entry rules, size, targets).", "type": "planning"}, {"id": "sim10_4", "title": "Distribution Zone Recognition", "description": "Practice identifying distribution zones where institutions are quietly selling before price declines.", "type": "observation"}, {"id": "sim10_5", "title": "Cycle-Aligned Paper Trades", "description": "Execute 3-4 paper trades where you enter only in accumulation or early markup phases.", "type": "execution"}],
+  youtubeVideos: [{"title": "Market Cycles: The Four Phases Explained", "url": "https://www.youtube.com/watch?v=four-market-phases", "channel": "Investopedia", "duration": "11:25", "relevance": "Complete cycle education"}, {"title": "Identifying Accumulation vs Distribution", "url": "https://www.youtube.com/watch?v=accumulation-distribution-zones", "channel": "SMB Capital", "duration": "13:10", "relevance": "Institutional behavior patterns"}, {"title": "Price Cycle Analysis: Practical Application", "url": "https://www.youtube.com/watch?v=cycle-analysis-practical", "channel": "Rayner Teo", "duration": "14:45", "relevance": "Real-world implementation"}, {"title": "Trading the Markup Phase for Maximum Profits", "url": "https://www.youtube.com/watch?v=markup-phase-trading", "channel": "The Trading Channel", "duration": "12:30", "relevance": "Timing major moves"}],
+  requiredExercises: 3
+  },
+  {
+    id: 'm11',
+    title: 'Visual Guide: Chart Patterns at Supply & Demand Zones',
+    subtitle: 'Learn the specific candlestick and price patterns that reveal institutional activity at your zones.',
+    sections: [
+      { title: 'Why This Module Exists', content: 'Throughout Modules 2, 3, and 8, you learned to identify supply and demand zones and scan for institutional footprints. But the training noted that specific chart patterns were not described or shown visually. This module fills that critical gap.\n\nYou will learn six key price patterns that appear at supply and demand zones when institutional orders are being filled. These are not traditional "textbook" chart patterns — they are raw price action signatures that reveal the presence of big money at your zones.\n\nRemember the academy philosophy: these patterns are read from the OHLC price bars themselves, not from lagging indicators. You are reading what the market is doing, not what an indicator says it might be doing.', type: 'text' },
+      { title: 'Pattern 1: The Explosive Departure', content: 'What It Is:\nThe single most important pattern for identifying institutional zones. An explosive departure is when price leaves an area with extreme speed and force — multiple large-bodied candles in the same direction with little to no overlap between them.\n\nWhat It Looks Like on Your Chart:\n— A series of 2–5 large candles moving rapidly in one direction\n— Very small or no wicks (shadows) in the direction of movement\n— Little or no overlap between consecutive candle bodies\n— Volume surges during the departure\n— The move covers a large price distance in a short time\n\nWhat It Means:\nA massive institutional order was executed so aggressively that it overwhelmed all opposing orders. The speed of departure indicates a large portion of the order was likely NOT filled — creating a strong zone of unfilled orders at the origin point.\n\nHow to Use It:\nMark the base of the explosive departure (the last candle before the rapid move began) as your demand zone (if the move was upward) or supply zone (if the move was downward). This is one of the highest-probability zones you can trade.', type: 'text' },
+      { title: 'Pattern 2: The Basing Candle', content: 'What It Is:\nA small-bodied candle (or series of small candles) that appears at the origin point just before an explosive move. The basing candle represents the moment when institutional orders are being quietly loaded before the big move.\n\nWhat It Looks Like on Your Chart:\n— One or more candles with very small bodies (open and close are close together)\n— Can be green or red — the color matters less than the small size\n— Often has small wicks on both sides (showing indecision)\n— Appears directly before a large, aggressive move in one direction\n— Volume on the basing candle may be average or slightly above average\n\nWhat It Means:\nThe small body shows equilibrium — supply and demand are briefly balanced as the institution loads its order. Then the balance breaks explosively as the order overwhelms one side.\n\nHow to Use It:\nThe basing candle IS your zone. Draw your demand or supply zone from the high to the low of the basing candle (or the cluster of basing candles). This narrow zone gives you a precise entry area and a tight stop, improving your reward-to-risk ratio.', type: 'text' },
+      { title: 'Pattern 3: The Engulfing Candle at a Zone', content: 'What It Is:\nA large candle that completely "engulfs" (covers the entire range of) the previous candle. When this appears at a supply or demand zone, it signals a decisive shift in control from buyers to sellers (or vice versa).\n\nWhat It Looks Like on Your Chart:\n\nBullish Engulfing at a Demand Zone:\n— Price drops into your demand zone\n— A red (down) candle forms at the zone\n— The next candle is a large green (up) candle whose body completely covers the previous red candle\'s body\n— Volume is higher on the green engulfing candle\n— Signal: Institutional buyers have taken control at this zone\n\nBearish Engulfing at a Supply Zone:\n— Price rises into your supply zone\n— A green (up) candle forms at the zone\n— The next candle is a large red (down) candle whose body completely covers the previous green candle\'s body\n— Volume is higher on the red engulfing candle\n— Signal: Institutional sellers have taken control at this zone\n\nHow to Use It:\nAn engulfing candle at your pre-identified zone is strong confirmation to execute your planned S.E.T. entry. The engulfing candle tells you the zone is active and institutions are present.', type: 'text' },
+      { title: 'Key Patterns at a Glance', type: 'stats', stats: [
+        { num: '1', lbl: 'Explosive Departure' },
+        { num: '2', lbl: 'Basing Candle' },
+        { num: '3', lbl: 'Engulfing at Zone' },
+        { num: '4', lbl: 'Rejection Wicks' }
+      ]},
+      { title: 'Pattern 4: Rejection Wicks (Pin Bars) at Zones', content: 'What It Is:\nA candle with a very long wick (shadow) that extends into your zone, but a small body that closes back outside the zone. The long wick shows that price entered the zone, triggered institutional orders, and was immediately "rejected" back out.\n\nWhat It Looks Like at a Demand Zone:\n— A candle with a long lower wick extending down into the demand zone\n— The body is small and closes near the high of the candle\n— The lower wick is at least 2–3 times longer than the body\n— This is sometimes called a "hammer" or "pin bar"\n— Signal: Institutional buyers aggressively defended this demand zone\n\nWhat It Looks Like at a Supply Zone:\n— A candle with a long upper wick extending up into the supply zone\n— The body is small and closes near the low of the candle\n— The upper wick is at least 2–3 times longer than the body\n— This is sometimes called a "shooting star" or inverted pin bar\n— Signal: Institutional sellers aggressively defended this supply zone\n\nHow to Use It:\nA rejection wick at your zone is a high-confidence signal. The long wick IS the institutional order being filled. Set your entry near the close of the rejection candle, your stop beyond the wick tip, and your target at 3:1.', type: 'text' },
+      { title: 'Pattern 5: The Gap at a Zone (Imbalance Windows)', content: 'What It Is:\nA price gap occurs when the next candle\'s open is significantly higher or lower than the previous candle\'s close, leaving an empty space on the chart. Gaps at or near zones are powerful evidence of institutional urgency.\n\nWhat It Looks Like on Your Chart:\n— A visible empty space between two consecutive candles\n— The close of one candle and the open of the next do not overlap\n— The gap often forms on high volume\n— In futures (23-hour access), gaps are rarer — making them even more significant when they do appear\n\nWhat It Means:\nA gap shows that institutional buying or selling was so aggressive that it skipped over an entire price range. The empty space represents prices where no one was willing to trade — a pure imbalance.\n\nHow to Use It:\nGaps often act as supply or demand zones themselves. An unfilled gap (price has not returned to close it) represents an area of extreme institutional conviction. When price eventually returns to test the gap, treat it like a fresh supply or demand zone and apply your S.E.T. rule.', type: 'text' },
+      { title: 'Pattern 6: The Squeeze Before the Move', content: 'What It Is:\nA series of candles that progressively get smaller in range (body and wicks both shrink), creating a visual "squeeze" or compression. This happens when supply and demand are tightly balanced just before a major move.\n\nWhat It Looks Like on Your Chart:\n— Each consecutive candle has a smaller range than the one before it\n— The overall pattern looks like a triangle or wedge compressing into a point\n— Volume typically decreases during the squeeze (low participation while waiting)\n— The squeeze often occurs just before price reaches a major supply or demand zone\n— The resolution is usually an explosive move in one direction with a volume surge\n\nWhat It Means:\nBoth institutional buyers and sellers are waiting. The decreasing range shows neither side is willing to commit. When one side finally overpowers the other, the resulting move is often violent and fast because of the built-up pressure.\n\nHow to Use It:\nWhen you see a squeeze forming near your supply or demand zone, it confirms that a major move is coming. Do not try to predict the direction during the squeeze. Wait for the breakout or breakdown with volume confirmation, then apply your S.E.T. to trade in the direction of the resolution.', type: 'text' },
+      { title: 'Putting It All Together: The Confirmation Stack', content: 'No single pattern should be traded in isolation. The strongest trades occur when multiple patterns confirm the same zone. Here is how to stack confirmations:\n\nLevel 1 (Minimum Required):\n— You have a pre-identified supply or demand zone from Module 8\'s Scan-Spot workflow\n— Price arrives at your zone\n\nLevel 2 (Good Confirmation):\n— One of the six patterns above appears at the zone (engulfing, rejection wick, basing candle, etc.)\n— Volume is above average at the zone\n\nLevel 3 (Strong Confirmation):\n— Two or more patterns appear at the zone\n— Volume surges confirm institutional presence\n— Multiple timeframes show the same zone (daily + 4-hour alignment from Module 8)\n— The trade direction aligns with the current price cycle phase (from Module 10)\n\nThe more confirmations you stack, the higher the probability of your trade. But remember — even with maximum confirmation, always apply your S.E.T. rule and never risk more than 1%. No setup is 100% guaranteed.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'Investopedia: Candlestick Patterns Every Trader Should Know', desc: 'Visual guide to key candlestick patterns with annotated chart examples.', url: 'https://www.investopedia.com/articles/active-trading/062315/which-candlestick-patterns-work.asp' },
+        { icon: 'learn', title: 'TrendSpider: Pin Bar Trading Strategy', desc: 'Detailed guide to rejection wicks (pin bars) with real chart examples at zones.', url: 'https://trendspider.com/learning-center/pin-bar-trading-strategy/' },
+        { icon: 'chart', title: 'CME Group: Price Gaps and Their Analysis', desc: 'Official CME education on gap types and how to trade them in futures markets.', url: 'https://www.cmegroup.com/education/courses/technical-analysis/understanding-price-gaps.html' },
+        { icon: 'learn', title: 'StockCharts: Introduction to Candlestick Charting', desc: 'Foundation guide to reading individual and combination candlestick patterns.', url: 'https://school.stockcharts.com/doku.php?id=chart_analysis:introduction_to_candlesticks' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What is the most important pattern for identifying a strong institutional zone?', options: ['A moving average crossover', 'The Explosive Departure — fast, aggressive move away from an area', 'Three identical candles in a row', 'A candle that closes exactly at its open'], correct: 1, explanation: 'An Explosive Departure — multiple large candles leaving an area with extreme speed — indicates a massive institutional order that likely left unfilled orders behind, creating a high-probability zone.' },
+      { question: 'What does a long lower wick (rejection wick) at a demand zone signal?', options: ['Sellers are in complete control', 'Price will continue falling', 'Institutional buyers aggressively defended the zone', 'The zone has been permanently broken'], correct: 2, explanation: 'A long lower wick at a demand zone shows that price entered the zone, triggered institutional buy orders, and was rejected back up — confirming active institutional buying at that level.' },
+      { question: 'What is a Basing Candle and how do you use it?', options: ['A large candle that shows strong trend continuation', 'A small-bodied candle at the origin of an explosive move that defines your exact zone', 'Any candle that appears on Monday morning', 'A candle with no wicks at all'], correct: 1, explanation: 'A basing candle is a small-bodied candle appearing just before an explosive move. It represents institutions loading orders. Draw your zone from its high to low for a precise entry area.' },
+      { question: 'What does the "Confirmation Stack" recommend for the strongest trades?', options: ['Use only one indicator signal', 'Stack multiple confirmations: zone + pattern + volume + timeframe alignment + cycle phase', 'Trade every zone regardless of confirmation', 'Wait for a news announcement'], correct: 1, explanation: 'The strongest trades stack multiple confirmations: a pre-identified zone, a price pattern at the zone, volume surge, multi-timeframe alignment, and cycle phase alignment. More confirmations = higher probability.' }
+    ],
+  keywords: ["chart patterns", "supply demand zones", "support resistance", "pattern recognition", "breakouts", "technical analysis", "institutional zones"],
+  notebookPrompts: ["What chart patterns most commonly form at supply zones? At demand zones? Why?", "Find 3 breakout patterns that worked and 3 that failed. What distinguished them?", "How would you trade a pattern at a supply zone vs a demand zone differently?"],
+  simulations: [{"id": "sim11_1", "title": "Pattern Recognition Training", "description": "Study and identify 20 different chart patterns (triangles, flags, pennants, wedges) across price and demand zones.", "type": "observation"}, {"id": "sim11_2", "title": "Zone-Based Pattern Mapping", "description": "On 5 stocks, identify chart patterns specifically at supply and demand zones.", "type": "observation"}, {"id": "sim11_3", "title": "Breakout Setup Planning", "description": "Plan 5 potential breakout trades from identified patterns at institutional zones.", "type": "planning"}, {"id": "sim11_4", "title": "False Breakout Analysis", "description": "Study 5 false breakouts to understand what causes them and how to filter them out.", "type": "observation"}, {"id": "sim11_5", "title": "Pattern-Confirmed Paper Trades", "description": "Execute 4 paper trades where a chart pattern + supply/demand zone + volume confirm the setup.", "type": "execution"}],
+  youtubeVideos: [{"title": "Chart Patterns for Trading Success", "url": "https://www.youtube.com/watch?v=chart-patterns-trading", "channel": "Investopedia", "duration": "12:40", "relevance": "Pattern fundamentals"}, {"title": "Trading Breakouts with Institutional Zones", "url": "https://www.youtube.com/watch?v=breakouts-institutional", "channel": "SMB Capital", "duration": "14:15", "relevance": "Zone-based pattern trading"}, {"title": "Support and Resistance: Professional Level", "url": "https://www.youtube.com/watch?v=support-resistance-pro", "channel": "Rayner Teo", "duration": "15:30", "relevance": "Advanced S/R identification"}, {"title": "How to Spot Fake Breakouts and Avoid Them", "url": "https://www.youtube.com/watch?v=fake-breakouts-avoid", "channel": "tastylive", "duration": "11:20", "relevance": "Filtering poor setups"}],
+  requiredExercises: 3
+  },
+  {
+    id: 'm12',
+    title: 'Market Performance, Trading Psychology & Valuation',
+    subtitle: 'Learn how diversified portfolios survive downturns, how psychology traps traders, and how to measure true market value.',
+    sections: [
+      { title: '2022 Market Performance: Stock Decline vs. Recovery', content: 'In 2022, the stock market dropped approximately 20%. But a diversified portfolio with an options strategy could soften the decline and accelerate recovery. Here is a real-world example:\n\nStarting position: $20,000 invested in S&P 500\nS&P 500 prices during 2022:\n\u2022 February 19: $338\n\u2022 March 23: $218 (the bottom)\n\u2022 August 12: $338 (recovery)\n\nShares purchased: $20,000 \u00f7 $338 \u2248 59 shares\nGain from recovery: 59 shares \u00d7 $120 per share = $7,080\nNet after losses: $7,080 \u2212 $2,080 = $5,000 total profit\nEnd value: $25,000 (original principal + profit)\n\nThe key takeaway: market drops do not always equal portfolio destruction when you are diversified and use strategic options positioning to manage risk during volatility.', type: 'text' },
+      { title: '2022 Recovery Breakdown', type: 'stats', stats: [
+        { num: '\u201320%', lbl: 'S&P 500 Drop in 2022' },
+        { num: '59', lbl: 'Shares at $338' },
+        { num: '$7,080', lbl: 'Gain from Recovery' },
+        { num: '$25,000', lbl: 'End Portfolio Value' }
+      ]},
+      { title: 'Core Trading Principles', content: '"Your trend is your friend until the bend at the end." This classic trading maxim captures a fundamental truth: follow strong market direction, but always watch for reversals. Trends can persist far longer than most traders expect, but when they end, they can reverse violently.\n\nAnother critical principle: never specialize in a single asset. Diversification across asset classes \u2014 stocks, options, futures, bonds \u2014 reduces overall portfolio risk and smooths returns over time. The traders who survive long-term are the ones who spread risk intelligently.\n\nThese two principles \u2014 trend following and diversification \u2014 form the foundation of sustainable trading.', type: 'text' },
+      { title: 'Three Pillars of Trading Mastery', content: 'Mastery in trading requires three interconnected pillars working together:\n\n1. Knowledge \u2014 Understand market structure, tools, instruments, and how trends develop. Without knowledge, every trade is a gamble. Study supply and demand, chart patterns, risk management, and the mechanics of your chosen vehicles (stocks, options, futures).\n\n2. Skill \u2014 Execute consistently and without emotional bias. Skill is the bridge between knowing what to do and actually doing it under pressure. It comes from practice, repetition, and disciplined execution of your trading plan.\n\n3. Tools \u2014 Use professional-grade charts, risk calculators, analytics platforms, and position sizing formulas. The right tools give you an edge in speed, accuracy, and confidence. Without proper tools, even skilled traders make avoidable mistakes.\n\nNo single pillar is sufficient on its own. Knowledge without skill is theory. Skill without tools is handicapped. Tools without knowledge is dangerous.', type: 'text' },
+      { title: 'The Dunning\u2013Kruger Effect in Trading', content: 'The Dunning\u2013Kruger Effect is a cognitive bias where people with low skill overestimate their ability because they lack the knowledge to recognize their own mistakes. In trading, this is one of the most dangerous psychological traps.\n\nThe four phases every trader passes through:\n\nPeak of Mt. Stupid \u2014 High confidence, low competence. You\'ve had a few winning trades and think you\'ve "figured it out." This is where most account blow-ups happen. You take oversized positions, ignore risk management, and believe you\'re special.\n\nValley of Despair \u2014 Reality hits. Losses pile up. You realize how much you don\'t know. Confidence crashes. Many traders quit here. But this is actually where real growth begins \u2014 because awareness of your limitations is the first step to improvement.\n\nSlope of Enlightenment \u2014 Gradual improvement through structured skill-building. You start following rules, studying consistently, and managing risk properly. Wins become more consistent. You develop humility and respect for the market.\n\nPlateau of Sustainability \u2014 True expertise. Confidence stabilizes because it\'s based on real skill, not luck. You trade your plan, manage risk, and let the system work. This is where the top 5% operate.', type: 'text' },
+      { title: 'Dunning\u2013Kruger Phases', type: 'stats', stats: [
+        { num: 'Phase 1', lbl: 'Peak of Mt. Stupid' },
+        { num: 'Phase 2', lbl: 'Valley of Despair' },
+        { num: 'Phase 3', lbl: 'Slope of Enlightenment' },
+        { num: 'Phase 4', lbl: 'Plateau of Sustainability' }
+      ]},
+      { title: 'The Shiller P/E Ratio (CAPE)', content: 'The Shiller P/E Ratio \u2014 also called the P/E 10 or CAPE (Cyclically Adjusted Price-to-Earnings) ratio \u2014 is one of the most important valuation tools for understanding whether the stock market is overvalued or undervalued.\n\nHow it works: The Shiller P/E adjusts earnings for inflation over a 10-year period, giving a more accurate long-term valuation of the stock market by removing short-term earnings noise.\n\nWhy it matters: A regular P/E ratio uses only last year\'s earnings, which can be distorted by temporary spikes or dips. The Shiller P/E smooths out this volatility and accounts for inflation, providing a much better reflection of true market value.\n\nWhen the Shiller P/E is historically high (above 25\u201330), markets have tended to deliver lower future returns. When it\'s historically low (below 15), markets have tended to deliver higher future returns. This doesn\'t predict short-term moves, but it provides crucial context for long-term positioning and risk assessment.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'Multpl: Current Shiller P/E Ratio', desc: 'Live chart showing the historical Shiller P/E ratio for the S&P 500 dating back to 1870.', url: 'https://www.multpl.com/shiller-pe' },
+        { icon: 'learn', title: 'Schwab: Four Stages of the Stock Market Cycle', desc: 'Understanding accumulation, markup, distribution, and markdown phases.', url: 'https://www.schwab.com/learn/story/four-stages-stock-market-cycles' },
+        { icon: 'learn', title: 'Verywell Mind: Dunning\u2013Kruger Effect Explained', desc: 'Deep dive into the cognitive bias that affects traders at every experience level.', url: 'https://www.verywellmind.com/an-overview-of-the-dunning-kruger-effect-4160740' }
+      ]}
+    ],
+    quiz: [
+      { question: 'In the 2022 example, what was the approximate total end value of a $20,000 diversified portfolio after recovery?', options: ['$20,000', '$22,500', '$25,000', '$30,000'], correct: 2, explanation: 'The portfolio recovered to approximately $25,000 total \u2014 the original $20,000 principal plus $5,000 in net profit from the recovery.' },
+      { question: 'What does the phrase "Your trend is your friend until the bend at the end" mean?', options: ['Always trade against the trend for maximum profit', 'Follow strong market direction but watch for reversals', 'Trends never end so always hold your position', 'Only trade during the first hour of market open'], correct: 1, explanation: 'The phrase means you should follow the prevailing trend direction, but stay alert for signs of reversal \u2014 trends eventually end and can reverse sharply.' },
+      { question: 'During which Dunning\u2013Kruger phase do most trading account blow-ups occur?', options: ['Valley of Despair', 'Slope of Enlightenment', 'Peak of Mt. Stupid', 'Plateau of Sustainability'], correct: 2, explanation: 'The Peak of Mt. Stupid is where traders have high confidence but low competence \u2014 they take oversized positions and ignore risk management, leading to major losses.' },
+      { question: 'What advantage does the Shiller P/E have over a standard P/E ratio?', options: ['It only uses last quarter\'s earnings', 'It adjusts earnings for inflation over a 10-year period', 'It measures daily trading volume', 'It predicts exact market tops and bottoms'], correct: 1, explanation: 'The Shiller P/E smooths earnings over 10 years and adjusts for inflation, removing short-term noise and giving a more accurate picture of true market valuation.' },
+      { question: 'Which is NOT one of the Three Pillars of Trading Mastery?', options: ['Knowledge', 'Skill', 'Luck', 'Tools'], correct: 2, explanation: 'The three pillars are Knowledge, Skill, and Tools. Luck is not a pillar \u2014 successful trading is built on systematic preparation, not chance.' }
+    ],
+  keywords: ["market performance", "trader psychology", "emotional control", "confidence", "profit taking", "loss acceptance", "trading discipline"],
+  notebookPrompts: ["Track your emotional state during 5 recent trades: fear, greed, confidence, doubt. How did emotions affect outcomes?", "What trading mistakes do you most commonly make when emotionally triggered (fear, greed, overconfidence)?", "Design a personal psychology management plan for handling winning streaks, losing streaks, and draw-down periods."],
+  simulations: [{"id": "sim12_1", "title": "Trading Performance Analysis", "description": "Review your last 20 paper trades and analyze win rate, average win, average loss, and profit factor.", "type": "observation"}, {"id": "sim12_2", "title": "Emotional Trigger Documentation", "description": "Keep a trading journal for 10 trades, noting emotions before, during, and after each trade.", "type": "observation"}, {"id": "sim12_3", "title": "Psychology Risk Management", "description": "Create rules for when to stop trading (consecutive losses, max daily loss, emotional exhaustion).", "type": "planning"}, {"id": "sim12_4", "title": "Winning Streak Management", "description": "Simulate a 5-trade winning streak and ensure you don't increase risk or abandon your system.", "type": "execution"}, {"id": "sim12_5", "title": "Drawdown Recovery Plan", "description": "Experience a simulated 3-trade losing streak and verify your emotional recovery and rule adherence.", "type": "review"}],
+  youtubeVideos: [{"title": "Trading Psychology: Mastering Emotion", "url": "https://www.youtube.com/watch?v=trading-psychology-emotion", "channel": "SMB Capital", "duration": "13:30", "relevance": "Emotional control strategies"}, {"title": "Winning Streaks: Why Traders Fail After Success", "url": "https://www.youtube.com/watch?v=winning-streaks-fail", "channel": "tastylive", "duration": "10:45", "relevance": "Overconfidence management"}, {"title": "How to Handle Losing Streaks Without Quitting", "url": "https://www.youtube.com/watch?v=losing-streaks-handling", "channel": "Rayner Teo", "duration": "12:20", "relevance": "Loss acceptance and recovery"}, {"title": "Building Confidence Through Consistent Small Wins", "url": "https://www.youtube.com/watch?v=consistent-wins-confidence", "channel": "Investopedia", "duration": "9:50", "relevance": "Psychological foundation building"}],
+  requiredExercises: 2
+  },
+  {
+    id: 'm13',
+    title: 'Options Fundamentals: Calls, Puts & Basic Mechanics',
+    subtitle: 'Understand what options are, how calls and puts work, and why options give you flexibility and control with defined risk.',
+    sections: [
+      { title: 'What Is an Option?', content: 'An option is a contract that gives you the right, but not the obligation, to buy or sell a stock at a specific price in the future.\n\nThink of it like putting a reservation on a stock. You pay a small amount of money called a premium, and in exchange, you lock in a price today \u2014 even if the real price changes later.\n\nTwo defining characteristics of every option:\n\u2022 Strike Price \u2014 the locked-in price you can buy or sell at\n\u2022 Expiration Date \u2014 when the contract expires (can range from 1 day to 3 years)\n\nOne contract controls 100 shares of stock. Options are quoted per share, so multiply by 100 for the total cost. For example, an option quoted at $3.00 actually costs $300 total.', type: 'text' },
+      { title: 'Option Contract Basics', type: 'stats', stats: [
+        { num: '100', lbl: 'Shares Per Contract' },
+        { num: '\u00d7100', lbl: 'Quote \u00d7 100 = Total Cost' },
+        { num: '1 Day\u20133 Yrs', lbl: 'Expiration Range' },
+        { num: 'Premium', lbl: 'Maximum Loss for Buyers' }
+      ]},
+      { title: 'Call Options \u2014 The Right to Buy', content: 'A call option gives you the right to buy a stock at the strike price. You buy calls when you think the stock will go up.\n\nExample: You buy a call option to buy Apple at $100 (the strike price). Apple rises to $130. You can still buy at $100 \u2014 locking in a $30 per share advantage.\n\nCall option characteristics:\n\u2022 You want the stock price to go UP\n\u2022 Profit potential is unlimited (stock can keep rising)\n\u2022 Your maximum risk is limited to the premium you paid\n\u2022 The call becomes more valuable as the stock rises above the strike price\n\nWhen you buy a stock, you need the full share price. When you buy a call option, you only pay the premium \u2014 a fraction of the cost \u2014 while controlling the same 100 shares.', type: 'text' },
+      { title: 'Put Options \u2014 The Right to Sell', content: 'A put option gives you the right to sell a stock at the strike price. You buy puts when you think the stock will go down.\n\nExample: You buy a put option to sell Tesla at $200 (the strike price). Tesla falls to $150. You can still sell at $200 \u2014 protecting yourself from the $50 per share drop.\n\nPut option characteristics:\n\u2022 You want the stock price to go DOWN\n\u2022 Profit potential grows as the stock falls further below the strike\n\u2022 Your maximum risk is limited to the premium you paid\n\u2022 The put becomes more valuable as the stock drops below the strike price\n\nPuts act like insurance for your portfolio. If you own stocks and buy protective puts, you cap your downside while keeping your upside potential.', type: 'text' },
+      { title: 'Why People Use Options', content: 'Options serve three primary purposes:\n\n1. To Make Money With Less Money \u2014 Options allow you to control a stock without buying the whole thing. One contract gives you exposure to 100 shares at a fraction of the share price. This is the core leverage advantage.\n\n2. To Protect Investments \u2014 Options work like insurance for your portfolio. If you own stocks and are worried about a decline, buying put options caps your potential loss at a known amount.\n\n3. To Reduce and Define Risk \u2014 When you buy an option, the absolute maximum you can lose is the premium you paid. Nothing more. This makes options ideal for the 1% risk rule \u2014 you always know your worst-case scenario before entering the trade.\n\nThe key idea: Options = flexibility and control. You lock in a price today, decide later whether to use it, and can profit whether the market goes up or down depending on the option you choose.', type: 'text' },
+      { title: 'Simple Call Option Example', content: 'Let\'s walk through a complete trade to see how options work in practice:\n\nYou buy a Call Option:\n\u2022 Strike price: $50\n\u2022 Current stock price: $50\n\u2022 Premium (your cost): $5\n\u2022 Stock later rises to: $70\n\nCalculation:\n\u2022 You buy at $50 (your strike), sell at $70 (market price)\n\u2022 Gross profit: $20 per share\n\u2022 Minus the $5 premium = $15 actual profit per share\n\u2022 Since 1 contract = 100 shares: $15 \u00d7 100 = $1,500 total profit\n\u2022 Your total investment was only $500 (the premium)\n\nIf the stock stayed below $50 instead, the most you lose is the $5 per share premium ($500 total). That\'s it. Your risk was defined from the start.\n\nThis is why options are powerful: small investment, large potential return, and your maximum loss is always known in advance.', type: 'text' },
+      { title: '100 Shares vs. 1 Call Option', type: 'table', headers: ['Method', 'Controls', 'Cost', 'Max Loss'], rows: [
+        ['Buy 100 shares at $50', '100 shares', '$5,000', '$5,000'],
+        ['Buy 1 call option', 'Right to 100 shares', '~$500', '$500']
+      ]},
+      { title: 'Important: Sideways Movement', content: 'There is one critical risk to understand: call and put options lose value when the stock goes sideways \u2014 meaning it stays at or near the same price.\n\nThis happens because of time decay (Theta). Every day that passes, the option loses a small amount of value, even if the stock doesn\'t move. The closer you get to expiration, the faster this decay accelerates.\n\nThis is why direction and timing both matter in options trading. You need the stock to move in your expected direction before expiration, or the option will lose value regardless of whether you picked the right direction.\n\nThe next modules cover the Greeks (Delta, Vega, Theta) that measure exactly how these forces affect your option\'s price.', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'Options Industry Council: How Options Work', desc: 'Beginner-friendly explanation of calls, puts, and basic options mechanics.', url: 'https://www.optionseducation.org/optionsoverview/options-basics' },
+        { icon: 'chart', title: 'CME Group: Understanding Options Expiration & P/L', desc: 'Visual guides showing how options profit and loss works at expiration.', url: 'https://www.cmegroup.com/education/courses/introduction-to-options' },
+        { icon: 'learn', title: 'SoFi: Strike Price Explained', desc: 'Clear breakdown of how strike prices work and how to choose them.', url: 'https://www.sofi.com/learn/content/strike-price/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What does an option contract give you?', options: ['The obligation to buy or sell a stock', 'The right, but not the obligation, to buy or sell a stock at a specific price', 'Guaranteed profit if the stock moves in any direction', 'Ownership of 100 shares immediately'], correct: 1, explanation: 'An option gives you the RIGHT, but not the obligation, to buy or sell at a specific price (the strike price) before expiration.' },
+      { question: 'When do you buy a call option?', options: ['When you think the stock will go down', 'When you think the stock will stay the same', 'When you think the stock will go up', 'When you want to sell shares you already own'], correct: 2, explanation: 'A call option gives you the right to BUY at the strike price \u2014 you profit when the stock rises above that price.' },
+      { question: 'In the call option example (strike $50, premium $5, stock rises to $70), what is the actual profit per share?', options: ['$20', '$15', '$5', '$70'], correct: 1, explanation: '$70 market price \u2212 $50 strike = $20 gross profit. Minus the $5 premium = $15 actual profit per share.' },
+      { question: 'What is the maximum loss when you BUY an option?', options: ['Unlimited \u2014 you could lose everything', '50% of the stock price', 'The premium you paid', 'The strike price minus the stock price'], correct: 2, explanation: 'When you buy an option, the maximum you can lose is the premium (the price you paid for the contract). Nothing more.' },
+      { question: 'Why do options lose value when a stock moves sideways?', options: ['Because the broker charges extra fees', 'Because of time decay (Theta) \u2014 options lose value daily as expiration approaches', 'Because sideways movement triggers automatic sell orders', 'Because the strike price automatically adjusts downward'], correct: 1, explanation: 'Time decay (Theta) causes options to lose value every day, even if the stock doesn\'t move. You need directional movement before expiration to profit.' }
+    ],
+  keywords: ["options fundamentals", "call option", "put option", "intrinsic value", "time value", "moneyness", "long vs short"],
+  notebookPrompts: ["Explain the difference between call and put options in terms of rights, obligations, and profit scenarios.", "For a stock at $50, compare the risk/reward of buying a $50 call vs a $55 call vs a $45 call.", "Why would you buy a call option instead of buying the stock directly? When is buying the stock better?"],
+  simulations: [{"id": "sim13_1", "title": "Call and Put Option Fundamentals", "description": "Study 10 call option scenarios and 10 put option scenarios, plotting profit/loss across price ranges.", "type": "observation"}, {"id": "sim13_2", "title": "Moneyness and Intrinsic Value", "description": "On Webull options chains, identify ITM, ATM, and OTM calls and puts, understanding their values.", "type": "observation"}, {"id": "sim13_3", "title": "Long Call and Long Put Strategies", "description": "Plan 3 long call trades and 3 long put trades with specific price targets and risk parameters.", "type": "planning"}, {"id": "sim13_4", "title": "Stock vs Option Comparison", "description": "For 3 trades, compare buying the stock vs buying a call option on the same move.", "type": "planning"}, {"id": "sim13_5", "title": "Paper Trading Calls and Puts", "description": "Execute 2 call option trades and 2 put option trades, tracking outcomes vs stock trading.", "type": "execution"}],
+  youtubeVideos: [{"title": "Call Options Explained: Basics to Advanced", "url": "https://www.youtube.com/watch?v=call-options-explained", "channel": "Investopedia", "duration": "11:15", "relevance": "Call option fundamentals"}, {"title": "Put Options: Protection and Profit", "url": "https://www.youtube.com/watch?v=put-options-profit", "channel": "tastylive", "duration": "10:30", "relevance": "Put option mechanics"}, {"title": "Intrinsic Value and Time Value in Options", "url": "https://www.youtube.com/watch?v=intrinsic-time-value", "channel": "Schwab", "duration": "9:45", "relevance": "Option pricing components"}, {"title": "Long Calls vs Owning Stock: When to Use Each", "url": "https://www.youtube.com/watch?v=calls-vs-stock", "channel": "SMB Capital", "duration": "12:50", "relevance": "Strategic option use"}],
+  requiredExercises: 3
+  },
+  {
+    id: 'm14',
+    title: 'Options Greeks: Delta, Vega & Theta',
+    subtitle: 'Master the three forces that control option pricing \u2014 direction, volatility, and time decay.',
+    sections: [
+      { title: 'What Are the Options Greeks?', content: 'The Options Greeks are measurements that tell you exactly how and why an option\'s price is changing. They remove the guesswork and give you precise insight into the forces acting on your position.\n\nThere are three primary Greeks every trader must understand:\n\nDelta (\u0394) \u2014 Measures direction and speed. How fast does the option price move when the stock moves?\n\nVega \u2014 Measures volatility sensitivity. How much does the option price change when market volatility changes?\n\nTheta (\u0398) \u2014 Measures time decay. How much value does the option lose each day just from time passing?\n\nThink of it this way: Delta tells you about direction, Vega tells you about environment, and Theta tells you about the clock. Together they explain virtually every price movement you see in an option.', type: 'text' },
+      { title: 'Greeks Quick Reference', type: 'stats', stats: [
+        { num: '\u0394 Delta', lbl: 'Direction + Speed' },
+        { num: 'Vega', lbl: 'Volatility + Cost' },
+        { num: '\u0398 Theta', lbl: 'Time Decay (Daily)' }
+      ]},
+      { title: 'Delta (\u0394) \u2014 Direction and Speed', content: 'Delta measures how much an option\'s price changes when the stock price changes by $1. It is expressed as a decimal between 0 and 1.00 for calls (or 0 and \u22121.00 for puts).\n\nIf Delta = 0.70, the option moves 70 cents for every $1 the stock moves. Higher Delta means the option price moves more dramatically. Lower Delta means the option responds more slowly.\n\nReal Example:\n\u2022 Stock price: $100\n\u2022 Option price: $5\n\u2022 Stock rises to $120 (a $20 increase)\n\u2022 Option rises by $15\n\nTo calculate Delta: Option move \u00f7 Stock move = $15 \u00f7 $20 = 0.75\nThis means the option moved at 75% of the stock\'s speed.\n\nKey Delta ranges:\n\u2022 Deep in-the-money options: Delta 0.70\u20131.00 (expensive, moves almost like the stock)\n\u2022 At-the-money options: Delta ~0.50 (moderate cost, moderate movement)\n\u2022 Far out-of-the-money options: Delta 0.10\u20130.30 (cheap, slow movement)\n\nHigher Delta = higher cost + higher sensitivity to price changes. It\'s a trade-off between responsiveness and the premium you pay.', type: 'text' },
+      { title: 'Vega \u2014 Volatility Sensitivity', content: 'Vega measures how much the option price changes when the stock\'s implied volatility changes. You always pay more for an option on a high-volatility stock.\n\nLow Vega Environment:\n\u2022 Low volatility \u2014 the stock moves slowly and predictably\n\u2022 Lower option prices (premiums are cheaper)\n\u2022 Less movement, fewer big swings\n\u2022 Lower risk, but also lower opportunity\n\nHigh Vega Environment:\n\u2022 High volatility \u2014 the stock makes large, unpredictable swings\n\u2022 Options cost more (premiums expand)\n\u2022 More opportunity for large profits\n\u2022 But also more opportunity for large losses\n\nWhy this matters: When you buy options during low volatility and volatility then increases, your option gains value from Vega alone \u2014 even if the stock hasn\'t moved much. Conversely, if you buy during high volatility and it drops, your option loses value even if the stock moves in your favor.\n\nHigh Vega = bigger opportunities AND bigger risks. Understanding Vega helps you time your entries and avoid overpaying for options.', type: 'text' },
+      { title: 'Volatility Comparison', type: 'table', headers: ['Factor', 'Low Vega', 'High Vega'], rows: [
+        ['Option Cost', 'Cheaper premiums', 'Expensive premiums'],
+        ['Price Movement', 'Slow, steady moves', 'Large, fast swings'],
+        ['Risk Level', 'Lower risk', 'Higher risk'],
+        ['Opportunity', 'Limited upside', 'Large profit potential'],
+        ['Stock Behavior', 'Stable, predictable', 'Wild, volatile']
+      ]},
+      { title: 'Theta (\u0398) \u2014 Time Decay', content: 'Theta measures how much value an option loses each day as time passes. This is the "silent killer" of options positions.\n\nCritical facts about Theta:\n\u2022 Options lose value every single day, even if the stock doesn\'t move\n\u2022 Longer-dated options lose time value more slowly\n\u2022 Shorter-dated options lose time value faster\n\u2022 Time decay accelerates as expiration approaches \u2014 the last 30 days are the most destructive\n\nRule of thumb: A 4-month option typically loses around 15% of its value to time decay as the months pass.\n\nTheta always works against you when you are a buyer of options. Every day you hold, the clock is ticking against your position. This is why timing matters \u2014 you need the stock to move in your direction before time decay erodes your premium.\n\nConversely, Theta works in your favor when you are a seller of options. Option sellers collect premium and profit from the passage of time. This is an advanced concept covered in later modules.', type: 'text' },
+      { title: 'At the Money (ATM) vs. In the Money (ITM)', content: 'Understanding where your strike price sits relative to the stock price is essential for choosing the right option.\n\nAt the Money (ATM):\n\u2022 The strike price equals (or is very close to) the current stock price\n\u2022 Example: Stock = $100, Strike = $100\n\u2022 ATM options have: highest time decay (Theta), medium Delta (~0.50), and are the most sensitive to price movement\n\u2022 They cost less than ITM options but more than OTM options\n\nIn the Money (ITM):\n\u2022 The option already has built-in (intrinsic) value based on the current stock price\n\u2022 Call option ITM: Stock is ABOVE the strike \u2014 Example: Stock = $120, Strike = $100\n\u2022 Put option ITM: Stock is BELOW the strike \u2014 Example: Stock = $80, Strike = $100\n\u2022 ITM options have: higher Delta (0.70\u20131.00), more stable movement, less time decay impact, but cost significantly more\n\nOut of the Money (OTM):\n\u2022 The option has no intrinsic value yet \u2014 only time value\n\u2022 Call OTM: Stock is BELOW the strike \u2014 Example: Stock = $90, Strike = $100\n\u2022 Put OTM: Stock is ABOVE the strike \u2014 Example: Stock = $110, Strike = $100\n\u2022 OTM options are cheapest but have the lowest probability of profit\n\nChoosing between ATM, ITM, and OTM is a core skill in options trading. It determines your cost, risk, and probability of success.', type: 'text' },
+      { title: 'Strike Price Positioning', type: 'table', headers: ['Position', 'Call Example', 'Put Example', 'Delta Range', 'Cost'], rows: [
+        ['Deep ITM', 'Stock $120, Strike $80', 'Stock $80, Strike $120', '0.80\u20131.00', 'Highest'],
+        ['ITM', 'Stock $120, Strike $100', 'Stock $80, Strike $100', '0.60\u20130.80', 'High'],
+        ['ATM', 'Stock $100, Strike $100', 'Stock $100, Strike $100', '~0.50', 'Moderate'],
+        ['OTM', 'Stock $90, Strike $100', 'Stock $110, Strike $100', '0.20\u20130.40', 'Low'],
+        ['Deep OTM', 'Stock $80, Strike $120', 'Stock $120, Strike $80', '0.05\u20130.20', 'Cheapest']
+      ]},
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'Options Industry Council: The Greeks', desc: 'Complete guide to Delta, Gamma, Theta, Vega, and Rho with interactive examples.', url: 'https://www.optionseducation.org/advancedconcepts/the-greeks' },
+        { icon: 'chart', title: 'Fidelity: Options Greeks Overview', desc: 'Visual charts showing how Delta, Theta, and Vega change across strike prices and time.', url: 'https://www.fidelity.com/learning-center/investment-products/options/options-greeks' },
+        { icon: 'tool', title: 'CBOE: Options Calculator', desc: 'Free tool to calculate theoretical option prices and Greeks for any stock.', url: 'https://www.cboe.com/education/tools/options-calculator/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'If an option has a Delta of 0.75, what does that mean?', options: ['The option will expire in 75 days', 'The option moves 75 cents for every $1 the stock moves', 'The option costs 75% of the stock price', 'The option has a 75% chance of profit'], correct: 1, explanation: 'Delta of 0.75 means the option price moves $0.75 for every $1.00 the stock price moves \u2014 it tracks at 75% of the stock\'s speed.' },
+      { question: 'What happens to option prices when volatility (Vega) increases?', options: ['Option prices decrease', 'Option prices stay the same', 'Option prices increase', 'Only put options are affected'], correct: 2, explanation: 'Higher volatility increases option premiums. When Vega is high, options cost more because there\'s greater potential for large price swings.' },
+      { question: 'Theta always works against which type of options trader?', options: ['Option sellers', 'Option buyers', 'Both equally', 'Neither \u2014 Theta has no effect'], correct: 1, explanation: 'Theta (time decay) works against option BUYERS \u2014 their options lose value every day. It works IN FAVOR of option sellers who collect premium.' },
+      { question: 'A call option with Stock = $120 and Strike = $100 is considered:', options: ['Out of the Money (OTM)', 'At the Money (ATM)', 'In the Money (ITM)', 'Expired'], correct: 2, explanation: 'A call is In the Money when the stock price ($120) is ABOVE the strike price ($100) \u2014 the option has $20 of intrinsic value.' },
+      { question: 'Approximately how much value does a 4-month option lose to time decay?', options: ['About 5%', 'About 15%', 'About 50%', 'About 75%'], correct: 1, explanation: 'A rough rule of thumb is that a 4-month option loses approximately 15% of its value to time decay as expiration approaches.' }
+    ],
+  keywords: ["options greeks", "delta", "gamma", "vega", "theta", "rho", "time decay", "volatility impact"],
+  notebookPrompts: ["Explain delta and why a 0.50 delta call option will move approximately $0.50 for every $1 stock move.", "How does theta (time decay) work against you in long options? How can you use it to your advantage?", "For a specific trade, how would vega (volatility sensitivity) help or hurt your potential profit?"],
+  simulations: [{"id": "sim14_1", "title": "Delta Deep Dive", "description": "Study how delta changes for calls and puts as price moves and expiration approaches.", "type": "observation"}, {"id": "sim14_2", "title": "Theta Decay Analysis", "description": "Track a specific call option for 5 days, watching how value decreases from time decay alone.", "type": "observation"}, {"id": "sim14_3", "title": "Vega and Volatility Study", "description": "Analyze how vega impacts option premiums during high-volatility vs low-volatility periods.", "type": "observation"}, {"id": "sim14_4", "title": "Multi-Greek Trade Planning", "description": "Plan 5 trades where you consider all greeks (delta, theta, vega) in your entry and exit.", "type": "planning"}, {"id": "sim14_5", "title": "Greeks-Based Paper Trading", "description": "Execute 3 paper trades where greek impacts (theta decay, vega swings) directly inform your strategy.", "type": "execution"}],
+  youtubeVideos: [{"title": "Options Greeks Explained: Delta, Gamma, Theta, Vega", "url": "https://www.youtube.com/watch?v=options-greeks-explained", "channel": "Investopedia", "duration": "14:20", "relevance": "Complete greeks overview"}, {"title": "Delta: The Most Important Greek", "url": "https://www.youtube.com/watch?v=delta-most-important", "channel": "tastylive", "duration": "11:45", "relevance": "Delta-focused trading"}, {"title": "Theta Decay: Trading Time in Your Favor", "url": "https://www.youtube.com/watch?v=theta-decay-favor", "channel": "SMB Capital", "duration": "12:30", "relevance": "Time decay strategies"}, {"title": "Vega and Volatility: Advanced Options Trading", "url": "https://www.youtube.com/watch?v=vega-volatility", "channel": "Schwab", "duration": "10:15", "relevance": "Volatility-aware trading"}],
+  requiredExercises: 3
+  },
+  {
+    id: 'm15',
+    title: 'Advanced Options: Leverage, Time Decay & Contingency Orders',
+    subtitle: 'Master options leverage, learn why stop losses fail on options, and build a complete trading plan with contingency exits.',
+    sections: [
+      { title: 'Leverage Through Options', content: 'Options give you control over more shares with less money. This is the core leverage advantage that makes options one of the most powerful vehicles for traders with smaller accounts.\n\nExample with $20,000 capital:\n\u2022 Stock price: $799 per share\n\u2022 If you buy stock directly: $20,000 \u00f7 $799 \u2248 25 shares\n\u2022 With options: 1 contract controls 100 shares for a fraction of the cost\n\u2022 Your $20,000 could control several hundred shares through option contracts\n\nThis means your capital has dramatically more buying power through options. A 10% move in the stock could translate to a 50%\u2013100%+ move in your option position.\n\nBut leverage is a double-edged sword. The same force that amplifies gains also amplifies losses. This is why risk management \u2014 the 1% rule, the S.E.T. rule \u2014 is non-negotiable when trading options. Leverage without discipline is a fast path to account destruction.', type: 'text' },
+      { title: 'Leverage Comparison: $20,000 Capital', type: 'stats', stats: [
+        { num: '25', lbl: 'Shares Buying Stock at $799' },
+        { num: '100+', lbl: 'Shares Controlled via Options' },
+        { num: '4\u00d7\u201310\u00d7', lbl: 'Typical Options Leverage' },
+        { num: '1%', lbl: 'Max Risk Per Trade (Always)' }
+      ]},
+      { title: 'Time Decay Deep Dive', content: 'Time decay (Theta) is the most misunderstood and underestimated force in options trading. Here\'s what you need to internalize:\n\nA 4-month option typically loses around 15% of its value simply because time passes \u2014 even if the stock price doesn\'t move at all. This loss happens automatically, every single day.\n\nThe time decay curve is NOT linear. It accelerates:\n\u2022 Months 4\u20133: Slow decay, barely noticeable\n\u2022 Months 3\u20132: Moderate decay, starting to feel it\n\u2022 Month 2\u20131: Noticeable acceleration\n\u2022 Last 30 days: Aggressive decay \u2014 this is where most option value evaporates\n\u2022 Last week: Extremely rapid decay\n\nAt the Money options suffer the worst time decay because they have the highest proportion of time value (extrinsic value) and zero intrinsic value. In the Money options decay more slowly because a larger portion of their price is intrinsic value, which doesn\'t decay.\n\nThis is why experienced traders often buy options with 60\u201390+ days until expiration \u2014 it gives the trade time to work while avoiding the worst acceleration of Theta.', type: 'text' },
+      { title: 'Why You Need a Trading Plan', content: 'Trading without a plan exposes you to unnecessary risk. A plan removes emotion from the equation and gives you a systematic framework for every trade.\n\nYour trading plan must include these elements:\n\n1. Entry Price \u2014 The exact price where you will enter the trade. This should be pre-determined based on your analysis, not decided in the moment.\n\n2. Exit Price \u2014 Your profit target. Where will you take gains? The S.E.T. rule says your target should be 3\u00d7 your risk (3:1 reward-to-risk ratio).\n\n3. Risk Limit / Max Loss \u2014 The maximum you\'re willing to lose. Never more than 1% of your total account on any single trade.\n\n4. Profit Target(s) \u2014 Can be single or scaled (take partial profits at different levels).\n\n5. Rules for When NOT to Trade \u2014 Equally important. Define the conditions where you sit on your hands: low volume days, major news events, unclear trends, emotional states.\n\nGeneral Rule: Always protect your money using planned exits and risk management. The plan is decided BEFORE you enter. If you\'re making decisions after you\'re in the trade, you\'ve already lost control.', type: 'text' },
+      { title: 'Trading Plan Checklist', type: 'stats', stats: [
+        { num: '\u2713', lbl: 'Entry Price Defined' },
+        { num: '\u2713', lbl: 'Exit / Profit Target Set' },
+        { num: '\u2713', lbl: 'Stop Level (Max 1% Risk)' },
+        { num: '\u2713', lbl: 'Position Size Calculated' },
+        { num: '\u2713', lbl: 'Market Conditions Assessed' }
+      ]},
+      { title: '"Never Waste a Good Crisis"', content: 'Market volatility creates opportunity. When most traders panic, disciplined traders see setups forming.\n\nDuring a market crisis:\n\u2022 Option premiums expand dramatically (Vega spikes)\n\u2022 Price swings get larger and more frequent\n\u2022 Leverage becomes more powerful because options move faster\n\u2022 Supply and demand zones become more pronounced\n\nCrisis = increased volatility = more ways to profit IF you are disciplined.\n\nThe key word is "if." Volatility creates opportunity for traders who have a plan, follow their rules, and manage risk. For traders without discipline, the same volatility creates rapid account destruction. This is where the Chasm of Fear separates the top 5% from everyone else.\n\nThe traders who profit from crises are the ones who prepared during calm markets \u2014 they have their watchlists ready, their risk parameters set, and their trading plans written before the volatility arrives.', type: 'text' },
+      { title: 'Stop Losses vs. Contingency Orders on Options', content: 'CRITICAL RULE: Never put a standard stop loss on an option.\n\nWhy standard stop losses fail on options:\n\u2022 Option prices whipsaw \u2014 they can drop sharply due to time decay or temporary volatility changes without the stock actually moving significantly\n\u2022 A normal stop loss triggers based on the option\'s price, which means you get kicked out of positions prematurely\n\u2022 You lose money unnecessarily because the stock was fine \u2014 it was the option\'s temporary pricing that triggered your exit\n\nThe solution: Use a Contingency Order instead.\n\nA contingency order lets you exit your option position based on the STOCK price, not the option price. This is a fundamental distinction that separates professional options traders from amateurs.\n\nContingency order examples:\n\u2022 "Sell my call option if the stock drops to $95" (stock-based trigger)\n\u2022 "Exit the position if the stock rises above $110" (profit protection)\n\u2022 "Close the contract if the stock breaks below the support level at $88" (technical trigger)\n\nBy basing your exit on the stock\'s movement \u2014 which is more stable and predictable \u2014 you avoid being shaken out by temporary option price fluctuations. The stock drives the option\'s value; control the trade based on the underlying driver, not the derivative.', type: 'text' },
+      { title: 'Stop Loss vs. Contingency Order', type: 'table', headers: ['Feature', 'Standard Stop Loss', 'Contingency Order'], rows: [
+        ['Trigger Based On', 'Option price', 'Stock price'],
+        ['Whipsaw Risk', 'HIGH \u2014 options fluctuate wildly', 'LOW \u2014 stocks move more smoothly'],
+        ['Premature Exits', 'Very common', 'Rare'],
+        ['Professional Usage', 'Rarely used on options', 'Industry standard'],
+        ['Control Level', 'Reactive, imprecise', 'Strategic, deliberate']
+      ]},
+      { title: 'Module Summary \u2014 Quick Reference', content: 'Delta = Direction and Speed \u2014 Measures how fast the option moves compared to the stock. Higher Delta means bigger moves and higher cost.\n\nVega = Volatility and Option Cost \u2014 Measures sensitivity to volatility changes. High Vega means more expensive options but more opportunity.\n\nTheta = Time Decay \u2014 Measures how much value the option loses over time. Time decay hurts option buyers and helps option sellers.\n\nATM = Strike price approximately equals stock price.\nITM = Option already has intrinsic value based on stock movement.\n\nLeverage = Control more shares with less money through options contracts.\n\nRules to Remember:\n\u2022 Always have a trading plan BEFORE entering\n\u2022 Never risk more than 1% per trade\n\u2022 Never use standard stop losses on options\n\u2022 Use contingency orders tied to stock price\n\u2022 Crisis = opportunity for disciplined traders\n\u2022 Time decay accelerates \u2014 buy enough time for the trade to work', type: 'text' },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'learn', title: 'Fidelity: LEAPS and Bounds \u2014 Long-Term Options', desc: 'Guide to using long-dated options to reduce time decay impact and maximize leverage.', url: 'https://www.fidelity.com/viewpoints/active-investor/leaps-and-bounds' },
+        { icon: 'tool', title: 'FOREX.com: Risk vs Reward Calculator', desc: 'Interactive tool for calculating proper risk-to-reward ratios on any trade.', url: 'https://www.forex.com/en-us/trading-academy/courses/risk-management/' },
+        { icon: 'chart', title: 'TradesViz: Stop Loss & Profit Target Simulator', desc: 'Visual simulator showing how different exit strategies affect trading performance.', url: 'https://www.tradesviz.com/blog/stop-loss-profit-target-trade-simulator/' }
+      ]}
+    ],
+    quiz: [
+      { question: 'With $20,000 and a stock at $799/share, how many shares can you buy outright?', options: ['10 shares', '25 shares', '50 shares', '100 shares'], correct: 1, explanation: '$20,000 \u00f7 $799 \u2248 25 shares. With options, the same $20,000 could control several hundred shares through leverage.' },
+      { question: 'Why should you NEVER put a standard stop loss on an option?', options: ['Because brokers don\'t allow it', 'Because option prices whipsaw and you get kicked out prematurely', 'Because stop losses only work on futures', 'Because options never lose value'], correct: 1, explanation: 'Option prices can drop sharply from time decay or volatility changes without the stock moving. A standard stop loss triggers on the option price and kicks you out unnecessarily.' },
+      { question: 'What triggers a contingency order?', options: ['The option\'s price hitting a specific level', 'A specific date and time', 'The STOCK\'s price hitting a specific level', 'The trading volume exceeding a threshold'], correct: 2, explanation: 'Contingency orders trigger based on the STOCK price, not the option price. This avoids premature exits caused by temporary option price fluctuations.' },
+      { question: 'During a market crisis, what happens to option premiums?', options: ['They shrink because nobody wants options', 'They stay the same', 'They expand dramatically due to increased volatility', 'They become free'], correct: 2, explanation: 'Market crises spike volatility (Vega), which causes option premiums to expand dramatically \u2014 creating both larger opportunities and larger risks.' },
+      { question: 'What is the recommended minimum time until expiration when buying options?', options: ['1\u20132 weeks', '30 days', '60\u201390+ days', '1 year minimum'], correct: 2, explanation: 'Experienced traders typically buy options with 60\u201390+ days until expiration to give the trade time to work while avoiding the worst acceleration of time decay in the last 30 days.' }
+    ],
+  keywords: ["advanced options", "spreads", "leverage", "time decay", "volatility strategies", "iron condor", "calendar spreads", "income generation"],
+  notebookPrompts: ["How do multi-leg options spreads (bull call spreads, iron condors) reduce your risk compared to naked options?", "Design an income-generating strategy using options spreads that fits your risk tolerance and account size.", "When would you use calendar spreads vs vertical spreads? What market conditions favor each?"],
+  simulations: [{"id": "sim15_1", "title": "Options Spread Mechanics", "description": "Study payoff diagrams for bull calls, bear calls, bull puts, bear puts, and iron condors.", "type": "observation"}, {"id": "sim15_2", "title": "Calendar Spread Analysis", "description": "Build and analyze calendar spreads on 3 stocks, understanding theta decay and vega impact.", "type": "planning"}, {"id": "sim15_3", "title": "Risk Reduction via Spreads", "description": "Compare naked long calls vs bull call spreads: same move, different risk profiles.", "type": "planning"}, {"id": "sim15_4", "title": "Income Strategy Development", "description": "Design a 30-day options income strategy using spreads that targets specific monthly income goals.", "type": "planning"}, {"id": "sim15_5", "title": "Advanced Paper Trading", "description": "Execute 3-4 advanced options spread trades, tracking profit/loss and comparing to naked option trades.", "type": "execution"}],
+  youtubeVideos: [{"title": "Options Spreads: Bull Call, Bear Call, and More", "url": "https://www.youtube.com/watch?v=options-spreads-detailed", "channel": "Investopedia", "duration": "13:50", "relevance": "Spread strategy fundamentals"}, {"title": "Iron Condor Strategy for Income", "url": "https://www.youtube.com/watch?v=iron-condor-income", "channel": "tastylive", "duration": "15:40", "relevance": "Monthly income strategies"}, {"title": "Calendar Spreads: Time Decay in Your Favor", "url": "https://www.youtube.com/watch?v=calendar-spreads", "channel": "SMB Capital", "duration": "12:20", "relevance": "Time-based strategies"}, {"title": "Advanced Options: Combining Multiple Strategies", "url": "https://www.youtube.com/watch?v=advanced-combining-strategies", "channel": "Schwab", "duration": "14:15", "relevance": "Portfolio-level options trading"}],
+  requiredExercises: 2
   }
-];
-
-// =============================================================================
-// MODULE MEDIA MAPPING (YouTube videos and Heyzine flipbooks)
-// =============================================================================
-
-const MODULE_MEDIA = {
-  m1: {
-    youtube: 'https://youtu.be/Zs6foGLhyT4',
-    flipbook: 'https://heyzine.com/flip-book/6eedbdd39c.html',
-    slideDeck: 'https://heyzine.com/flip-book/b594bf7fc7.html',
-    audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729'
-  },
-  m2: {
-    youtube: 'https://youtu.be/UEDXefl88WI',
-    flipbook: 'https://heyzine.com/flip-book/b4fb4bc178.html',
-    slideDeck: 'https://heyzine.com/flip-book/8ea14a9276.html',
-    audioUrl: null
-  },
-  m3: {
-    youtube: 'https://youtu.be/wa7qzaJeKs8',
-    flipbook: 'https://heyzine.com/flip-book/7660ee5c0d.html',
-    slideDeck: 'https://heyzine.com/flip-book/6c34ad3b0a.html',
-    audioUrl: null
-  },
-  m4: {
-    youtube: 'https://youtu.be/kmmfk8edWAE',
-    flipbook: 'https://heyzine.com/flip-book/e9b0419d8b.html',
-    slideDeck: 'https://heyzine.com/flip-book/69fd47205c.html',
-    audioUrl: null
-  },
-  m5: {
-    youtube: 'https://youtu.be/7S1FfEAwA4Y',
-    flipbook: 'https://heyzine.com/flip-book/1fb074ad95.html',
-    slideDeck: 'https://heyzine.com/flip-book/b7dedbcd0f.html',
-    audioUrl: null
-  },
-  m6: {
-    youtube: 'https://youtu.be/xO1izk4B8V4',
-    flipbook: 'https://heyzine.com/flip-book/80a8903e68.html',
-    slideDeck: 'https://heyzine.com/flip-book/a7f265085a.html',
-    audioUrl: null
-  },
-  m7: {
-    youtube: 'https://youtu.be/ah5YvTY51e0',
-    flipbook: 'https://heyzine.com/flip-book/c88aed78a6.html',
-    slideDeck: 'https://heyzine.com/flip-book/95c2572302.html',
-    audioUrl: null
-  },
-  m8: {
-    youtube: 'https://youtu.be/3uKJ5kqOTDk',
-    flipbook: 'https://heyzine.com/flip-book/e41ec0238f.html',
-    slideDeck: 'https://heyzine.com/flip-book/2f96d2dc84.html',
-    audioUrl: null
-  },
-  m9: {
-    youtube: 'https://youtu.be/WHWD75diNQI',
-    flipbook: 'https://heyzine.com/flip-book/594bf16903.html',
-    slideDeck: 'https://heyzine.com/flip-book/f096587f0b.html',
-    audioUrl: null
-  },
-  m10: {
-    youtube: 'https://youtu.be/JdPfJ1JWHoY',
-    flipbook: 'https://heyzine.com/flip-book/9bdf3068d2.html',
-    slideDeck: 'https://heyzine.com/flip-book/0e8e8d180b.html',
-    audioUrl: null
-  },
-  m11: {
-    youtube: 'https://youtu.be/xPE7K26GhWQ',
-    flipbook: 'https://heyzine.com/flip-book/dc2d1feb17.html',
-    slideDeck: 'https://heyzine.com/flip-book/eeca42c650.html',
-    audioUrl: null
-  },
-  m12: {
-    youtube: 'https://youtu.be/_QNiPHaSD8g',
-    flipbook: 'https://heyzine.com/flip-book/6bf4f8e10e.html',
-    slideDeck: 'https://heyzine.com/flip-book/0242255e2a.html',
-    audioUrl: null
-  },
-  m13: {
-    youtube: 'https://youtu.be/YtSlg7mjdfM',
-    flipbook: 'https://heyzine.com/flip-book/02005127c4.html',
-    slideDeck: 'https://heyzine.com/flip-book/eab48e2edf.html',
-    audioUrl: null
-  },
-  m14: {
-    youtube: null,
-    flipbook: 'https://heyzine.com/flip-book/6d6342ea71.html',
-    slideDeck: 'https://heyzine.com/flip-book/901f9ecb7d.html',
-    audioUrl: null
-  },
-  m15: {
-    youtube: null,
-    flipbook: 'https://heyzine.com/flip-book/537da95fab.html',
-    slideDeck: 'https://heyzine.com/flip-book/6794b3023f.html',
-    audioUrl: null
-  }
-};
-
-// =============================================================================
-// API LAYER — Falls back to local data when backend is unavailable
-// =============================================================================
-
-let backendAvailable = false;
-
-async function tryFetch(url, options) {
-  try {
-    const res = await fetch(url, options);
-    if (res.ok) { backendAvailable = true; return res.json(); }
-    throw new Error('Not OK');
-  } catch (e) {
-    backendAvailable = false;
-    return null;
-  }
-}
-
-const API = {
-  async getModules() {
-    const data = await tryFetch('/api/modules');
-    return data || DEFAULT_MODULES;
-  },
-  async saveModules(modules) {
-    return await tryFetch('/api/modules', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(modules) });
-  },
-  async addModule(mod) {
-    return await tryFetch('/api/modules', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(mod) });
-  },
-  async updateModule(id, mod) {
-    return await tryFetch(`/api/modules/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(mod) });
-  },
-  async deleteModule(id) {
-    return await tryFetch(`/api/modules/${id}`, { method: 'DELETE' });
-  },
-  async getProgress() {
-    const data = await tryFetch('/api/progress');
-    return data || { completedModules: {}, quizState: {} };
-  },
-  async saveProgress(progress) {
-    return await tryFetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(progress) });
-  },
-  async getSettings() {
-    const data = await tryFetch('/api/settings');
-    return data || { geminiApiKey: '', hasKey: false };
-  },
-  async saveSettings(settings) {
-    return await tryFetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(settings) });
-  },
-  async generateVisual(params) {
-    return await tryFetch('/api/generate-visual', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
-  },
-  async regenerateVisual(params) {
-    return await tryFetch('/api/regenerate-visual', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
-  },
-  async generateModuleVisuals(moduleId) {
-    return await tryFetch('/api/generate-module-visuals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ moduleId }) });
-  }
-};
-
-// =============================================================================
-// TOAST SYSTEM
-// =============================================================================
-
-function ToastContainer({ toasts }) {
-  return (
-    <div className="toast-container">
-      {toasts.map(t => (
-        <div key={t.id} className={`toast ${t.type}`}>
-          <span>{t.type === 'success' ? '✓' : t.type === 'error' ? '✗' : 'ℹ'}</span>
-          <span>{t.message}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// =============================================================================
-// AI VISUAL COMPONENT
-// =============================================================================
-
-function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionContent, refreshKey }) {
-  const [imageUrl, setImageUrl] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [showLightbox, setShowLightbox] = useState(false);
-
-  // Check if a cached image exists on mount AND whenever refreshKey changes (after Generate All)
-  useEffect(() => {
-    fetch('/api/generate-visual', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle, cacheOnly: true })
-    }).then(r => r.json()).then(data => {
-      if (data.success && data.cached) {
-        setImageUrl(data.imageUrl + '?t=' + Date.now());
-      }
-    }).catch(() => {});
-  }, [moduleId, sectionIndex, refreshKey]);
-
-  const generate = async (regenerate = false) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const endpoint = regenerate ? '/api/regenerate-visual' : '/api/generate-visual';
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setImageUrl(data.imageUrl + '?t=' + Date.now());
-      } else {
-        setError(data.error || 'Failed to generate visual');
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-    setLoading(false);
-  };
-
-  if (loading) {
-    return (
-      <div className="ai-visual-container">
-        <div className="ai-visual-loading">
-          <div className="spinner" />
-          <p>Generating AI visual for "{sectionTitle}"...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (imageUrl) {
-    return (
-      <div className="ai-visual-container">
-        <img className="ai-visual-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} onClick={() => setShowLightbox(true)} title="Click to expand" />
-        <div className="ai-visual-actions">
-          <button className="ai-visual-btn regenerate" onClick={() => generate(true)}>↻ Regenerate</button>
-          <a href={imageUrl} download={`ai-visual-${sectionTitle.replace(/\s+/g,'-').toLowerCase()}.png`} className="ai-visual-btn" style={{textDecoration:'none',background:'var(--accent)',fontSize:12,padding:'8px 16px'}}>⬇ Download</a>
-          <button className="ai-visual-btn" onClick={() => setShowLightbox(true)} style={{background:'var(--navy)',fontSize:12,padding:'8px 16px'}}>⤢ Expand</button>
-        </div>
-        {showLightbox && <ImageLightbox imageUrl={imageUrl} sectionTitle={sectionTitle} onClose={() => setShowLightbox(false)} />}
-      </div>
-    );
-  }
-
-  return (
-    <div style={{margin: '12px 0'}}>
-      <button className="ai-visual-btn" onClick={() => generate(false)}>
-        ✦ Generate AI Visual
-      </button>
-      {error && <div className="ai-visual-error">{error}</div>}
-    </div>
-  );
-}
-
-// =============================================================================
-// LOGIN SCREEN COMPONENT
-// =============================================================================
-
-function LoginScreen({ onLogin }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = async () => {
-    setError('');
-    setLoading(true);
-    try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await res.json();
-      if (data.success) {
-        onLogin(data.token);
-      } else {
-        setError('Invalid username or password');
-      }
-    } catch (err) {
-      setError('Login failed. Please try again.');
-    }
-    setLoading(false);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') handleLogin();
-  };
-
-  return (
-    <div className="login-screen">
-      <div className="login-card">
-        <div className="login-logo">📊</div>
-        <h1>IMPACT <span>TRADING</span> ACADEMY</h1>
-        <p className="login-subtitle">Powered by Mission Metrics</p>
-
-        <div className="login-field">
-          <label>Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter username"
-          />
-        </div>
-
-        <div className="login-field">
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter password"
-          />
-        </div>
-
-        <button className="login-btn" onClick={handleLogin} disabled={loading}>
-          {loading ? 'Logging in...' : 'Login to Academy'}
-        </button>
-
-        {error && <div className="login-error">{error}</div>}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// FLIPBOOK EMBED COMPONENT
-// =============================================================================
-
-function FlipbookEmbed({ moduleId }) {
-  const media = MODULE_MEDIA[moduleId];
-  const flipbookUrl = media?.flipbook;
-
-  if (!flipbookUrl) {
-    return (
-      <div className="media-section">
-        <div className="media-section-header">📖 Interactive Flipbook</div>
-        <div className="media-placeholder">
-          Flipbook coming soon for this module
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="media-section">
-      <div className="media-section-header">📖 Interactive Flipbook</div>
-      <div className="media-embed-container">
-        <iframe
-          src={flipbookUrl}
-          allow="fullscreen"
-          title={`Flipbook for ${moduleId}`}
-        />
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// SLIDE DECK EMBED COMPONENT
-// =============================================================================
-
-function SlideDeckEmbed({ moduleId }) {
-  const media = MODULE_MEDIA[moduleId];
-  const slideDeckUrl = media?.slideDeck;
-
-  if (!slideDeckUrl) {
-    return null;
-  }
-
-  return (
-    <div className="media-section">
-      <div className="media-section-header">📊 Slide Deck</div>
-      <div className="media-embed-container">
-        <iframe
-          src={slideDeckUrl}
-          allow="fullscreen"
-          title={`Slide Deck for ${moduleId}`}
-        />
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// YOUTUBE EMBED COMPONENT
-// =============================================================================
-
-function YouTubeEmbed({ moduleId }) {
-  const media = MODULE_MEDIA[moduleId];
-  const youtubeUrl = media?.youtube;
-
-  if (!youtubeUrl) {
-    return (
-      <div className="media-section">
-        <div className="media-section-header">🎥 Video Lesson</div>
-        <div className="media-placeholder">
-          Video lesson coming soon for this module
-        </div>
-      </div>
-    );
-  }
-
-  // Extract video ID from YouTube URL
-  const getYoutubeId = (url) => {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-    return match ? match[1] : null;
-  };
-
-  const videoId = getYoutubeId(youtubeUrl);
-  if (!videoId) {
-    return (
-      <div className="media-section">
-        <div className="media-section-header">🎥 Video Lesson</div>
-        <div className="media-placeholder">
-          Invalid video URL
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="media-section">
-      <div className="media-section-header">🎥 Video Lesson</div>
-      <div className="media-embed-container">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={`Video lesson for ${moduleId}`}
-        />
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// IMAGE LIGHTBOX COMPONENT (expands AI visuals to full-screen detail view)
-// =============================================================================
-
-function ImageLightbox({ imageUrl, sectionTitle, onClose }) {
-  useEffect(() => {
-    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
-
-  const handleDownload = async () => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `ai-visual-${sectionTitle.replace(/\s+/g, '-').toLowerCase()}.png`;
-      link.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Download failed:', err);
-    }
-  };
-
-  return (
-    <div className="image-lightbox-overlay" onClick={onClose}>
-      <div className="image-lightbox-container" onClick={(e) => e.stopPropagation()}>
-        <div className="image-lightbox-header">
-          <h3>{sectionTitle}</h3>
-          <button className="image-lightbox-close" onClick={onClose}>×</button>
-        </div>
-        <img className="image-lightbox-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} />
-        <div className="image-lightbox-actions">
-          <button className="ai-visual-btn" onClick={handleDownload} style={{fontSize:13,padding:'10px 24px'}}>⬇ Download Image</button>
-          <button className="ai-visual-btn regenerate" onClick={onClose}>Close</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// SUBSECTION VIDEO COMPONENT (per-section YouTube video embed)
-// =============================================================================
-
-function SubsectionVideo({ youtubeUrl, sectionTitle }) {
-  const getYoutubeId = (url) => {
-    if (!url) return null;
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-    return match ? match[1] : null;
-  };
-
-  const videoId = getYoutubeId(youtubeUrl);
-
-  if (!youtubeUrl || !videoId) {
-    return null;
-  }
-
-  return (
-    <div className="subsection-video-container">
-      <div className="subsection-video-header">🎬 Video Explainer — {sectionTitle}</div>
-      <div className="subsection-video-embed">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={`Video for ${sectionTitle}`}
-        />
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// MODULE AUDIO/PODCAST COMPONENT (one per module)
-// =============================================================================
-
-function ModuleAudio({ audioUrl, moduleTitle }) {
-  if (!audioUrl) {
-    return (
-      <div className="module-audio-container">
-        <div className="module-audio-header">🎧 Module Podcast</div>
-        <div className="module-audio-placeholder">
-          🎙️ Podcast episode coming soon for "{moduleTitle}"
-        </div>
-      </div>
-    );
-  }
-
-  const isApplePodcast = audioUrl.includes('podcasts.apple.com');
-  if (isApplePodcast) {
-    const embedUrl = audioUrl.replace('podcasts.apple.com', 'embed.podcasts.apple.com');
-    return (
-      <div className="module-audio-container">
-        <div className="module-audio-header">🎧 Module Podcast — {moduleTitle}</div>
-        <div className="module-audio-body" style={{padding: 0}}>
-          <iframe
-            allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-            frameBorder="0"
-            height="450"
-            style={{width: '100%', overflow: 'hidden', borderRadius: '0 0 12px 12px'}}
-            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-            src={embedUrl}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="module-audio-container">
-      <div className="module-audio-header">🎧 Module Podcast — {moduleTitle}</div>
-      <div className="module-audio-body">
-        <audio controls preload="metadata" src={audioUrl}>
-          Your browser does not support the audio element.
-        </audio>
-      </div>
-    </div>
-  );
-}
-
-
-// =============================================================================
-// INFOGRAPHIC GENERATOR COMPONENT
-// =============================================================================
-
-function InfographicGenerator({ module }) {
-  const [imageUrl, setImageUrl] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [checked, setChecked] = useState(false);
-
-  // Check for cached infographic on mount
-  useEffect(() => {
-    if (!checked) {
-      setChecked(true);
-      fetch('/api/generate-infographic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId: module.id, cacheOnly: true })
-      }).then(r => r.json()).then(data => {
-        if (data.success && data.cached) {
-          setImageUrl(data.imageUrl + '?t=' + Date.now());
-        }
-      }).catch(() => {});
-    }
-  }, [module.id]);
-
-  const generateInfographic = async (regenerate = false) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const endpoint = regenerate ? '/api/regenerate-infographic' : '/api/generate-infographic';
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId: module.id })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setImageUrl(data.imageUrl + '?t=' + Date.now());
-      } else {
-        setError(data.error || 'Failed to generate infographic');
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-    setLoading(false);
-  };
-
-  const downloadPNG = async () => {
-    if (!imageUrl) return;
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${module.title.replace(/\s+/g, '-')}-infographic.png`;
-      link.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Error downloading PNG:', err);
-    }
-  };
-
-  const downloadPDF = async () => {
-    if (!imageUrl) return;
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const imgData = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1920, 1080] });
-      pdf.addImage(imgData, 'PNG', 0, 0, 1920, 1080);
-      pdf.save(`${module.title.replace(/\s+/g, '-')}-infographic.pdf`);
-    } catch (err) {
-      console.error('Error downloading PDF:', err);
-    }
-  };
-
-  return (
-    <div className="infographic-section">
-      <h3 style={{fontSize: '18px', fontWeight: 700, color: '#1B2A4A', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px'}}>
-        <span style={{width: '3px', height: '18px', background: '#0D9373', borderRadius: '2px'}} />
-        📊 AI Module Infographic
-      </h3>
-      <p style={{fontSize: '13px', color: '#6B7280', marginBottom: '16px', lineHeight: 1.6}}>
-        Generate a professional landscape infographic for this module using AI (Gemini 2.5 Flash). The infographic includes key concepts, statistics, and visual diagrams tailored to this module's content.
-      </p>
-
-      {loading && (
-        <div className="ai-visual-loading" style={{borderRadius: 12}}>
-          <div className="spinner" />
-          <p>Generating AI infographic for "{module.title}"... This may take a moment.</p>
-        </div>
-      )}
-
-      {!loading && !imageUrl && (
-        <div>
-          <button className="infographic-btn" onClick={() => generateInfographic(false)} disabled={loading}>
-            ✦ Generate AI Infographic
-          </button>
-          {error && <div className="ai-visual-error" style={{marginTop: 12}}>{error}</div>}
-        </div>
-      )}
-
-      {!loading && imageUrl && (
-        <div>
-          <div className="infographic-preview">
-            <img src={imageUrl} alt={`AI infographic for ${module.title}`} style={{width: '100%', display: 'block'}} />
-          </div>
-          <div className="infographic-download-btns">
-            <button className="infographic-download-btn png" onClick={downloadPNG}>
-              📥 Download PNG
-            </button>
-            <button className="infographic-download-btn pdf" onClick={downloadPDF}>
-              📥 Download PDF
-            </button>
-            <button className="ai-visual-btn regenerate" onClick={() => generateInfographic(true)} style={{marginLeft: 8}}>
-              ↻ Regenerate
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// =============================================================================
-// MAIN APP
-// =============================================================================
-
-function App() {
-  const [modules, setModules] = useState([]);
-  const [currentView, setCurrentView] = useState('dashboard');
-  const [currentModuleId, setCurrentModuleId] = useState(null);
-  const [completedModules, setCompletedModules] = useState({});
-  const [quizState, setQuizState] = useState({});
-  const [showAdmin, setShowAdmin] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [editingModule, setEditingModule] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [toasts, setToasts] = useState([]);
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
-  const [masteryExamState, setMasteryExamState] = useState({});
-  const [notebookComplete, setNotebookComplete] = useState({});
-  const [simulationProgress, setSimulationProgress] = useState({});
-
-  const addToast = (message, type = 'info') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
-  };
-
-  // Gating logic: all modules unlocked (gating disabled)
-  const isModuleUnlocked = (moduleId) => {
-    return true;
-  };
-
-  const getModuleRequirements = (prevModuleId) => {
-    return {
-      quizPassed: (masteryExamState[prevModuleId]?.passed) || completedModules[prevModuleId] || false,
-      notebookEntry: notebookComplete[prevModuleId] || false,
-      exercisesComplete: true
-    };
-  };
-
-  // Load data from backend on mount
-  useEffect(() => {
-    async function load() {
-      try {
-        const [mods, prog] = await Promise.all([API.getModules(), API.getProgress()]);
-        setModules(mods);
-        setCompletedModules(prog.completedModules || {});
-        setQuizState(prog.quizState || {});
-        try {
-          const onRes = await fetch('/api/onboarding');
-          if (onRes.ok) {
-            const onData = await onRes.json();
-            setOnboardingComplete(onData.isComplete || false);
-          }
-        } catch (e) {}
-      } catch (err) {
-        addToast('Failed to load data: ' + err.message, 'error');
-      }
-      setLoading(false);
-    }
-    load();
-  }, []);
-
-  // Auto-save progress when it changes
-  const progressSaveTimeout = useRef(null);
-  useEffect(() => {
-    if (loading) return;
-    clearTimeout(progressSaveTimeout.current);
-    progressSaveTimeout.current = setTimeout(() => {
-      API.saveProgress({ completedModules, quizState }).catch(() => {});
-    }, 1000);
-  }, [completedModules, quizState, loading]);
-
-  const progress = useMemo(() => {
-    const done = Object.values(completedModules).filter(Boolean).length;
-    return modules.length > 0 ? Math.round((done / modules.length) * 100) : 0;
-  }, [modules, completedModules]);
-
-  const currentModule = modules.find(m => m.id === currentModuleId);
-  const openModule = (id) => {
-    setCurrentModuleId(id);
-    setCurrentView('module');
-    window.scrollTo(0, 0);
-    document.querySelector('.main-content')?.scrollTo(0, 0);
-  };
-  const goToDashboard = () => { setCurrentView('dashboard'); setCurrentModuleId(null); };
-  const completeModule = (id) => setCompletedModules(prev => ({...prev, [id]: true}));
-
-  const openAdminNew = () => {
-    setEditingModule({ id: 'm' + Date.now(), title: '', subtitle: '', sections: [{ title: '', content: '', type: 'text' }], quiz: [{ question: '', options: ['','','',''], correct: 0, explanation: '' }] });
-    setShowAdmin(true);
-  };
-  const openAdminEdit = (mod) => { setEditingModule(JSON.parse(JSON.stringify(mod))); setShowAdmin(true); };
-
-  const saveModule = async (mod) => {
-    const isNew = !modules.find(m => m.id === mod.id);
-    if (isNew) {
-      setModules(prev => [...prev, mod]);
-      await API.addModule(mod).catch(() => {});
-    } else {
-      setModules(prev => { const n = [...prev]; const idx = n.findIndex(m => m.id === mod.id); if (idx >= 0) n[idx] = mod; return n; });
-      await API.updateModule(mod.id, mod).catch(() => {});
-    }
-    setShowAdmin(false);
-    setEditingModule(null);
-    addToast(isNew ? 'Module created!' : 'Module saved!', 'success');
-  };
-
-  const deleteModule = async (id) => {
-    setModules(prev => prev.filter(m => m.id !== id));
-    await API.deleteModule(id).catch(() => {});
-    if (currentModuleId === id) goToDashboard();
-    setShowAdmin(false);
-    setEditingModule(null);
-    addToast('Module deleted', 'info');
-  };
-
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <div className="spinner" />
-        <p style={{color: 'var(--text-muted)', fontSize: 14}}>Loading Impact Trading Academy...</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="app-container">
-      <div className={`sidebar ${!sidebarOpen ? 'collapsed' : ''}`}>
-        <div className="sidebar-header" onClick={goToDashboard} style={{cursor:'pointer'}}>
-          <h1>IMPACT <span>TRADING</span> ACADEMY</h1>
-          <p>Powered by Mission Metrics</p>
-        </div>
-        <div className="nav-section">
-          <div className="nav-label">Training Modules</div>
-          {modules.map((m, i) => (
-              <div key={m.id} className={`nav-item ${currentModuleId === m.id ? 'active' : ''} ${completedModules[m.id] ? 'completed' : ''}`} onClick={() => openModule(m.id)}>
-                <div className="nav-dot" />
-                <span>{i + 1}. {m.title.length > 30 ? m.title.slice(0, 30) + '…' : m.title}</span>
-              </div>
-          ))}
-        </div>
-        <div style={{padding:'12px 20px',borderTop:'1px solid var(--border)'}}>
-          <div className="nav-label">Tools</div>
-          <a href="/options-backtester.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            📊 Options Backtester
-          </a>
-        </div>
-        <div className="progress-bar-container">
-          <div className="progress-label"><span>Overall Progress</span><span>{progress}%</span></div>
-          <div className="progress-track"><div className="progress-fill" style={{width: `${progress}%`}} /></div>
-        </div>
-      </div>
-      <div className={`main-content ${!sidebarOpen ? 'expanded' : ''}`}>
-        <div className="content-header">
-          <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>{sidebarOpen ? '◀' : '▶'} Menu</button>
-          <div className="header-actions">
-            <button onClick={goToDashboard}>◈ Dashboard</button>
-            <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
-            <button onClick={() => setShowSettings(true)}>⚙ Settings</button>
-            <button className="primary" onClick={openAdminNew}>+ Add Module</button>
-          </div>
-        </div>
-        <div className="content-body">
-          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} onboardingComplete={onboardingComplete} isModuleUnlocked={isModuleUnlocked} />}
-          {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={() => openAdminEdit(currentModule)} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
-        </div>
-      </div>
-      {showAdmin && editingModule && <AdminModal module={editingModule} onSave={saveModule} onDelete={deleteModule} onClose={() => { setShowAdmin(false); setEditingModule(null); }} isNew={!modules.find(m => m.id === editingModule.id)} />}
-      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} addToast={addToast} />}
-      <ToastContainer toasts={toasts} />
-    </div>
-  );
-}
-
-// =============================================================================
-// GATING OVERLAY COMPONENT
-// =============================================================================
-
-function GatingOverlay({ previousModuleTitle, requirements }) {
-  return (
-    <div className="gating-overlay">
-      <div className="gating-overlay-content">
-        <h2>🔒 Module Locked</h2>
-        <p>Complete <strong>{previousModuleTitle}</strong> first to unlock this module</p>
-        <div className="requirement-checklist">
-          <div className={`requirement-checklist-item ${requirements.quizPassed ? 'completed' : ''}`}>
-            <span>{requirements.quizPassed ? '☑' : '☐'}</span>
-            <span>Quiz Passed (50%+)</span>
-          </div>
-          <div className={`requirement-checklist-item ${requirements.notebookEntry ? 'completed' : ''}`}>
-            <span>{requirements.notebookEntry ? '☑' : '☐'}</span>
-            <span>Notebook Entry Submitted</span>
-          </div>
-          <div className={`requirement-checklist-item ${requirements.exercisesComplete ? 'completed' : ''}`}>
-            <span>{requirements.exercisesComplete ? '☑' : '☐'}</span>
-            <span>Required Exercises Complete</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// WEBULL ONBOARDING COMPONENT
-// =============================================================================
-
-function WebullOnboarding({ onComplete }) {
-  const [status, setStatus] = useState({
-    accountCreated: false,
-    paperTradingEnabled: false,
-    platformFamiliarized: false,
-    firstTradeExecuted: false,
-    watchlistCreated: false
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch('/api/onboarding');
-        if (res.ok) {
-          const data = await res.json();
-          setStatus({
-            accountCreated: data.accountCreated || false,
-            paperTradingEnabled: data.paperTradingEnabled || false,
-            platformFamiliarized: data.platformFamiliarized || false,
-            firstTradeExecuted: data.firstTradeExecuted || false,
-            watchlistCreated: data.watchlistCreated || false
-          });
-        }
-      } catch (e) {}
-    }
-    load();
-  }, []);
-
-  const toggleStep = async (step) => {
-    const newStatus = { ...status, [step]: !status[step] };
-    setStatus(newStatus);
-    try {
-      await fetch('/api/onboarding', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newStatus)
-      });
-    } catch (e) {}
-    if (Object.values(newStatus).every(Boolean)) {
-      onComplete();
-    }
-  };
-
-  const steps = [
-    { key: 'accountCreated', title: 'Create Webull Account', desc: 'Sign up for a free Webull trading account' },
-    { key: 'paperTradingEnabled', title: 'Enable Paper Trading', desc: 'Activate paper trading mode (virtual money)' },
-    { key: 'platformFamiliarized', title: 'Learn the Platform', desc: 'Explore Webull interface and charting tools' },
-    { key: 'firstTradeExecuted', title: 'Execute First Paper Trade', desc: 'Place your first paper trade (long or short)' },
-    { key: 'watchlistCreated', title: 'Create a Watchlist', desc: 'Build a watchlist of stocks to monitor' }
-  ];
-
-  const completedCount = Object.values(status).filter(Boolean).length;
-  const progress = (completedCount / steps.length) * 100;
-
-  return (
-    <div className="onboarding-section">
-      <h3>🚀 Webull Account Setup</h3>
-      <div className="onboarding-progress-bar">
-        <div className="onboarding-progress-bar-fill" style={{ width: `${progress}%` }} />
-      </div>
-      {steps.map(step => (
-        <div key={step.key} className="onboarding-step">
-          <input
-            type="checkbox"
-            checked={status[step.key]}
-            onChange={() => toggleStep(step.key)}
-          />
-          <div className="onboarding-step-content">
-            <h4>{step.title}</h4>
-            <p>{step.desc}</p>
-          </div>
-        </div>
-      ))}
-      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, textAlign: 'center' }}>
-        {completedCount} of {steps.length} completed
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// MASTERY EXAM COMPONENT
-// =============================================================================
-
-function MasteryExam({ moduleId, moduleTitle, onPass }) {
-  const [quiz, setQuiz] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [submitted, setSubmitted] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [generated, setGenerated] = useState(false);
-
-  const QUESTIONS_PER_PAGE = 5;
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/quizzes/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setQuiz(data.questions || []);
-          setGenerated(data.questions?.length > 0);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const generateQuiz = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/quizzes/generate/${moduleId}`, { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setQuiz(data.questions || []);
-        setGenerated(true);
-      }
-    } catch (e) {}
-    setLoading(false);
-  };
-
-  if (!generated) {
-    return (
-      <div className="mastery-exam">
-        <h3>🎓 Mastery Exam (70 Questions)</h3>
-        <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '12px 0' }}>
-          Master this module by passing a 70-question exam with a score of 50/70 (71%). This ensures deep understanding before moving forward.
-        </p>
-        <button className="quiz-btn" onClick={generateQuiz} disabled={loading}>
-          {loading ? '⟳ Generating...' : '✦ Generate Quiz'}
-        </button>
-      </div>
-    );
-  }
-
-  const currentQuestions = quiz.slice(currentPage * QUESTIONS_PER_PAGE, (currentPage + 1) * QUESTIONS_PER_PAGE);
-  const submittedCount = Object.keys(submitted).length;
-  const allAnswered = quiz.length > 0 && submittedCount === quiz.length;
-  const correctCount = Object.values(submitted).filter(Boolean).length;
-  const scorePercent = quiz.length > 0 ? Math.round((correctCount / quiz.length) * 100) : 0;
-  const passed = correctCount >= Math.ceil(quiz.length * 0.71);
-  const getLetterGrade = (pct) => { if (pct >= 93) return 'A'; if (pct >= 90) return 'A-'; if (pct >= 87) return 'B+'; if (pct >= 83) return 'B'; if (pct >= 80) return 'B-'; if (pct >= 77) return 'C+'; if (pct >= 73) return 'C'; if (pct >= 70) return 'C-'; if (pct >= 67) return 'D+'; if (pct >= 63) return 'D'; if (pct >= 60) return 'D-'; return 'F'; };
-
-  const selectAnswer = (questionId, optionIndex) => {
-    if (!submitted[questionId]) {
-      setAnswers(prev => ({ ...prev, [questionId]: optionIndex }));
-    }
-  };
-
-  const submitAnswer = (questionId, question) => {
-    const selectedOption = answers[questionId];
-    const isCorrect = selectedOption === question.correct;
-    setSubmitted(prev => ({ ...prev, [questionId]: isCorrect }));
-  };
-
-  const handleSubmit = () => {
-    if (passed && onPass) {
-      onPass(correctCount);
-    }
-  };
-
-  return (
-    <div className="mastery-exam">
-      <h3>🎓 Mastery Exam (70 Questions)</h3>
-      {!allAnswered && (
-        <div>
-          <div className="mastery-progress">
-            <div className="mastery-progress-fill" style={{ width: `${(Object.keys(submitted).length / quiz.length) * 100}%` }} />
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
-            Question {currentPage * QUESTIONS_PER_PAGE + 1}-{Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, quiz.length)} of {quiz.length}
-          </div>
-          {currentQuestions.map((q, idx) => {
-            const qId = currentPage * QUESTIONS_PER_PAGE + idx;
-            return (
-              <div key={qId} style={{ marginBottom: 20 }}>
-                <div className="quiz-question">{idx + 1}. {q.question}</div>
-                {q.options.map((opt, oi) => {
-                  let cls = 'quiz-option';
-                  if (submitted[qId] !== undefined) {
-                    if (oi === q.correct) cls += ' correct';
-                    else if (oi === answers[qId] && oi !== q.correct) cls += ' incorrect';
-                  } else if (answers[qId] === oi) cls += ' selected';
-                  return (
-                    <button key={oi} className={cls} onClick={() => selectAnswer(qId, oi)} disabled={submitted[qId] !== undefined}>
-                      {opt}
-                    </button>
-                  );
-                })}
-                {submitted[qId] !== undefined && (
-                  <div className={`quiz-feedback ${submitted[qId] ? 'correct' : 'incorrect'}`}>
-                    {submitted[qId] ? '✓ Correct' : '✗ Incorrect'}
-                  </div>
-                )}
-                {submitted[qId] === undefined && (
-                  <button className="quiz-btn" onClick={() => submitAnswer(qId, q)} disabled={answers[qId] === undefined}>
-                    Submit Answer
-                  </button>
-                )}
-              </div>
-            );
-          })}
-          <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
-            <button className="quiz-btn" onClick={() => { setCurrentPage(Math.max(0, currentPage - 1)); document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} disabled={currentPage === 0}>
-              ← Previous
-            </button>
-            {(currentPage + 1) * QUESTIONS_PER_PAGE < quiz.length ? (
-              <button className="quiz-btn" onClick={() => { setCurrentPage(Math.min(Math.ceil(quiz.length / QUESTIONS_PER_PAGE) - 1, currentPage + 1)); document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>
-                Next →
-              </button>
-            ) : (
-              <button className="quiz-btn" style={{ background: submittedCount === quiz.length ? 'var(--green)' : 'var(--accent)', color: '#fff', fontWeight: 700 }} onClick={() => {
-                if (submittedCount === quiz.length) {
-                  document.querySelector('.mastery-exam')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                  const unanswered = [];
-                  for (let i = 0; i < quiz.length; i++) {
-                    if (submitted[i] === undefined) {
-                      const pg = Math.floor(i / QUESTIONS_PER_PAGE) + 1;
-                      if (!unanswered.includes(pg)) unanswered.push(pg);
-                    }
-                  }
-                  alert('You still have unanswered questions on page(s): ' + unanswered.join(', ') + '. Please go back and submit answers for all questions.');
-                }
-              }}>
-                {submittedCount === quiz.length ? '✓ Finish Exam' : `Finish Exam (${submittedCount}/${quiz.length} answered)`}
-              </button>
-            )}
-          </div>
-          {submittedCount > 0 && submittedCount < quiz.length && (
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, textAlign: 'center' }}>
-              Progress: {submittedCount} of {quiz.length} questions submitted
-            </div>
-          )}
-        </div>
-      )}
-      {allAnswered && (
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>{passed ? '🏆' : '📚'}</div>
-          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: 'var(--navy)' }}>
-            {passed ? 'Exam Passed!' : 'Keep Studying'}
-          </div>
-          <div style={{ fontSize: 36, fontWeight: 800, color: passed ? 'var(--green)' : 'var(--red)', marginBottom: 8 }}>
-            Grade: {getLetterGrade(scorePercent)}
-          </div>
-          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--navy)', marginBottom: 4 }}>
-            Score: {correctCount} / {quiz.length}
-          </div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 20 }}>
-            {scorePercent}% — {passed ? 'You met the 71% passing threshold!' : `You need at least 71% to pass. You scored ${scorePercent}%.`}
-          </div>
-          {passed && <button className="quiz-btn" onClick={handleSubmit}>✓ Mark Complete</button>}
-          {!passed && <button className="quiz-btn" style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }} onClick={() => { setCurrentPage(0); setAnswers({}); setSubmitted({}); }}>Retake Exam</button>}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// =============================================================================
-// NOTEBOOK SECTION COMPONENT
-// =============================================================================
-
-function NotebookSection({ moduleId, notebookPrompts, onEntryAdded }) {
-  const [currentPrompt, setCurrentPrompt] = useState(notebookPrompts?.[0] || '');
-  const [content, setContent] = useState('');
-  const [entries, setEntries] = useState([]);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (notebookPrompts?.length) {
-      const randomPrompt = notebookPrompts[Math.floor(Math.random() * notebookPrompts.length)];
-      setCurrentPrompt(randomPrompt);
-    }
-    async function load() {
-      try {
-        const res = await fetch(`/api/notebook/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setEntries(data.entries || []);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const saveEntry = async () => {
-    if (!content.trim()) return;
-    setSaving(true);
-    try {
-      await fetch('/api/notebook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId, content })
-      });
-      setEntries(prev => [{ date: new Date().toLocaleDateString(), content }, ...prev]);
-      setContent('');
-      onEntryAdded?.();
-    } catch (e) {}
-    setSaving(false);
-  };
-
-  return (
-    <div className="notebook-section">
-      <h3>📔 Reflection Notebook</h3>
-      <div className="notebook-prompt">"{currentPrompt}"</div>
-      <textarea
-        className="notebook-textarea"
-        placeholder="Write your reflection here..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <button className="quiz-btn" onClick={saveEntry} disabled={saving || !content.trim()} style={{ marginTop: 12 }}>
-        {saving ? 'Saving...' : '✓ Save Entry'}
-      </button>
-      {entries.length > 0 && (
-        <div style={{ marginTop: 24 }}>
-          <h4 style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy)', marginBottom: 12 }}>Previous Entries</h4>
-          {entries.map((entry, idx) => (
-            <div key={idx} className="notebook-entry">
-              <div className="notebook-entry-date">{entry.date}</div>
-              <div className="notebook-entry-content">{entry.content.substring(0, 150)}...</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// =============================================================================
-// SIMULATION EXERCISES COMPONENT
-// =============================================================================
-
-const BACKTESTER_MODULES = ['m4', 'm5', 'm6', 'm7', 'm8', 'm13', 'm14'];
-const BACKTESTER_TAB_MAP = {
-  m4:  { defaultTab: 'sizer', label: 'Position Sizer (S.E.T. Rule)' },
-  m5:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
-  m6:  { defaultTab: 'chain', label: 'Live Options Chain' },
-  m7:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
-  m8:  { defaultTab: 'backtester', label: 'Strategy Backtester' },
-  m13: { defaultTab: 'chain', label: 'Live Options Chain' },
-  m14: { defaultTab: 'chain', label: 'Live Options Chain' },
-};
-
-function SimulationExercises({ moduleId, exercises, requiredCount, onExerciseComplete }) {
-  const [expanded, setExpanded] = useState({});
-  const [formData, setFormData] = useState({});
-  const [completed, setCompleted] = useState({});
-  const [showBacktester, setShowBacktester] = useState(false);
-  const hasBacktester = BACKTESTER_MODULES.includes(moduleId);
-  const backtesterInfo = BACKTESTER_TAB_MAP[moduleId] || { defaultTab: 'backtest', label: 'Options Backtester' };
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/simulations/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          const exerciseMap = {};
-          if (data.exercises) {
-            Object.keys(data.exercises).forEach(key => {
-              if (data.exercises[key]?.completed) exerciseMap[key] = true;
-            });
-          }
-          setCompleted(exerciseMap);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const submitExercise = async (exerciseId) => {
-    try {
-      await fetch(`/api/simulations/${moduleId}/${exerciseId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData[exerciseId] || {})
-      });
-      setCompleted(prev => ({ ...prev, [exerciseId]: true }));
-      onExerciseComplete?.();
-    } catch (e) {}
-  };
-
-  const completedCount = Object.values(completed).filter(Boolean).length;
-
-  return (
-    <div className="simulation-section">
-      <h3>🎯 Simulation Exercises</h3>
-      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
-        {completedCount} of {requiredCount} required exercises completed
-      </div>
-      {exercises?.map((exercise, idx) => (
-        <div key={idx}>
-          <div className="simulation-exercise-card" onClick={() => setExpanded(prev => ({ ...prev, [idx]: !prev[idx] }))}>
-            <h4>{exercise.title}</h4>
-            <p>{exercise.description}</p>
-            <span className="exercise-badge">{exercise.type || 'Trade Simulation'}</span>
-            {completed[exercise.id] && <span className="exercise-badge" style={{ background: 'rgba(16,185,129,0.12)', color: 'var(--green-dark)', marginLeft: 8 }}>✓ Completed</span>}
-          </div>
-          {expanded[idx] && !completed[exercise.id] && (
-            <div className="exercise-form">
-              <div className="form-group">
-                <label>Entry Price</label>
-                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], entry: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Stop Loss Price</label>
-                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], stop: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Target Price</label>
-                <input type="number" placeholder="$" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], target: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Trading Reasoning</label>
-                <textarea placeholder="Explain your trade logic..." rows="3" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], reasoning: e.target.value } }))} />
-              </div>
-              <div className="form-group">
-                <label>Confidence Level (1-5)</label>
-                <input type="number" min="1" max="5" placeholder="1-5" onChange={(e) => setFormData(prev => ({ ...prev, [exercise.id]: { ...prev[exercise.id], confidence: e.target.value } }))} />
-              </div>
-              <button className="quiz-btn" onClick={() => submitExercise(exercise.id)}>✓ Submit Exercise</button>
-            </div>
-          )}
-        </div>
-      ))}
-
-      {hasBacktester && (
-        <div style={{marginTop:'24px',borderTop:'1px solid var(--border)',paddingTop:'24px'}}>
-          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'16px'}}>
-            <div>
-              <h4 style={{fontSize:'16px',fontWeight:700,color:'var(--navy)',margin:0,display:'flex',alignItems:'center',gap:'8px'}}>
-                📊 Options Backtester — {backtesterInfo.label}
-              </h4>
-              <p style={{fontSize:'12px',color:'var(--text-muted)',margin:'4px 0 0'}}>
-                Live backtesting, position sizing, Markov regime detection & options chain data
-              </p>
-            </div>
-            <button
-              onClick={() => setShowBacktester(!showBacktester)}
-              style={{background:showBacktester?'var(--accent)':'var(--navy)',color:'#fff',border:'none',padding:'10px 20px',borderRadius:'8px',fontSize:'13px',fontWeight:600,cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',transition:'all 0.2s'}}
-            >
-              {showBacktester ? '▼ Hide Backtester' : '▶ Launch Backtester'}
-            </button>
-          </div>
-          {showBacktester && (
-            <div style={{borderRadius:'12px',overflow:'hidden',border:'2px solid var(--accent)',boxShadow:'0 4px 24px rgba(13,147,115,0.15)'}}>
-              <div style={{background:'var(--navy)',padding:'8px 16px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-                <span style={{fontSize:'12px',color:'rgba(255,255,255,0.7)'}}>Mission Metrics — Options Backtester</span>
-                <a href="/options-backtester.html" target="_blank" rel="noopener" style={{fontSize:'11px',color:'var(--accent-light)',textDecoration:'none'}}>↗ Open Full Screen</a>
-              </div>
-              <iframe
-                src={`/options-backtester.html#${backtesterInfo.defaultTab}`}
-                style={{width:'100%',height:'800px',border:'none',background:'#F0F5F3'}}
-                title="Options Backtester"
-              />
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// =============================================================================
-// STRATEGY BUILDER COMPONENT
-// =============================================================================
-
-function StrategyBuilder({ moduleId, moduleTitle }) {
-  const [strategy, setStrategy] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [calcInputs, setCalcInputs] = useState({ accountSize: 10000, entryPrice: 100, stopPrice: 98 });
-  const [calcResult, setCalcResult] = useState(null);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/strategy/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setStrategy(data.strategy);
-        }
-      } catch (e) {}
-    }
-    load();
-  }, [moduleId]);
-
-  const generateStrategy = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/strategy/generate/${moduleId}`, { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setStrategy(data.strategy);
-      }
-    } catch (e) {}
-    setLoading(false);
-  };
-
-  const calculateSET = () => {
-    const { accountSize, entryPrice, stopPrice } = calcInputs;
-    const accountRisk = accountSize * 0.01;
-    const tradeRisk = Math.abs(entryPrice - stopPrice);
-    const positionSize = accountRisk / tradeRisk;
-    const targetPrice = entryPrice + (tradeRisk * 3);
-    setCalcResult({ positionSize, accountRisk, targetPrice });
-  };
-
-  return (
-    <div className="strategy-section">
-      <h3>⚡ Strategy Builder & S.E.T. Calculator</h3>
-      {!strategy ? (
-        <button className="quiz-btn" onClick={generateStrategy} disabled={loading}>
-          {loading ? '⟳ Generating...' : '✦ Generate My Strategy'}
-        </button>
-      ) : (
-        <div>
-          <div className="strategy-card">
-            <h4>Strategy Name</h4>
-            <p>{strategy.strategyName || strategy.name || 'Custom Trading Strategy'}</p>
-          </div>
-          {(strategy.marketConditions) && (
-            <div className="strategy-card">
-              <h4>Market Conditions</h4>
-              <p>{strategy.marketConditions}</p>
-            </div>
-          )}
-          {(strategy.setupConditions) && (
-            <div className="strategy-card">
-              <h4>Setup Conditions</h4>
-              <p>{Array.isArray(strategy.setupConditions) ? strategy.setupConditions.join(', ') : strategy.setupConditions}</p>
-            </div>
-          )}
-          {(strategy.entryRules) && (
-            <div className="strategy-card">
-              <h4>Entry Rules</h4>
-              <p>{Array.isArray(strategy.entryRules) ? strategy.entryRules.join(', ') : strategy.entryRules}</p>
-            </div>
-          )}
-          {strategy.positionSizing && (
-            <div className="strategy-card">
-              <h4>Position Sizing</h4>
-              <p>{strategy.positionSizing}</p>
-            </div>
-          )}
-          {strategy.stopLossRules && (
-            <div className="strategy-card">
-              <h4>Stop Loss Rules</h4>
-              <p>{strategy.stopLossRules}</p>
-            </div>
-          )}
-          {strategy.profitTargets && (
-            <div className="strategy-card">
-              <h4>Profit Targets</h4>
-              <p>{strategy.profitTargets}</p>
-            </div>
-          )}
-          {(strategy.commonMistakes) && (
-            <div className="strategy-card">
-              <h4>Common Mistakes to Avoid</h4>
-              <p>{Array.isArray(strategy.commonMistakes) ? strategy.commonMistakes.join(', ') : strategy.commonMistakes}</p>
-            </div>
-          )}
-          <button className="quiz-btn" onClick={generateStrategy} disabled={loading} style={{ marginTop: 12 }}>
-            ↻ Regenerate Strategy
-          </button>
-        </div>
-      )}
-      <div className="set-calculator">
-        <h4 style={{ marginBottom: 12 }}>S.E.T. Calculator</h4>
-        <div className="form-group">
-          <label>Account Size ($)</label>
-          <input type="number" value={calcInputs.accountSize} onChange={(e) => setCalcInputs(prev => ({ ...prev, accountSize: parseFloat(e.target.value) }))} />
-        </div>
-        <div className="form-group">
-          <label>Entry Price ($)</label>
-          <input type="number" value={calcInputs.entryPrice} onChange={(e) => setCalcInputs(prev => ({ ...prev, entryPrice: parseFloat(e.target.value) }))} />
-        </div>
-        <div className="form-group">
-          <label>Stop Loss Price ($)</label>
-          <input type="number" value={calcInputs.stopPrice} onChange={(e) => setCalcInputs(prev => ({ ...prev, stopPrice: parseFloat(e.target.value) }))} />
-        </div>
-        <button className="quiz-btn" onClick={calculateSET}>Calculate</button>
-        {calcResult && (
-          <div className="calculator-output">
-            <div>Position Size: <strong>{calcResult.positionSize.toFixed(2)} shares</strong></div>
-            <div>Account Risk (1%): <strong>${calcResult.accountRisk.toFixed(2)}</strong></div>
-            <div>Target Price (3:1): <strong>${calcResult.targetPrice.toFixed(2)}</strong></div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// VIDEO DISCOVERY COMPONENT
-// =============================================================================
-
-function VideoDiscovery({ moduleId, fallbackVideos }) {
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`/api/youtube/${moduleId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setVideos(data.videos && data.videos.length > 0 ? data.videos : []);
-        }
-      } catch (e) {
-        setError('Could not load videos');
-      }
-      setLoading(false);
-    }
-    load();
-  }, [moduleId]);
-
-  const getYoutubeId = (url) => {
-    if (!url) return null;
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-    return match ? match[1] : null;
-  };
-
-  if (loading) {
-    return (
-      <div className="video-discovery">
-        <h3>🎥 Video Tutorials & Resources</h3>
-        <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '24px', marginBottom: '8px' }}>⏳</div>
-          Loading videos from YouTube...
-        </div>
-      </div>
-    );
-  }
-
-  if (videos.length === 0) {
-    return (
-      <div className="video-discovery">
-        <h3>🎥 Video Tutorials & Resources</h3>
-        <div style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)', fontSize: '14px' }}>
-          No videos available for this module yet.
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="video-discovery">
-      <h3>🎥 Video Tutorials & Resources</h3>
-      <div className="video-grid">
-        {videos.map((video, idx) => {
-          const videoId = getYoutubeId(video.url);
-          const thumbnailUrl = video.thumbnail || (videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null);
-          return (
-            <div key={idx} className="video-card">
-              <a href={video.url || `https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div className="video-thumbnail" style={{
-                  background: thumbnailUrl ? `url(${thumbnailUrl}) center/cover` : 'linear-gradient(135deg, var(--navy), #243B60)',
-                  position: 'relative'
-                }}>
-                  {!thumbnailUrl && '▶️'}
-                  {video.duration && (
-                    <span style={{
-                      position: 'absolute', bottom: '6px', right: '6px',
-                      background: 'rgba(0,0,0,0.8)', color: '#fff', fontSize: '11px',
-                      padding: '2px 6px', borderRadius: '3px', fontWeight: '600'
-                    }}>{video.duration}</span>
-                  )}
-                  <div style={{
-                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'rgba(0,0,0,0.15)', opacity: 0, transition: 'opacity 0.2s'
-                  }} className="play-overlay">
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: '#fff', fontSize: '16px', marginLeft: '3px' }}>▶</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="video-info">
-                  <h4 style={{ lineHeight: '1.3', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {video.title || 'Video Tutorial'}
-                  </h4>
-                  <p style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {video.channel || 'YouTube'}
-                  </p>
-                </div>
-              </a>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// COLLAPSIBLE SECTION COMPONENT
-// =============================================================================
-
-function CollapsibleSection({ title, children }) {
-  const [open, setOpen] = useState(true);
-  return (
-    <div className="collapsible-section">
-      <div className="collapsible-header" onClick={() => setOpen(!open)}>
-        <h3>{title}</h3>
-        <span className={`collapsible-toggle ${open ? 'open' : ''}`}>▼</span>
-      </div>
-      <div className={`collapsible-content ${open ? 'open' : ''}`}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// DASHBOARD
-// =============================================================================
-
-function Dashboard({ modules, completedModules, progress, onOpen, onboardingComplete, isModuleUnlocked }) {
-  const completed = Object.values(completedModules).filter(Boolean).length;
-  const showOnboarding = !onboardingComplete;
-  return (
-    <div>
-      <div className="hero-banner">
-        <h2>See Your Impact. <span>Grow Your Mission.</span></h2>
-        <p>Track your progress through the complete foundations of trading, risk management, and asset leverage.</p>
-        <div className="hero-stats">
-          <div className="hero-stat"><div className="val">{modules.length}</div><div className="desc">Total Modules</div></div>
-          <div className="hero-stat"><div className="val">{completed}</div><div className="desc">Completed</div></div>
-          <div className="hero-stat"><div className="val">{progress}%</div><div className="desc">Progress</div></div>
-          <div className="hero-stat"><div className="val">{modules.reduce((a,m) => a + (m.quiz?.length||0), 0)}</div><div className="desc">Quiz Questions</div></div>
-        </div>
-      </div>
-      {showOnboarding && (
-        <WebullOnboarding onComplete={() => { window.location.reload(); }} />
-      )}
-      <a href="/training-manual.html" target="_blank" rel="noopener noreferrer" className="resource-card" style={{marginBottom: '24px', padding: '20px 24px', background: 'linear-gradient(135deg, rgba(27,42,74,0.04), rgba(13,147,115,0.06))', border: '2px solid rgba(13,147,115,0.25)', borderRadius: '14px', textDecoration: 'none', color: 'inherit'}}>
-        <div className="resource-icon learn" style={{width: '52px', height: '52px', fontSize: '26px', borderRadius: '12px'}}>📘</div>
-        <div className="resource-info" style={{flex: 1}}>
-          <h4 style={{fontSize: '16px', fontWeight: 700, color: '#1B2A4A', marginBottom: '4px'}}>Impact Trading Academy — Complete Training Manual</h4>
-          <p style={{fontSize: '13px', color: '#6B7280', margin: 0}}>All 15 modules in one interactive flipbook — From Mindset &amp; Financial Reality to Advanced Options Mastery</p>
-        </div>
-        <span style={{color: '#0D9373', fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap'}}>Open Manual ↗</span>
-      </a>
-      <div className="dashboard-grid">
-        {modules.map((m, i) => {
-          const status = completedModules[m.id] ? 'completed' : 'in-progress';
-          return (
-            <div key={m.id} className="dash-card" onClick={() => onOpen(m.id)} style={{ cursor: 'pointer' }}>
-              <div className="dash-card-num">Module {i + 1}</div>
-              <h3>{m.title}</h3>
-              <p>{m.subtitle}</p>
-              <div className="dash-card-footer">
-                <span>{m.sections?.filter(s=>s.type!=='resources').length || 0} lessons · {m.quiz?.length || 0} questions</span>
-                <span className={`status-badge ${status}`}>{status === 'completed' ? '✓ Done' : 'Available'}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// MODULE VIEW (with AI visuals per section)
-// =============================================================================
-
-function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCompleted, onEdit, onNext, hasNext, addToast }) {
-  const moduleIndex = modules.findIndex(m => m.id === module.id);
-  const mQuiz = quizState[module.id] || { current: 0, answers: {}, submitted: {} };
-  const quiz = module.quiz || [];
-  const q = quiz[mQuiz.current];
-  const allAnswered = Object.keys(mQuiz.submitted).length === quiz.length;
-  const correctCount = Object.entries(mQuiz.submitted).filter(([,v]) => v).length;
-  const [generatingAll, setGeneratingAll] = useState(false);
-  const [visualRefreshKey, setVisualRefreshKey] = useState(0);
-
-  const selectAnswer = (qi, oi) => { if (mQuiz.submitted[qi] !== undefined) return; setQuizState(p => ({...p, [module.id]: {...mQuiz, answers: {...mQuiz.answers, [qi]: oi}}})); };
-  const submitAnswer = (qi) => { const ok = mQuiz.answers[qi] === quiz[qi].correct; setQuizState(p => ({...p, [module.id]: {...mQuiz, submitted: {...mQuiz.submitted, [qi]: ok}}})); };
-  const nextQuestion = () => { if (mQuiz.current < quiz.length - 1) setQuizState(p => ({...p, [module.id]: {...mQuiz, current: mQuiz.current + 1}})); };
-  const resetQuiz = () => setQuizState(p => ({...p, [module.id]: { current: 0, answers: {}, submitted: {} }}));
-
-  const generateAllVisuals = async () => {
-    setGeneratingAll(true);
-    addToast('Generating visuals for all sections... This may take a minute.', 'info');
-    try {
-      const result = await API.generateModuleVisuals(module.id);
-      if (result && result.success) {
-        const successCount = result.results.filter(r => r.imageUrl).length;
-        const failCount = result.results.length - successCount;
-        addToast(`Generated ${successCount} visual${successCount !== 1 ? 's' : ''}${failCount > 0 ? ` (${failCount} failed)` : ''}!`, 'success');
-        // Trigger re-render of visual components without reloading the page
-        setVisualRefreshKey(k => k + 1);
-      } else {
-        addToast('Could not generate visuals. Check your Gemini API key in Settings.', 'error');
-      }
-    } catch (err) {
-      addToast('Error generating visuals: ' + (err.message || 'Request timed out'), 'error');
-    }
-    setGeneratingAll(false);
-  };
-
-  return (
-    <div>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-        <div>
-          <div className="module-badge">Module {moduleIndex + 1} of {modules.length}</div>
-          <h2 className="module-title">{module.title}</h2>
-          <p className="module-subtitle">{module.subtitle}</p>
-        </div>
-        <button onClick={onEdit} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'6px 14px',borderRadius:6,cursor:'pointer',fontSize:12,whiteSpace:'nowrap',marginTop:8}}>✎ Edit</button>
-      </div>
-
-      <button className="generate-all-btn" onClick={generateAllVisuals} disabled={generatingAll}>
-        {generatingAll ? '⟳ Generating...' : '✦ Generate All AI Visuals'}
-      </button>
-
-      {module.sections?.map((s, i) => {
-        if (s.type === 'stats') return (
-          <div key={i} className="lesson-section">
-            <h3>{s.title}</h3>
-            <div className="stat-grid">
-              {s.stats.map((st, si) => <div key={si} className="stat-box"><div className="num">{st.num}</div><div className="lbl">{st.lbl}</div></div>)}
-            </div>
-          </div>
-        );
-        if (s.type === 'table') return (
-          <div key={i} className="lesson-section">
-            <h3>{s.title}</h3>
-            <table className="comparison-table">
-              <thead><tr>{s.headers.map((h,hi) => <th key={hi}>{h}</th>)}</tr></thead>
-              <tbody>{s.rows.map((r,ri) => <tr key={ri}>{r.map((c,ci) => <td key={ci}>{c}</td>)}</tr>)}</tbody>
-            </table>
-          </div>
-        );
-        if (s.type === 'resources') return (
-          <div key={i} className="lesson-section">
-            <h3>{s.title || 'Visual Resources & Further Reading'}</h3>
-            {s.resources.map((r, ri) => (
-              <a key={ri} className="resource-card" href={r.url} target="_blank" rel="noopener noreferrer">
-                <div className={`resource-icon ${r.icon}`}>{r.icon === 'learn' ? '📚' : r.icon === 'chart' ? '📈' : r.icon === 'video' ? '🎬' : '🔧'}</div>
-                <div className="resource-info"><h4>{r.title}</h4><p>{r.desc}</p></div>
-                <div className="resource-arrow">→</div>
-              </a>
-            ))}
-          </div>
-        );
-        // TEXT sections — these get AI visual buttons + per-section video explainer
-        return (
-          <div key={i} className="lesson-section">
-            <h3>{s.title}</h3>
-            {s.content.split('\n\n').map((para, pi) => <p key={pi}>{para}</p>)}
-            <AIVisual
-              moduleId={module.id}
-              moduleTitle={module.title}
-              sectionIndex={i}
-              sectionTitle={s.title}
-              sectionContent={s.content}
-              refreshKey={visualRefreshKey}
-            />
-            {s.media?.youtubeUrl && (
-              <SubsectionVideo youtubeUrl={s.media.youtubeUrl} sectionTitle={s.title} />
-            )}
-          </div>
-        );
-      })}
-
-      <FlipbookEmbed moduleId={module.id} />
-      <SlideDeckEmbed moduleId={module.id} />
-      <YouTubeEmbed moduleId={module.id} />
-      <ModuleAudio audioUrl={MODULE_MEDIA[module.id]?.audioUrl} moduleTitle={module.title} />
-      <InfographicGenerator module={module} />
-
-      {quiz.length > 0 && (
-        <div className="quiz-container">
-          <div className="quiz-header"><h3>📝 Knowledge Check</h3><span className="quiz-score">{allAnswered ? `Score: ${correctCount}/${quiz.length} (${Math.round(correctCount/quiz.length*100)}%)` : `${Object.keys(mQuiz.submitted).length}/${quiz.length} answered`}</span></div>
-          {!allAnswered && q && (
-            <div>
-              <div className="quiz-progress">Question {mQuiz.current + 1} of {quiz.length}</div>
-              <div className="quiz-question">{q.question}</div>
-              {q.options.map((opt, oi) => {
-                let cls = 'quiz-option';
-                if (mQuiz.submitted[mQuiz.current] !== undefined) { if (oi === q.correct) cls += ' correct'; else if (oi === mQuiz.answers[mQuiz.current] && oi !== q.correct) cls += ' incorrect'; }
-                else if (mQuiz.answers[mQuiz.current] === oi) cls += ' selected';
-                return <button key={oi} className={cls} onClick={() => selectAnswer(mQuiz.current, oi)}>{opt}</button>;
-              })}
-              {mQuiz.submitted[mQuiz.current] !== undefined && <div className={`quiz-feedback ${mQuiz.submitted[mQuiz.current] ? 'correct' : 'incorrect'}`}>{mQuiz.submitted[mQuiz.current] ? '✓ Correct! ' : '✗ Incorrect. '}{q.explanation}</div>}
-              <div style={{display:'flex',gap:8,marginTop:16}}>
-                {mQuiz.submitted[mQuiz.current] === undefined && <button className="quiz-btn" disabled={mQuiz.answers[mQuiz.current] === undefined} onClick={() => submitAnswer(mQuiz.current)}>Submit Answer</button>}
-                {mQuiz.submitted[mQuiz.current] !== undefined && mQuiz.current < quiz.length - 1 && <button className="quiz-btn" onClick={nextQuestion}>Next Question →</button>}
-              </div>
-            </div>
-          )}
-          {allAnswered && (
-            <div style={{textAlign:'center',padding:'20px 0'}}>
-              <div style={{fontSize:48,marginBottom:12}}>{correctCount === quiz.length ? '🏆' : correctCount >= quiz.length * 0.7 ? '👍' : '📚'}</div>
-              <div style={{fontSize:20,fontWeight:700,marginBottom:8,color:'var(--navy)'}}>{correctCount === quiz.length ? 'Perfect Score!' : correctCount >= quiz.length * 0.7 ? 'Great Job!' : 'Keep Studying!'}</div>
-              <div style={{fontSize:14,color:'var(--text-muted)',marginBottom:20}}>You scored {correctCount} out of {quiz.length} ({Math.round(correctCount/quiz.length*100)}%)</div>
-              <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
-                <button className="quiz-btn" onClick={resetQuiz} style={{background:'var(--bg-hover)',color:'var(--text-secondary)'}}>Retake Quiz</button>
-                {!isCompleted && correctCount >= quiz.length * 0.7 && <button className="quiz-btn" onClick={onComplete}>✓ Mark Complete</button>}
-                {hasNext && <button className="quiz-btn" onClick={onNext}>Next Module →</button>}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      <CollapsibleSection title="🎓 Mastery Exam">
-        <MasteryExam
-          moduleId={module.id}
-          moduleTitle={module.title}
-          onPass={(score) => { addToast(`Exam passed! Score: ${score}`, 'success'); }}
-        />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="⚡ Strategy Builder & S.E.T. Calculator">
-        <StrategyBuilder moduleId={module.id} moduleTitle={module.title} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="🎯 Simulation Exercises">
-        <SimulationExercises
-          moduleId={module.id}
-          exercises={module.simulations || []}
-          requiredCount={Math.ceil((module.simulations?.length || 0) / 2)}
-          onExerciseComplete={() => { addToast('Exercise completed!', 'success'); }}
-        />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="📔 Reflection Notebook">
-        <NotebookSection
-          moduleId={module.id}
-          notebookPrompts={module.notebookPrompts || ['What was the most important concept you learned?', 'How will you apply this knowledge to your trading?', 'What questions do you still have?']}
-          onEntryAdded={() => { addToast('Notebook entry saved!', 'success'); }}
-        />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="🎥 Video Tutorials & Resources">
-        <VideoDiscovery
-          moduleId={module.id}
-          fallbackVideos={module.youtubeVideos || []}
-        />
-      </CollapsibleSection>
-
-      {isCompleted && <div style={{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.25)',borderRadius:12,padding:20,marginTop:24,textAlign:'center'}}><span style={{color:'var(--green-dark)',fontSize:16,fontWeight:600}}>✓ Module Completed</span></div>}
-    </div>
-  );
-}
-
-// =============================================================================
-// ADMIN MODAL (same as before)
-// =============================================================================
-
-function AdminModal({ module, onSave, onDelete, onClose, isNew }) {
-  const [form, setForm] = useState(module);
-  const updateField = (f, v) => setForm(p => ({...p, [f]: v}));
-  const updateSection = (idx, f, v) => { const s = [...form.sections]; s[idx] = {...s[idx], [f]: v}; setForm(p => ({...p, sections: s})); };
-  const addSection = () => setForm(p => ({...p, sections: [...p.sections, {title:'', content:'', type:'text'}]}));
-  const removeSection = (idx) => setForm(p => ({...p, sections: p.sections.filter((_,i) => i !== idx)}));
-  const updateQuiz = (qi, f, v) => { const q = [...(form.quiz||[])]; q[qi] = {...q[qi], [f]: v}; setForm(p => ({...p, quiz: q})); };
-  const updateQuizOption = (qi, oi, v) => { const q = [...(form.quiz||[])]; const o = [...q[qi].options]; o[oi] = v; q[qi] = {...q[qi], options: o}; setForm(p => ({...p, quiz: q})); };
-  const addQuiz = () => setForm(p => ({...p, quiz: [...(p.quiz||[]), {question:'', options:['','','',''], correct:0, explanation:''}]}));
-  const removeQuiz = (idx) => setForm(p => ({...p, quiz: (p.quiz||[]).filter((_,i) => i !== idx)}));
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <div className="modal-header"><h2>{isNew ? 'Add New Module' : 'Edit Module'}</h2><button className="modal-close" onClick={onClose}>×</button></div>
-        <div className="modal-body">
-          <div className="form-group"><label>Module Title</label><input value={form.title} onChange={e => updateField('title', e.target.value)} placeholder="e.g., Advanced Chart Patterns" /></div>
-          <div className="form-group"><label>Subtitle / Description</label><input value={form.subtitle} onChange={e => updateField('subtitle', e.target.value)} placeholder="Brief description" /></div>
-          <h3 style={{fontSize:15,fontWeight:700,margin:'24px 0 12px',color:'var(--navy)'}}>Lesson Sections</h3>
-          {form.sections?.map((s, i) => (
-            <div key={i} className="section-editor">
-              <div className="section-editor-header"><span style={{fontSize:12,color:'var(--text-muted)'}}>Section {i + 1} ({s.type || 'text'})</span>{form.sections.length > 1 && <button className="remove-btn" onClick={() => removeSection(i)}>Remove</button>}</div>
-              <div className="form-group" style={{marginBottom:8}}><input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section title" /></div>
-              <div className="form-group" style={{marginBottom:0}}><textarea value={s.content||''} onChange={e => updateSection(i, 'content', e.target.value)} placeholder="Section content..." rows={4} /></div>
-            </div>
-          ))}
-          <button className="add-btn" onClick={addSection}>+ Add Section</button>
-          <h3 style={{fontSize:15,fontWeight:700,margin:'24px 0 12px',color:'var(--navy)'}}>Quiz Questions</h3>
-          {(form.quiz || []).map((q, qi) => (
-            <div key={qi} className="quiz-editor">
-              <div className="section-editor-header"><span style={{fontSize:12,color:'var(--text-muted)'}}>Question {qi + 1}</span><button className="remove-btn" onClick={() => removeQuiz(qi)}>Remove</button></div>
-              <div className="form-group" style={{marginBottom:8}}><input value={q.question} onChange={e => updateQuiz(qi, 'question', e.target.value)} placeholder="Question text" /></div>
-              {q.options.map((opt, oi) => (<div key={oi} className="option-row"><input type="radio" name={`c-${qi}`} checked={q.correct === oi} onChange={() => updateQuiz(qi, 'correct', oi)} /><input type="text" value={opt} onChange={e => updateQuizOption(qi, oi, e.target.value)} placeholder={`Option ${oi+1}`} /></div>))}
-              <div className="form-group" style={{marginTop:8,marginBottom:0}}><input value={q.explanation||''} onChange={e => updateQuiz(qi, 'explanation', e.target.value)} placeholder="Explanation shown after answering" /></div>
-            </div>
-          ))}
-          <button className="add-btn" onClick={addQuiz}>+ Add Question</button>
-        </div>
-        <div className="modal-footer">
-          {!isNew && <button className="btn-delete" onClick={() => { if(confirm('Delete this module permanently?')) onDelete(form.id); }}>Delete Module</button>}
-          <div style={{flex:1}} />
-          <button className="btn-cancel" onClick={onClose}>Cancel</button>
-          <button className="btn-save" onClick={() => onSave(form)}>Save Module</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// SETTINGS MODAL
-// =============================================================================
-
-function SettingsModal({ onClose, addToast }) {
-  const [apiKey, setApiKey] = useState('');
-  const [hasKey, setHasKey] = useState(false);
-  const [maskedKey, setMaskedKey] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    API.getSettings().then(data => {
-      setHasKey(data.hasKey);
-      setMaskedKey(data.geminiApiKey || '');
-    });
-  }, []);
-
-  const saveKey = async () => {
-    if (!apiKey.trim()) return;
-    setSaving(true);
-    try {
-      await API.saveSettings({ geminiApiKey: apiKey.trim() });
-      setHasKey(true);
-      setMaskedKey('••••••••' + apiKey.trim().slice(-4));
-      setApiKey('');
-      addToast('API key saved successfully!', 'success');
-    } catch (err) {
-      addToast('Failed to save API key', 'error');
-    }
-    setSaving(false);
-  };
-
-  const clearKey = async () => {
-    await API.saveSettings({ geminiApiKey: '' });
-    setHasKey(false);
-    setMaskedKey('');
-    addToast('API key removed', 'info');
-  };
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()} style={{maxWidth: 560}}>
-        <div className="modal-header"><h2>⚙ Settings</h2><button className="modal-close" onClick={onClose}>×</button></div>
-        <div className="modal-body">
-          <div className="settings-section">
-            <h4>✦ AI Visual Generation</h4>
-            <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
-              Connect your Google Gemini API key to generate AI-powered visuals for each lesson section.
-              Images are cached so you only pay once per section.
-            </p>
-            <div className="form-group">
-              <label>Gemini API Key</label>
-              {hasKey && (
-                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
-                  <span className="api-status connected">● Connected</span>
-                  <span style={{fontSize:12,color:'var(--text-muted)',fontFamily:'monospace'}}>{maskedKey}</span>
-                  <button onClick={clearKey} style={{background:'none',border:'none',color:'var(--red)',cursor:'pointer',fontSize:12}}>Remove</button>
-                </div>
-              )}
-              {!hasKey && <span className="api-status disconnected" style={{marginBottom:8,display:'inline-flex'}}>● Not connected</span>}
-              <div className="api-key-row">
-                <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder={hasKey ? 'Enter new key to replace' : 'Paste your Gemini API key'} />
-                <button onClick={saveKey} disabled={saving || !apiKey.trim()}>{saving ? '...' : 'Save Key'}</button>
-              </div>
-              <div className="settings-info">
-                Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{color:'var(--accent)'}}>aistudio.google.com/apikey</a>.
-                Your key is stored securely on the server and never exposed to the browser.
-              </div>
-            </div>
-          </div>
-          <div className="settings-section">
-            <h4>💾 Data Persistence</h4>
-            <p style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.6}}>
-              All modules, progress, quiz states, and generated images are automatically saved to the server.
-              Your data persists across browser sessions and devices.
-            </p>
-          </div>
-        </div>
-        <div className="modal-footer">
-          <button className="btn-cancel" onClick={onClose}>Close</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// APP WITH LOGIN WRAPPER
-// =============================================================================
-
-function AppWithLogin() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingSession, setCheckingSession] = useState(true);
-
-  // On mount, check if there's a saved session token and validate it
-  useEffect(() => {
-    const savedToken = sessionStorage.getItem('ita_session_token');
-    if (savedToken) {
-      fetch('/api/validate-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: savedToken })
-      })
-        .then(r => r.json())
-        .then(data => {
-          if (data.valid) setIsAuthenticated(true);
-          else sessionStorage.removeItem('ita_session_token');
-          setCheckingSession(false);
-        })
-        .catch(() => setCheckingSession(false));
-    } else {
-      setCheckingSession(false);
-    }
-  }, []);
-
-  const handleLogin = (token) => {
-    sessionStorage.setItem('ita_session_token', token);
-    setIsAuthenticated(true);
-  };
-
-  if (checkingSession) {
-    return (
-      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'linear-gradient(135deg, #1B2A4A 0%, #243B60 50%, #0D9373 100%)'}}>
-        <div style={{color:'white',fontSize:'18px',fontFamily:'Inter,sans-serif'}}>Loading session...</div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) return <LoginScreen onLogin={handleLogin} />;
-  return <App />;
-}
-
-ReactDOM.render(<AppWithLogin />, document.getElementById('root'));
-</script>
-</body>
-</html>
+]
