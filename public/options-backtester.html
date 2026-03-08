@@ -486,6 +486,127 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   .ct-ohlc{display:none;}
 }
 
+/* ===== S.E.T. SIMULATOR ===== */
+.sim-grid{display:grid;grid-template-columns:320px 1fr;gap:18px;}
+.sim-chart-area{background:#161B2B;border-radius:14px;overflow:hidden;position:relative;min-height:480px;}
+.sim-toolbar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#1A1F35;border-bottom:1px solid #262D47;}
+.sim-toolbar .stb-sym{font-size:15px;font-weight:800;color:#E0E4F0;letter-spacing:.3px;}
+.sim-toolbar .stb-price{font-size:13px;color:var(--emerald-light);font-weight:600;margin-left:6px;}
+.sim-toolbar .stb-chg{font-size:11px;margin-left:4px;font-weight:600;}
+.sim-toolbar .stb-chg.up{color:#26A69A;}.sim-toolbar .stb-chg.dn{color:#EF5350;}
+.sim-canvas-wrap{position:relative;width:100%;height:420px;}
+.sim-canvas-wrap canvas{display:block;width:100%;height:100%;cursor:crosshair;}
+.sim-ohlc-bar{display:flex;gap:12px;padding:4px 14px;background:#1A1F35;font-size:11px;color:#7B83A6;}
+.sim-ohlc-bar span{font-weight:600;}
+.sim-ohlc-bar .sol{color:#26A69A;}.sim-ohlc-bar .soh{color:#26A69A;}.sim-ohlc-bar .soll{color:#EF5350;}.sim-ohlc-bar .soc{color:#E0E4F0;}
+
+/* Sim Controls */
+.sim-controls{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#1A1F35;border-top:1px solid #262D47;}
+.sim-btn{padding:6px 14px;border-radius:6px;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
+.sim-btn.play{background:var(--emerald);color:white;}
+.sim-btn.play:hover{background:#0a7a5f;}
+.sim-btn.pause{background:#F59E0B;color:white;}
+.sim-btn.reset{background:var(--gray-200);color:var(--navy);}
+.sim-btn.reset:hover{background:var(--gray-500);color:white;}
+.sim-speed{display:flex;gap:2px;}
+.sim-speed button{padding:4px 8px;border:1px solid #262D47;background:#1A1F35;color:#7B83A6;font-size:10px;font-weight:700;cursor:pointer;border-radius:4px;transition:all .12s;}
+.sim-speed button.active{background:var(--emerald);color:white;border-color:var(--emerald);}
+.sim-progress{flex:1;height:4px;background:#262D47;border-radius:2px;margin:0 8px;overflow:hidden;}
+.sim-progress-fill{height:100%;background:var(--emerald);border-radius:2px;transition:width .1s linear;}
+.sim-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;}
+.sim-status.waiting{background:rgba(107,114,128,.2);color:#9CA3AF;}
+.sim-status.running{background:rgba(16,185,129,.15);color:var(--emerald-light);}
+.sim-status.hit-target{background:rgba(16,185,129,.2);color:#10B981;}
+.sim-status.hit-stop{background:rgba(239,68,68,.2);color:#EF4444;}
+.sim-status.active-trade{background:rgba(59,130,246,.2);color:#3B82F6;}
+
+/* Sim Panel (left side) */
+.sim-panel{display:flex;flex-direction:column;gap:12px;}
+.sim-search-wrap{position:relative;}
+.sim-search{width:100%;padding:10px 12px 10px 34px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;background:var(--gray-100);color:var(--navy);}
+.sim-search:focus{outline:none;border-color:var(--emerald);background:white;}
+.sim-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--gray-500);}
+.sim-results{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--gray-200);border-radius:0 0 8px 8px;max-height:200px;overflow-y:auto;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.12);display:none;}
+.sim-results.show{display:block;}
+.sim-result-item{padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center;}
+.sim-result-item:hover{background:var(--mint-bg);}
+.sim-result-item .sri-sym{font-weight:700;color:var(--navy);}
+.sim-result-item .sri-name{color:var(--gray-500);font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* S.E.T. Input Group */
+.set-input-group{background:white;border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.set-input-group .sig-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;color:var(--navy);display:flex;align-items:center;gap:6px;}
+.set-input-row{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;margin-bottom:8px;}
+.set-input-row label{font-size:11px;font-weight:700;letter-spacing:.3px;}
+.set-input-row label.s-stop{color:#EF4444;}.set-input-row label.s-entry{color:#3B82F6;}.set-input-row label.s-target{color:#10B981;}
+.set-input-row input{padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;color:var(--navy);background:var(--gray-100);text-align:right;width:100%;}
+.set-input-row input:focus{outline:none;border-color:var(--emerald);background:white;}
+
+/* Metrics Cards */
+.sim-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sm-card{background:white;border-radius:8px;padding:10px 12px;border-left:3px solid var(--emerald);box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.sm-card.risk{border-left-color:#EF4444;}.sm-card.reward{border-left-color:#10B981;}.sm-card.ratio{border-left-color:#3B82F6;}.sm-card.size{border-left-color:#F59E0B;}
+.sm-card .smc-lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray-500);letter-spacing:.4px;}
+.sm-card .smc-val{font-size:16px;font-weight:800;color:var(--navy);margin-top:2px;}
+.sm-card .smc-val.pos{color:var(--emerald);}.sm-card .smc-val.neg{color:#EF4444;}
+
+/* Live P&L Bar */
+.sim-pnl-bar{background:var(--navy);border-radius:10px;padding:14px;color:white;text-align:center;}
+.sim-pnl-bar .spb-label{font-size:10px;color:#A0B0C8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.sim-pnl-bar .spb-val{font-size:28px;font-weight:900;}
+.sim-pnl-bar .spb-val.pos{color:#26A69A;}.sim-pnl-bar .spb-val.neg{color:#EF5350;}
+.sim-pnl-bar .spb-sub{font-size:11px;color:#7B83A6;margin-top:2px;}
+
+/* Education Panel */
+.sim-edu{background:white;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);max-height:300px;overflow-y:auto;}
+.sim-edu .se-title{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.sim-edu .se-step{background:var(--mint-bg);border-radius:8px;padding:10px 12px;margin-bottom:8px;border-left:3px solid var(--emerald);font-size:12px;color:var(--gray-700);line-height:1.6;animation:simFadeIn .3s ease;}
+.sim-edu .se-step.warn{border-left-color:#F59E0B;background:#FFFBEB;}
+.sim-edu .se-step.danger{border-left-color:#EF4444;background:#FEF2F2;}
+.sim-edu .se-step.success{border-left-color:#10B981;background:#ECFDF5;}
+.sim-edu .se-step strong{color:var(--navy);}
+@keyframes simFadeIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+
+/* Clickable SET Labels on Chart */
+.sim-set-label{position:absolute;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:800;cursor:pointer;letter-spacing:.4px;z-index:10;transition:transform .15s,box-shadow .15s;}
+.sim-set-label:hover{transform:scale(1.08);box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.sim-set-label.lbl-stop{background:#EF4444;color:white;right:14px;}
+.sim-set-label.lbl-entry{background:#3B82F6;color:white;right:14px;}
+.sim-set-label.lbl-target{background:#10B981;color:white;right:14px;}
+
+/* Education Popup */
+.sim-edu-popup{position:absolute;right:80px;background:white;border-radius:12px;padding:16px 18px;width:300px;box-shadow:0 8px 30px rgba(0,0,0,.18);z-index:20;border:2px solid var(--emerald);display:none;}
+.sim-edu-popup.show{display:block;animation:simPopIn .25s ease;}
+.sim-edu-popup .sep-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.sim-edu-popup .sep-body{font-size:12px;color:var(--gray-700);line-height:1.7;}
+.sim-edu-popup .sep-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:16px;cursor:pointer;color:var(--gray-500);}
+@keyframes simPopIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+
+/* Outcome Card */
+.sim-outcome{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:16px;padding:28px 32px;min-width:420px;max-width:520px;box-shadow:0 12px 40px rgba(0,0,0,.25);z-index:30;text-align:center;}
+.sim-outcome.show{display:block;animation:simPopIn .35s ease;}
+.sim-outcome .so-icon{font-size:48px;margin-bottom:8px;}
+.sim-outcome .so-title{font-size:20px;font-weight:900;color:var(--navy);margin-bottom:4px;}
+.sim-outcome .so-pnl{font-size:32px;font-weight:900;margin:8px 0;}
+.sim-outcome .so-pnl.pos{color:#10B981;}.sim-outcome .so-pnl.neg{color:#EF4444;}
+.sim-outcome .so-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0;text-align:center;}
+.sim-outcome .so-stat{background:var(--mint-bg);border-radius:8px;padding:10px;}
+.sim-outcome .so-stat .sos-lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray-500);}
+.sim-outcome .so-stat .sos-val{font-size:15px;font-weight:800;color:var(--navy);margin-top:2px;}
+.sim-outcome .so-lesson{background:#F0F5F3;border-radius:10px;padding:14px;margin-top:12px;font-size:12px;color:var(--gray-700);line-height:1.7;text-align:left;border-left:4px solid var(--emerald);}
+.sim-outcome .so-lesson.loss-lesson{border-left-color:#EF4444;background:#FEF2F2;}
+.sim-outcome .so-actions{display:flex;gap:10px;justify-content:center;margin-top:16px;}
+
+/* Distances */
+.sim-dist{display:flex;gap:8px;margin-top:6px;}
+.sim-dist-bar{flex:1;background:var(--gray-100);border-radius:6px;padding:6px 10px;text-align:center;}
+.sim-dist-bar .sdb-lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray-500);}
+.sim-dist-bar .sdb-val{font-size:13px;font-weight:800;margin-top:2px;}
+.sim-dist-bar.to-stop .sdb-val{color:#EF4444;}
+.sim-dist-bar.to-target .sdb-val{color:#10B981;}
+
+@media(max-width:900px){.sim-grid{grid-template-columns:1fr;}.sim-chart-area{min-height:350px;}}
+
 </style>
 </head>
 <body>
@@ -509,6 +630,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <div class="tabs">
   <button class="tab-btn active" onclick="showTab('backtester',this)">📊 Backtester</button>
   <button class="tab-btn" onclick="showTab('sizer',this)">🎯 Position Sizer (S.E.T.)</button>
+  <button class="tab-btn" onclick="showTab('setsim',this)">⚡ S.E.T. Simulator</button>
   <button class="tab-btn" onclick="showTab('regime',this)">🔀 Markov Regime Detector</button>
   <button class="tab-btn" onclick="showTab('about',this)">📖 Strategy Guide</button>
   <button class="tab-btn" onclick="showTab('chain',this)">⚡ Live Options Chain</button>
@@ -724,6 +846,163 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       <div class="set-row"><div class="set-lbl">🏆 Reward at Target</div><div class="set-val" id="out-reward">$—</div></div>
       <div class="set-row"><div class="set-lbl">📊 Risk : Reward</div><div class="set-val" id="out-ratio">—</div></div>
     </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== S.E.T. SIMULATOR TAB ===== -->
+<div id="tab-setsim" class="tab-content">
+<div class="container">
+  <div class="sim-grid">
+
+    <!-- LEFT: SETUP PANEL -->
+    <div class="sim-panel">
+      <div class="set-input-group">
+        <div class="sig-title">🔍 Stock Selection</div>
+        <div class="sim-search-wrap">
+          <span class="sim-search-icon">🔎</span>
+          <input class="sim-search" id="sim-ticker-search" type="text" placeholder="Search ticker (e.g. AAPL, TSLA)..." autocomplete="off">
+          <div class="sim-results" id="sim-search-results"></div>
+        </div>
+        <div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;" id="sim-quick-tickers">
+          <button class="sim-btn reset" onclick="SIM.loadTicker('SPY')" style="font-size:11px;padding:4px 10px;">SPY</button>
+          <button class="sim-btn reset" onclick="SIM.loadTicker('QQQ')" style="font-size:11px;padding:4px 10px;">QQQ</button>
+          <button class="sim-btn reset" onclick="SIM.loadTicker('AAPL')" style="font-size:11px;padding:4px 10px;">AAPL</button>
+          <button class="sim-btn reset" onclick="SIM.loadTicker('TSLA')" style="font-size:11px;padding:4px 10px;">TSLA</button>
+          <button class="sim-btn reset" onclick="SIM.loadTicker('NVDA')" style="font-size:11px;padding:4px 10px;">NVDA</button>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray-500);">Date Range</label>
+          <select id="sim-range" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:12px;background:var(--gray-100);color:var(--navy);margin-top:3px;" onchange="SIM.loadTicker(SIM.state.symbol)">
+            <option value="6mo">6 Months</option>
+            <option value="1y" selected>1 Year</option>
+            <option value="2y">2 Years</option>
+            <option value="5y">5 Years</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="set-input-group">
+        <div class="sig-title">🎯 S.E.T. Rule Setup</div>
+        <div class="fg" style="margin-bottom:8px;">
+          <label style="font-size:10px;font-weight:600;color:var(--gray-500);text-transform:uppercase;">Account Balance ($)</label>
+          <input type="number" id="sim-acct" value="10000" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:var(--gray-100);color:var(--navy);" oninput="SIM.calcMetrics()">
+        </div>
+        <div class="set-input-row">
+          <label class="s-entry">⬆ ENTRY $</label>
+          <input type="number" id="sim-entry" step="0.01" placeholder="Entry price" oninput="SIM.calcMetrics()">
+        </div>
+        <div class="set-input-row">
+          <label class="s-stop">🛑 STOP $</label>
+          <input type="number" id="sim-stop" step="0.01" placeholder="Stop loss" oninput="SIM.calcMetrics()">
+        </div>
+        <div class="set-input-row">
+          <label class="s-target">🎯 TARGET $</label>
+          <input type="number" id="sim-target" step="0.01" placeholder="Profit target" oninput="SIM.calcMetrics()">
+        </div>
+        <div style="display:flex;gap:6px;margin-top:4px;">
+          <button class="sim-btn reset" onclick="SIM.autoSET()" style="flex:1;font-size:11px;">🤖 Auto 3:1</button>
+          <button class="sim-btn reset" onclick="SIM.clearSET()" style="flex:1;font-size:11px;">✕ Clear</button>
+        </div>
+        <div class="riskwarn" style="margin-top:8px;font-size:10px;">
+          ⚠️ <strong>S.E.T. Rule:</strong> Stop first, then Entry, then Target. Never enter without all three defined.
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="sim-metrics">
+        <div class="sm-card risk"><div class="smc-lbl">Risk / Share</div><div class="smc-val" id="sim-m-risk">—</div></div>
+        <div class="sm-card reward"><div class="smc-lbl">Reward / Share</div><div class="smc-val" id="sim-m-reward">—</div></div>
+        <div class="sm-card ratio"><div class="smc-lbl">R : R Ratio</div><div class="smc-val" id="sim-m-ratio">—</div></div>
+        <div class="sm-card size"><div class="smc-lbl">Position Size</div><div class="smc-val" id="sim-m-size">—</div></div>
+      </div>
+
+      <!-- Distances -->
+      <div class="sim-dist" id="sim-distances" style="display:none;">
+        <div class="sim-dist-bar to-stop"><div class="sdb-lbl">To Stop</div><div class="sdb-val" id="sim-d-stop">—</div></div>
+        <div class="sim-dist-bar to-target"><div class="sdb-lbl">To Target</div><div class="sdb-val" id="sim-d-target">—</div></div>
+      </div>
+
+      <!-- Live P&L -->
+      <div class="sim-pnl-bar" id="sim-pnl-bar" style="display:none;">
+        <div class="spb-label">Unrealized P&L</div>
+        <div class="spb-val" id="sim-pnl-val">$0.00</div>
+        <div class="spb-sub" id="sim-pnl-sub">—</div>
+      </div>
+
+      <button class="run-btn" id="sim-run-btn" onclick="SIM.start()" style="margin-top:4px;">▶ RUN SIMULATION</button>
+    </div>
+
+    <!-- RIGHT: CHART + EDUCATION -->
+    <div>
+      <!-- Chart Area -->
+      <div class="sim-chart-area" id="sim-chart-area">
+        <div class="sim-toolbar">
+          <span class="stb-sym" id="sim-tb-sym">—</span>
+          <span class="stb-price" id="sim-tb-price">—</span>
+          <span class="stb-chg" id="sim-tb-chg">—</span>
+          <div style="flex:1;"></div>
+          <span class="sim-status waiting" id="sim-status">Waiting</span>
+        </div>
+        <div class="sim-ohlc-bar" id="sim-ohlc-bar">
+          O <span class="sol" id="sim-hov-o">—</span>
+          H <span class="soh" id="sim-hov-h">—</span>
+          L <span class="soll" id="sim-hov-l">—</span>
+          C <span class="soc" id="sim-hov-c">—</span>
+          Vol <span id="sim-hov-v">—</span>
+        </div>
+        <div class="sim-canvas-wrap" id="sim-canvas-wrap">
+          <canvas id="sim-chart-canvas"></canvas>
+          <!-- S.E.T. Labels (positioned dynamically) -->
+          <div class="sim-set-label lbl-stop" id="sim-lbl-stop" style="display:none;" onclick="SIM.showEdu('stop')">🛑 STOP</div>
+          <div class="sim-set-label lbl-entry" id="sim-lbl-entry" style="display:none;" onclick="SIM.showEdu('entry')">⬆ ENTRY</div>
+          <div class="sim-set-label lbl-target" id="sim-lbl-target" style="display:none;" onclick="SIM.showEdu('target')">🎯 TARGET</div>
+          <!-- Education Popup -->
+          <div class="sim-edu-popup" id="sim-edu-popup">
+            <button class="sep-close" onclick="SIM.hideEdu()">✕</button>
+            <div class="sep-title" id="sim-edu-title">—</div>
+            <div class="sep-body" id="sim-edu-body">—</div>
+          </div>
+          <!-- Outcome Card -->
+          <div class="sim-outcome" id="sim-outcome">
+            <div class="so-icon" id="sim-out-icon">🎯</div>
+            <div class="so-title" id="sim-out-title">Trade Complete</div>
+            <div class="so-pnl" id="sim-out-pnl">$0.00</div>
+            <div class="so-stats">
+              <div class="so-stat"><div class="sos-lbl">Entry</div><div class="sos-val" id="sim-out-entry">—</div></div>
+              <div class="so-stat"><div class="sos-lbl">Exit</div><div class="sos-val" id="sim-out-exit">—</div></div>
+              <div class="so-stat"><div class="sos-lbl">R : R Achieved</div><div class="sos-val" id="sim-out-rr">—</div></div>
+            </div>
+            <div class="so-lesson" id="sim-out-lesson">—</div>
+            <div class="so-actions">
+              <button class="sim-btn play" onclick="SIM.reset()">🔄 Try Again</button>
+              <button class="sim-btn reset" onclick="SIM.closeOutcome()">✕ Close</button>
+            </div>
+          </div>
+        </div>
+        <div class="sim-controls" id="sim-ctrl-bar" style="display:none;">
+          <button class="sim-btn play" id="sim-play-btn" onclick="SIM.togglePlay()">▶ Play</button>
+          <div class="sim-speed">
+            <button class="active" onclick="SIM.setSpeed(1,this)">1×</button>
+            <button onclick="SIM.setSpeed(2,this)">2×</button>
+            <button onclick="SIM.setSpeed(5,this)">5×</button>
+            <button onclick="SIM.setSpeed(10,this)">10×</button>
+          </div>
+          <div class="sim-progress"><div class="sim-progress-fill" id="sim-progress-fill"></div></div>
+          <span style="font-size:11px;color:#7B83A6;" id="sim-candle-count">0 / 0</span>
+          <button class="sim-btn reset" onclick="SIM.reset()">⟲ Reset</button>
+        </div>
+      </div>
+
+      <!-- Education Feed -->
+      <div class="sim-edu" id="sim-edu-feed" style="margin-top:12px;">
+        <div class="se-title">📖 Trade Commentary</div>
+        <div id="sim-edu-steps">
+          <div class="se-step">Select a stock and define your S.E.T. levels, then click <strong>Run Simulation</strong> to begin. As price moves, you'll see step-by-step explanations of how your trade is developing. Click the <strong>STOP</strong>, <strong>ENTRY</strong>, or <strong>TARGET</strong> labels on the chart for contextual lessons.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 </div>
@@ -3766,6 +4045,786 @@ function filterStrats(cat,btn){
     else card.style.display=card.dataset.cat===cat?'':'none';
   });
 }
+
+// =============================================================================
+// S.E.T. SIMULATOR ENGINE
+// =============================================================================
+const SIM = (function() {
+  // ---------- STATE ----------
+  const state = {
+    symbol: '',
+    candles: [],       // Full OHLCV data
+    visibleCandles: [],// Candles shown so far in simulation
+    entry: 0, stop: 0, target: 0, acct: 10000,
+    posSize: 0,
+    playing: false,
+    speed: 1,
+    simIndex: 0,       // Current candle in simulation
+    entryTriggered: false,
+    tradeActive: false,
+    tradeResult: null,  // 'target' | 'stop' | null
+    exitPrice: 0,
+    animFrame: null,
+    lastTick: 0,
+    eduSteps: [],
+    chartLayout: null   // Computed chart dimensions
+  };
+
+  // ---------- EDUCATION CONTENT ----------
+  const EDU = {
+    stop: {
+      title: '🛑 S — STOP (Protective Floor)',
+      body: `<strong>What it is:</strong> The Stop is the price level where you exit the trade to limit your loss. It is the protective floor that caps your downside at 1% of your total account.<br><br>
+<strong>Why it matters:</strong> Professional traders define Stop FIRST because controlling risk is more important than chasing reward. Without a Stop, a single bad trade can wipe out weeks of profits.<br><br>
+<strong>In this trade:</strong> If price falls to your Stop level, the trade exits automatically. Your maximum loss is capped at 1% of your account ($<span class="edu-max-risk"></span>). This is the 1% Rule in action — never risk more than 1% per trade.<br><br>
+<strong>Key lesson:</strong> Stop is defined first, then Entry, then Target. This sequence forces you to think about downside before upside — a fundamental reversal of the emotional trading pattern that destroys 95% of traders.`
+    },
+    entry: {
+      title: '⬆ E — ENTRY (Your Trigger)',
+      body: `<strong>What it is:</strong> The Entry is the exact price where the trade is activated. It is prepared before the move happens — never chased after it.<br><br>
+<strong>Why it matters:</strong> Chasing price is a losing strategy. Professional traders set their Entry at a specific level where the probability of a favorable move is highest, typically near a supply or demand zone identified through the Master Surge Strategy.<br><br>
+<strong>In this trade:</strong> When price reaches your Entry level, the trade activates. From this point, you are "in the trade" and your position size of <span class="edu-pos-size"></span> is deployed.<br><br>
+<strong>Key lesson:</strong> Entry is not a guess — it is a pre-planned trigger based on institutional footprints, supply/demand zones, and the Five Pillars of the Master Surge Strategy. The best entries come from preparation, not reaction.`
+    },
+    target: {
+      title: '🎯 T — TARGET (Your Goal)',
+      body: `<strong>What it is:</strong> The Target is the price level where profit is taken. It defines the reward side of the trade and should be at least 3× the risk (3:1 reward-to-risk ratio).<br><br>
+<strong>Why it matters:</strong> The 3:1 ratio means for every $1 risked, you aim to earn $3. This creates mathematical profitability even with a low win rate. At 3:1, you only need to win 25% of trades to break even, and 40%+ to be consistently profitable.<br><br>
+<strong>In this trade:</strong> Your target reward is $<span class="edu-reward"></span> per share. If price reaches the Target, the trade exits with a profit of $<span class="edu-total-reward"></span> total across your position.<br><br>
+<strong>Key lesson:</strong> Target is not wishful thinking — it is a calculated level based on the distance from Entry to Stop multiplied by 3 (or more). Every trade must have all three S.E.T. components defined BEFORE a single dollar is committed.`
+    }
+  };
+
+  // ---------- STEP-BY-STEP COMMENTARY ----------
+  function getCommentary(type, data) {
+    const c = {
+      loaded: `📊 <strong>${data.symbol}</strong> loaded — ${data.count} trading days of historical price data. Current price: $${data.price}. Define your S.E.T. levels on the left panel, then click <strong>Run Simulation</strong>.`,
+      set_defined: `✅ <strong>S.E.T. Levels Defined:</strong> Stop at $${data.stop}, Entry at $${data.entry}, Target at $${data.target}. Risk per share: $${data.riskPerShare}. Reward per share: $${data.rewardPerShare}. R:R ratio: ${data.ratio}. Position size: ${data.posSize} shares. You're ready to simulate.`,
+      sim_start: `▶ <strong>Simulation started.</strong> Price will replay candle by candle from ${data.startDate}. Watch for your Entry at $${data.entry} to trigger. The S.E.T. Rule is your roadmap — every price movement either confirms or invalidates the setup.`,
+      approaching_entry: `📍 <strong>Price is approaching your Entry level ($${data.entry}).</strong> Current price: $${data.price}. Distance to Entry: $${data.distance}. The market is moving toward your pre-planned trigger. Stay disciplined — do not chase or enter early.`,
+      entry_triggered: `🔔 <strong>ENTRY TRIGGERED at $${data.price}!</strong> Your trade is now active. ${data.posSize} shares deployed. From this moment, you are watching for price to reach your Target ($${data.target}) or your Stop ($${data.stop}). Let the trade work — don't move your levels.`,
+      moving_to_target: `📈 <strong>Price moving in your favor.</strong> Current: $${data.price}. Unrealized gain: <span style="color:#10B981;font-weight:700;">+$${data.unrealizedPnl}</span>. Distance to Target: $${data.distToTarget}. The S.E.T. structure is holding. Professional traders let winners run to their Target — don't cut profits short.`,
+      moving_to_stop: `📉 <strong>Price moving against you.</strong> Current: $${data.price}. Unrealized loss: <span style="color:#EF4444;font-weight:700;">-$${data.unrealizedPnl}</span>. Distance to Stop: $${data.distToStop}. This is normal — the S.E.T. Rule is designed to handle drawdowns. Your Stop protects you. Do NOT move your Stop further away.`,
+      target_hit: `🎯 <strong>TARGET HIT!</strong> Price reached $${data.price}. Trade closed with <span style="color:#10B981;font-weight:700;">+$${data.totalPnl} profit</span>. The S.E.T. structure worked because the setup had a valid 3:1 ratio and price followed the anticipated direction. This is what disciplined trading looks like.`,
+      stop_hit: `🛑 <strong>STOP HIT.</strong> Price reached $${data.price}. Trade closed with <span style="color:#EF4444;font-weight:700;">-$${data.totalPnl} loss</span>. This is NOT failure — this is risk management in action. Your loss was capped at 1% of your account. A stopped trade with proper S.E.T. is a successful execution of the system.`,
+      near_stop_warning: `⚠️ <strong>Warning: Price nearing Stop level.</strong> Current: $${data.price}. Only $${data.distToStop} from your Stop. The S.E.T. Rule is working — your Stop exists precisely for this scenario. Do NOT panic sell or move your Stop. Trust the system.`,
+      breakeven_cross: `↔ <strong>Price crossed back to breakeven.</strong> Current: $${data.price} ≈ Entry at $${data.entry}. The trade is flat. The market is deciding direction. Your S.E.T. levels are your anchors — no changes needed.`
+    };
+    return c[type] || '';
+  }
+
+  // ---------- TICKER SEARCH ----------
+  let searchTimeout = null;
+  function initSearch() {
+    const input = document.getElementById('sim-ticker-search');
+    const results = document.getElementById('sim-search-results');
+    if (!input) return;
+    input.addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      const q = this.value.trim();
+      if (q.length < 1) { results.classList.remove('show'); return; }
+      searchTimeout = setTimeout(async () => {
+        try {
+          const resp = await fetch(`/api/stock-search?q=${encodeURIComponent(q)}`);
+          const data = await resp.json();
+          if (!data.length) { results.classList.remove('show'); return; }
+          results.innerHTML = data.map(r =>
+            `<div class="sim-result-item" onclick="SIM.loadTicker('${r.symbol}')">
+              <span class="sri-sym">${r.symbol}</span>
+              <span class="sri-name">${r.name}</span>
+            </div>`
+          ).join('');
+          results.classList.add('show');
+        } catch(e) { results.classList.remove('show'); }
+      }, 300);
+    });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const q = this.value.trim().toUpperCase();
+        if (q) { loadTicker(q); results.classList.remove('show'); }
+      }
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.sim-search-wrap')) results.classList.remove('show');
+    });
+  }
+
+  // ---------- LOAD TICKER DATA ----------
+  async function loadTicker(symbol) {
+    symbol = symbol.toUpperCase();
+    const range = document.getElementById('sim-range')?.value || '1y';
+    document.getElementById('sim-ticker-search').value = symbol;
+    document.getElementById('sim-search-results').classList.remove('show');
+
+    // Show loading
+    document.getElementById('sim-tb-sym').textContent = symbol + ' ...';
+    document.getElementById('sim-status').textContent = 'Loading';
+    document.getElementById('sim-status').className = 'sim-status running';
+
+    try {
+      // Try live API first
+      const resp = await fetch(`/api/stock-data?symbol=${encodeURIComponent(symbol)}&range=${range}`);
+      if (!resp.ok) throw new Error('API error');
+      const data = await resp.json();
+
+      if (!data.candles || data.candles.length < 10) throw new Error('Insufficient data');
+
+      state.symbol = data.symbol;
+      state.candles = data.candles;
+
+      const last = data.candles[data.candles.length - 1];
+      const prev = data.candles[data.candles.length - 2];
+      const chg = ((last.close - prev.close) / prev.close * 100);
+
+      document.getElementById('sim-tb-sym').textContent = data.symbol;
+      document.getElementById('sim-tb-price').textContent = '$' + last.close.toFixed(2);
+      const chgEl = document.getElementById('sim-tb-chg');
+      chgEl.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
+      chgEl.className = 'stb-chg ' + (chg >= 0 ? 'up' : 'dn');
+
+      document.getElementById('sim-status').textContent = 'Ready';
+      document.getElementById('sim-status').className = 'sim-status waiting';
+
+      // Auto-suggest entry near last close
+      if (!state.entry) {
+        document.getElementById('sim-entry').value = last.close.toFixed(2);
+        document.getElementById('sim-stop').value = (last.close * 0.98).toFixed(2);
+        document.getElementById('sim-target').value = (last.close * 1.06).toFixed(2);
+        calcMetrics();
+      }
+
+      // Draw full chart
+      state.visibleCandles = [...state.candles];
+      state.simIndex = 0;
+      state.entryTriggered = false;
+      state.tradeActive = false;
+      state.tradeResult = null;
+      drawChart();
+
+      addEduStep(getCommentary('loaded', {
+        symbol: data.symbol,
+        count: data.candles.length,
+        price: last.close.toFixed(2)
+      }));
+
+    } catch (e) {
+      // Fallback to LIVE_PRICES if available
+      if (typeof LIVE_PRICES !== 'undefined' && LIVE_PRICES[symbol]) {
+        const lp = LIVE_PRICES[symbol];
+        state.symbol = symbol;
+        state.candles = lp.dates.map((d, i) => ({
+          date: d, open: lp.prices[i], high: lp.prices[i] * 1.015,
+          low: lp.prices[i] * 0.985, close: lp.prices[i], volume: Math.round(Math.random() * 50000000)
+        }));
+        const last = state.candles[state.candles.length - 1];
+        document.getElementById('sim-tb-sym').textContent = symbol;
+        document.getElementById('sim-tb-price').textContent = '$' + last.close.toFixed(2);
+        document.getElementById('sim-status').textContent = 'Ready (cached)';
+        document.getElementById('sim-status').className = 'sim-status waiting';
+        state.visibleCandles = [...state.candles];
+        drawChart();
+        addEduStep(getCommentary('loaded', { symbol, count: state.candles.length, price: last.close.toFixed(2) }));
+      } else {
+        document.getElementById('sim-tb-sym').textContent = symbol + ' (error)';
+        document.getElementById('sim-status').textContent = 'Error';
+        document.getElementById('sim-status').className = 'sim-status hit-stop';
+        addEduStep(`<span style="color:#EF4444;">❌ Could not load data for <strong>${symbol}</strong>. Try one of the quick-pick tickers or check the symbol.</span>`, 'danger');
+      }
+    }
+  }
+
+  // ---------- CALCULATE S.E.T. METRICS ----------
+  function calcMetrics() {
+    const acct = parseFloat(document.getElementById('sim-acct').value) || 10000;
+    const entry = parseFloat(document.getElementById('sim-entry').value) || 0;
+    const stop = parseFloat(document.getElementById('sim-stop').value) || 0;
+    const target = parseFloat(document.getElementById('sim-target').value) || 0;
+
+    state.acct = acct;
+    state.entry = entry;
+    state.stop = stop;
+    state.target = target;
+
+    const maxRisk = acct * 0.01;
+    const tradeRisk = Math.abs(entry - stop);
+    const tradeReward = Math.abs(target - entry);
+    const ratio = tradeRisk > 0 ? (tradeReward / tradeRisk).toFixed(2) : 0;
+    const posSize = tradeRisk > 0 ? Math.max(1, Math.floor(maxRisk / tradeRisk)) : 0;
+    state.posSize = posSize;
+
+    document.getElementById('sim-m-risk').textContent = tradeRisk > 0 ? '$' + tradeRisk.toFixed(2) : '—';
+    document.getElementById('sim-m-reward').textContent = tradeReward > 0 ? '$' + tradeReward.toFixed(2) : '—';
+    document.getElementById('sim-m-ratio').textContent = ratio > 0 ? ratio + ':1' : '—';
+    document.getElementById('sim-m-ratio').className = 'smc-val' + (ratio >= 3 ? ' pos' : ratio > 0 ? ' neg' : '');
+    document.getElementById('sim-m-size').textContent = posSize > 0 ? posSize + ' shares' : '—';
+
+    // Redraw chart with S.E.T. lines if chart exists
+    if (state.visibleCandles.length > 0) drawChart();
+  }
+
+  // ---------- AUTO 3:1 ----------
+  function autoSET() {
+    const entry = parseFloat(document.getElementById('sim-entry').value) || 0;
+    const stop = parseFloat(document.getElementById('sim-stop').value) || 0;
+    if (!entry || !stop) return;
+    const risk = Math.abs(entry - stop);
+    const target = +(entry + risk * 3).toFixed(2);
+    document.getElementById('sim-target').value = target;
+    calcMetrics();
+  }
+
+  function clearSET() {
+    document.getElementById('sim-entry').value = '';
+    document.getElementById('sim-stop').value = '';
+    document.getElementById('sim-target').value = '';
+    state.entry = 0; state.stop = 0; state.target = 0; state.posSize = 0;
+    calcMetrics();
+  }
+
+  // ---------- CHART RENDERING ----------
+  function drawChart() {
+    const canvas = document.getElementById('sim-chart-canvas');
+    const wrap = document.getElementById('sim-canvas-wrap');
+    if (!canvas || !wrap) return;
+    const ctx = canvas.getContext('2d');
+    const W = wrap.clientWidth;
+    const H = wrap.clientHeight || 420;
+    canvas.width = W * (window.devicePixelRatio || 1);
+    canvas.height = H * (window.devicePixelRatio || 1);
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+
+    const data = state.visibleCandles;
+    if (!data.length) return;
+
+    const pad = { top: 20, right: 70, bottom: 30, left: 10 };
+    const cW = W - pad.left - pad.right;
+    const cH = H - pad.top - pad.bottom;
+
+    // Price range
+    let pMin = Infinity, pMax = -Infinity;
+    data.forEach(c => { if (c.low < pMin) pMin = c.low; if (c.high > pMax) pMax = c.high; });
+    // Include S.E.T. levels in range
+    if (state.stop > 0) { pMin = Math.min(pMin, state.stop * 0.998); pMax = Math.max(pMax, state.stop * 1.002); }
+    if (state.target > 0) { pMin = Math.min(pMin, state.target * 0.998); pMax = Math.max(pMax, state.target * 1.002); }
+    if (state.entry > 0) { pMin = Math.min(pMin, state.entry * 0.998); pMax = Math.max(pMax, state.entry * 1.002); }
+    const pRange = pMax - pMin || 1;
+    const margin = pRange * 0.05;
+    pMin -= margin; pMax += margin;
+
+    const yScale = cH / (pMax - pMin);
+    const toY = p => pad.top + (pMax - p) * yScale;
+    const barW = Math.max(2, Math.min(12, (cW / data.length) * 0.7));
+    const gap = cW / data.length;
+
+    // Clear
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#161B2B';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid lines
+    ctx.strokeStyle = '#1F2640';
+    ctx.lineWidth = 0.5;
+    const gridSteps = 6;
+    for (let i = 0; i <= gridSteps; i++) {
+      const y = pad.top + (cH / gridSteps) * i;
+      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+      const price = pMax - (pMax - pMin) * (i / gridSteps);
+      ctx.fillStyle = '#4A5078';
+      ctx.font = '10px system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('$' + price.toFixed(2), W - pad.right + 6, y + 3);
+    }
+
+    // S.E.T. horizontal lines & zones
+    if (state.stop > 0 && state.entry > 0) {
+      // Red zone (stop zone)
+      const stopY = toY(state.stop);
+      const entryY = toY(state.entry);
+      ctx.fillStyle = 'rgba(239,68,68,0.06)';
+      ctx.fillRect(pad.left, stopY, cW, H - pad.bottom - stopY);
+    }
+    if (state.target > 0 && state.entry > 0) {
+      // Green zone (target zone)
+      const targetY = toY(state.target);
+      ctx.fillStyle = 'rgba(16,185,129,0.06)';
+      ctx.fillRect(pad.left, pad.top, cW, targetY - pad.top);
+    }
+
+    // S.E.T. lines
+    function drawSetLine(price, color, label) {
+      if (price <= 0) return;
+      const y = toY(price);
+      if (y < pad.top || y > H - pad.bottom) return;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+      ctx.setLineDash([]);
+      // Price label on right axis
+      ctx.fillStyle = color;
+      ctx.font = 'bold 10px system-ui';
+      ctx.textAlign = 'left';
+      ctx.fillText('$' + price.toFixed(2), W - pad.right + 4, y - 4);
+    }
+    drawSetLine(state.stop, '#EF4444', 'STOP');
+    drawSetLine(state.entry, '#3B82F6', 'ENTRY');
+    drawSetLine(state.target, '#10B981', 'TARGET');
+
+    // Position S.E.T. clickable labels
+    positionLabel('sim-lbl-stop', state.stop, toY);
+    positionLabel('sim-lbl-entry', state.entry, toY);
+    positionLabel('sim-lbl-target', state.target, toY);
+
+    // Candlesticks
+    data.forEach((c, i) => {
+      const x = pad.left + gap * i + gap / 2;
+      const isUp = c.close >= c.open;
+      const bodyTop = toY(Math.max(c.open, c.close));
+      const bodyBot = toY(Math.min(c.open, c.close));
+      const bodyH = Math.max(1, bodyBot - bodyTop);
+
+      // Wick
+      ctx.strokeStyle = isUp ? '#26A69A' : '#EF5350';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, toY(c.high));
+      ctx.lineTo(x, toY(c.low));
+      ctx.stroke();
+
+      // Body
+      ctx.fillStyle = isUp ? 'rgba(38,166,154,0.85)' : '#EF5350';
+      ctx.fillRect(x - barW / 2, bodyTop, barW, bodyH);
+
+      // Highlight current candle in simulation
+      if (state.playing && i === state.simIndex - 1) {
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x - barW / 2 - 2, bodyTop - 2, barW + 4, bodyH + 4);
+      }
+
+      // Mark entry trigger point
+      if (state.entryTriggered && i === state.entryCandle) {
+        ctx.fillStyle = '#3B82F6';
+        ctx.beginPath();
+        ctx.arc(x, toY(state.entry), 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 7px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('E', x, toY(state.entry) + 2.5);
+      }
+
+      // Mark exit point
+      if (state.tradeResult && i === state.exitCandle) {
+        const exitColor = state.tradeResult === 'target' ? '#10B981' : '#EF4444';
+        ctx.fillStyle = exitColor;
+        ctx.beginPath();
+        ctx.arc(x, toY(state.exitPrice), 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 8px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.tradeResult === 'target' ? 'T' : 'S', x, toY(state.exitPrice) + 3);
+      }
+    });
+
+    // Store layout for hover
+    state.chartLayout = { pad, gap, pMin, pMax, yScale, toY, barW, W, H };
+  }
+
+  function positionLabel(id, price, toY) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (price <= 0) { el.style.display = 'none'; return; }
+    const y = toY(price);
+    if (y < 20 || y > 400) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    el.style.top = (y - 10) + 'px';
+  }
+
+  // ---------- CANVAS HOVER ----------
+  function initCanvasHover() {
+    const canvas = document.getElementById('sim-chart-canvas');
+    if (!canvas) return;
+    canvas.addEventListener('mousemove', function(e) {
+      if (!state.chartLayout || !state.visibleCandles.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const { pad, gap } = state.chartLayout;
+      const idx = Math.floor((mx - pad.left) / gap);
+      if (idx >= 0 && idx < state.visibleCandles.length) {
+        const c = state.visibleCandles[idx];
+        document.getElementById('sim-hov-o').textContent = c.open.toFixed(2);
+        document.getElementById('sim-hov-h').textContent = c.high.toFixed(2);
+        document.getElementById('sim-hov-l').textContent = c.low.toFixed(2);
+        document.getElementById('sim-hov-c').textContent = c.close.toFixed(2);
+        document.getElementById('sim-hov-v').textContent = (c.volume / 1e6).toFixed(1) + 'M';
+      }
+    });
+  }
+
+  // ---------- SIMULATION ENGINE ----------
+  function start() {
+    if (!state.candles.length) { addEduStep('❌ Load a stock first before running the simulation.', 'danger'); return; }
+    if (!state.entry || !state.stop || !state.target) { addEduStep('❌ Define all three S.E.T. levels (Stop, Entry, Target) before running.', 'danger'); return; }
+    if (state.stop >= state.entry) { addEduStep('⚠️ Stop must be below Entry for a long trade.', 'warn'); return; }
+    if (state.target <= state.entry) { addEduStep('⚠️ Target must be above Entry for a long trade.', 'warn'); return; }
+
+    const tradeRisk = Math.abs(state.entry - state.stop);
+    const tradeReward = Math.abs(state.target - state.entry);
+    const ratio = (tradeReward / tradeRisk).toFixed(2);
+
+    // Reset simulation state
+    state.simIndex = 0;
+    state.visibleCandles = [];
+    state.entryTriggered = false;
+    state.tradeActive = false;
+    state.tradeResult = null;
+    state.exitPrice = 0;
+    state.entryCandle = -1;
+    state.exitCandle = -1;
+    state.playing = true;
+    state.eduSteps = [];
+
+    // Clear education feed
+    document.getElementById('sim-edu-steps').innerHTML = '';
+
+    // Show controls
+    document.getElementById('sim-ctrl-bar').style.display = 'flex';
+    document.getElementById('sim-pnl-bar').style.display = 'block';
+    document.getElementById('sim-distances').style.display = 'flex';
+    document.getElementById('sim-run-btn').style.display = 'none';
+
+    // Update status
+    document.getElementById('sim-status').textContent = 'Running';
+    document.getElementById('sim-status').className = 'sim-status running';
+    document.getElementById('sim-play-btn').textContent = '⏸ Pause';
+
+    addEduStep(getCommentary('set_defined', {
+      stop: state.stop.toFixed(2), entry: state.entry.toFixed(2), target: state.target.toFixed(2),
+      riskPerShare: tradeRisk.toFixed(2), rewardPerShare: tradeReward.toFixed(2),
+      ratio: ratio + ':1', posSize: state.posSize
+    }));
+
+    addEduStep(getCommentary('sim_start', {
+      startDate: state.candles[0]?.date || '—', entry: state.entry.toFixed(2)
+    }));
+
+    // Start animation loop
+    state.lastTick = performance.now();
+    tick();
+  }
+
+  function tick() {
+    if (!state.playing) return;
+    const now = performance.now();
+    const interval = Math.max(30, 400 / state.speed);
+    if (now - state.lastTick < interval) {
+      state.animFrame = requestAnimationFrame(tick);
+      return;
+    }
+    state.lastTick = now;
+
+    if (state.simIndex >= state.candles.length || state.tradeResult) {
+      endSimulation();
+      return;
+    }
+
+    // Add next candle
+    state.visibleCandles.push(state.candles[state.simIndex]);
+    const candle = state.candles[state.simIndex];
+    state.simIndex++;
+
+    // Update progress
+    const pct = (state.simIndex / state.candles.length * 100).toFixed(1);
+    document.getElementById('sim-progress-fill').style.width = pct + '%';
+    document.getElementById('sim-candle-count').textContent = state.simIndex + ' / ' + state.candles.length;
+
+    // Check S.E.T. conditions
+    checkSETConditions(candle);
+
+    // Draw
+    drawChart();
+
+    // Update distances & P&L
+    updateLiveMetrics(candle);
+
+    state.animFrame = requestAnimationFrame(tick);
+  }
+
+  function checkSETConditions(candle) {
+    // Check if Entry triggers (price crosses Entry level)
+    if (!state.entryTriggered) {
+      if (candle.low <= state.entry && candle.high >= state.entry) {
+        state.entryTriggered = true;
+        state.tradeActive = true;
+        state.entryCandle = state.simIndex - 1;
+        document.getElementById('sim-status').textContent = 'In Trade';
+        document.getElementById('sim-status').className = 'sim-status active-trade';
+        addEduStep(getCommentary('entry_triggered', {
+          price: state.entry.toFixed(2), posSize: state.posSize, target: state.target.toFixed(2), stop: state.stop.toFixed(2)
+        }));
+      } else {
+        // Commentary for approaching entry
+        const distToEntry = Math.abs(candle.close - state.entry);
+        const entryRange = Math.abs(state.target - state.stop);
+        if (distToEntry < entryRange * 0.15 && state.simIndex % 5 === 0) {
+          addEduStep(getCommentary('approaching_entry', {
+            entry: state.entry.toFixed(2), price: candle.close.toFixed(2), distance: distToEntry.toFixed(2)
+          }));
+        }
+      }
+    }
+
+    // Check if trade hits Target or Stop
+    if (state.tradeActive && !state.tradeResult) {
+      // Check Stop hit
+      if (candle.low <= state.stop) {
+        state.tradeResult = 'stop';
+        state.exitPrice = state.stop;
+        state.exitCandle = state.simIndex - 1;
+        state.tradeActive = false;
+        const totalPnl = Math.abs(state.posSize * (state.stop - state.entry)).toFixed(2);
+        document.getElementById('sim-status').textContent = 'STOP HIT';
+        document.getElementById('sim-status').className = 'sim-status hit-stop';
+        addEduStep(getCommentary('stop_hit', { price: state.stop.toFixed(2), totalPnl }), 'danger');
+        return;
+      }
+      // Check Target hit
+      if (candle.high >= state.target) {
+        state.tradeResult = 'target';
+        state.exitPrice = state.target;
+        state.exitCandle = state.simIndex - 1;
+        state.tradeActive = false;
+        const totalPnl = (state.posSize * (state.target - state.entry)).toFixed(2);
+        document.getElementById('sim-status').textContent = 'TARGET HIT';
+        document.getElementById('sim-status').className = 'sim-status hit-target';
+        addEduStep(getCommentary('target_hit', { price: state.target.toFixed(2), totalPnl }), 'success');
+        return;
+      }
+
+      // Running commentary (every ~8 candles)
+      if (state.simIndex % 8 === 0) {
+        const unrealized = Math.abs(candle.close - state.entry) * state.posSize;
+        const movingFavorably = candle.close > state.entry;
+        if (movingFavorably) {
+          addEduStep(getCommentary('moving_to_target', {
+            price: candle.close.toFixed(2),
+            unrealizedPnl: unrealized.toFixed(2),
+            distToTarget: Math.abs(state.target - candle.close).toFixed(2)
+          }));
+        } else {
+          addEduStep(getCommentary('moving_to_stop', {
+            price: candle.close.toFixed(2),
+            unrealizedPnl: unrealized.toFixed(2),
+            distToStop: Math.abs(candle.close - state.stop).toFixed(2)
+          }));
+        }
+      }
+
+      // Near-stop warning
+      const distToStop = Math.abs(candle.close - state.stop);
+      const totalRange = Math.abs(state.entry - state.stop);
+      if (distToStop < totalRange * 0.25 && candle.close < state.entry) {
+        if (state.simIndex % 3 === 0) {
+          addEduStep(getCommentary('near_stop_warning', {
+            price: candle.close.toFixed(2),
+            distToStop: distToStop.toFixed(2)
+          }), 'warn');
+        }
+      }
+    }
+  }
+
+  function updateLiveMetrics(candle) {
+    if (state.tradeActive) {
+      const pnl = (candle.close - state.entry) * state.posSize;
+      const pnlEl = document.getElementById('sim-pnl-val');
+      pnlEl.textContent = (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2);
+      pnlEl.className = 'spb-val ' + (pnl >= 0 ? 'pos' : 'neg');
+      const pnlPct = ((candle.close - state.entry) / state.entry * 100);
+      document.getElementById('sim-pnl-sub').textContent = (pnlPct >= 0 ? '+' : '') + pnlPct.toFixed(2) + '% | ' + state.posSize + ' shares';
+
+      // Distances
+      document.getElementById('sim-d-stop').textContent = '$' + Math.abs(candle.close - state.stop).toFixed(2);
+      document.getElementById('sim-d-target').textContent = '$' + Math.abs(state.target - candle.close).toFixed(2);
+    } else if (!state.entryTriggered) {
+      document.getElementById('sim-pnl-val').textContent = '$0.00';
+      document.getElementById('sim-pnl-val').className = 'spb-val';
+      document.getElementById('sim-pnl-sub').textContent = 'Waiting for Entry trigger';
+      document.getElementById('sim-d-stop').textContent = '—';
+      document.getElementById('sim-d-target').textContent = '—';
+    }
+  }
+
+  function endSimulation() {
+    state.playing = false;
+    document.getElementById('sim-play-btn').textContent = '▶ Play';
+
+    if (state.tradeResult) {
+      showOutcome();
+    } else {
+      // Trade never triggered or never completed
+      document.getElementById('sim-status').textContent = 'Ended';
+      document.getElementById('sim-status').className = 'sim-status waiting';
+      if (!state.entryTriggered) {
+        addEduStep('⏹ <strong>Simulation ended.</strong> Price never reached your Entry level during this period. Consider adjusting your Entry closer to the price action, or try a different timeframe. A good Entry is set at a level where supply/demand analysis shows institutional interest.');
+      } else {
+        addEduStep('⏹ <strong>Simulation ended.</strong> The trade was active but neither Target nor Stop was hit in this period. In real trading, you would continue holding with your S.E.T. levels in place. Consider if the R:R ratio still justifies the position.');
+      }
+    }
+  }
+
+  function showOutcome() {
+    const outcome = document.getElementById('sim-outcome');
+    const isWin = state.tradeResult === 'target';
+    const pnl = state.posSize * (state.exitPrice - state.entry);
+    const riskPerShare = Math.abs(state.entry - state.stop);
+    const actualRR = riskPerShare > 0 ? (Math.abs(state.exitPrice - state.entry) / riskPerShare).toFixed(2) : '0';
+
+    document.getElementById('sim-out-icon').textContent = isWin ? '🎯' : '🛑';
+    document.getElementById('sim-out-title').textContent = isWin ? 'Target Hit — Trade Won!' : 'Stop Hit — Risk Managed';
+    const pnlEl = document.getElementById('sim-out-pnl');
+    pnlEl.textContent = (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2);
+    pnlEl.className = 'so-pnl ' + (isWin ? 'pos' : 'neg');
+    document.getElementById('sim-out-entry').textContent = '$' + state.entry.toFixed(2);
+    document.getElementById('sim-out-exit').textContent = '$' + state.exitPrice.toFixed(2);
+    document.getElementById('sim-out-rr').textContent = actualRR + ':1';
+
+    const lessonEl = document.getElementById('sim-out-lesson');
+    if (isWin) {
+      lessonEl.className = 'so-lesson';
+      lessonEl.innerHTML = `<strong>Why this trade worked:</strong> The S.E.T. structure was valid — your Entry was at a logical level, your Stop protected you from excess loss, and your Target was achievable at a ${actualRR}:1 reward-to-risk ratio. The price moved from Entry ($${state.entry.toFixed(2)}) to Target ($${state.target.toFixed(2)}), generating $${pnl.toFixed(2)} profit across ${state.posSize} shares.<br><br><strong>Key takeaway:</strong> Winning trades are built before the trade begins. By defining S.E.T. in advance, you removed emotion from the equation and let the system work. This is how the top 5% of traders operate.`;
+    } else {
+      lessonEl.className = 'so-lesson loss-lesson';
+      lessonEl.innerHTML = `<strong>Why the Stop was hit:</strong> Price moved against the position and reached your protective floor at $${state.stop.toFixed(2)}. Your loss was <strong>$${Math.abs(pnl).toFixed(2)}</strong> — which is ${((Math.abs(pnl) / state.acct) * 100).toFixed(2)}% of your account.<br><br><strong>This is NOT failure — this is risk management in action.</strong> The 1% Rule capped your loss. Without the S.E.T. Rule, this trade could have resulted in catastrophic damage. A stopped-out trade with proper S.E.T. is a <em>successful execution of the system</em>. At a 3:1 ratio, you only need to win 25% of trades to break even. One loss does not define your trading — consistency and discipline do.`;
+    }
+
+    outcome.classList.add('show');
+  }
+
+  function closeOutcome() {
+    document.getElementById('sim-outcome').classList.remove('show');
+  }
+
+  // ---------- PLAYBACK CONTROLS ----------
+  function togglePlay() {
+    if (state.tradeResult) return; // Already done
+    state.playing = !state.playing;
+    document.getElementById('sim-play-btn').textContent = state.playing ? '⏸ Pause' : '▶ Play';
+    if (state.playing) {
+      state.lastTick = performance.now();
+      tick();
+    }
+  }
+
+  function setSpeed(spd, btn) {
+    state.speed = spd;
+    document.querySelectorAll('.sim-speed button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function reset() {
+    state.playing = false;
+    state.simIndex = 0;
+    state.visibleCandles = [...state.candles];
+    state.entryTriggered = false;
+    state.tradeActive = false;
+    state.tradeResult = null;
+    state.exitPrice = 0;
+    state.entryCandle = -1;
+    state.exitCandle = -1;
+    if (state.animFrame) cancelAnimationFrame(state.animFrame);
+
+    document.getElementById('sim-ctrl-bar').style.display = 'none';
+    document.getElementById('sim-pnl-bar').style.display = 'none';
+    document.getElementById('sim-distances').style.display = 'none';
+    document.getElementById('sim-run-btn').style.display = '';
+    document.getElementById('sim-outcome').classList.remove('show');
+    document.getElementById('sim-progress-fill').style.width = '0%';
+    document.getElementById('sim-status').textContent = 'Ready';
+    document.getElementById('sim-status').className = 'sim-status waiting';
+    document.getElementById('sim-edu-steps').innerHTML = '<div class="se-step">Select a stock and define your S.E.T. levels, then click <strong>Run Simulation</strong> to begin.</div>';
+
+    drawChart();
+  }
+
+  // ---------- EDUCATION POPUPS ----------
+  function showEdu(type) {
+    const edu = EDU[type];
+    if (!edu) return;
+    const popup = document.getElementById('sim-edu-popup');
+    document.getElementById('sim-edu-title').innerHTML = edu.title;
+    let body = edu.body;
+    // Inject current trade values
+    const maxRisk = (state.acct * 0.01).toFixed(2);
+    const reward = Math.abs(state.target - state.entry).toFixed(2);
+    const totalReward = (state.posSize * Math.abs(state.target - state.entry)).toFixed(2);
+    body = body.replace(/<span class="edu-max-risk"><\/span>/g, maxRisk);
+    body = body.replace(/<span class="edu-pos-size"><\/span>/g, state.posSize + ' shares');
+    body = body.replace(/<span class="edu-reward"><\/span>/g, reward);
+    body = body.replace(/<span class="edu-total-reward"><\/span>/g, totalReward);
+    document.getElementById('sim-edu-body').innerHTML = body;
+    popup.classList.add('show');
+  }
+
+  function hideEdu() {
+    document.getElementById('sim-edu-popup').classList.remove('show');
+  }
+
+  // ---------- EDUCATION FEED ----------
+  function addEduStep(html, type) {
+    const container = document.getElementById('sim-edu-steps');
+    const div = document.createElement('div');
+    div.className = 'se-step' + (type ? ' ' + type : '');
+    div.innerHTML = html;
+    container.prepend(div);
+    // Keep max 15 entries
+    while (container.children.length > 15) container.removeChild(container.lastChild);
+    // Auto scroll
+    const feed = document.getElementById('sim-edu-feed');
+    feed.scrollTop = 0;
+  }
+
+  // ---------- INIT ----------
+  function init() {
+    initSearch();
+    initCanvasHover();
+    // Handle resize
+    window.addEventListener('resize', () => {
+      if (state.visibleCandles.length) drawChart();
+    });
+  }
+
+  return {
+    state, loadTicker, calcMetrics, autoSET, clearSET,
+    start, togglePlay, setSpeed, reset, showEdu, hideEdu,
+    closeOutcome, init
+  };
+})();
+
+// Initialize when setsim tab is shown
+const _origShowTab = showTab;
+showTab = function(tab, btn) {
+  _origShowTab(tab, btn);
+  if (tab === 'setsim') {
+    SIM.init();
+    // Draw chart if data exists
+    if (SIM.state.visibleCandles.length) {
+      setTimeout(() => {
+        const wrap = document.getElementById('sim-canvas-wrap');
+        if (wrap && wrap.clientWidth > 0) {
+          SIM.state.visibleCandles = [...SIM.state.candles];
+          // Trigger redraw by calling drawChart through calcMetrics
+          SIM.calcMetrics();
+        }
+      }, 50);
+    }
+  }
+};
+
 </script>
 </body>
 </html>
