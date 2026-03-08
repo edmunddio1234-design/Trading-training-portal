@@ -2979,6 +2979,8 @@ function fmt$(n) { return (n>=0?'+':'')+n.toFixed(0); }
 function fmtP(n) { return (n>=0?'+':'')+n.toFixed(1)+'%'; }
 
 function renderResults(trades, acct, sym, strat) {
+  // Store globally so Trade Journal can import
+  window._lastBacktest = { trades, acct, sym, strat };
   document.getElementById('nores').style.display = 'none';
   document.getElementById('results-box').style.display = 'block';
 
@@ -5795,7 +5797,28 @@ const JOURNAL = (function() {
   }
   
   function importFromBacktest() {
-    alert('Import feature: Backtest results would be pulled here');
+    if (!window._lastBacktest || !window._lastBacktest.trades || window._lastBacktest.trades.length === 0) {
+      alert('No backtest results to import. Run a backtest first on the Backtester tab.');
+      return;
+    }
+    const bt = window._lastBacktest;
+    const imported = bt.trades.map(t => ({
+      date: t.openDate || t.closeDate || new Date().toISOString().split('T')[0],
+      symbol: bt.sym || 'SPY',
+      entry: parseFloat(t.entry) || 0,
+      exit: parseFloat(t.entry) + (t.pnl / (parseInt(document.getElementById('tj-size')?.value) || 100)),
+      size: 100,
+      result: t.pnl >= 0 ? 'Win' : 'Loss',
+      stop: 0,
+      target: 0,
+      notes: 'Imported from backtest: ' + (bt.strat || 'Unknown') + ' on ' + (bt.sym || 'SPY') + '. Strikes: ' + (t.strikes || 'N/A') + '. Regime: ' + (t.regime || 'N/A'),
+      pnl: t.pnl
+    }));
+    trades = trades.concat(imported);
+    saveToStorage();
+    renderTrades();
+    calculateExpectancy();
+    alert('Imported ' + imported.length + ' trades from ' + (bt.strat || 'Unknown') + ' backtest on ' + (bt.sym || 'SPY'));
   }
   
   function init() {
