@@ -486,6 +486,65 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   .ct-ohlc{display:none;}
 }
 
+/* ===== ENHANCED MARKOV REGIME ENGINE ===== */
+.regime-engine{display:grid;grid-template-columns:1fr;gap:16px;}
+.regime-top{display:grid;grid-template-columns:1fr 320px;gap:16px;}
+.regime-hero{display:flex;align-items:center;gap:20px;padding:18px;border-radius:14px;margin-bottom:6px;}
+.regime-hero.bear{background:linear-gradient(135deg,#FEE2E2,#FECACA);border:2px solid #EF4444;}
+.regime-hero.bull{background:linear-gradient(135deg,#D1FAE5,#A7F3D0);border:2px solid #10B981;}
+.regime-hero.neutral{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:2px solid #F59E0B;}
+.regime-hero-icon{font-size:52px;line-height:1;}
+.regime-hero-text h2{font-size:22px;font-weight:900;margin:0 0 2px 0;}
+.regime-hero-text p{font-size:12px;color:var(--gray-600);margin:0;}
+.regime-hero-metrics{display:flex;gap:14px;margin-left:auto;}
+.regime-metric-pill{background:rgba(255,255,255,.7);border-radius:10px;padding:8px 14px;text-align:center;min-width:90px;}
+.regime-metric-pill .val{font-size:18px;font-weight:800;display:block;}
+.regime-metric-pill .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-500);}
+.regime-recs{margin-top:0;}
+.regime-recs-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.rec-card{background:white;border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;margin-bottom:12px;transition:all .2s;cursor:pointer;position:relative;overflow:hidden;}
+.rec-card:hover{border-color:var(--emerald);box-shadow:0 4px 16px rgba(13,147,115,.12);}
+.rec-card.expanded{border-color:var(--emerald);box-shadow:0 4px 20px rgba(13,147,115,.15);}
+.rec-card-hdr{display:flex;align-items:center;gap:12px;}
+.rec-rank{width:32px;height:32px;border-radius:50%;background:var(--navy);color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0;}
+.rec-rank.top{background:linear-gradient(135deg,#10B981,#059669);}
+.rec-card-info{flex:1;}
+.rec-card-info h4{font-size:14px;font-weight:800;color:var(--navy);margin:0;}
+.rec-card-info .rec-type{font-size:10px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;}
+.rec-confidence{display:flex;align-items:center;gap:6px;margin-left:auto;}
+.confidence-bar{width:60px;height:6px;background:#E5E7EB;border-radius:3px;overflow:hidden;}
+.confidence-fill{height:100%;border-radius:3px;transition:width .6s;}
+.confidence-pct{font-size:11px;font-weight:700;color:var(--navy);}
+.rec-why{font-size:12px;color:var(--gray-600);margin:8px 0 0 44px;line-height:1.6;}
+.rec-signals{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0 44px;}
+.rec-signal{background:#F0F5F3;border:1px solid #D1FAE5;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;color:#065F46;}
+.rec-signal.warn{background:#FEF3C7;border-color:#FDE68A;color:#92400E;}
+.rec-signal.danger{background:#FEE2E2;border-color:#FECACA;color:#991B1B;}
+.rec-actions{display:flex;gap:8px;margin:12px 0 0 44px;}
+.rec-btn{padding:7px 16px;border-radius:8px;font-size:11px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
+.rec-btn-primary{background:var(--emerald);color:white;}
+.rec-btn-primary:hover{background:#059669;}
+.rec-btn-secondary{background:var(--mint-bg);color:var(--navy);border:1px solid var(--gray-200);}
+.rec-btn-secondary:hover{background:#E0EBE7;}
+.rec-projection{margin:14px 0 0 44px;background:#161B2B;border-radius:10px;padding:14px;display:none;}
+.rec-projection.show{display:block;}
+.rec-proj-canvas{width:100%;height:200px;}
+.rec-proj-legend{display:flex;gap:14px;margin-top:8px;font-size:10px;color:#9CA3AF;}
+.rec-proj-legend span::before{content:'';display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:4px;vertical-align:middle;}
+.rec-proj-legend .lg-price::before{background:#60A5FA;}
+.rec-proj-legend .lg-entry::before{background:#10B981;}
+.rec-proj-legend .lg-stop::before{background:#EF4444;}
+.rec-proj-legend .lg-target::before{background:#F59E0B;}
+.regime-sidebar .panel{margin-bottom:12px;}
+.regime-signal-list{list-style:none;padding:0;margin:0;}
+.regime-signal-list li{font-size:12px;padding:6px 0;border-bottom:1px solid var(--gray-100);color:var(--gray-700);display:flex;align-items:center;gap:6px;}
+.regime-signal-list li:last-child{border:none;}
+.prob-row{display:flex;align-items:center;gap:8px;margin:4px 0;}
+.prob-label{font-size:11px;font-weight:700;width:60px;}
+.prob-bar-bg{flex:1;height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;}
+.prob-bar-fill{height:100%;border-radius:4px;transition:width .8s;}
+.prob-pct{font-size:11px;font-weight:700;width:36px;text-align:right;}
+
 /* ===== S.E.T. SIMULATOR ===== */
 .sim-grid{display:grid;grid-template-columns:320px 1fr;gap:18px;}
 .sim-chart-area{background:#161B2B;border-radius:14px;overflow:hidden;position:relative;min-height:480px;}
@@ -1010,48 +1069,68 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <!-- ===== MARKOV REGIME TAB ===== -->
 <div id="tab-regime" class="tab-content">
 <div class="container">
-  <div class="regime-grid">
-    <div class="panel">
-      <div class="panel-title">🔀 Hidden Markov Model — Market Regime Detector</div>
-      <div style="font-size:12px; color:var(--gray-500); margin-bottom:10px;">
-        A 3-state HMM (Bull / Bear / Neutral) infers hidden market regimes from rolling returns and volatility.
-        Each trade in the backtester is tagged with the regime active at entry.
+  <div class="regime-engine">
+    <!-- HERO: Current Regime Banner -->
+    <div class="regime-hero bear" id="regime-hero">
+      <div class="regime-hero-icon" id="regime-hero-icon">🔴</div>
+      <div class="regime-hero-text">
+        <h2 id="regime-hero-label">BEAR MARKET DETECTED</h2>
+        <p id="regime-hero-sub">HMM 3-State Model · Live Yahoo Finance Data · 21-Day Rolling Window</p>
       </div>
-      <div style="font-size:11px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:.5px;">Regime Timeline 2023–2025</div>
-      <div class="regimebar" id="regime-bar"></div>
-      <div class="rlegend">
-        <span>🟢 Bull Market</span>
-        <span>🔴 Bear Market</span>
-        <span>🟡 Neutral / Choppy</span>
+      <div class="regime-hero-metrics">
+        <div class="regime-metric-pill"><span class="val" id="rh-return">—</span><span class="lbl">Ann. Return</span></div>
+        <div class="regime-metric-pill"><span class="val" id="rh-vol">—</span><span class="lbl">Ann. Volatility</span></div>
+        <div class="regime-metric-pill"><span class="val" id="rh-week">—</span><span class="lbl">Week Chg</span></div>
+        <div class="regime-metric-pill"><span class="val" id="rh-stick">—</span><span class="lbl">Persist %</span></div>
       </div>
-      <div class="rwrap"><canvas id="regime-chart"></canvas></div>
     </div>
 
-    <div>
-      <div class="panel" style="margin-bottom:14px;">
-        <div class="panel-title">📊 Transition Matrix</div>
-        <div style="font-size:11px; color:var(--gray-500); margin-bottom:10px;">Probability of next regime given current regime.</div>
-        <table class="matrix-tbl">
-          <thead>
-            <tr>
-              <th style="background:var(--navy); border-radius:6px 0 0 0;">From → To</th>
-              <th style="background:#065F46;">Bull</th>
-              <th style="background:#991B1B;">Bear</th>
-              <th style="background:#92400E;">Neutral</th>
-            </tr>
-          </thead>
-          <tbody id="matrix-body"></tbody>
-        </table>
+    <div class="regime-top">
+      <!-- LEFT: Recommendations -->
+      <div class="regime-recs">
+        <div class="regime-recs-title">⚡ Strategy Recommendations — Ranked by Regime Fit</div>
+        <div id="regime-rec-list"></div>
       </div>
 
-      <div class="panel">
-        <div class="panel-title">🔮 Current Detected Regime</div>
-        <div id="cur-regime" style="text-align:center; padding:14px;"></div>
-        <div style="font-size:11px; color:var(--gray-500); line-height:1.8; margin-top:10px; border-top:1px solid var(--gray-200); padding-top:10px;">
-          <strong>Optimal Strategy by Regime:</strong><br>
-          🟢 Bull → Covered Calls, Bull Call Spreads<br>
-          🔴 Bear → Protective Puts, Long Strangles<br>
-          🟡 Neutral → Iron Condors, Cash-Secured Puts
+      <!-- RIGHT: Sidebar -->
+      <div class="regime-sidebar">
+        <div class="panel">
+          <div class="panel-title">📊 Transition Probabilities</div>
+          <div style="font-size:10px;color:var(--gray-500);margin-bottom:8px;">From current regime → next most likely</div>
+          <div id="regime-prob-bars"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">📡 Supporting Signals</div>
+          <ul class="regime-signal-list" id="regime-signals"></ul>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">🔀 Regime Timeline</div>
+          <div style="font-size:10px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Last 3 Months</div>
+          <div class="regimebar" id="regime-bar"></div>
+          <div class="rlegend">
+            <span>🟢 Bull</span>
+            <span>🔴 Bear</span>
+            <span>🟡 Neutral</span>
+          </div>
+          <div class="rwrap" style="height:200px;"><canvas id="regime-chart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">📊 Transition Matrix</div>
+          <div style="font-size:10px;color:var(--gray-500);margin-bottom:6px;">Probability of next regime given current</div>
+          <table class="matrix-tbl">
+            <thead>
+              <tr>
+                <th style="background:var(--navy);border-radius:6px 0 0 0;">From → To</th>
+                <th style="background:#065F46;">Bull</th>
+                <th style="background:#991B1B;">Bear</th>
+                <th style="background:#92400E;">Neutral</th>
+              </tr>
+            </thead>
+            <tbody id="matrix-body"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -2825,94 +2904,512 @@ populateExps();
 let regimeChartInst = null;
 
 function renderRegimeTab() {
-  const { dates, prices } = genPrices('2023-01-01', '2025-01-01', 380, 0.14, 0.17, 42);
-  const regimes = detectRegimes(prices);
-
-  // Transition matrix
-  const M = { bull:{bull:0,bear:0,neutral:0}, bear:{bull:0,bear:0,neutral:0}, neutral:{bull:0,bear:0,neutral:0} };
-  for (let i=1; i<regimes.length; i++) {
-    const f=regimes[i-1], t=regimes[i];
-    if (M[f]) M[f][t]++;
-  }
-  const tbody = document.getElementById('matrix-body');
-  tbody.innerHTML = '';
-  ['bull','bear','neutral'].forEach(from=>{
-    const tot = M[from].bull + M[from].bear + M[from].neutral;
-    tbody.innerHTML += `<tr>
-      <td style="font-weight:700;background:var(--mint-bg);padding:7px;">${from.toUpperCase()}</td>
-      <td style="color:#065F46;">${tot?(M[from].bull/tot*100).toFixed(0)+'%':'—'}</td>
-      <td style="color:#991B1B;">${tot?(M[from].bear/tot*100).toFixed(0)+'%':'—'}</td>
-      <td style="color:#92400E;">${tot?(M[from].neutral/tot*100).toFixed(0)+'%':'—'}</td>
-    </tr>`;
-  });
-
-  // Regime bar
-  const cnt = {bull:0,bear:0,neutral:0};
-  regimes.forEach(r=>cnt[r]++);
-  const tot = regimes.length;
-  const bar = document.getElementById('regime-bar');
-  bar.innerHTML = '';
-  [['bull','#10B981'],['bear','#EF4444'],['neutral','#F59E0B']].forEach(([r,c])=>{
-    const seg = document.createElement('div');
-    seg.style.cssText = `flex:${cnt[r]};background:${c};`;
-    seg.title = `${r}: ${(cnt[r]/tot*100).toFixed(0)}%`;
-    bar.appendChild(seg);
-  });
-
-  // Current regime
-  const cur = regimes[regimes.length-1];
-  const rc = {bull:'#10B981',bear:'#EF4444',neutral:'#F59E0B'};
-  const re = {bull:'🟢',bear:'🔴',neutral:'🟡'};
-  document.getElementById('cur-regime').innerHTML = `
-    <div style="font-size:44px;">${re[cur]}</div>
-    <div style="font-size:20px;font-weight:800;color:${rc[cur]};margin:6px 0;">${cur.toUpperCase()} MARKET</div>
-    <div style="font-size:11px;color:var(--gray-500);">HMM Detection — Latest Regime</div>`;
-
-  // Price chart colored by regime
-  const N = Math.max(1, Math.floor(dates.length/150));
-  const sd = dates.filter((_,i)=>i%N===0);
-  const sp = prices.filter((_,i)=>i%N===0);
-  const sr = regimes.filter((_,i)=>i%N===0);
-  const sc = sr.map(r=>r==='bull'?'#10B981':r==='bear'?'#EF4444':'#F59E0B');
-
-  if (regimeChartInst) { regimeChartInst.destroy(); regimeChartInst = null; }
-  const ctx = document.getElementById('regime-chart').getContext('2d');
-  regimeChartInst = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: sd,
-      datasets: [{
-        label: 'SPY',
-        data: sp,
-        borderColor: '#1B2A4A',
-        borderWidth: 1.5,
-        pointRadius: 3,
-        pointBackgroundColor: sc,
-        pointBorderWidth: 0,
-        tension: 0.2,
-        fill: false,
-      }]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          callbacks:{
-            afterLabel: (ctx) => {
-              const r = sr[ctx.dataIndex];
-              return r ? 'Regime: '+r.toUpperCase() : '';
-            }
-          }
-        }
-      },
-      scales:{
-        y:{ ticks:{callback:v=>'$'+v.toFixed(0)}, grid:{color:'#F3F4F6'} },
-        x:{ ticks:{maxTicksLimit:10, font:{size:10}}, grid:{display:false} }
-      }
-    }
-  });
+  // Legacy stub — replaced by REGIME_ENGINE
+  if(typeof REGIME_ENGINE!=='undefined') REGIME_ENGINE.init();
 }
+
+// ===== ENHANCED MARKOV REGIME ENGINE =====
+const REGIME_ENGINE = (function(){
+  // All 17 strategies with regime fitness scores and metadata
+  const STRATEGIES = [
+    {id:'protective_put',name:'Protective Put',icon:'🛡️',type:'Hedge',cat:'hedge',
+     regimeScore:{bear:95,neutral:40,bull:15},
+     desc:'Buy puts to insure existing stock holdings against downside.',
+     bearWhy:'Maximum protection when market is falling. Locks in a floor on losses while you hold shares.',
+     bullWhy:'Expensive insurance in a rising market — premium erodes returns.',
+     neutralWhy:'Moderate utility if you hold large stock positions and want insurance.'},
+    {id:'bear_call_spread',name:'Bear Call Spread',icon:'🐻',type:'Income · Bearish',cat:'income',
+     regimeScore:{bear:92,neutral:50,bull:10},
+     desc:'Sell call spread to profit from downward or flat price action. Defined risk credit strategy.',
+     bearWhy:'Ideal — collect premium while market drops. Short calls expire worthless. High probability of max profit.',
+     bullWhy:'Dangerous — market rising into your short strikes causes max loss.',
+     neutralWhy:'Works if price stays below short strike. Moderate confidence.'},
+    {id:'long_strangle',name:'Long Strangle',icon:'🌊',type:'Directional · Volatility',cat:'directional',
+     regimeScore:{bear:88,neutral:35,bull:30},
+     desc:'Buy OTM call + OTM put. Profit from large moves in either direction.',
+     bearWhy:'High volatility in bear markets fuels big moves. Put side profits on drops, call side cheap for snap-back rallies.',
+     bullWhy:'Expensive when volatility is low. Needs a bigger move than straddle to profit.',
+     neutralWhy:'Time decay kills both legs in range-bound markets. Avoid.'},
+    {id:'long_straddle',name:'Long Straddle',icon:'⚡',type:'Directional · Volatility',cat:'directional',
+     regimeScore:{bear:85,neutral:30,bull:25},
+     desc:'Buy ATM call + ATM put at same strike. Pure volatility play — profit from any large move.',
+     bearWhy:'Volatility expansion in bear markets drives profit. ATM puts gain rapidly on selloffs.',
+     bullWhy:'High premium cost. Needs large move. Low-vol bull markets kill this.',
+     neutralWhy:'Worst environment — time decay eats both legs in range-bound markets.'},
+    {id:'supply_zone_rejection',name:'Supply Zone Rejection (Short)',icon:'📉',type:'Directional · Short',cat:'directional',
+     regimeScore:{bear:90,neutral:45,bull:8},
+     desc:'Short entry when price rallies into proven supply zone with unfilled institutional sell orders.',
+     bearWhy:'Bear regime confirms supply zones hold. Institutions defend these levels aggressively in downtrends.',
+     bullWhy:'Counter-trend — supply zones break in strong bulls. Very risky.',
+     neutralWhy:'Moderate — zones hold sometimes in range-bound conditions.'},
+    {id:'pre_earnings_straddle',name:'Pre-Earnings Straddle',icon:'🎰',type:'Advanced · Volatility',cat:'advanced',
+     regimeScore:{bear:78,neutral:60,bull:55},
+     desc:'Buy straddle before earnings. Profit from implied volatility expansion before the event.',
+     bearWhy:'Fear amplifies pre-earnings IV expansion. Bigger premium swings create opportunity.',
+     bullWhy:'Works in any regime before earnings. Bull context slightly reduces put-side value.',
+     neutralWhy:'Moderate — IV still expands pre-earnings but moves may be smaller.'},
+    {id:'demand_zone_bounce',name:'Demand Zone Bounce (Long)',icon:'📈',type:'Directional · Long',cat:'directional',
+     regimeScore:{bear:45,neutral:70,bull:92},
+     desc:'Long entry when price pulls back into proven demand zone with unfilled institutional buy orders.',
+     bearWhy:'Demand zones break down in bear markets. Institutional buying dries up. High risk of failure.',
+     bullWhy:'Demand zones hold strongly in uptrends. Institutional buy orders provide reliable floor.',
+     neutralWhy:'Moderate — zones hold sometimes but moves are smaller.'},
+    {id:'iron_condor',name:'Iron Condor',icon:'🦅',type:'Income · Neutral',cat:'income',
+     regimeScore:{bear:25,neutral:92,bull:55},
+     desc:'Sell OTM call spread + put spread. Profit from range-bound, low-volatility conditions.',
+     bearWhy:'Dangerous — high volatility blows through short strikes. Wings get tested rapidly.',
+     bullWhy:'Moderate — call side at risk in strong rallies. Adjust wing width.',
+     neutralWhy:'Ideal — price stays in range, time decay collects premium from both sides.'},
+    {id:'cash_secured_put',name:'Cash-Secured Put',icon:'💵',type:'Income · Bullish Entry',cat:'income',
+     regimeScore:{bear:55,neutral:80,bull:70},
+     desc:'Sell put while holding cash. Collect premium or buy shares at a discount if assigned.',
+     bearWhy:'If assigned, you own shares in a falling market. Use only on stocks you want to own long-term at strike price.',
+     bullWhy:'Works well — collect premium in rising market. Low assignment risk.',
+     neutralWhy:'Strong — premium collection in stable conditions. Ideal for building positions.'},
+    {id:'micro_emini_scalp',name:'Micro E-mini S&P 500 Scalp',icon:'⚡',type:'Futures · Day Trade',cat:'advanced',
+     regimeScore:{bear:72,neutral:60,bull:72},
+     desc:'Day-trade MES futures contracts. 23-hour access, 60/40 tax advantage, no PDT rule.',
+     bearWhy:'High volatility creates wide intraday ranges. More scalping opportunities. Trade both directions.',
+     bullWhy:'Trending moves create clean scalps with momentum. 60/40 tax rule boosts net returns.',
+     neutralWhy:'Moderate — lower range days reduce profit per scalp. Still viable.'},
+    {id:'covered_call',name:'Covered Call',icon:'📈',type:'Income · Bullish',cat:'income',
+     regimeScore:{bear:20,neutral:70,bull:85},
+     desc:'Own 100 shares + sell OTM call. Generate income from time decay. Cap upside at strike.',
+     bearWhy:'Stock drops wipe out more than the premium collected. Avoid unless already holding.',
+     bullWhy:'Strong — collect premium while stock appreciates. Called away at profit. Repeat.',
+     neutralWhy:'Good — stock stays flat, call expires worthless, keep premium.'},
+    {id:'bull_call_spread',name:'Bull Call Spread (Vertical)',icon:'📊',type:'Directional · Bullish',cat:'directional',
+     regimeScore:{bear:10,neutral:50,bull:88},
+     desc:'Buy lower-strike call + sell higher-strike call. Capital-efficient bullish bet with defined risk.',
+     bearWhy:'Market falling — both calls lose value. Defined loss but low probability of profit.',
+     bullWhy:'Ideal — profit from upward movement with limited capital. Defined risk and reward.',
+     neutralWhy:'Moderate — needs directional move. Time decay works against if price stalls.'},
+    {id:'bull_put_spread',name:'Bull Put Spread',icon:'🐂',type:'Income · Bullish Credit',cat:'income',
+     regimeScore:{bear:12,neutral:55,bull:85},
+     desc:'Sell put spread for credit. Profit if price stays above short put. Bullish credit strategy.',
+     bearWhy:'Market drops through short strike — max loss triggered. Avoid in bearish conditions.',
+     bullWhy:'Ideal — collect credit, price stays above strikes, both expire worthless.',
+     neutralWhy:'Moderate — works if price doesnt drop below short strike.'},
+    {id:'leaps_wealth',name:'LEAPS Wealth Builder',icon:'🏗️',type:'Long-Term · Leverage',cat:'advanced',
+     regimeScore:{bear:30,neutral:55,bull:90},
+     desc:'Buy deep ITM LEAPS (2-3 year expiry). Control 100 shares for a fraction. Long-term leverage.',
+     bearWhy:'Capital is tied up in a losing position for months. Time decay still erodes. Wait for regime shift.',
+     bullWhy:'Maximum leverage on a confirmed uptrend. LEAPS appreciate with stock. 10x-20x return potential.',
+     neutralWhy:'Moderate — time decay is slow on LEAPS but no movement means premium erosion.'},
+    {id:'covered_call_engine',name:'Covered Call Income Engine',icon:'💰',type:'Income · Systematic',cat:'income',
+     regimeScore:{bear:18,neutral:72,bull:88},
+     desc:'Systematic covered call writing. Roll monthly. Generate consistent premium income on holdings.',
+     bearWhy:'Stock declines exceed premium income. Systematic losses. Pause in bear regimes.',
+     bullWhy:'Best environment — stock rises, calls expire or get rolled up for credit. Compounding income.',
+     neutralWhy:'Strong — flat stock = maximum premium retention. Core income strategy.'},
+    {id:'csp_discount',name:'Cash-Secured Put (Discount Entry)',icon:'💵',type:'Income · Value Entry',cat:'income',
+     regimeScore:{bear:60,neutral:78,bull:65},
+     desc:'Sell puts at discount to current price. Get paid to wait for a price you like. Systematic entry method.',
+     bearWhy:'Can accumulate quality stocks at deep discounts. But must be ready for assignment in falling markets.',
+     bullWhy:'Lower assignment probability. Good premium but rarely get shares at desired discount.',
+     neutralWhy:'Ideal — collect premium while waiting. Balanced assignment risk.'},
+    {id:'forex_crypto',name:'Forex/Crypto Leverage Play',icon:'🌍',type:'Advanced · High Leverage',cat:'advanced',
+     regimeScore:{bear:65,neutral:40,bull:60},
+     desc:'Trade forex pairs or crypto with 50x-100x leverage. Monthly/quarterly income strategy.',
+     bearWhy:'Risk-off moves create strong trends in currencies. Dollar strength trades. Crypto volatile.',
+     bullWhy:'Risk-on environment. Crypto rallies, emerging market currencies trend. Leverage amplifies.',
+     neutralWhy:'Range-bound markets with high leverage = whipsaws. Dangerous. Reduce size.'}
+  ];
+
+  let liveData = null;
+  let projectionCharts = {};
+
+  function getRegimeScores(regime){
+    return STRATEGIES.map(s=>({...s, score:s.regimeScore[regime]})).sort((a,b)=>b.score-a.score);
+  }
+
+  function detectRegimesFromCandles(candles){
+    const prices = candles.map(c=>c.close);
+    const W=21, regimes=[];
+    const rets = prices.map((p,i)=>i===0?0:(p-prices[i-1])/prices[i-1]);
+    for(let i=0;i<prices.length;i++){
+      const s=Math.max(0,i-W), e=i+1;
+      const win=rets.slice(s,e);
+      const mean=win.reduce((a,b)=>a+b,0)/win.length;
+      const m252=mean*252;
+      const vari=win.reduce((a,b)=>a+(b-mean)**2,0)/win.length;
+      const vol252=Math.sqrt(vari*252);
+      let r;
+      if(m252>0.10&&vol252<0.30) r='bull';
+      else if(m252<-0.06||vol252>0.42) r='bear';
+      else r='neutral';
+      if(i>0&&regimes[i-1]!==r){
+        const seed=i*31337;
+        const rng=(()=>{let s=seed;return()=>{s=s*16807%2147483647;return(s-1)/2147483646;}})();
+        r=rng()<0.75?regimes[i-1]:r;
+      }
+      regimes.push(r);
+    }
+    // Compute metrics
+    const lastRets=rets.slice(-W);
+    const mean=lastRets.reduce((a,b)=>a+b,0)/lastRets.length;
+    const m252=mean*252;
+    const vari=lastRets.reduce((a,b)=>a+(b-mean)**2,0)/lastRets.length;
+    const vol252=Math.sqrt(vari*252);
+    // Week change
+    const weekCandles=candles.filter(c=>c.date>='2026-03-02');
+    const weekChg=weekCandles.length>1?((weekCandles[weekCandles.length-1].close-weekCandles[0].open)/weekCandles[0].open*100):0;
+    // Transition matrix
+    const M={bull:{bull:0,bear:0,neutral:0},bear:{bull:0,bear:0,neutral:0},neutral:{bull:0,bear:0,neutral:0}};
+    for(let i=1;i<regimes.length;i++){M[regimes[i-1]][regimes[i]]++;}
+    return {regimes, prices, m252, vol252, weekChg, M, currentRegime:regimes[regimes.length-1]};
+  }
+
+  function generateSignals(data){
+    const signals=[];
+    const {m252,vol252,weekChg,currentRegime,M}=data;
+    // Return signal
+    if(m252<-0.15) signals.push({icon:'🔻',text:`Strong negative momentum: ${(m252*100).toFixed(1)}% annualized`,type:'danger'});
+    else if(m252<-0.06) signals.push({icon:'📉',text:`Negative momentum: ${(m252*100).toFixed(1)}% annualized`,type:'warn'});
+    else if(m252>0.10) signals.push({icon:'📈',text:`Positive momentum: ${(m252*100).toFixed(1)}% annualized`,type:'ok'});
+    else signals.push({icon:'➡️',text:`Flat momentum: ${(m252*100).toFixed(1)}% annualized`,type:'neutral'});
+    // Volatility
+    if(vol252>0.42) signals.push({icon:'🌪️',text:`Extreme volatility: ${(vol252*100).toFixed(1)}%`,type:'danger'});
+    else if(vol252>0.25) signals.push({icon:'⚠️',text:`Elevated volatility: ${(vol252*100).toFixed(1)}%`,type:'warn'});
+    else signals.push({icon:'😌',text:`Moderate volatility: ${(vol252*100).toFixed(1)}%`,type:'ok'});
+    // Week
+    if(weekChg<-1.5) signals.push({icon:'📅',text:`Weak week: ${weekChg.toFixed(2)}% this week`,type:'danger'});
+    else if(weekChg>1.5) signals.push({icon:'📅',text:`Strong week: +${weekChg.toFixed(2)}%`,type:'ok'});
+    else signals.push({icon:'📅',text:`Flat week: ${weekChg>=0?'+':''}${weekChg.toFixed(2)}%`,type:'neutral'});
+    // Persistence
+    const row=M[currentRegime];
+    const tot=row.bull+row.bear+row.neutral;
+    const stickPct=tot>0?(row[currentRegime]/tot*100):50;
+    signals.push({icon:'🔄',text:`${currentRegime.toUpperCase()} persistence: ${stickPct.toFixed(0)}% (Markov)`,type:stickPct>60?'warn':'ok'});
+    // Regime streak
+    const regs=data.regimes;
+    let streak=1;
+    for(let i=regs.length-2;i>=0;i--){if(regs[i]===currentRegime)streak++;else break;}
+    signals.push({icon:'📊',text:`${streak}-day ${currentRegime} streak`,type:streak>5?'warn':'neutral'});
+    return signals;
+  }
+
+  function renderHero(data){
+    const el=document.getElementById('regime-hero');
+    const {currentRegime,m252,vol252,weekChg,M}=data;
+    el.className='regime-hero '+currentRegime;
+    const icons={bull:'🟢',bear:'🔴',neutral:'🟡'};
+    const labels={bull:'BULL MARKET DETECTED',bear:'BEAR MARKET DETECTED',neutral:'NEUTRAL / CHOPPY DETECTED'};
+    document.getElementById('regime-hero-icon').textContent=icons[currentRegime];
+    document.getElementById('regime-hero-label').textContent=labels[currentRegime];
+    document.getElementById('rh-return').textContent=(m252*100).toFixed(1)+'%';
+    document.getElementById('rh-return').style.color=m252<0?'#DC2626':'#059669';
+    document.getElementById('rh-vol').textContent=(vol252*100).toFixed(1)+'%';
+    document.getElementById('rh-vol').style.color=vol252>0.30?'#DC2626':'#059669';
+    document.getElementById('rh-week').textContent=(weekChg>=0?'+':'')+weekChg.toFixed(2)+'%';
+    document.getElementById('rh-week').style.color=weekChg<0?'#DC2626':'#059669';
+    const row=M[currentRegime];const tot=row.bull+row.bear+row.neutral;
+    const stick=tot>0?(row[currentRegime]/tot*100).toFixed(0)+'%':'—';
+    document.getElementById('rh-stick').textContent=stick;
+  }
+
+  function renderProbBars(data){
+    const {currentRegime,M}=data;
+    const row=M[currentRegime];const tot=row.bull+row.bear+row.neutral||1;
+    const container=document.getElementById('regime-prob-bars');
+    container.innerHTML='';
+    const colors={bull:'#10B981',bear:'#EF4444',neutral:'#F59E0B'};
+    ['bull','bear','neutral'].forEach(r=>{
+      const pct=(row[r]/tot*100).toFixed(0);
+      container.innerHTML+=`<div class="prob-row">
+        <div class="prob-label" style="color:${colors[r]}">${r.toUpperCase()}</div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" style="width:${pct}%;background:${colors[r]}"></div></div>
+        <div class="prob-pct">${pct}%</div>
+      </div>`;
+    });
+  }
+
+  function renderSignals(data){
+    const signals=generateSignals(data);
+    const ul=document.getElementById('regime-signals');
+    ul.innerHTML='';
+    signals.forEach(s=>{
+      const cls=s.type==='danger'?'color:#DC2626;font-weight:700':s.type==='warn'?'color:#D97706;font-weight:600':s.type==='ok'?'color:#059669':'color:var(--gray-600)';
+      ul.innerHTML+=`<li><span>${s.icon}</span><span style="${cls}">${s.text}</span></li>`;
+    });
+  }
+
+  function renderRegimeBar(data){
+    const {regimes}=data;
+    const cnt={bull:0,bear:0,neutral:0};
+    regimes.forEach(r=>cnt[r]++);
+    const bar=document.getElementById('regime-bar');bar.innerHTML='';
+    [['bull','#10B981'],['bear','#EF4444'],['neutral','#F59E0B']].forEach(([r,c])=>{
+      const seg=document.createElement('div');
+      seg.style.cssText=`flex:${cnt[r]};background:${c};`;
+      seg.title=`${r}: ${(cnt[r]/regimes.length*100).toFixed(0)}%`;
+      bar.appendChild(seg);
+    });
+  }
+
+  function renderRegimeChart(data){
+    const {regimes,prices}=data;
+    const dates=liveData.candles.map(c=>c.date);
+    const N=Math.max(1,Math.floor(dates.length/80));
+    const sd=dates.filter((_,i)=>i%N===0);
+    const sp=prices.filter((_,i)=>i%N===0);
+    const sr=regimes.filter((_,i)=>i%N===0);
+    const sc=sr.map(r=>r==='bull'?'#10B981':r==='bear'?'#EF4444':'#F59E0B');
+    if(window.regimeChartInst){window.regimeChartInst.destroy();window.regimeChartInst=null;}
+    const ctx=document.getElementById('regime-chart').getContext('2d');
+    window.regimeChartInst=new Chart(ctx,{
+      type:'line',
+      data:{labels:sd,datasets:[{label:'SPY',data:sp,borderColor:'#1B2A4A',borderWidth:1.5,pointRadius:3,pointBackgroundColor:sc,pointBorderWidth:0,tension:.2,fill:false}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{afterLabel:ctx=>{const r=sr[ctx.dataIndex];return r?'Regime: '+r.toUpperCase():'';}}}},scales:{y:{ticks:{callback:v=>'$'+v.toFixed(0)},grid:{color:'#F3F4F6'}},x:{ticks:{maxTicksLimit:8,font:{size:9}},grid:{display:false}}}}
+    });
+  }
+
+  function renderMatrix(data){
+    const {M}=data;
+    const tbody=document.getElementById('matrix-body');tbody.innerHTML='';
+    ['bull','bear','neutral'].forEach(from=>{
+      const tot=M[from].bull+M[from].bear+M[from].neutral;
+      tbody.innerHTML+=`<tr>
+        <td style="font-weight:700;background:var(--mint-bg);padding:7px;">${from.toUpperCase()}</td>
+        <td style="color:#065F46;">${tot?(M[from].bull/tot*100).toFixed(0)+'%':'—'}</td>
+        <td style="color:#991B1B;">${tot?(M[from].bear/tot*100).toFixed(0)+'%':'—'}</td>
+        <td style="color:#92400E;">${tot?(M[from].neutral/tot*100).toFixed(0)+'%':'—'}</td>
+      </tr>`;
+    });
+  }
+
+  function drawProjection(canvasId, strat, data){
+    const canvas=document.getElementById(canvasId);
+    if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.clientWidth, H=canvas.clientHeight||200;
+    canvas.width=W*2;canvas.height=H*2;
+    ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+    // Use last 30 candles + project 15 forward
+    const candles=liveData.candles.slice(-30);
+    const lastPrice=candles[candles.length-1].close;
+    // S.E.T. levels based on strategy type
+    let entry,stop,target;
+    const regime=data.currentRegime;
+    if(strat.regimeScore.bear>strat.regimeScore.bull){
+      // Bearish strategy — project down
+      entry=lastPrice*0.998;stop=lastPrice*1.01;target=lastPrice*0.97;
+    } else {
+      // Bullish strategy — project up
+      entry=lastPrice*1.002;stop=lastPrice*0.99;target=lastPrice*1.03;
+    }
+    // Build price array: 30 real + 15 projected
+    const allPrices=candles.map(c=>c.close);
+    const vol=data.vol252/Math.sqrt(252);
+    const drift=data.m252/252;
+    let p=lastPrice;
+    const seed=strat.id.length*7919;
+    let rngState=seed;
+    const rng=()=>{rngState=rngState*16807%2147483647;return(rngState-1)/2147483646;};
+    const projected=[];
+    for(let i=0;i<15;i++){
+      const z=(rng()-0.5)*2;
+      p=p*Math.exp(drift+vol*z);
+      // Bias toward target based on regime fit
+      if(strat.score>70){
+        if(strat.regimeScore.bear>strat.regimeScore.bull) p=p*0.9985;
+        else p=p*1.0015;
+      }
+      projected.push(p);
+    }
+    const fullPrices=[...allPrices,...projected];
+    const minP=Math.min(...fullPrices,stop,target)*0.998;
+    const maxP=Math.max(...fullPrices,stop,target)*1.002;
+    const pad={l:45,r:10,t:10,b:20};
+    const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+    const xStep=cw/(fullPrices.length-1);
+    const yScale=p=>(1-(p-minP)/(maxP-minP))*ch+pad.t;
+    // Grid
+    ctx.strokeStyle='#2D3548';ctx.lineWidth=0.5;
+    for(let i=0;i<5;i++){
+      const y=pad.t+ch*i/4;
+      ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+      const pv=maxP-(maxP-minP)*i/4;
+      ctx.fillStyle='#6B7280';ctx.font='9px system-ui';ctx.textAlign='right';
+      ctx.fillText('$'+pv.toFixed(0),pad.l-4,y+3);
+    }
+    // Divider line between real and projected
+    const divX=pad.l+(allPrices.length-1)*xStep;
+    ctx.strokeStyle='#4B5563';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(divX,pad.t);ctx.lineTo(divX,pad.t+ch);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#9CA3AF';ctx.font='8px system-ui';ctx.textAlign='center';
+    ctx.fillText('NOW',divX,pad.t+ch+14);
+    ctx.fillText('PROJECTION →',divX+50,pad.t+ch+14);
+    // S.E.T. lines
+    const sets=[{price:entry,color:'#10B981',label:'ENTRY $'+entry.toFixed(0)},{price:stop,color:'#EF4444',label:'STOP $'+stop.toFixed(0)},{price:target,color:'#F59E0B',label:'TARGET $'+target.toFixed(0)}];
+    sets.forEach(s=>{
+      const y=yScale(s.price);
+      ctx.strokeStyle=s.color;ctx.lineWidth=1;ctx.setLineDash([6,3]);
+      ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle=s.color;ctx.font='bold 8px system-ui';ctx.textAlign='left';
+      ctx.fillText(s.label,pad.l+4,y-4);
+    });
+    // Price line — real data (blue)
+    ctx.strokeStyle='#60A5FA';ctx.lineWidth=1.5;ctx.beginPath();
+    for(let i=0;i<allPrices.length;i++){
+      const x=pad.l+i*xStep, y=yScale(allPrices[i]);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // Price line — projected (dashed green or red)
+    const projColor=strat.regimeScore.bear>strat.regimeScore.bull?'#EF4444':'#10B981';
+    ctx.strokeStyle=projColor;ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.beginPath();
+    ctx.moveTo(pad.l+(allPrices.length-1)*xStep,yScale(allPrices[allPrices.length-1]));
+    for(let i=0;i<projected.length;i++){
+      const x=pad.l+(allPrices.length+i)*xStep, y=yScale(projected[i]);
+      ctx.lineTo(x,y);
+    }
+    ctx.stroke();ctx.setLineDash([]);
+    // Confidence cone (projection)
+    ctx.fillStyle=projColor.replace(')',',0.07)').replace('rgb','rgba').replace('#','');
+    if(projColor==='#EF4444') ctx.fillStyle='rgba(239,68,68,0.07)';
+    else ctx.fillStyle='rgba(16,185,129,0.07)';
+    ctx.beginPath();
+    const startX=pad.l+(allPrices.length-1)*xStep;
+    const startY=yScale(allPrices[allPrices.length-1]);
+    ctx.moveTo(startX,startY);
+    for(let i=0;i<projected.length;i++){
+      const spread=(i+1)*vol*lastPrice*0.8;
+      const x=pad.l+(allPrices.length+i)*xStep;
+      ctx.lineTo(x,yScale(projected[i]+spread));
+    }
+    for(let i=projected.length-1;i>=0;i--){
+      const spread=(i+1)*vol*lastPrice*0.8;
+      const x=pad.l+(allPrices.length+i)*xStep;
+      ctx.lineTo(x,yScale(projected[i]-spread));
+    }
+    ctx.closePath();ctx.fill();
+  }
+
+  function renderRecommendations(data){
+    const ranked=getRegimeScores(data.currentRegime);
+    const container=document.getElementById('regime-rec-list');
+    container.innerHTML='';
+    ranked.forEach((strat,idx)=>{
+      const confColor=strat.score>75?'#10B981':strat.score>50?'#F59E0B':'#EF4444';
+      const whyText=strat[data.currentRegime+'Why']||strat.desc;
+      const signalTags=[];
+      if(strat.score>=80) signalTags.push({text:'HIGH FIT',cls:'rec-signal'});
+      if(strat.score>=60&&strat.score<80) signalTags.push({text:'MODERATE FIT',cls:'rec-signal warn'});
+      if(strat.score<60) signalTags.push({text:'LOW FIT',cls:'rec-signal danger'});
+      if(strat.cat==='income') signalTags.push({text:'INCOME',cls:'rec-signal'});
+      if(strat.cat==='directional') signalTags.push({text:'DIRECTIONAL',cls:'rec-signal'});
+      if(strat.cat==='hedge') signalTags.push({text:'HEDGE',cls:'rec-signal'});
+      if(strat.cat==='advanced') signalTags.push({text:'ADVANCED',cls:'rec-signal warn'});
+      const canvasId='proj-canvas-'+idx;
+      const card=document.createElement('div');
+      card.className='rec-card';
+      card.innerHTML=`
+        <div class="rec-card-hdr" onclick="REGIME_ENGINE.toggleCard(${idx})">
+          <div class="rec-rank ${idx<3?'top':''}">${idx+1}</div>
+          <div class="rec-card-info">
+            <h4>${strat.icon} ${strat.name}</h4>
+            <div class="rec-type">${strat.type}</div>
+          </div>
+          <div class="rec-confidence">
+            <div class="confidence-bar"><div class="confidence-fill" style="width:${strat.score}%;background:${confColor}"></div></div>
+            <div class="confidence-pct" style="color:${confColor}">${strat.score}%</div>
+          </div>
+        </div>
+        <div class="rec-why">${whyText}</div>
+        <div class="rec-signals">${signalTags.map(t=>`<span class="${t.cls}">${t.text}</span>`).join('')}</div>
+        <div class="rec-actions">
+          <button class="rec-btn rec-btn-primary" onclick="REGIME_ENGINE.showProjection(${idx})">📊 Show Projection</button>
+          ${strat.id==='covered_call'||strat.id==='cash_secured_put'||strat.id==='iron_condor'||strat.id==='long_straddle'||strat.id==='long_strangle'||strat.id==='protective_put'||strat.id==='bull_call_spread'?
+            `<button class="rec-btn rec-btn-secondary" onclick="REGIME_ENGINE.launchBacktest('${strat.id}')">🔬 Backtest This</button>`:''}
+          ${typeof SIM!=='undefined'&&(strat.id==='protective_put'||strat.id==='demand_zone_bounce'||strat.id==='supply_zone_rejection')?
+            `<button class="rec-btn rec-btn-secondary" onclick="REGIME_ENGINE.launchSim()">⚡ S.E.T. Simulator</button>`:''}
+          <button class="rec-btn rec-btn-secondary" onclick="REGIME_ENGINE.scrollToPlaybook('${strat.id}')">📚 Playbook</button>
+        </div>
+        <div class="rec-projection" id="proj-${idx}">
+          <canvas class="rec-proj-canvas" id="${canvasId}"></canvas>
+          <div class="rec-proj-legend">
+            <span class="lg-price">Historical Price</span>
+            <span class="lg-entry">Entry Level</span>
+            <span class="lg-stop">Stop Loss</span>
+            <span class="lg-target">Target</span>
+          </div>
+        </div>`;
+      container.appendChild(card);
+    });
+  }
+
+  return {
+    init: async function(){
+      try{
+        const res=await fetch('/api/stock-data?symbol=SPY&range=3mo&interval=1d');
+        liveData=await res.json();
+      }catch(e){
+        // Fallback to LIVE_PRICES
+        if(typeof LIVE_PRICES!=='undefined'&&LIVE_PRICES.SPY){
+          const spy=LIVE_PRICES.SPY;
+          liveData={symbol:'SPY',candles:spy.dates.map((d,i)=>({date:d,open:spy.prices[i],high:spy.prices[i]*1.005,low:spy.prices[i]*0.995,close:spy.prices[i],volume:80000000}))};
+        } else return;
+      }
+      if(!liveData||!liveData.candles||liveData.candles.length<25) return;
+      const data=detectRegimesFromCandles(liveData.candles);
+      renderHero(data);
+      renderProbBars(data);
+      renderSignals(data);
+      renderRegimeBar(data);
+      renderMatrix(data);
+      setTimeout(()=>renderRegimeChart(data),100);
+      renderRecommendations(data);
+      this._data=data;
+    },
+    toggleCard: function(idx){
+      const cards=document.querySelectorAll('.rec-card');
+      cards[idx]&&cards[idx].classList.toggle('expanded');
+    },
+    showProjection: function(idx){
+      const proj=document.getElementById('proj-'+idx);
+      if(!proj) return;
+      const isShown=proj.classList.contains('show');
+      // Hide all
+      document.querySelectorAll('.rec-projection').forEach(p=>p.classList.remove('show'));
+      if(!isShown){
+        proj.classList.add('show');
+        const ranked=getRegimeScores(this._data.currentRegime);
+        setTimeout(()=>drawProjection('proj-canvas-'+idx,ranked[idx],this._data),50);
+      }
+    },
+    launchBacktest: function(stratId){
+      // Switch to backtester tab and select strategy
+      const stratMap={covered_call:'covered_call',cash_secured_put:'cash_secured_put',iron_condor:'iron_condor',long_straddle:'straddle',long_strangle:'strangle',protective_put:'protective_put',bull_call_spread:'bull_call_spread'};
+      const val=stratMap[stratId]||stratId;
+      showTab('bt',document.querySelectorAll('.tab-btn')[0]);
+      setTimeout(()=>{
+        const sel=document.getElementById('strat');
+        if(sel){sel.value=val;loadParams&&loadParams();}
+      },200);
+    },
+    launchSim: function(){
+      showTab('setsim',document.querySelectorAll('.tab-btn')[6]);
+    },
+    scrollToPlaybook: function(stratId){
+      // Map to playbook index and switch to about tab
+      const map={demand_zone_bounce:1,supply_zone_rejection:2,covered_call_engine:3,covered_call:3,csp_discount:4,cash_secured_put:4,iron_condor:5,leaps_wealth:6,micro_emini_scalp:7,bull_put_spread:8,bear_call_spread:9,pre_earnings_straddle:10};
+      showTab('about',document.querySelectorAll('.tab-btn')[5]);
+      setTimeout(()=>{
+        const cards=document.querySelectorAll('.strat-card');
+        const idx=(map[stratId]||1)-1;
+        if(cards[idx]){
+          cards[idx].scrollIntoView({behavior:'smooth',block:'center'});
+          const hdr=cards[idx].querySelector('.strat-hdr');
+          if(hdr&&!cards[idx].querySelector('.strat-body').style.display) hdr.click();
+        }
+      },300);
+    }
+  };
+})();
+
 
 // [hash-based init moved after TM definition]
 
