@@ -752,6 +752,24 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
 @media(max-width:900px){.sim-grid{grid-template-columns:1fr;}.sim-chart-area{min-height:350px;}}
 
+
+/* ===== GUIDE MODE SYSTEM ===== */
+.guide-toggle { background: var(--gray-500); color: white; border: none; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-left: 12px; }
+.guide-toggle.on { background: var(--emerald); }
+.guide-btn { background: var(--emerald); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.guide-btn.guide-hidden { display: none !important; }
+.guide-overlay { background: var(--navy); color: white; border-radius: 12px; padding: 18px; margin-top: 12px; animation: slideDown 0.25s ease-out; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.guide-overlay.guide-hidden { display: none !important; }
+.guide-overlay .guide-title { font-size: 14px; font-weight: 700; color: #FFD700; margin-bottom: 12px; }
+.guide-overlay .guide-item { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.guide-overlay .guide-item:last-of-type { border-bottom: none; }
+.guide-overlay .guide-item .label { font-weight: 700; color: #A7F3D0; font-size: 12px; text-transform: uppercase; }
+.guide-overlay .guide-item .content { font-size: 13px; line-height: 1.5; color: #E5E7EB; }
+.guide-overlay .guide-tips { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; margin-top: 12px; }
+.guide-overlay .guide-tip { font-size: 12px; line-height: 1.5; color: #D1E7F0; margin-bottom: 8px; }
+.guide-overlay .guide-close { float: right; background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+
 </style>
 </head>
 <body>
@@ -769,6 +787,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     </div>
   </div>
   <div class="hdr-badge">⚡ 17 Strategies Loaded</div>
+  <button class="guide-toggle" id="guide-toggle" onclick="GUIDE.toggle()">🔍 Guide Mode</button>
 </div>
 
 <!-- TABS -->
@@ -794,6 +813,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     <div>
       <div class="panel">
         <div class="panel-title">⚙️ Backtest Configuration</div>
+<button class="guide-btn guide-hidden" onclick="GUIDE.show('backtest-config')">🔍</button>
+<div id="guide-backtest-config" class="guide-overlay guide-hidden"><button class="guide-close" onclick="GUIDE.hide('backtest-config')">✕</button><div class="guide-title">📚 Backtest Configuration</div><div class="guide-item"><div class="label">What</div><div class="content">The control panel where you configure your options backtest simulation.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Select a stock symbol, date range, account size, options strategy, and expiration cycle. Then click "Run Backtest" to simulate.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Backtesting lets you test a strategy on historical data BEFORE risking real money. It shows win rate, P&L, and drawdown.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Pay attention to Win Rate and Max Drawdown. A high win rate with low drawdown = strong strategy. Always check if the strategy fits the current market regime.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Start with SPY — it's the most liquid and representative of the overall market</div><div class="guide-tip">• Try different date ranges to see how strategies perform in bull vs bear markets</div><div class="guide-tip">• The 1% Rule reminder at the bottom is from Module 1 — never risk more than 1% per trade</div></div></div>
 
         <div class="fg">
           <label>Symbol</label>
@@ -865,6 +886,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div style="margin-top:8px;font-size:13px;">Select a symbol, strategy, parameters, and expiration cycle to simulate historical performance.</div>
       </div>
       <div id="results-box" style="display:none;">
+        <button class="guide-btn guide-hidden" onclick="GUIDE.show('backtest-results')">🔍</button>
+<div id="guide-backtest-results" class="guide-overlay guide-hidden"><button class="guide-close" onclick="GUIDE.hide('backtest-results')">✕</button><div class="guide-title">📚 Results Panel</div><div class="guide-item"><div class="label">What</div><div class="content">Your backtest performance dashboard showing how the strategy would have performed.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Read the stats cards (P&L, Win Rate, Drawdown, Avg Trade), study the equity curve trend, and review individual trades in the log.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">These metrics tell you if a strategy is worth deploying with real capital. The equity curve shows consistency.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Look for smooth upward equity curves (not spiky). Compare the Win Rate to the 3:1 profitability table in Trade Journal — even 30% win rate is profitable at 3:1.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Green bars in P&L chart = winning trades. The goal is more green than red</div><div class="guide-tip">• Regime column shows market conditions during each trade — helps you understand WHEN the strategy works</div><div class="guide-tip">• Use 'Backtest This' from the Markov tab to test regime-specific recommendations</div></div></div>
         <!-- Stats -->
         <div class="stats-row">
           <div class="scard" id="sc-pnl">
@@ -949,6 +972,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <div class="sizer-grid">
     <div class="panel">
       <div class="panel-title">🎯 S.E.T. Position Calculator</div>
+<button class="guide-btn guide-hidden" onclick="GUIDE.show('set-calc')">🔍</button>
+<div id="guide-set-calc" class="guide-overlay guide-hidden"><button class="guide-close" onclick="GUIDE.hide('set-calc')">✕</button><div class="guide-title">📚 S.E.T. Position Calculator</div><div class="guide-item"><div class="label">What</div><div class="content">The S.E.T. Rule calculator — your risk management command center.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Enter your account balance, entry price, stop loss, and target price. Select instrument type. Click "Calculate S.E.T." to get your position size.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">The S.E.T. Rule (Stop, Entry, Target) is the foundation of risk management from Module 1. NEVER enter a trade without defining all three levels first.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Position Size tells you EXACTLY how many shares to buy. Risk:Reward should be at least 3:1. Max Risk shows your 1% rule amount.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• The 1% Rule: Max risk = 1% of account. On a $10,000 account, that's $100 max loss per trade</div><div class="guide-tip">• 3:1 Ratio means for every $1 you risk, you target $3 profit. This is non-negotiable</div><div class="guide-tip">• Capital Deployed shows how much of your account this trade uses — keep it manageable</div></div></div>
       <div class="fg">
         <label>Account Balance ($)</label>
         <input type="number" id="sz-acct" value="10000" oninput="calcSET()">
@@ -1010,6 +1035,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     <div class="sim-panel">
       <div class="set-input-group">
         <div class="sig-title">🔍 Stock Selection</div>
+<button class="guide-btn guide-hidden" onclick="GUIDE.show('stock-selection')">🔍</button>
+<div id="guide-stock-selection" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('stock-selection')">✕</button><div class="guide-title">📚 Stock Selection</div><div class="guide-item"><div class="label">What</div><div class="content">Live stock data loader — pulls real price history from Yahoo Finance.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Type a ticker symbol or click a quick-select button (SPY, QQQ, etc.). Choose your date range. The chart will load with real OHLC candles.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Practice reading real charts and setting S.E.T. levels on actual market data before trading live.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Look for clear support/resistance levels, supply/demand zones, and trend direction before setting your Entry, Stop, and Target.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Start with SPY to practice — it moves predictably and has the most data</div><div class="guide-tip">• Use the 1 Year range to see the full picture before zooming into shorter timeframes</div><div class="guide-tip">• The price auto-fills your Entry near the last close — adjust it based on your analysis</div></div></div>
         <div class="sim-search-wrap">
           <span class="sim-search-icon">🔎</span>
           <input class="sim-search" id="sim-ticker-search" type="text" placeholder="Search ticker (e.g. AAPL, TSLA)..." autocomplete="off">
@@ -1035,6 +1062,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
       <div class="set-input-group">
         <div class="sig-title">🎯 S.E.T. Rule Setup</div>
+<button class="guide-btn guide-hidden" onclick="GUIDE.show('set-setup')">🔍</button>
+<div id="guide-set-setup" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('set-setup')">✕</button><div class="guide-title">📚 S.E.T. Rule Setup</div><div class="guide-item"><div class="label">What</div><div class="content">Your trade planning panel where you define Stop, Entry, and Target on the live chart.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Set Entry (your trigger price), Stop (your protective floor), and Target (your goal). Click "Auto 3:1" to automatically calculate a 3:1 target. The chart updates with colored lines.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 1 teaches: Stop first, Entry second, Target last. This simulator lets you practice the discipline of planning BEFORE entering.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Watch the Risk/Share and Reward/Share metrics. The dashed lines on the chart show your exact S.E.T. levels visually.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Red dashed line = Stop (protective floor). Blue = Entry (trigger). Green = Target (goal)</div><div class="guide-tip">• The 'Auto 3:1' button calculates your target automatically based on your stop distance</div><div class="guide-tip">• Trade Commentary below the chart gives educational feedback as you interact</div></div></div>
         <div class="fg" style="margin-bottom:8px;">
           <label style="font-size:10px;font-weight:600;color:var(--gray-500);text-transform:uppercase;">Account Balance ($)</label>
           <input type="number" id="sim-acct" value="10000" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:var(--gray-100);color:var(--navy);" oninput="SIM.calcMetrics()">
@@ -1178,9 +1207,14 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     </div>
 
     <div class="regime-top">
+      <button class="guide-btn guide-hidden" onclick="GUIDE.show('regime-hero')">🔍</button>
+<div id="guide-regime-hero" class="guide-overlay guide-hidden"><button class="guide-close" onclick="GUIDE.hide('regime-hero')">✕</button><div class="guide-title">📚 Regime Hero Banner</div><div class="guide-item"><div class="label">What</div><div class="content">The Markov Hidden Markov Model (HMM) regime detector — identifies if the market is in a Bull, Bear, or Neutral regime.</div></div><div class="guide-item"><div class="label">How</div><div class="content">It automatically fetches live SPY data and runs a 3-state HMM analysis using 21-day rolling returns and volatility.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Different strategies work in different market conditions. A Covered Call thrives in neutral markets but suffers in crashes. Knowing the regime helps you pick the RIGHT strategy.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">The Persist % tells you how likely the current regime is to continue. High persistence = high conviction in strategy selection.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Bear market doesn't mean 'don't trade' — it means use bear-optimized strategies like Protective Puts or Bear Call Spreads</div><div class="guide-tip">• The annualized return and volatility numbers come from real Yahoo Finance data, not estimates</div><div class="guide-tip">• Week Chg shows short-term momentum — compare it to the annualized trend</div></div></div>
+
       <!-- LEFT: Recommendations -->
       <div class="regime-recs">
         <div class="regime-recs-title">⚡ Strategy Recommendations — Ranked by Regime Fit</div>
+<button class="guide-btn guide-hidden" onclick="GUIDE.show('strategy-recs')">🔍</button>
+<div id="guide-strategy-recs" class="guide-overlay guide-hidden" style="margin-top:10px;margin-bottom:14px;"><button class="guide-close" onclick="GUIDE.hide('strategy-recs')">✕</button><div class="guide-title">📚 Strategy Recommendations</div><div class="guide-item"><div class="label">What</div><div class="content">AI-ranked strategy recommendations based on the current market regime.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Each strategy is scored 0-100% for regime fit. Click "Show Projection" to see visual forecasts, "Backtest This" to test it, "S.E.T. Simulator" to practice it, or "Playbook" to learn it.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">This connects regime analysis to actionable strategy selection — the core workflow of the Master Surge Strategy.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Strategies with 85%+ regime fit are strong candidates. Always cross-reference with the Five Pillars tab before executing.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• The top 3 recommendations are your highest-probability trades for current conditions</div><div class="guide-tip">• Click 'Backtest This' to see how the strategy performed historically in similar regimes</div><div class="guide-tip">• Transition Probabilities on the right show where the market might go next</div></div></div>
         <div id="regime-rec-list"></div>
       </div>
 
@@ -1236,6 +1270,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
     <span class="live-dot"></span>
     <span style="font-size:13px;font-weight:700;color:var(--navy);">Live Market Data — Yahoo Finance</span>
+<button class="guide-btn guide-hidden" onclick="GUIDE.show('live-chain')">🔍</button>
+<div id="guide-live-chain" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('live-chain')">✕</button><div class="guide-title">📚 Live Market Data</div><div class="guide-item"><div class="label">What</div><div class="content">Real-time options chain data showing calls and puts with live prices from Yahoo Finance.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Select a symbol and expiration date. The table shows Strike, Last, Bid, Ask, IV%, Open Interest, and Volume for both calls and puts.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Reading options chains is how you find the actual contracts to trade. IV%, OI, and Volume tell you about liquidity and market expectations.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Green-highlighted rows are In The Money (ITM). High Open Interest = more liquidity = tighter spreads = better fills.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Price cards at the top show the 5 most-traded ETFs/stocks — watch for big daily moves</div><div class="guide-tip">• IV% (Implied Volatility) above 30% means the market expects big moves — good for straddles/strangles</div><div class="guide-tip">• Volume vs Open Interest: High volume = active trading today. High OI = established positions</div></div></div>
     <span style="font-size:11px;color:var(--gray-500);margin-left:8px;">Last fetched: 2026-03-05 19:57:16</span>
   </div>
   <div class="price-cards-row" id="price-cards"></div>
@@ -1279,7 +1315,9 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <div class="container">
 
   <!-- Quick Reference Cards (Original 7) -->
-  <h2 style="font-size:20px;color:var(--navy);margin-bottom:4px;">Quick Strategy Reference</h2>
+  <button class="guide-btn guide-hidden" onclick="GUIDE.show('strategy-guide')">🔍</button>
+<div id="guide-strategy-guide" class="guide-overlay guide-hidden" style="margin-bottom:14px;"><button class="guide-close" onclick="GUIDE.hide('strategy-guide')">✕</button><div class="guide-title">📚 Quick Strategy Reference</div><div class="guide-item"><div class="label">What</div><div class="content">Your complete options strategy playbook — all 17 strategies explained with setup instructions.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Browse the strategy cards for quick overviews. Click "Try in Calculator" to prefill the backtester with that strategy. Scroll down for detailed playbooks with entry/exit rules.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Understanding each strategy's mechanics, best market regime, and risk profile is essential before deploying capital.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Pay attention to "Best Regime" — this tells you WHEN to use each strategy. Combine with Markov Regime Detector for data-driven decisions.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Income strategies (Covered Call, Cash-Secured Put) are great for beginners — they generate premium while you learn</div><div class="guide-tip">• Directional strategies (Bull Call Spread, Bear Put Spread) are for when you have a strong market conviction</div><div class="guide-tip">• Hedge strategies (Protective Put, Collar) protect your existing positions during uncertainty</div></div></div>
+<h2 style="font-size:20px;color:var(--navy);margin-bottom:4px;">Quick Strategy Reference</h2>
   <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">Your 7 core options strategies at a glance. Scroll down for 10 fully detailed strategy playbooks with real setup examples.</p>
   <div class="acards">
     <div class="acard">
@@ -2272,6 +2310,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <div class="container">
   <div class="journal-form">
     <div class="jf-title">📝 Manual Trade Entry</div>
+<button class="guide-btn guide-hidden" onclick="GUIDE.show('trade-entry')">🔍</button>
+<div id="guide-trade-entry" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('trade-entry')">✕</button><div class="guide-title">📚 Manual Trade Entry</div><div class="guide-item"><div class="label">What</div><div class="content">Your personal trade journal — log every trade with full S.E.T. details for performance tracking.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Enter trade date, symbol, entry/exit prices, position size, win/loss, S.E.T. levels, and notes. Click "Log Trade" to save. Use "Import from Backtest" to auto-populate from backtester results.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 1 teaches that tracking trades is essential for improvement. Your Expectancy number tells you if your overall strategy is profitable.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">The Expectancy formula: (Win Rate × Avg Win) - (Loss Rate × Avg Loss). Positive expectancy = profitable system over time.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Log EVERY trade, including losses — losses teach you more than wins</div><div class="guide-tip">• The 'Import from Backtest' button pulls your last backtest results directly into the journal</div><div class="guide-tip">• Trade Notes are crucial — write down WHY you entered and what you learned</div></div></div>
     <div class="journal-grid">
       <div><label class="jf-label">Trade Date</label><input type="date" id="tj-date" class="jf-input"></div>
       <div><label class="jf-label">Symbol</label><input type="text" id="tj-symbol" class="jf-input" placeholder="e.g., SPY"></div>
@@ -2302,7 +2342,10 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     <div class="exp-card"><div class="ec-label">Expectancy</div><div class="ec-value" id="tj-exp">$0</div><div class="ec-detail">Per Trade</div></div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+  <button class="guide-btn guide-hidden" onclick="GUIDE.show('expectancy-dash')">🔍</button>
+<div id="guide-expectancy-dash" class="guide-overlay guide-hidden" style="margin-bottom:14px;"><button class="guide-close" onclick="GUIDE.hide('expectancy-dash')">✕</button><div class="guide-title">📚 Expectancy Dashboard</div><div class="guide-item"><div class="label">What</div><div class="content">Running performance metrics calculated from your logged trades.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Stats update automatically as you log trades. The Account Survival chart shows how many consecutive losses your account can survive at 1% risk.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">The 3:1 Profitability table proves you only need 25% win rate to break even with 3:1 targets. This is the math that makes the S.E.T. Rule work.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Watch your Expectancy number — it should be positive. If it's negative, review your trade notes to find patterns in your losses.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• At 3:1 reward-to-risk, you only need to win 25% of trades to break even</div><div class="guide-tip">• At 40% win rate with 3:1, you make $1,600 per 100 trades — the math is powerful</div><div class="guide-tip">• Account Survival shows at 1% risk, you can survive 69 consecutive losses before 50% drawdown</div></div></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
     <div class="panel">
       <div class="panel-title">📈 Account Survival (1% Risk)</div>
       <div style="padding:14px;background:var(--mint-bg);border-radius:10px;text-align:center;">
@@ -2337,7 +2380,9 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 <div id="tab-pillars" class="tab-content">
 <div class="container">
   <div style="margin-bottom:20px;">
-    <h2 style="font-size:20px;color:var(--navy);margin-bottom:4px;">🎯 Five Pillars Confluence Scorecard</h2>
+    <button class="guide-btn guide-hidden" onclick="GUIDE.show('five-pillars')">🔍</button>
+<div id="guide-five-pillars" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('five-pillars')">✕</button><div class="guide-title">📚 Five Pillars Confluence Scorecard</div><div class="guide-item"><div class="label">What</div><div class="content">The Master Surge Strategy's Five Pillars analyzed in real-time using live market data.</div></div><div class="guide-item"><div class="label">How</div><div class="content">The system automatically fetches Yahoo Finance data and checks each pillar: Price Cycle, Volume Surge, Institutional Footprint, Trend Strength, and Risk Management.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 3 teaches: NEVER execute unless 4+ pillars are green. This scorecard enforces that discipline with real data.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">The score circle (X/5) tells you setup quality. Green = confirmed, Yellow = caution, Red = not met. The Execute button only unlocks at 4+ pillars.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Price Cycle uses Wyckoff analysis — Markup (HH+HL) is bullish, Markdown (LH+LL) is bearish</div><div class="guide-tip">• Volume Surge needs 2x+ average volume to confirm institutional activity</div><div class="guide-tip">• Institutional Footprint checks proximity to the 50-day SMA — institutions defend these levels</div><div class="guide-tip">• The Execute button sends you to S.E.T. Simulator with the symbol pre-loaded — it's the full workflow</div></div></div>
+<h2 style="font-size:20px;color:var(--navy);margin-bottom:4px;">🎯 Five Pillars Confluence Scorecard</h2>
     <p style="font-size:13px;color:var(--gray-500);">Master Surge Strategy analysis. All 5 pillars must align for A+ setup.</p>
   </div>
 
@@ -2376,7 +2421,9 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
   <!-- DASHBOARD -->
   <div id="train-dash" class="train-dash">
-    <h2>🎯 OHLC + Supply/Demand Interactive Training</h2>
+    <button class="guide-btn guide-hidden" onclick="GUIDE.show('chart-training')">🔍</button>
+<div id="guide-chart-training" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('chart-training')">✕</button><div class="guide-title">📚 OHLC + Supply/Demand Training</div><div class="guide-item"><div class="label">What</div><div class="content">Interactive chart reading practice with 5 training modes and an achievement system.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Choose a mode (OHLC Mastery, Supply & Demand Zones, etc.). Click "Learn First" for tutorials or "Practice" for quizzes. Answer questions about randomly generated candlestick charts.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 3 teaches the Five Pillars of the Master Surge Strategy. Chart reading is Pillar 1 — Price Cycles. You must be able to read candles instantly.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Build streaks to unlock achievements. Aim for 80%+ accuracy before moving to harder modes. The achievement badges track your progress.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Start with OHLC Mastery — it's the foundation for everything else</div><div class="guide-tip">• Green candles = buyers won (close above open). Red = sellers won (close below open)</div><div class="guide-tip">• Supply zones = where sellers overwhelm buyers. Demand zones = where buyers overwhelm sellers</div><div class="guide-tip">• The 'Learn First' tutorials explain each concept with visual examples before you practice</div></div></div>
+<h2>🎯 OHLC + Supply/Demand Interactive Training</h2>
     <p class="td-sub">Master chart reading through hands-on practice with realistic live candlestick charts. Always random — never the same chart twice.</p>
 
     <div class="t-stats" id="t-stats">
@@ -5995,6 +6042,43 @@ document.addEventListener('DOMContentLoaded', function() {
   JOURNAL.init();
   PILLARS.init();
 });
+
+
+// ===== GUIDE MODE SYSTEM =====
+const GUIDE = (function() {
+  const STORAGE_KEY = 'trading-portal-guide-mode';
+  function toggle() {
+    const currentState = localStorage.getItem(STORAGE_KEY) === 'on';
+    const newState = !currentState;
+    localStorage.setItem(STORAGE_KEY, newState ? 'on' : 'off');
+    applyState(newState);
+  }
+  function show(sectionId) {
+    const overlay = document.getElementById('guide-' + sectionId);
+    if (overlay) { overlay.style.display = 'block'; overlay.classList.remove('guide-hidden'); }
+  }
+  function hide(sectionId) {
+    const overlay = document.getElementById('guide-' + sectionId);
+    if (overlay) { overlay.style.display = 'none'; overlay.classList.add('guide-hidden'); }
+  }
+  function init() {
+    const savedState = localStorage.getItem(STORAGE_KEY) === 'on';
+    applyState(savedState);
+  }
+  function applyState(isOn) {
+    const toggle = document.getElementById('guide-toggle');
+    const buttons = document.querySelectorAll('.guide-btn');
+    const overlays = document.querySelectorAll('.guide-overlay');
+    if (toggle) {
+      if (isOn) { toggle.classList.add('on'); toggle.textContent = '🔍 Guide Mode: ON'; }
+      else { toggle.classList.remove('on'); toggle.textContent = '🔍 Guide Mode: OFF'; }
+    }
+    buttons.forEach(btn => { if (isOn) btn.classList.remove('guide-hidden'); else btn.classList.add('guide-hidden'); });
+    overlays.forEach(overlay => { overlay.classList.add('guide-hidden'); overlay.style.display = 'none'; });
+  }
+  return { toggle, show, hide, init };
+})();
+document.addEventListener('DOMContentLoaded', function() { GUIDE.init(); });
 
 </script>
 </body>
