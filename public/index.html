@@ -9,7 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2fmily=Inter:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
     --bg-primary: #F0F5F3;
     --bg-secondary: #FFFFFF;
@@ -611,7 +611,7 @@ const MODULE_MEDIA = {
     youtube: 'https://youtu.be/Zs6foGLhyT4',
     flipbook: 'https://heyzine.com/flip-book/6eedbdd39c.html',
     slideDeck: 'https://heyzine.com/flip-book/b594bf7fc7.html',
-    audioUrl: null
+    audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729'
   },
   m2: {
     youtube: 'https://youtu.be/UEDXefl88WI',
@@ -1126,7 +1126,27 @@ function ModuleAudio({ audioUrl, moduleTitle }) {
       <div className="module-audio-container">
         <div className="module-audio-header">🎧 Module Podcast</div>
         <div className="module-audio-placeholder">
-          🎙 Podcast episode coming soon for "{moduleTitle}"
+          🎙️ Podcast episode coming soon for "{moduleTitle}"
+        </div>
+      </div>
+    );
+  }
+
+  const isApplePodcast = audioUrl.includes('podcasts.apple.com');
+  if (isApplePodcast) {
+    const embedUrl = audioUrl.replace('podcasts.apple.com', 'embed.podcasts.apple.com');
+    return (
+      <div className="module-audio-container">
+        <div className="module-audio-header">🎧 Module Podcast — {moduleTitle}</div>
+        <div className="module-audio-body" style={{padding: 0}}>
+          <iframe
+            allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+            frameBorder="0"
+            height="450"
+            style={{width: '100%', overflow: 'hidden', borderRadius: '0 0 12px 12px'}}
+            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+            src={embedUrl}
+          />
         </div>
       </div>
     );
@@ -1143,6 +1163,7 @@ function ModuleAudio({ audioUrl, moduleTitle }) {
     </div>
   );
 }
+
 
 // =============================================================================
 // INFOGRAPHIC GENERATOR COMPONENT
