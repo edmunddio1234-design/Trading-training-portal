@@ -267,6 +267,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .hover-tip .ht-edu em { color:#26A69A; font-style:normal; font-weight:600; }
 .hover-tip .ht-hint { font-size:11px; color:#F59E0B; padding-top:6px; border-top:1px solid #2A3154; margin-top:4px; }
 .hover-tip .ht-hint::before { content:'💡 '; }
+.reset-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border:1px solid #EF4444; color:#EF4444; background:transparent; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; margin-top:12px; }
+.reset-btn:hover { background:#EF4444; color:white; }
 
 
 /* --- Question Panel --- */
@@ -570,6 +572,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         </select>
       </div>
 
+      <button onclick="calcSET()" style="width:100%;margin-top:14px;padding:12px 0;background:linear-gradient(135deg,#10B981,#0D9373);color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='scale(1.02)';this.style.boxShadow='0 4px 16px rgba(16,185,129,0.35)';" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none';">⚡ Calculate S.E.T.</button>
+
       <div class="panel" style="margin-top:14px; background:var(--mint-bg); padding:14px;">
         <div style="font-size:12px; color:var(--gray-700); line-height:1.7;">
           <strong>1% Rule:</strong> Max risk = 1% of account balance.<br>
@@ -825,6 +829,9 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       <div><div class="dc-t">🏆 Daily Challenge</div><div class="dc-d" id="dc-desc">Complete 10 questions with 70%+ accuracy</div></div>
       <div class="dc-p" id="dc-prog">0 / 10</div>
     </div>
+    <div style="text-align:center;margin-top:16px;">
+      <button class="reset-btn" onclick="TM.resetProgress()">🔄 Start Over — Reset All Progress</button>
+    </div>
   </div>
 
   <!-- ARENA -->
@@ -861,7 +868,6 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
           <div class="anno-txt" id="anno-txt"></div>
           <div class="anno-det" id="anno-det"></div>
         </div>
-        <div class="hover-tip" id="hover-tip"></div>
       </div>
       <div class="explore-bar">
         <span>🔍 Explore Mode</span>
@@ -1997,8 +2003,17 @@ function getHoverHTML(hit){
 
 let hoverTipEl=null;
 function showHoverTip(hit,px,py){
-  if(!hoverTipEl)hoverTipEl=document.getElementById('hover-tip');
-  if(!hoverTipEl)return;
+  if(!hoverTipEl){
+    hoverTipEl=document.getElementById('hover-tip');
+    if(!hoverTipEl){
+      // Create dynamically (Vercel strips empty divs)
+      hoverTipEl=document.createElement('div');
+      hoverTipEl.id='hover-tip';
+      hoverTipEl.className='hover-tip';
+      const wrap=document.getElementById('chart-wrap');
+      if(wrap)wrap.appendChild(hoverTipEl);else return;
+    }
+  }
   hoverTipEl.innerHTML=getHoverHTML(hit);
   // Position: prefer right of cursor, flip if near edge
   const wrap=canvas.parentElement;
@@ -2011,20 +2026,33 @@ function showHoverTip(hit,px,py){
   hoverTipEl.classList.add('show');
 }
 function hideHoverTip(){
-  if(!hoverTipEl)hoverTipEl=document.getElementById('hover-tip');
   if(hoverTipEl)hoverTipEl.classList.remove('show');
 }
 
 // ---- QUESTION GENERATORS ----
 function genQ(){
-  const n=diff==='easy'?10:diff==='medium'?16:24;
-  const needPat=mode==='sd'||mode==='zm'||mode==='of'||mode==='seq';
-  const allBars=genChart(n,{forcePatterns:needPat});
-  const zones=findZones(allBars);
+  const targetQ=10;
+  // Retry up to 5 chart attempts to get enough questions
+  for(let attempt=0;attempt<5;attempt++){
+    const n=diff==='easy'?10:diff==='medium'?16:24;
+    const needPat=mode==='sd'||mode==='zm'||mode==='of'||mode==='seq';
+    const allBars=genChart(n,{forcePatterns:needPat});
+    const zones=findZones(allBars);
+    const qs=[];
+    for(let q=0;q<30&&qs.length<targetQ;q++){
+      const question=genOneQ(allBars,zones,q);
+      if(question)qs.push(question);
+    }
+    if(qs.length>=3)return{bars:allBars,questions:qs};
+  }
+  // Fallback: guaranteed OHLC questions on any chart
+  const allBars=genChart(10,{});
   const qs=[];
-  for(let q=0;q<10;q++){
-    const question=genOneQ(allBars,zones,q);
-    if(question)qs.push(question);
+  for(let i=0;i<Math.min(allBars.length,targetQ);i++){
+    const b=allBars[i];
+    if(i%3===0)qs.push({type:'click',con:'o_o',bars:allBars,tb:i,txt:'Click the OPEN on Bar '+(i+1),ans:'open',fc:'Correct! The Open is where price started.',fw:'Incorrect. The Open is at the '+(b.bull?'bottom':'top')+' of the body.'});
+    else if(i%3===1)qs.push({type:'click',con:'o_h',bars:allBars,tb:i,txt:'Click the HIGH on Bar '+(i+1),ans:'high',fc:'Correct! The High is the peak of the bar.',fw:'Incorrect. The High is the very top of the wick.'});
+    else qs.push({type:'mc',con:'o_bull',bars:allBars,hlb:i,txt:'Is Bar '+(i+1)+' bullish or bearish?',opts:['Bullish','Bearish'],cor:b.bull?'Bullish':'Bearish',fc:'Correct! '+(b.bull?'Close > Open = Bullish':'Close < Open = Bearish'),fw:'Incorrect. '+(b.bull?'This is bullish (Close > Open)':'This is bearish (Close < Open)')});
   }
   return{bars:allBars,questions:qs};
 }
@@ -2288,7 +2316,13 @@ function updateDash(){
 
 function initTraining(){updateDash();}
 
-return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,xAnno,initTraining,genChart};
+function resetProgress(){
+  if(!confirm('Reset ALL training progress? This clears your stats, badges, streaks, and mastery. This cannot be undone.'))return;
+  localStorage.removeItem('tm_progress');
+  updateDash();
+}
+
+return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,xAnno,initTraining,genChart,resetProgress};
 })();
 
 // Hash-based tab switching (for iframe embedding)
