@@ -2419,8 +2419,9 @@ function drawExplChart(q,ok){
     ectx.fillRect(x,top,bw,Math.max(1,bot-top));
   });
   // Highlight relevant bar if question references one
-  if(q&&q.bi!==undefined&&q.bi>=0&&q.bi<bars.length){
-    const b=bars[q.bi];const x=pad.l+q.bi*(bw+2);
+  const qBarIdx=q?(q.tb!==undefined?q.tb:(q.hlb!==undefined?q.hlb:-1)):-1;
+  if(qBarIdx>=0&&qBarIdx<bars.length){
+    const b=bars[qBarIdx];const x=pad.l+qBarIdx*(bw+2);
     ectx.strokeStyle='#F59E0B';ectx.lineWidth=2;
     ectx.strokeRect(x-2,scaleY(b.h)-2,bw+4,scaleY(b.l)-scaleY(b.h)+4);
     // Arrow label
@@ -2447,10 +2448,11 @@ function drawExplChart(q,ok){
 
 function buildExplanation(ok,q,sc){
   let html='';
-  const b=q.bi!==undefined&&q.bi>=0&&q.bi<bars.length?bars[q.bi]:null;
+  const barIdx=q.tb!==undefined?q.tb:(q.hlb!==undefined?q.hlb:-1);
+  const b=barIdx>=0&&barIdx<bars.length?bars[barIdx]:null;
   // Section 1: What the question asked
   html+='<div class="expl-section"><h4>\u{1F4CB} What Was Asked</h4>';
-  html+='<p>'+q.q+'</p>';
+  html+='<p>'+(q.txt||'Practice question')+'</p>';
   if(q.type==='mc')html+='<p><strong>Correct answer:</strong> <span class="term">'+q.cor+'</span></p>';
   html+='</div>';
   // Section 2: Why correct/incorrect
@@ -2494,10 +2496,12 @@ function buildExplanation(ok,q,sc){
   // Section 5: Module connection
   html+='<div class="expl-section"><h4>\u{1F393} Module Connection</h4>';
   const con=q.con||'General';
-  html+='<p>This question connects to: <span class="term">'+con+'</span></p>';
-  if(con.includes('OHLC'))html+='<p>Review Module 3 for OHLC bar anatomy and candlestick reading fundamentals.</p>';
-  else if(con.includes('Supply')||con.includes('Demand'))html+='<p>Review Modules on Supply &amp; Demand zones and institutional footprints.</p>';
-  else if(con.includes('Trend'))html+='<p>Review trend identification and the Balance &rarr; Imbalance &rarr; Movement framework.</p>';
+  const conMap={'o_o':'OHLC: Open','o_c':'OHLC: Close','o_h':'OHLC: High','o_l':'OHLC: Low','o_bull':'OHLC: Bull/Bear','o_body':'OHLC: Body & Range','o_wick':'OHLC: Wicks','sd_d':'Supply & Demand: Demand Zones','sd_s':'Supply & Demand: Supply Zones','sd_base':'Supply & Demand: Base','sd_dept':'Supply & Demand: Departure','sd_ret':'Supply & Demand: Retest','of_bal':'Order Flow: Balance','of_imb':'Order Flow: Imbalance','of_mov':'Order Flow: Movement','of_pres':'Order Flow: Pressure','seq':'Market Sequence','zm':'Zone Mastery'};
+  const conLabel=conMap[con]||con;
+  html+='<p>This question connects to: <span class="term">'+conLabel+'</span></p>';
+  if(con.startsWith('o_'))html+='<p>Review Module 3 for OHLC bar anatomy and candlestick reading fundamentals.</p>';
+  else if(con.startsWith('sd_'))html+='<p>Review Modules on Supply &amp; Demand zones and institutional footprints.</p>';
+  else if(con.startsWith('of_')||con==='seq')html+='<p>Review the Balance &rarr; Imbalance &rarr; Movement framework and institutional order flow.</p>';
   else html+='<p>Continue practicing to build pattern recognition skills.</p>';
   html+='</div>';
   // Section 6: Zone quality (if applicable)
