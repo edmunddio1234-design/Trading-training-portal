@@ -254,6 +254,20 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .anno-badge.blu { background:rgba(59,130,246,0.2); color:#60A5FA; }
 .anno .anno-txt { font-size:12px; color:#B0B8D4; line-height:1.55; margin-bottom:6px; }
 .anno .anno-det { font-size:11px; color:#7B83A6; padding-top:6px; border-top:1px solid #2A3154; }
+/* --- Hover Educational Tooltip --- */
+.hover-tip { position:absolute; z-index:30; pointer-events:none; background:rgba(22,27,43,0.96); border:1px solid #323B5C; border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.45); padding:12px 14px; min-width:240px; max-width:320px; color:white; font-size:12px; line-height:1.5; opacity:0; transition:opacity 0.15s ease; }
+.hover-tip.show { opacity:1; }
+.hover-tip .ht-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
+.hover-tip .ht-label.bull { color:#26A69A; }
+.hover-tip .ht-label.bear { color:#EF5350; }
+.hover-tip .ht-label.neutral { color:#60A5FA; }
+.hover-tip .ht-vals { font-size:11px; color:#B0B8D4; margin-bottom:6px; display:grid; grid-template-columns:1fr 1fr; gap:2px 12px; }
+.hover-tip .ht-vals span { color:#E0E4F0; font-weight:600; }
+.hover-tip .ht-edu { font-size:11px; color:#9BA3C2; padding-top:6px; border-top:1px solid #2A3154; line-height:1.55; }
+.hover-tip .ht-edu em { color:#26A69A; font-style:normal; font-weight:600; }
+.hover-tip .ht-hint { font-size:11px; color:#F59E0B; padding-top:6px; border-top:1px solid #2A3154; margin-top:4px; }
+.hover-tip .ht-hint::before { content:'💡 '; }
+
 
 /* --- Question Panel --- */
 .qp { background:white; border-radius:12px; padding:16px 20px; box-shadow:0 2px 10px rgba(0,0,0,.05); margin-bottom:12px; }
@@ -847,6 +861,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
           <div class="anno-txt" id="anno-txt"></div>
           <div class="anno-det" id="anno-det"></div>
         </div>
+        <div class="hover-tip" id="hover-tip"></div>
       </div>
       <div class="explore-bar">
         <span>🔍 Explore Mode</span>
@@ -1922,6 +1937,84 @@ function showAnno(hit){
 }
 function xAnno(){document.getElementById('anno').style.display='none';callout=null;const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;draw(bars,{zones});}
 
+
+// ---- HOVER EDUCATIONAL TOOLTIP ----
+function getHoverHTML(hit){
+  const b=hit.d, bi=hit.b, el=hit.el;
+  const bull=b.bull;
+  const range=(b.h-b.l).toFixed(2);
+  const bodySize=Math.abs(b.c-b.o).toFixed(2);
+  const bodyPct=(Math.abs(b.c-b.o)/(b.h-b.l)*100).toFixed(0);
+  const upperW=(b.h-Math.max(b.o,b.c)).toFixed(2);
+  const lowerW=(Math.min(b.o,b.c)-b.l).toFixed(2);
+  const closePct=((b.c-b.l)/(b.h-b.l)*100).toFixed(0);
+  
+  // Label
+  const labelClass=bull?'bull':'bear';
+  const labelText=bull?'BULLISH BAR (Close > Open)':'BEARISH BAR (Close < Open)';
+  
+  // OHLC values grid
+  const vals=`<div class="ht-vals">O: <span>$${b.o.toFixed(2)}</span> H: <span>$${b.h.toFixed(2)}</span> L: <span>$${b.l.toFixed(2)}</span> C: <span>$${b.c.toFixed(2)}</span></div>`;
+  
+  // Educational text based on what part they're hovering
+  let edu='';
+  switch(el){
+    case 'high': edu=`You're on the <em>High</em> — the peak price ($${b.h.toFixed(2)}). Upper wick = $${upperW}. ${+upperW/(b.h-b.l)>0.3?'Long upper wick means sellers rejected higher prices.':'Short upper wick means close was near the high — buyers strong.'}`;break;
+    case 'low': edu=`You're on the <em>Low</em> — the floor price ($${b.l.toFixed(2)}). Lower wick = $${lowerW}. ${+lowerW/(b.h-b.l)>0.3?'Long lower wick means buyers defended this level — bullish signal.':'Short lower wick means sellers held control down here.'}`;break;
+    case 'open': edu=`You're on the <em>Open</em> ($${b.o.toFixed(2)}) — where price started. On this ${bull?'bullish':'bearish'} bar, the Open is at the ${bull?'bottom':'top'} of the body.`;break;
+    case 'close': edu=`You're on the <em>Close</em> ($${b.c.toFixed(2)}) — the most important price. Close at ${closePct}% of range. ${+closePct>65?'Buyers dominated this session.':+closePct<35?'Sellers dominated this session.':'Neither side won clearly — indecision.'}`;break;
+    case 'body': edu=`You're on the <em>Body</em> (${bull?'green = bullish':'red = bearish'}). Body = $${bodySize} (${bodyPct}% of total range $${range}). ${+bodyPct>70?'Large body = strong conviction by '+(bull?'buyers':'sellers')+'.':+bodyPct<30?'Small body = indecision, neither side dominated.':'Medium body = moderate conviction.'}`;break;
+    case 'upper_wick': edu=`You're on the <em>Upper Wick</em> ($${upperW}). This shows prices that were reached but NOT held — sellers pushed price back down. ${+upperW/(b.h-b.l)>0.3?'This is a strong rejection signal.':'This is a minor rejection.'}`;break;
+    case 'lower_wick': edu=`You're on the <em>Lower Wick</em> ($${lowerW}). This shows prices that were reached but NOT held — buyers pushed price back up. ${+lowerW/(b.h-b.l)>0.3?'This is a strong support/buying signal.':'This is minor support.'}`;break;
+    default: edu=`Bar ${bi+1}: ${bull?'Bullish':'Bearish'} candle. Range: $${range}. Body: ${bodyPct}% of range.`;
+  }
+  
+  // Context-aware hint based on current question
+  let hint='';
+  const q=sQ&&sQ[qI];
+  if(q&&!answered){
+    if(q.type==='click'&&q.ans==='open') hint=`The Open on this ${bull?'bullish (green)':'bearish (red)'} bar is at the ${bull?'BOTTOM':'TOP'} of the body — $${b.o.toFixed(2)}`;
+    else if(q.type==='click'&&q.ans==='close') hint=`The Close is at the ${bull?'TOP':'BOTTOM'} of the body — $${b.c.toFixed(2)}. It's the final price.`;
+    else if(q.type==='click'&&q.ans==='high') hint=`The High is the very TOP of the entire bar (tip of upper wick) — $${b.h.toFixed(2)}`;
+    else if(q.type==='click'&&q.ans==='low') hint=`The Low is the very BOTTOM of the entire bar (tip of lower wick) — $${b.l.toFixed(2)}`;
+    else if(q.type==='click_bar'&&q.txt&&q.txt.includes('BULLISH')) hint=bull?'This IS a bullish (green) bar — Close above Open!':'This is bearish (red) — look for a green bar where Close > Open';
+    else if(q.type==='click_bar'&&q.txt&&q.txt.includes('BEARISH')) hint=!bull?'This IS a bearish (red) bar — Close below Open!':'This is bullish (green) — look for a red bar where Close < Open';
+    else if(q.type==='click_el'&&q.ans==='body') hint=`The Body is the thick filled rectangle between Open and Close. ${bull?'Green body = bullish.':'Red body = bearish.'}`;
+    else if(q.type==='click_el'&&q.ans==='wick') hint='Wicks are the thin lines above and below the body — they show price rejection.';
+    else if(q.type==='click_bar'&&q.txt&&q.txt.includes('BALANCE')) hint=b.phase==='base'?'This small, tight bar shows BALANCE — supply equals demand.':'Balance bars are small and sideways. This bar looks more directional.';
+    else if(q.type==='click_bar'&&q.txt&&q.txt.includes('IMBALANCE')) hint=b.phase==='departure'?'This large directional bar shows IMBALANCE — one side overwhelmed!':'Imbalance bars are large and directional. This looks more balanced.';
+    else if(q.type==='click_bar'&&q.txt&&q.txt.includes('MOVEMENT')) hint=b.phase==='departure'?'This is part of the MOVEMENT phase — directional expansion after imbalance.':'Movement bars follow departures — look for large bars after consolidation.';
+    else if(q.type==='click_zone'&&q.txt&&q.txt.includes('DEMAND')) hint='Demand zones are tight consolidation areas BEFORE a sharp upward move. Look for small bars followed by a big green departure.';
+    else if(q.type==='click_zone'&&q.txt&&q.txt.includes('SUPPLY')) hint='Supply zones are tight consolidation areas BEFORE a sharp downward move. Look for small bars followed by a big red departure.';
+    else if(q.type==='click_bar'&&q.txt&&q.txt.includes('BASE')) hint=b.phase==='base'?'Yes! This small bar is part of a BASE — institutional order accumulation.':'Bases have small, tight bars. Look for consolidation before a sharp move.';
+    else if(q.type==='click_bar'&&q.txt&&q.txt.includes('DEPARTURE')) hint=b.phase==='departure'?'This large bar IS the DEPARTURE — institutions overwhelmed the other side!':'Departures are the first BIG bar breaking out of a consolidation area.';
+    else if(q.type==='mc') hint='Read the question and choose the best answer from the options below the chart.';
+    else if(q.type==='zone_draw') hint='Click and drag on the chart to draw a rectangle over the zone area.';
+  }
+  
+  return `<div class="ht-label ${labelClass}">Bar ${bi+1} · ${labelText}</div>${vals}<div class="ht-edu">${edu}</div>${hint?'<div class="ht-hint">'+hint+'</div>':''}`;
+}
+
+let hoverTipEl=null;
+function showHoverTip(hit,px,py){
+  if(!hoverTipEl)hoverTipEl=document.getElementById('hover-tip');
+  if(!hoverTipEl)return;
+  hoverTipEl.innerHTML=getHoverHTML(hit);
+  // Position: prefer right of cursor, flip if near edge
+  const wrap=canvas.parentElement;
+  const wrapR=wrap?wrap.getBoundingClientRect():null;
+  let left=px+18,top=py-60;
+  if(wrapR&&left+320>wrapR.width)left=px-330;
+  if(top<10)top=10;
+  if(wrapR&&top+200>wrapR.height)top=Math.max(10,wrapR.height-210);
+  hoverTipEl.style.left=left+'px';hoverTipEl.style.top=top+'px';
+  hoverTipEl.classList.add('show');
+}
+function hideHoverTip(){
+  if(!hoverTipEl)hoverTipEl=document.getElementById('hover-tip');
+  if(hoverTipEl)hoverTipEl.classList.remove('show');
+}
+
 // ---- QUESTION GENERATORS ----
 function genQ(){
   const n=diff==='easy'?10:diff==='medium'?16:24;
@@ -2149,6 +2242,8 @@ function setupEv(){
     const r=canvas.getBoundingClientRect();const px=e.clientX-r.left,py=e.clientY-r.top;
     const hit=hitTest(px,py);const nh=hit?hit.b:-1;
     if(nh!==hovBar){hovBar=nh;const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;const q=sQ[qI];const hl=q&&q.hlb!==undefined?[{b:q.hlb,c:'#60A5FA'}]:undefined;draw(bars,{zones:q?.zones||zones,hl,zLabels:diff==='easy'});}
+    // Show/hide hover educational tooltip
+    if(hit){showHoverTip(hit,px,py);}else{hideHoverTip();}
     // Zone draw drag
     if(isDraw&&drawSt){const q=sQ[qI];if(q&&q.type==='zone_draw'){drawnZ=[{x:Math.min(drawSt.x,px),y:Math.min(drawSt.y,py),w:Math.abs(px-drawSt.x),h:Math.abs(py-drawSt.y),type:q.zt}];const zones=findZones(bars);draw(bars,{zones,zLabels:diff==='easy'});}}
   };
@@ -2162,7 +2257,7 @@ function setupEv(){
   canvas.addEventListener('click',evClick);canvas.addEventListener('mousemove',evMove);
   canvas.addEventListener('mousedown',evDown);canvas.addEventListener('mouseup',evUp);
 }
-function removeEv(){if(canvas){if(evClick)canvas.removeEventListener('click',evClick);if(evMove)canvas.removeEventListener('mousemove',evMove);if(evDown)canvas.removeEventListener('mousedown',evDown);if(evUp)canvas.removeEventListener('mouseup',evUp);}}
+function removeEv(){hideHoverTip();if(canvas){if(evClick)canvas.removeEventListener('click',evClick);if(evMove)canvas.removeEventListener('mousemove',evMove);if(evDown)canvas.removeEventListener('mousedown',evDown);if(evUp)canvas.removeEventListener('mouseup',evUp);}}
 
 // ---- SESSION END ----
 function endSess(){
