@@ -408,140 +408,290 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 }
 
 /* ============================================ */
-/* WEBULL SIMULATOR — Full Webull Clone Layout  */
+/* WEBULL SIMULATOR — Full Webull Desktop Clone */
 /* Mission Metrics | Impact Trading Academy     */
 /* ============================================ */
 
-/* --- Webull Full Layout --- */
-.wb-sim { display:grid; grid-template-columns:220px 1fr 280px; gap:0; background:#0B0E17; border-radius:14px; overflow:hidden; min-height:680px; box-shadow:0 4px 24px rgba(0,0,0,.4); margin-bottom:14px; }
-.wb-sim.dash-mode { display:none; }
+/* --- Full Viewport Layout --- */
+.wb-sim { display:grid; grid-template-columns:230px 1fr 310px; gap:0; background:#000000; border-radius:0; overflow:hidden; min-height:92vh; box-shadow:0 4px 24px rgba(0,0,0,.6); margin:0 -24px; }
 
-/* --- Left: Watchlist --- */
-.wb-left { background:#0F1322; border-right:1px solid #1C2238; display:flex; flex-direction:column; }
-.wb-wl-hd { padding:10px 14px; border-bottom:1px solid #1C2238; display:flex; justify-content:space-between; align-items:center; }
-.wb-wl-hd span { font-size:12px; font-weight:700; color:#B0B8D4; text-transform:uppercase; letter-spacing:.5px; }
-.wb-wl-search { width:100%; padding:6px 10px; background:#1A1F35; border:1px solid #262D47; border-radius:6px; color:white; font-size:11px; margin:8px 10px; box-sizing:border-box; }
-.wb-wl-search::placeholder { color:#4A5078; }
-.wb-ticker { display:flex; justify-content:space-between; align-items:center; padding:8px 14px; cursor:pointer; transition:background .15s; border-left:3px solid transparent; }
-.wb-ticker:hover { background:#161B2B; }
-.wb-ticker.active { background:#161B2B; border-left-color:#26A69A; }
-.wb-tk-name { font-size:12px; font-weight:700; color:white; }
-.wb-tk-co { font-size:9px; color:#6B7394; display:block; margin-top:1px; }
-.wb-tk-price { text-align:right; }
-.wb-tk-pr { font-size:12px; font-weight:700; }
-.wb-tk-pr.up { color:#26A69A; }
-.wb-tk-pr.dn { color:#EF5350; }
-.wb-tk-chg { font-size:9px; display:block; margin-top:1px; }
-.wb-tk-chg.up { color:#26A69A; }
-.wb-tk-chg.dn { color:#EF5350; }
-.wb-wl-add { padding:8px 14px; color:#26A69A; font-size:11px; font-weight:600; cursor:pointer; border-top:1px solid #1C2238; margin-top:auto; }
-.wb-wl-add:hover { background:#161B2B; }
+/* ============================== */
+/* LEFT SIDEBAR — Watchlist       */
+/* ============================== */
+.wb-left { background:#1b1b1b; border-right:1px solid #2a2a2a; display:flex; flex-direction:column; overflow-y:auto; }
+.wb-wl-hd { padding:10px 14px; border-bottom:1px solid #2a2a2a; display:flex; justify-content:space-between; align-items:center; }
+.wb-wl-title { font-size:13px; font-weight:700; color:#e0e0e0; }
+.wb-wl-dropdown { font-size:11px; color:#808080; background:#2a2a2a; border:1px solid #3a3a3a; border-radius:4px; padding:3px 8px; cursor:pointer; }
+.wb-wl-cols { display:flex; justify-content:space-between; padding:4px 14px; font-size:10px; color:#606060; border-bottom:1px solid #2a2a2a; }
 
-/* --- Center: Chart Area --- */
-.wb-center { display:flex; flex-direction:column; background:#0B0E17; }
-.wb-top-bar { display:flex; align-items:center; gap:8px; padding:8px 16px; background:#0F1322; border-bottom:1px solid #1C2238; flex-wrap:wrap; }
-.wb-sym-big { font-size:18px; font-weight:800; color:white; }
-.wb-price-big { font-size:16px; font-weight:700; margin-left:6px; }
-.wb-price-big.up { color:#26A69A; }
-.wb-price-big.dn { color:#EF5350; }
-.wb-chg-big { font-size:12px; font-weight:600; margin-left:4px; }
-.wb-chg-big.up { color:#26A69A; }
-.wb-chg-big.dn { color:#EF5350; }
-.wb-co-name { font-size:11px; color:#6B7394; margin-left:8px; }
+/* Ticker rows */
+.wb-ticker { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; transition:background .12s; border-left:3px solid transparent; }
+.wb-ticker:hover { background:#252525; }
+.wb-ticker.active { background:#1a2332; border-left-color:#00c805; }
+.wb-tk-left { display:flex; flex-direction:column; }
+.wb-tk-sym { font-size:13px; font-weight:800; color:#ffffff; letter-spacing:.3px; }
+.wb-tk-name { font-size:10px; color:#808080; margin-top:1px; }
+.wb-tk-right { text-align:right; }
+.wb-tk-price { font-size:13px; font-weight:700; }
+.wb-tk-price.up { color:#00c805; }
+.wb-tk-price.dn { color:#ff3b3b; }
+.wb-tk-chg { font-size:10px; margin-top:1px; }
+.wb-tk-chg.up { color:#ff3b3b; }
+.wb-tk-chg.dn { color:#ff3b3b; }
+.wb-tk-chg.grn { color:#00c805; }
 
-/* Time intervals */
-.wb-intervals { display:flex; gap:2px; margin-left:auto; }
-.wb-int { padding:4px 8px; font-size:10px; font-weight:600; color:#6B7394; background:transparent; border:none; border-radius:3px; cursor:pointer; }
-.wb-int:hover { color:#B0B8D4; background:#1A1F35; }
-.wb-int.on { color:#26A69A; background:#1A2A28; }
+/* Nav icons sidebar */
+.wb-nav { display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 0; border-bottom:1px solid #2a2a2a; }
+.wb-nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 8px; cursor:pointer; border-radius:4px; color:#808080; font-size:9px; font-weight:600; }
+.wb-nav-item:hover { color:#e0e0e0; background:#2a2a2a; }
+.wb-nav-item .wb-nav-icon { font-size:16px; }
+.wb-add-sym { padding:10px 14px; color:#00c805; font-size:12px; font-weight:600; cursor:pointer; border-top:1px solid #2a2a2a; margin-top:auto; }
+.wb-add-sym:hover { background:#252525; }
 
-/* Chart tools bar */
-.wb-tools { display:flex; align-items:center; gap:4px; padding:4px 16px; background:#0F1322; border-bottom:1px solid #1C2238; }
-.wb-tool { padding:3px 8px; font-size:10px; color:#6B7394; background:transparent; border:none; cursor:pointer; border-radius:3px; }
-.wb-tool:hover { color:#B0B8D4; background:#1A1F35; }
-.wb-tool.on { color:white; background:#26A69A; }
-.wb-ohlc-bar { display:flex; gap:12px; margin-left:auto; font-size:11px; color:#6B7394; }
-.wb-ohlc-bar span { font-weight:600; }
+/* ============================== */
+/* CENTER — Chart Area             */
+/* ============================== */
+.wb-center { display:flex; flex-direction:column; background:#000000; min-width:0; }
 
-/* Chart canvas area - BIGGER */
-.wb-chart-wrap { flex:1; position:relative; min-height:480px; background:#0B0E17; }
+/* Top tabs: Chart | Options | Related Bonds | Note | News | Comments */
+.wb-top-tabs { display:flex; gap:0; background:#1b1b1b; border-bottom:1px solid #2a2a2a; padding:0; }
+.wb-top-tab { padding:8px 16px; font-size:12px; font-weight:600; color:#808080; cursor:pointer; border-bottom:2px solid transparent; }
+.wb-top-tab:hover { color:#e0e0e0; }
+.wb-top-tab.on { color:#ffffff; border-bottom-color:#00c805; background:#252525; }
+
+/* Chart type icons row */
+.wb-chart-types { display:flex; align-items:center; gap:2px; padding:6px 12px; background:#1b1b1b; border-bottom:1px solid #2a2a2a; }
+.wb-ct-icon { width:28px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:3px; font-size:14px; color:#808080; }
+.wb-ct-icon:hover { color:#e0e0e0; background:#2a2a2a; }
+.wb-ct-icon.on { color:#00c805; background:#1a2332; }
+.wb-ct-sep { width:1px; height:16px; background:#2a2a2a; margin:0 4px; }
+/* Indicator buttons */
+.wb-ind-btn { padding:3px 8px; font-size:11px; font-weight:600; color:#808080; cursor:pointer; border-radius:3px; border:none; background:transparent; }
+.wb-ind-btn:hover { color:#e0e0e0; background:#2a2a2a; }
+.wb-ind-btn.on { color:#00c805; }
+.wb-ind-btn.purple { color:#a855f7; }
+.wb-ind-all { margin-left:auto; color:#808080; font-size:11px; cursor:pointer; }
+.wb-ind-all:hover { color:#e0e0e0; }
+
+/* Ticker info bar */
+.wb-ticker-bar { display:flex; align-items:center; gap:8px; padding:6px 16px; background:#1b1b1b; border-bottom:1px solid #2a2a2a; flex-wrap:wrap; }
+.wb-tb-sym { font-size:12px; font-weight:700; color:#ffffff; }
+.wb-tb-co { font-size:11px; color:#808080; }
+.wb-tb-tf { font-size:11px; color:#808080; }
+.wb-tb-adj { font-size:10px; color:#808080; padding:1px 6px; border:1px solid #3a3a3a; border-radius:3px; }
+
+/* OHLC data row */
+.wb-ohlc-row { display:flex; align-items:center; gap:6px; padding:3px 16px; background:#000000; font-size:11px; }
+.wb-ohlc-row .o-label { color:#808080; font-weight:600; }
+.wb-ohlc-row .o-val { font-weight:700; }
+.wb-ohlc-row .o-val.up { color:#00c805; }
+.wb-ohlc-row .o-val.dn { color:#ff3b3b; }
+.wb-ohlc-row .o-chg { font-weight:600; }
+.wb-ohlc-row .o-chg.up { color:#00c805; }
+.wb-ohlc-row .o-chg.dn { color:#ff3b3b; }
+.wb-ohlc-row .o-vol { color:#808080; }
+.wb-ma-row { padding:1px 16px; font-size:11px; }
+.wb-ma-row .ma-label { color:#808080; font-weight:600; }
+.wb-ma-row .ma-val { color:#a855f7; font-weight:700; }
+
+/* ============================== */
+/* CHART CANVAS — THE BIG ONE     */
+/* ============================== */
+.wb-chart-wrap { flex:1; position:relative; min-height:520px; background:#000000; }
 .wb-chart-wrap canvas { display:block; width:100%; height:100%; cursor:crosshair; }
+/* Price axis labels (rendered on canvas) */
+/* Current price highlight (rendered on canvas) */
+/* Dashed S/R line (rendered on canvas) */
 
-/* Volume bar at bottom of chart */
-.wb-vol-label { position:absolute; bottom:36px; left:8px; font-size:9px; color:#4A5078; }
+/* Explore bar inside chart */
+.wb-explore { display:flex; align-items:center; gap:10px; padding:6px 16px; background:#1b1b1b; border-top:1px solid #2a2a2a; }
+.wb-explore span { color:#808080; font-size:11px; font-weight:600; }
+.etoggle { position:relative; width:36px; height:20px; background:#3a3a3a; border-radius:10px; cursor:pointer; border:none; padding:0; transition:.2s; }
+.etoggle.on { background:#00c805; }
+.etoggle::after { content:''; position:absolute; top:2px; left:2px; width:16px; height:16px; background:white; border-radius:50%; transition:.2s; }
+.etoggle.on::after { left:18px; }
+.explore-hint { color:#00c805; font-size:10px; font-weight:600; margin-left:auto; }
 
-/* Explore bar */
-.wb-explore { display:flex; align-items:center; gap:10px; padding:6px 16px; background:#0F1322; border-top:1px solid #1C2238; }
-.wb-explore span { color:#7B83A6; font-size:11px; font-weight:600; }
+/* Bottom: Range / Interval / Orders tabs */
+.wb-range-bar { display:flex; align-items:center; gap:4px; padding:6px 16px; background:#1b1b1b; border-top:1px solid #2a2a2a; }
+.wb-range-label { font-size:11px; color:#808080; font-weight:600; margin-right:4px; }
+.wb-range-btn { padding:3px 8px; font-size:11px; font-weight:600; color:#808080; cursor:pointer; border:none; background:transparent; border-radius:3px; }
+.wb-range-btn:hover { color:#e0e0e0; background:#2a2a2a; }
+.wb-range-btn.on { color:#00c805; }
+.wb-range-sep { width:1px; height:14px; background:#2a2a2a; margin:0 8px; }
 
-/* Bottom tabs (Orders, Positions, etc.) */
-.wb-bottom { background:#0F1322; border-top:1px solid #1C2238; }
-.wb-btabs { display:flex; gap:0; }
-.wb-btab { padding:8px 16px; font-size:11px; font-weight:600; color:#6B7394; cursor:pointer; border-bottom:2px solid transparent; }
-.wb-btab:hover { color:#B0B8D4; }
-.wb-btab.on { color:#26A69A; border-bottom-color:#26A69A; }
-.wb-bpanel { padding:10px 16px; min-height:40px; font-size:11px; color:#6B7394; }
+.wb-bottom-tabs { display:flex; gap:0; background:#1b1b1b; border-top:1px solid #2a2a2a; }
+.wb-btab { padding:8px 16px; font-size:11px; font-weight:600; color:#808080; cursor:pointer; border-bottom:2px solid transparent; }
+.wb-btab:hover { color:#e0e0e0; }
+.wb-btab.on { color:#ffffff; border-bottom-color:#00c805; }
+.wb-bottom-panel { padding:12px 16px; min-height:60px; background:#1b1b1b; }
+.wb-bottom-empty { text-align:center; padding:16px; color:#505050; font-size:12px; }
 
-/* --- Right: Order Panel --- */
-.wb-right { background:#0F1322; border-left:1px solid #1C2238; display:flex; flex-direction:column; }
-.wb-order-hd { padding:12px 14px; border-bottom:1px solid #1C2238; }
-.wb-order-sym { font-size:14px; font-weight:800; color:white; }
-.wb-order-pr { font-size:20px; font-weight:800; margin-top:4px; }
-.wb-order-pr.up { color:#26A69A; }
-.wb-order-pr.dn { color:#EF5350; }
-.wb-order-sub { font-size:10px; color:#6B7394; margin-top:2px; }
+/* Click tip (blue Webull-style) */
+.wb-click-tip { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#0078ff; color:white; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; z-index:3000; box-shadow:0 4px 20px rgba(0,120,255,.4); display:none; max-width:500px; }
+.wb-click-tip.show { display:flex; align-items:center; gap:10px; }
+.wb-click-tip .wb-tip-x { background:none; border:none; color:white; font-size:16px; cursor:pointer; margin-left:auto; opacity:.8; }
+.wb-click-tip .wb-tip-x:hover { opacity:1; }
 
-/* Buy/Sell toggle */
-.wb-bs-row { display:flex; margin:12px 14px 8px; border-radius:6px; overflow:hidden; }
-.wb-bs-btn { flex:1; padding:10px; font-size:13px; font-weight:700; border:none; cursor:pointer; text-align:center; }
-.wb-bs-btn.buy { background:#26A69A; color:white; }
-.wb-bs-btn.buy.off { background:#1A2A28; color:#26A69A; }
-.wb-bs-btn.sell { background:#EF5350; color:white; }
-.wb-bs-btn.sell.off { background:#2A1A1A; color:#EF5350; }
+/* ============================== */
+/* RIGHT PANEL — Quotes + Order   */
+/* ============================== */
+.wb-right { background:#1b1b1b; border-left:1px solid #2a2a2a; display:flex; flex-direction:column; overflow-y:auto; }
 
-/* Order type pills */
-.wb-otype { display:flex; gap:4px; padding:0 14px; margin-bottom:10px; }
-.wb-ot { padding:4px 10px; font-size:10px; font-weight:600; border-radius:4px; cursor:pointer; border:1px solid #262D47; color:#6B7394; background:transparent; }
-.wb-ot.on { border-color:#26A69A; color:#26A69A; background:#1A2A28; }
+/* Quotes header */
+.wb-quotes-hd { padding:8px 14px; border-bottom:1px solid #2a2a2a; }
+.wb-quotes-tab { font-size:12px; font-weight:700; color:#ffffff; background:#2a2a2a; padding:4px 12px; border-radius:4px; display:inline-block; }
+.wb-q-sym-row { padding:12px 14px; border-bottom:1px solid #2a2a2a; }
+.wb-q-sym { font-size:14px; font-weight:800; color:#ffffff; }
+.wb-q-exchange { font-size:11px; color:#808080; }
+.wb-q-icons { float:right; display:flex; gap:8px; }
+.wb-q-icon { font-size:14px; cursor:pointer; color:#808080; }
+.wb-q-icon:hover { color:#e0e0e0; }
+.wb-q-icon.star { color:#ffd700; }
 
-/* Order form fields */
-.wb-form { padding:0 14px; }
-.wb-field { margin-bottom:10px; }
-.wb-field label { display:block; font-size:10px; color:#6B7394; font-weight:600; margin-bottom:4px; text-transform:uppercase; letter-spacing:.3px; }
-.wb-field .wb-input { display:flex; align-items:center; background:#1A1F35; border:1px solid #262D47; border-radius:6px; overflow:hidden; }
-.wb-field input { flex:1; background:transparent; border:none; color:white; padding:8px 10px; font-size:13px; font-weight:600; outline:none; text-align:center; }
-.wb-field .wb-pm { width:32px; height:36px; display:flex; align-items:center; justify-content:center; color:#6B7394; cursor:pointer; font-size:14px; font-weight:700; border:none; background:transparent; }
-.wb-field .wb-pm:hover { color:white; background:#262D47; }
+/* Big price display */
+.wb-big-price { padding:6px 14px; }
+.wb-price-num { font-size:36px; font-weight:900; letter-spacing:-1px; }
+.wb-price-num.up { color:#00c805; }
+.wb-price-num.dn { color:#ff3b3b; }
+.wb-price-detail { display:flex; gap:12px; font-size:11px; margin-top:2px; }
+.wb-price-chg { font-weight:700; }
+.wb-price-chg.up { color:#00c805; }
+.wb-price-chg.dn { color:#ff3b3b; }
+.wb-price-after { color:#ff3b3b; font-size:11px; margin-top:2px; }
+.wb-price-hl { display:flex; gap:16px; margin-top:4px; font-size:11px; }
+.wb-price-hl span { color:#808080; }
+.wb-price-hl .hl-val { color:#ff3b3b; font-weight:700; margin-left:4px; }
+.wb-price-hl .hl-val.grn { color:#00c805; }
+.wb-price-more { font-size:11px; color:#808080; cursor:pointer; margin-top:2px; }
+.wb-price-more:hover { color:#e0e0e0; }
 
-/* Estimated cost */
-.wb-est { padding:10px 14px; margin:8px 14px; background:#161B2B; border-radius:8px; }
-.wb-est-row { display:flex; justify-content:space-between; font-size:11px; color:#6B7394; margin-bottom:4px; }
-.wb-est-row .wb-est-v { color:white; font-weight:600; }
-.wb-est-total { display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:white; padding-top:6px; border-top:1px solid #262D47; }
+/* Middle tabs: Order Book | NOII + Trade | TurboTrader | Ladder */
+.wb-mid-tabs { display:flex; border-bottom:1px solid #2a2a2a; }
+.wb-mid-tab-group { display:flex; flex:1; }
+.wb-mid-tab { padding:7px 10px; font-size:11px; font-weight:600; color:#808080; cursor:pointer; border-bottom:2px solid transparent; }
+.wb-mid-tab:hover { color:#e0e0e0; }
+.wb-mid-tab.on { color:#ffffff; border-bottom-color:#00c805; }
+.wb-mid-sep { width:1px; background:#2a2a2a; }
 
-/* Place order button */
-.wb-place { margin:10px 14px; padding:12px; border:none; border-radius:8px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:.5px; }
-.wb-place.buy { background:linear-gradient(135deg,#26A69A,#2EC4B6); color:white; }
-.wb-place.sell { background:linear-gradient(135deg,#EF5350,#F44336); color:white; }
-.wb-place:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
+/* Order Book placeholder */
+.wb-ob-panel { flex:1; display:flex; align-items:center; justify-content:center; flex-direction:column; padding:20px; min-height:120px; }
+.wb-ob-avatar { font-size:40px; color:#505050; margin-bottom:8px; }
+.wb-ob-text { font-size:12px; color:#505050; }
+.wb-ob-link { color:#00c805; text-decoration:none; }
 
-/* Buying power */
-.wb-bp { margin-top:auto; padding:12px 14px; border-top:1px solid #1C2238; }
-.wb-bp-label { font-size:10px; color:#6B7394; font-weight:600; }
-.wb-bp-val { font-size:14px; font-weight:700; color:white; margin-top:2px; }
+/* Trade panel */
+.wb-trade-panel { padding:0 14px 14px; }
+/* Side: Buy/Sell */
+.wb-side-label { font-size:11px; color:#808080; font-weight:600; margin:10px 0 6px; }
+.wb-side-row { display:flex; border-radius:6px; overflow:hidden; margin-bottom:12px; }
+.wb-side-btn { flex:1; padding:10px; font-size:14px; font-weight:800; border:none; cursor:pointer; text-align:center; }
+.wb-side-btn.buy { background:#00c805; color:white; }
+.wb-side-btn.buy.off { background:#1a2a1a; color:#00c805; }
+.wb-side-btn.sell { background:#ff3b3b; color:white; }
+.wb-side-btn.sell.off { background:#2a1a1a; color:#ff3b3b; }
 
-/* Trade confirmation notice */
-.wb-notice { padding:6px 14px; font-size:10px; color:#F59E0B; background:rgba(245,158,11,0.08); border-top:1px solid rgba(245,158,11,0.15); text-align:center; }
+/* Order Type */
+.wb-otype-label { font-size:11px; color:#808080; font-weight:600; margin-bottom:6px; display:flex; align-items:center; gap:4px; }
+.wb-otype-info { font-size:12px; cursor:pointer; color:#505050; }
+.wb-otype-row { display:flex; gap:0; margin-bottom:12px; border-radius:6px; overflow:hidden; border:1px solid #2a2a2a; }
+.wb-ot-btn { flex:1; padding:8px; font-size:12px; font-weight:700; text-align:center; cursor:pointer; border:none; background:#1b1b1b; color:#808080; }
+.wb-ot-btn:hover { color:#e0e0e0; }
+.wb-ot-btn.on { background:#1a2a2a; color:#00c805; border:1px solid #00c805; }
 
-/* --- Responsive --- */
+/* Quantity */
+.wb-qty-label { font-size:11px; color:#808080; font-weight:600; margin-bottom:6px; }
+.wb-qty-input-row { display:flex; align-items:center; background:#252525; border:1px solid #3a3a3a; border-radius:6px; margin-bottom:6px; }
+.wb-qty-input { flex:1; background:transparent; border:none; color:white; padding:8px 10px; font-size:14px; font-weight:700; text-align:left; outline:none; }
+.wb-qty-type-btns { display:flex; gap:2px; padding:0 4px; }
+.wb-qty-type { padding:4px 8px; font-size:11px; font-weight:700; border-radius:4px; cursor:pointer; border:none; }
+.wb-qty-type.shares { background:#00c805; color:white; }
+.wb-qty-type.pct { background:transparent; color:#808080; }
+.wb-qty-type.dollar { background:transparent; color:#808080; }
+.wb-qty-quick { display:flex; gap:4px; margin-bottom:12px; }
+.wb-qq { padding:5px 12px; font-size:11px; font-weight:700; border-radius:4px; cursor:pointer; border:1px solid #3a3a3a; background:#252525; color:#e0e0e0; }
+.wb-qq:hover { border-color:#00c805; color:#00c805; }
+.wb-qq.more { color:#808080; }
+
+/* Limit Price */
+.wb-lim-label { font-size:11px; color:#808080; font-weight:600; margin-bottom:6px; }
+.wb-lim-row { display:flex; align-items:center; background:#252525; border:1px solid #3a3a3a; border-radius:6px; margin-bottom:12px; }
+.wb-lim-input { flex:1; background:transparent; border:none; color:white; padding:8px 10px; font-size:14px; font-weight:700; outline:none; }
+.wb-lim-edit { padding:6px 10px; cursor:pointer; color:#808080; border:none; background:transparent; font-size:14px; }
+.wb-lim-edit:hover { color:#e0e0e0; }
+
+/* Time-in-Force / Trading Hours */
+.wb-tif-row { display:flex; gap:8px; margin-bottom:12px; }
+.wb-tif-group { flex:1; }
+.wb-tif-label { font-size:10px; color:#808080; font-weight:600; margin-bottom:4px; }
+.wb-tif-select { width:100%; padding:7px 10px; background:#252525; border:1px solid #3a3a3a; border-radius:6px; color:white; font-size:12px; font-weight:600; cursor:pointer; appearance:none; -webkit-appearance:none; }
+
+/* Stop-Loss / Take-Profit */
+.wb-sl-row { display:flex; gap:12px; margin-bottom:12px; align-items:center; }
+.wb-sl-check { display:flex; align-items:center; gap:6px; cursor:pointer; }
+.wb-sl-box { width:16px; height:16px; border:2px solid #3a3a3a; border-radius:3px; display:flex; align-items:center; justify-content:center; }
+.wb-sl-box.on { background:#00c805; border-color:#00c805; }
+.wb-sl-text { font-size:11px; color:#808080; font-weight:600; }
+.wb-sl-inputs { display:flex; gap:8px; margin-bottom:8px; }
+.wb-sl-field { flex:1; }
+.wb-sl-flabel { font-size:9px; color:#606060; font-weight:600; margin-bottom:3px; }
+.wb-sl-finput-row { display:flex; align-items:center; background:#252525; border:1px solid #3a3a3a; border-radius:4px; }
+.wb-sl-finput { flex:1; background:transparent; border:none; color:white; padding:5px 8px; font-size:12px; font-weight:600; outline:none; text-align:center; }
+.wb-sl-fpct { padding:3px 6px; font-size:10px; color:#808080; font-weight:700; background:#1b1b1b; border-left:1px solid #3a3a3a; }
+.wb-est-pl { display:flex; gap:16px; margin-bottom:12px; font-size:10px; color:#606060; }
+
+/* Time in Force sub-orders */
+.wb-tif-sub { margin-bottom:12px; }
+.wb-tif-sub-label { font-size:10px; color:#606060; margin-bottom:4px; }
+
+/* LOGIN / BUY button */
+.wb-action-btn { width:100%; padding:14px; border:none; border-radius:8px; font-size:15px; font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:.5px; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px; }
+.wb-action-btn.buy { background:linear-gradient(135deg,#00c805,#00a804); color:white; }
+.wb-action-btn.buy:hover { background:linear-gradient(135deg,#00d806,#00b805); box-shadow:0 4px 16px rgba(0,200,5,.3); }
+.wb-action-btn.sell { background:linear-gradient(135deg,#ff3b3b,#e02020); color:white; }
+.wb-action-btn.login { background:#0078ff; color:white; }
+.wb-action-icon { font-size:16px; }
+
+/* Bottom tabs: Time&Sales | Vol Analysis */
+.wb-ts-tabs { display:flex; border-top:1px solid #2a2a2a; }
+.wb-ts-tab { padding:7px 14px; font-size:11px; font-weight:600; color:#808080; cursor:pointer; }
+.wb-ts-tab:hover { color:#e0e0e0; }
+.wb-ts-tab.on { color:#ffffff; }
+.wb-ts-sep { width:1px; background:#2a2a2a; }
+.wb-ts-panel { flex:1; display:flex; align-items:center; justify-content:center; min-height:80px; }
+
+/* Simulated notice */
+.wb-notice { padding:8px 14px; font-size:10px; color:#f59e0b; background:rgba(245,158,11,0.06); border-top:1px solid rgba(245,158,11,0.12); text-align:center; margin-top:auto; }
+
+/* ============================== */
+/* ANNOTATION CALLOUT              */
+/* ============================== */
+.anno { position:absolute; z-index:25; background:#1E2444; border:1px solid #323B5C; border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,.35); padding:14px 16px; min-width:280px; max-width:360px; color:white; animation:annoPop .2s ease-out; }
+@keyframes annoPop { from{opacity:0;transform:scale(.93) translateY(5px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.anno .anno-x { position:absolute; top:6px; right:8px; background:none; border:none; font-size:14px; cursor:pointer; color:#6B7394; }
+.anno .anno-x:hover { color:white; }
+.anno .anno-hd { font-size:14px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.anno .anno-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:8px; }
+.anno-badge.grn { background:rgba(38,166,154,0.2); color:#26A69A; }
+.anno-badge.red { background:rgba(239,83,80,0.2); color:#EF5350; }
+.anno-badge.blu { background:rgba(59,130,246,0.2); color:#60A5FA; }
+.anno .anno-txt { font-size:12px; color:#B0B8D4; line-height:1.55; margin-bottom:6px; }
+.anno .anno-det { font-size:11px; color:#7B83A6; padding-top:6px; border-top:1px solid #2A3154; }
+
+/* ============================== */
+/* RESPONSIVE                      */
+/* ============================== */
+@media(max-width:1200px){
+  .wb-sim { grid-template-columns:180px 1fr 260px; }
+}
 @media(max-width:1024px){
   .wb-sim { grid-template-columns:1fr; min-height:auto; }
   .wb-left { display:none; }
   .wb-right { display:none; }
 }
 @media(max-width:768px){
-  .wb-intervals { display:none; }
-  .wb-ohlc-bar { display:none; }
+  .wb-chart-types { display:none; }
+  .wb-ohlc-row { display:none; }
 }
 
 
@@ -1036,113 +1186,280 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <!-- ===== WEBULL-STYLE SIMULATOR ===== -->
 <div id="wb-sim" class="wb-sim" style="display:none;">
 
-  <!-- LEFT: Watchlist -->
+  <!-- ======== LEFT: Watchlist ======== -->
   <div class="wb-left">
-    <div class="wb-wl-hd"><span>Watchlist</span><span style="color:#26A69A;cursor:pointer;font-size:13px;">+</span></div>
-    <input class="wb-wl-search" placeholder="Search symbol..." readonly>
-    <div id="wb-watchlist">
-      <!-- Populated by JS -->
+    <div class="wb-wl-hd">
+      <span class="wb-wl-title">Watchlists</span>
+      <select class="wb-wl-dropdown"><option>My Watchlist (10)</option></select>
     </div>
-    <div class="wb-wl-add">+ Add Symbol</div>
+    <div class="wb-wl-cols"><span>≡ Symbol</span><span>Price/Chan... ↕</span></div>
+    <div id="wb-watchlist"><!-- Populated by WB.js --></div>
+    <div class="wb-add-sym">＋ Add Symbol</div>
   </div>
 
-  <!-- CENTER: Chart -->
+  <!-- ======== CENTER: Chart ======== -->
   <div class="wb-center">
-    <div class="wb-top-bar">
-      <span class="wb-sym-big" id="wb-sym">NXRA</span>
-      <span class="wb-price-big up" id="wb-price">$142.67</span>
-      <span class="wb-chg-big up" id="wb-chg">+2.34 (+1.67%)</span>
-      <span class="wb-co-name" id="wb-co">Nexora Technologies Inc.</span>
-      <div class="wb-intervals">
-        <button class="wb-int" data-tf="1m">1m</button>
-        <button class="wb-int" data-tf="5m">5m</button>
-        <button class="wb-int on" data-tf="15m">15m</button>
-        <button class="wb-int" data-tf="1h">1h</button>
-        <button class="wb-int" data-tf="1D">1D</button>
-        <button class="wb-int" data-tf="1W">1W</button>
-        <button class="wb-int" data-tf="1M">1M</button>
-      </div>
+    <!-- Top tabs -->
+    <div class="wb-top-tabs">
+      <div class="wb-top-tab on">Chart</div>
+      <div class="wb-top-tab">Options</div>
+      <div class="wb-top-tab">Related Bonds</div>
+      <div class="wb-top-tab">Note</div>
+      <div class="wb-top-tab">News</div>
+      <div class="wb-top-tab">Comments</div>
+      <div class="wb-top-tab">Financials</div>
+      <div class="wb-top-tab">Analysis</div>
     </div>
-    <div class="wb-tools">
-      <button class="wb-tool" title="Crosshair">+</button>
-      <button class="wb-tool" title="Trendline">📏</button>
-      <button class="wb-tool" title="Horizontal">―</button>
-      <button class="wb-tool" title="Rectangle">▭</button>
-      <button class="wb-tool" title="Indicators">📊</button>
-      <div class="wb-ohlc-bar" id="wb-ohlc">O: <span>—</span> H: <span>—</span> L: <span>—</span> C: <span>—</span></div>
+
+    <!-- Chart type icons + indicator buttons -->
+    <div class="wb-chart-types">
+      <div class="wb-ct-icon on" title="Candlestick">🕯️</div>
+      <div class="wb-ct-icon" title="Line">📈</div>
+      <div class="wb-ct-icon" title="Hollow Candle">⬜</div>
+      <div class="wb-ct-icon" title="OHLC Bars">📊</div>
+      <div class="wb-ct-icon" title="Area">📉</div>
+      <div class="wb-ct-sep"></div>
+      <div class="wb-ct-icon" title="Crosshair">+</div>
+      <div class="wb-ct-icon" title="Trendline">╱</div>
+      <div class="wb-ct-sep"></div>
+      <button class="wb-ind-btn">TPO</button>
+      <button class="wb-ind-btn purple on">MA</button>
+      <button class="wb-ind-btn">BOLL</button>
+      <button class="wb-ind-btn">VWAP</button>
+      <button class="wb-ind-btn">MACD</button>
+      <button class="wb-ind-btn">RSI</button>
+      <button class="wb-ind-btn">VOL</button>
+      <span class="wb-ind-all">All Indicators</span>
+      <div class="wb-ct-sep"></div>
+      <span class="wb-ind-all">Technical Signal ▾</span>
+      <span class="wb-ind-all">Script Editor</span>
     </div>
+
+    <!-- Ticker info -->
+    <div class="wb-ticker-bar">
+      <span class="wb-tb-sym" id="wb-tb-sym">NXRA</span>
+      <span class="wb-tb-co" id="wb-tb-co">Nexora Technologies Inc.</span>
+      <span class="wb-tb-tf" id="wb-tb-tf">1 minute</span>
+      <span class="wb-tb-adj">Adjusted</span>
+      <span class="wb-tb-adj">🔒</span>
+    </div>
+
+    <!-- OHLC data row -->
+    <div class="wb-ohlc-row" id="wb-ohlc-row">
+      <span class="o-label">O</span> <span class="o-val up" id="wbo-o">142.67</span>
+      <span class="o-label" style="color:#00c805;">H</span> <span class="o-val up" id="wbo-h">143.12</span>
+      <span class="o-label" style="color:#ff3b3b;">L</span> <span class="o-val dn" id="wbo-l">141.89</span>
+      <span class="o-label">C</span> <span class="o-val up" id="wbo-c">142.95</span>
+      <span class="o-chg up" id="wbo-chg">+0.28 (+0.20%)</span>
+      <span class="o-vol" id="wbo-vol">Vol 8,207,201</span>
+    </div>
+    <!-- MA overlay info -->
+    <div class="wb-ma-row">
+      <span class="ma-label">MA</span> <span class="ma-val" id="wbo-ma">MA5 142.45</span>
+    </div>
+
+    <!-- THE CHART -->
     <div class="wb-chart-wrap" id="wb-chart-wrap">
-      <canvas id="train-canvas" width="900" height="480"></canvas>
+      <canvas id="train-canvas" width="900" height="520"></canvas>
       <div class="anno" id="anno" style="display:none;">
         <button class="anno-x" onclick="TM.xAnno()">✕</button>
         <div class="anno-hd" id="anno-hd"></div>
         <div class="anno-txt" id="anno-txt"></div>
         <div class="anno-det" id="anno-det"></div>
       </div>
-      <span class="wb-vol-label">Vol</span>
     </div>
+
+    <!-- Explore toggle -->
     <div class="wb-explore">
       <span>🔍 Explore Mode</span>
       <button class="etoggle on" id="etoggle" onclick="TM.toggleExplore()"></button>
       <span class="explore-hint" id="ehint">Click any part of a candle to learn</span>
     </div>
-    <div class="wb-bottom">
-      <div class="wb-btabs">
-        <div class="wb-btab on">Orders (Pending)</div>
-        <div class="wb-btab">Positions</div>
-        <div class="wb-btab">Order History</div>
-      </div>
-      <div class="wb-bpanel" id="wb-orders">
-        <div style="text-align:center;padding:8px;color:#4A5078;">No open orders — <em>Practice mode: orders are simulated for learning</em></div>
-      </div>
+
+    <!-- Range + Interval -->
+    <div class="wb-range-bar">
+      <span class="wb-range-label">Range:</span>
+      <button class="wb-range-btn">1D</button>
+      <button class="wb-range-btn">5D</button>
+      <button class="wb-range-btn">1M ▾</button>
+      <div class="wb-range-sep"></div>
+      <span class="wb-range-label">Interval:</span>
+      <button class="wb-range-btn on">1m</button>
+      <button class="wb-range-btn">5m</button>
+      <button class="wb-range-btn">30m</button>
+      <button class="wb-range-btn">1h</button>
+      <button class="wb-range-btn">D</button>
+      <button class="wb-range-btn">W</button>
+      <button class="wb-range-btn">M ▾</button>
+    </div>
+
+    <!-- Bottom tabs: Orders / Positions / Order Entry -->
+    <div class="wb-bottom-tabs">
+      <div class="wb-btab on">Orders (Today)</div>
+      <div class="wb-btab">Positions</div>
+      <div class="wb-btab">Order Entry</div>
+    </div>
+    <div class="wb-bottom-panel">
+      <div class="wb-bottom-empty">No open orders — <em>Practice mode: orders are simulated for learning</em></div>
     </div>
   </div>
 
-  <!-- RIGHT: Order Panel -->
+  <!-- ======== RIGHT: Quotes + Trade ======== -->
   <div class="wb-right">
-    <div class="wb-order-hd">
-      <div class="wb-order-sym" id="wb-ord-sym">NXRA</div>
-      <div class="wb-order-pr up" id="wb-ord-price">$142.67</div>
-      <div class="wb-order-sub">Nexora Technologies Inc. · NASDAQ</div>
-    </div>
-    <div class="wb-bs-row">
-      <button class="wb-bs-btn buy" id="wb-buy-btn">Buy</button>
-      <button class="wb-bs-btn sell off" id="wb-sell-btn">Sell</button>
-    </div>
-    <div class="wb-otype">
-      <button class="wb-ot on">Limit</button>
-      <button class="wb-ot">Market</button>
-      <button class="wb-ot">Stop</button>
-    </div>
-    <div class="wb-form">
-      <div class="wb-field">
-        <label>Quantity</label>
-        <div class="wb-input">
-          <button class="wb-pm">−</button>
-          <input type="text" value="10" id="wb-qty" readonly>
-          <button class="wb-pm">+</button>
-        </div>
-      </div>
-      <div class="wb-field">
-        <label>Limit Price</label>
-        <div class="wb-input">
-          <button class="wb-pm">−</button>
-          <input type="text" id="wb-lim-price" value="142.67" readonly>
-          <button class="wb-pm">+</button>
-        </div>
+    <!-- Quotes header -->
+    <div class="wb-quotes-hd"><span class="wb-quotes-tab">Quotes</span></div>
+
+    <!-- Symbol + price -->
+    <div class="wb-q-sym-row">
+      <span class="wb-q-sym" id="wb-q-sym">NXRA</span>
+      <span class="wb-q-exchange" id="wb-q-exchange">Nexora Technologies Inc.(NASDAQ)</span>
+      <div class="wb-q-icons">
+        <span class="wb-q-icon star">★</span>
+        <span class="wb-q-icon">📋</span>
+        <span class="wb-q-icon">🔔</span>
+        <span class="wb-q-icon">⚡</span>
       </div>
     </div>
-    <div class="wb-est">
-      <div class="wb-est-row"><span>Market Value</span><span class="wb-est-v" id="wb-est-val">$1,426.70</span></div>
-      <div class="wb-est-row"><span>Commission</span><span class="wb-est-v">$0.00</span></div>
-      <div class="wb-est-total"><span>Estimated Total</span><span id="wb-est-total">$1,426.70</span></div>
+
+    <!-- Big price -->
+    <div class="wb-big-price">
+      <div class="wb-price-num up" id="wb-big-pr">142.67</div>
+      <div class="wb-price-detail">
+        <span class="wb-price-chg dn" id="wb-big-chg">-2.83</span>
+        <span class="wb-price-chg dn" id="wb-big-pct">-1.09%</span>
+      </div>
+      <div class="wb-price-after" id="wb-after">After: 141.85 -0.82 -0.57%</div>
+      <div class="wb-price-hl">
+        <span>High <span class="hl-val" id="wb-hl-hi">143.12</span></span>
+        <span>Open <span class="hl-val grn" id="wb-hl-op">142.67</span></span>
+      </div>
+      <div class="wb-price-more">More ›</div>
     </div>
-    <button class="wb-place buy" id="wb-place-btn">BUY NXRA</button>
-    <div class="wb-bp">
-      <div class="wb-bp-label">Buying Power</div>
-      <div class="wb-bp-val">$25,000.00</div>
+
+    <!-- Mid tabs: Order Book | NOII ... Trade | TurboTrader | Ladder -->
+    <div class="wb-mid-tabs">
+      <div class="wb-mid-tab-group">
+        <div class="wb-mid-tab on">Order Book</div>
+        <div class="wb-mid-tab">NOII</div>
+        <div class="wb-mid-tab" style="font-size:10px;color:#505050;cursor:default;">≡</div>
+      </div>
+      <div class="wb-mid-sep"></div>
+      <div class="wb-mid-tab-group">
+        <div class="wb-mid-tab on">Trade</div>
+        <div class="wb-mid-tab">TurboTrader</div>
+        <div class="wb-mid-tab">Ladder</div>
+        <div class="wb-mid-tab" style="font-size:10px;color:#505050;cursor:default;">≡</div>
+      </div>
     </div>
+
+    <!-- Order Book placeholder (left half) + Trade panel (right half) -->
+    <!-- We show the trade panel directly -->
+    <div class="wb-trade-panel">
+      <!-- Side: Buy / Sell -->
+      <div class="wb-side-label">Side</div>
+      <div class="wb-side-row">
+        <button class="wb-side-btn buy" id="wb-buy-btn" onclick="WB.setSide('buy')">Buy</button>
+        <button class="wb-side-btn sell off" id="wb-sell-btn" onclick="WB.setSide('sell')">Sell</button>
+      </div>
+
+      <!-- Order Type -->
+      <div class="wb-otype-label">Order Type <span class="wb-otype-info">ⓘ</span></div>
+      <div class="wb-otype-row">
+        <button class="wb-ot-btn on" data-ot="limit">Limit</button>
+        <button class="wb-ot-btn" data-ot="market">Market</button>
+        <button class="wb-ot-btn" data-ot="stop">Stop</button>
+      </div>
+
+      <!-- Quantity -->
+      <div class="wb-qty-label">Quantity</div>
+      <div class="wb-qty-input-row">
+        <input type="text" class="wb-qty-input" id="wb-qty" value="10" readonly>
+        <div class="wb-qty-type-btns">
+          <button class="wb-qty-type shares">≡</button>
+          <button class="wb-qty-type pct">%</button>
+          <button class="wb-qty-type dollar">$</button>
+        </div>
+      </div>
+      <div class="wb-qty-quick">
+        <button class="wb-qq">10</button>
+        <button class="wb-qq">50</button>
+        <button class="wb-qq">100</button>
+        <button class="wb-qq">500</button>
+        <button class="wb-qq more">···</button>
+      </div>
+
+      <!-- Limit Price -->
+      <div class="wb-lim-label">Limit Price</div>
+      <div class="wb-lim-row">
+        <input type="text" class="wb-lim-input" id="wb-lim-price" value="142.67" readonly>
+        <button class="wb-lim-edit">✏️</button>
+      </div>
+
+      <!-- Time-in-Force / Trading Hours -->
+      <div class="wb-tif-row">
+        <div class="wb-tif-group">
+          <div class="wb-tif-label">Time-in-Force</div>
+          <select class="wb-tif-select"><option>Day</option><option>GTC</option><option>IOC</option></select>
+        </div>
+        <div class="wb-tif-group">
+          <div class="wb-tif-label">Trading Hours</div>
+          <select class="wb-tif-select"><option>Only Regular ...</option><option>Pre-market</option><option>After-hours</option></select>
+        </div>
+      </div>
+
+      <!-- Stop-Loss / Take-Profit -->
+      <div class="wb-sl-row">
+        <div class="wb-sl-check"><div class="wb-sl-box"></div><span class="wb-sl-text">Stop-Loss</span></div>
+        <div class="wb-sl-check"><div class="wb-sl-box"></div><span class="wb-sl-text">Take-Profit</span></div>
+      </div>
+      <div class="wb-sl-inputs">
+        <div class="wb-sl-field">
+          <div class="wb-sl-flabel">stoploss</div>
+          <div class="wb-sl-finput-row"><input class="wb-sl-finput" value="-10%" readonly><span class="wb-sl-fpct">%</span></div>
+        </div>
+        <div class="wb-sl-field">
+          <div class="wb-sl-flabel">takeprofit</div>
+          <div class="wb-sl-finput-row"><input class="wb-sl-finput" value="10%" readonly><span class="wb-sl-fpct">%</span></div>
+        </div>
+      </div>
+      <div class="wb-est-pl">
+        <span>Est. P&L: --</span>
+        <span>Est. P&L: --</span>
+      </div>
+
+      <!-- Time in Force (sub-orders) -->
+      <div class="wb-tif-sub">
+        <div class="wb-tif-sub-label">Time in Force (sub-orders)</div>
+        <select class="wb-tif-select"><option>Day</option></select>
+      </div>
+
+      <!-- BUY button -->
+      <button class="wb-action-btn buy" id="wb-place-btn">
+        <span class="wb-action-icon">👤</span>
+        <span id="wb-place-text">BUY NXRA</span>
+      </button>
+    </div>
+
+    <!-- Time & Sales / Vol Analysis tabs -->
+    <div class="wb-ts-tabs">
+      <div class="wb-ts-tab on">Time&Sales</div>
+      <div class="wb-ts-sep"></div>
+      <div class="wb-ts-tab">Vol Analysis</div>
+      <div class="wb-ts-sep"></div>
+      <div class="wb-ts-tab" style="font-size:10px;color:#505050;">≡</div>
+    </div>
+    <div class="wb-ts-panel">
+      <div class="wb-ob-text">Simulated data for learning</div>
+    </div>
+
+    <!-- Notice -->
     <div class="wb-notice">⚠️ Simulated trading — no real money at risk</div>
+  </div>
+
+  <!-- Blue Click Tip -->
+  <div class="wb-click-tip" id="wb-click-tip">
+    <span id="wb-tip-text">Click here to view more content in the Learning Center.</span>
+    <button class="wb-tip-x" onclick="WB.closeTip()">✕</button>
   </div>
 
 </div>
@@ -1788,7 +2105,7 @@ function renderRegimeTab() {
 
 
 // ============================================================
-// WEBULL SIMULATOR — Fictitious Companies & Watchlist Engine
+// WEBULL SIMULATOR — Full Desktop Clone Engine
 // Mission Metrics | Impact Trading Academy
 // ============================================================
 
@@ -1811,46 +2128,59 @@ const COMPANIES = [
 
 let activeSym = 0;
 let prices = {};
-let priceIntervals = {};
+let side = 'buy';
+let tickInterval = null;
+let tipsShown = {};
+let tipTimer = null;
 
-// Initialize prices
+// ---- Initialize prices ----
 function initPrices() {
   COMPANIES.forEach(c => {
     const chg = (Math.random() - 0.45) * c.base * 0.04;
     prices[c.sym] = {
       price: +(c.base + chg).toFixed(2),
       prevClose: c.base,
+      open: +(c.base + (Math.random()-0.5)*c.base*0.01).toFixed(2),
+      high: +(c.base + Math.abs(chg) + Math.random()*c.base*0.01).toFixed(2),
+      low: +(c.base - Math.abs(chg) - Math.random()*c.base*0.01).toFixed(2),
       chg: +chg.toFixed(2),
-      pct: +((chg / c.base) * 100).toFixed(2)
+      pct: +((chg / c.base) * 100).toFixed(2),
+      vol: Math.floor(Math.random()*12000000 + 500000)
     };
   });
 }
 
-// Live tick simulation
+// ---- Live tick simulation ----
 function startTicks() {
-  setInterval(() => {
+  if(tickInterval) clearInterval(tickInterval);
+  tickInterval = setInterval(() => {
     COMPANIES.forEach(c => {
       const p = prices[c.sym];
-      const tick = (Math.random() - 0.48) * p.price * 0.002;
+      const tick = (Math.random() - 0.48) * p.price * 0.0015;
       p.price = +(p.price + tick).toFixed(2);
+      p.high = Math.max(p.high, p.price);
+      p.low = Math.min(p.low, p.price);
       p.chg = +(p.price - p.prevClose).toFixed(2);
       p.pct = +((p.chg / p.prevClose) * 100).toFixed(2);
+      p.vol += Math.floor(Math.random()*5000);
     });
     renderWatchlist();
-    updateOrderPanel();
-  }, 2000);
+    updateRightPanel();
+  }, 2500);
 }
 
-// Render watchlist
+// ---- Render watchlist ----
 function renderWatchlist() {
   const el = document.getElementById('wb-watchlist');
   if (!el) return;
   el.innerHTML = COMPANIES.map((c, i) => {
     const p = prices[c.sym];
     const up = p.chg >= 0;
+    const afterChg = ((Math.random()-0.5)*p.price*0.005).toFixed(2);
+    const afterPct = ((afterChg/p.price)*100).toFixed(2);
     return `<div class="wb-ticker${i === activeSym ? ' active' : ''}" onclick="WB.selectTicker(${i})">
-      <div><span class="wb-tk-name">${c.sym}</span><span class="wb-tk-co">${c.name.split(' ')[0]}</span></div>
-      <div class="wb-tk-price"><span class="wb-tk-pr ${up ? 'up' : 'dn'}">$${p.price.toFixed(2)}</span><span class="wb-tk-chg ${up ? 'up' : 'dn'}">${up ? '+' : ''}${p.chg.toFixed(2)} (${up ? '+' : ''}${p.pct.toFixed(2)}%)</span></div>
+      <div class="wb-tk-left"><span class="wb-tk-sym">${c.sym}</span><span class="wb-tk-name">${c.name.split(' ')[0]}</span></div>
+      <div class="wb-tk-right"><span class="wb-tk-price ${up ? 'up' : 'dn'}">${p.price.toFixed(2)}</span><span class="wb-tk-chg ${up ? 'grn' : 'dn'}">After: ${up?'+':''}${afterChg} ${afterPct}%</span></div>
     </div>`;
   }).join('');
 }
@@ -1858,55 +2188,182 @@ function renderWatchlist() {
 function selectTicker(idx) {
   activeSym = idx;
   renderWatchlist();
-  updateHeader();
-  updateOrderPanel();
+  updateTickerBar();
+  updateRightPanel();
 }
 
-function updateHeader() {
+// ---- Update center ticker bar ----
+function updateTickerBar() {
   const c = COMPANIES[activeSym];
   const p = prices[c.sym];
-  const up = p.chg >= 0;
-  const symEl = document.getElementById('wb-sym');
-  const prEl = document.getElementById('wb-price');
-  const chgEl = document.getElementById('wb-chg');
-  const coEl = document.getElementById('wb-co');
-  if (symEl) symEl.textContent = c.sym;
-  if (prEl) { prEl.textContent = '$' + p.price.toFixed(2); prEl.className = 'wb-price-big ' + (up ? 'up' : 'dn'); }
-  if (chgEl) { chgEl.textContent = (up ? '+' : '') + p.chg.toFixed(2) + ' (' + (up ? '+' : '') + p.pct.toFixed(2) + '%)'; chgEl.className = 'wb-chg-big ' + (up ? 'up' : 'dn'); }
-  if (coEl) coEl.textContent = c.name;
+  const symEl = document.getElementById('wb-tb-sym');
+  const coEl = document.getElementById('wb-tb-co');
+  if(symEl) symEl.textContent = c.sym;
+  if(coEl) coEl.textContent = c.name;
 }
 
-function updateOrderPanel() {
-  const c = COMPANIES[activeSym];
-  const p = prices[c.sym];
-  const up = p.chg >= 0;
-  const symEl = document.getElementById('wb-ord-sym');
-  const prEl = document.getElementById('wb-ord-price');
-  const limEl = document.getElementById('wb-lim-price');
-  const placeEl = document.getElementById('wb-place-btn');
-  const estEl = document.getElementById('wb-est-val');
-  const totEl = document.getElementById('wb-est-total');
-  const qty = parseInt(document.getElementById('wb-qty')?.value || '10');
-
-  if (symEl) symEl.textContent = c.sym;
-  if (prEl) { prEl.textContent = '$' + p.price.toFixed(2); prEl.className = 'wb-order-pr ' + (up ? 'up' : 'dn'); }
-  if (limEl) limEl.value = p.price.toFixed(2);
-  if (placeEl) placeEl.textContent = 'BUY ' + c.sym;
-  if (estEl) estEl.textContent = '$' + (p.price * qty).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  if (totEl) totEl.textContent = '$' + (p.price * qty).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
+// ---- Update OHLC row from chart bars ----
 function updateOHLC(bar) {
-  const el = document.getElementById('wb-ohlc');
-  if (!el || !bar) return;
-  el.innerHTML = `O: <span style="color:${bar.bull?'#26A69A':'#EF5350'}">${bar.o.toFixed(2)}</span> H: <span style="color:#26A69A">${bar.h.toFixed(2)}</span> L: <span style="color:#EF5350">${bar.l.toFixed(2)}</span> C: <span style="color:${bar.bull?'#26A69A':'#EF5350'}">${bar.c.toFixed(2)}</span>`;
+  if(!bar) return;
+  const up = bar.bull;
+  const set = (id,v,cls) => { const e=document.getElementById(id); if(e){e.textContent=v; if(cls)e.className=cls;} };
+  set('wbo-o', bar.o.toFixed(2), 'o-val '+(up?'up':'dn'));
+  set('wbo-h', bar.h.toFixed(2), 'o-val up');
+  set('wbo-l', bar.l.toFixed(2), 'o-val dn');
+  set('wbo-c', bar.c.toFixed(2), 'o-val '+(up?'up':'dn'));
 }
 
-function getActiveSym() { return COMPANIES[activeSym].sym; }
-function getActiveName() { return COMPANIES[activeSym].name; }
-function getActiveExchange() { return COMPANIES[activeSym].exchange; }
+function updateOHLCChange(bars) {
+  if(!bars || bars.length < 2) return;
+  const first = bars[0], last = bars[bars.length-1];
+  const chg = last.c - first.o;
+  const pct = (chg / first.o * 100);
+  const up = chg >= 0;
+  const set = (id,v,cls) => { const e=document.getElementById(id); if(e){e.textContent=v; if(cls)e.className=cls;} };
+  set('wbo-chg', (up?'+':'') + chg.toFixed(2) + ' (' + (up?'+':'') + pct.toFixed(2) + '%)', 'o-chg '+(up?'up':'dn'));
+  set('wbo-vol', 'Vol ' + (Math.floor(Math.random()*8000000+1000000)).toLocaleString(), 'o-vol');
+  // MA
+  if(bars.length >= 5) {
+    const ma5 = bars.slice(-5).reduce((s,b)=>s+b.c,0)/5;
+    set('wbo-ma', 'MA5 ' + ma5.toFixed(2), 'ma-val');
+  }
+}
 
-// Show/hide simulator
+// ---- Update right panel (quotes + order) ----
+function updateRightPanel() {
+  const c = COMPANIES[activeSym];
+  const p = prices[c.sym];
+  const up = p.chg >= 0;
+  const set = (id,v) => { const e=document.getElementById(id); if(e)e.textContent=v; };
+  const setCls = (id,v,cls) => { const e=document.getElementById(id); if(e){e.textContent=v;e.className=cls;} };
+
+  set('wb-q-sym', c.sym);
+  set('wb-q-exchange', c.name + '(' + c.exchange + ')');
+  setCls('wb-big-pr', p.price.toFixed(2), 'wb-price-num '+(up?'up':'dn'));
+  setCls('wb-big-chg', (up?'+':'')+p.chg.toFixed(2), 'wb-price-chg '+(up?'up':'dn'));
+  setCls('wb-big-pct', (up?'+':'')+p.pct.toFixed(2)+'%', 'wb-price-chg '+(up?'up':'dn'));
+
+  const afterPrice = (p.price + (Math.random()-0.6)*p.price*0.003).toFixed(2);
+  const afterChg = (afterPrice - p.price).toFixed(2);
+  const afterPct = ((afterChg/p.price)*100).toFixed(2);
+  set('wb-after', 'After: ' + afterPrice + ' ' + afterChg + ' ' + afterPct + '%');
+  set('wb-hl-hi', p.high.toFixed(2));
+  set('wb-hl-op', p.open.toFixed(2));
+
+  // Order panel
+  const limEl = document.getElementById('wb-lim-price');
+  if(limEl) limEl.value = p.price.toFixed(2);
+  set('wb-place-text', (side==='buy'?'BUY ':'SELL ') + c.sym);
+}
+
+// ---- Side toggle ----
+function setSide(s) {
+  side = s;
+  const buyBtn = document.getElementById('wb-buy-btn');
+  const sellBtn = document.getElementById('wb-sell-btn');
+  const placeBtn = document.getElementById('wb-place-btn');
+  if(buyBtn) buyBtn.className = 'wb-side-btn buy' + (s==='buy'?'':' off');
+  if(sellBtn) sellBtn.className = 'wb-side-btn sell' + (s==='sell'?'':' off');
+  if(placeBtn) placeBtn.className = 'wb-action-btn ' + s;
+  updateRightPanel();
+}
+
+// ---- Click Tips (blue Webull-style) ----
+const TIPS = [
+  'Click any candle to explore its anatomy. Learn Open, High, Low, Close in real-time.',
+  'Hover over bars to see live OHLC data update in the toolbar above the chart.',
+  'Use Explore Mode to click any part of a candle — body, wick, open, close — and get instant analysis.',
+  'The purple MA line shows the 5-period moving average. Watch it follow price.',
+  'Green candles = buyers won (Close > Open). Red candles = sellers won (Close < Open).',
+  'Look for tight clusters of small bars followed by a big bar — that\'s a supply or demand zone.',
+  'The price axis on the right highlights the current price with a colored badge.',
+  'Watch how the dashed line tracks the current forming price in real-time.',
+];
+let tipIdx = 0;
+
+function showTip(text) {
+  const el = document.getElementById('wb-click-tip');
+  const tx = document.getElementById('wb-tip-text');
+  if(!el || !tx) return;
+  tx.textContent = text || TIPS[tipIdx % TIPS.length];
+  el.classList.add('show');
+  tipIdx++;
+  if(tipTimer) clearTimeout(tipTimer);
+  tipTimer = setTimeout(() => closeTip(), 8000);
+}
+
+function closeTip() {
+  const el = document.getElementById('wb-click-tip');
+  if(el) el.classList.remove('show');
+  if(tipTimer) { clearTimeout(tipTimer); tipTimer = null; }
+}
+
+function startTipCycle() {
+  showTip();
+  setInterval(() => {
+    if(tipIdx < TIPS.length) showTip();
+  }, 25000);
+}
+
+// ---- Order type toggle ----
+function initOrderType() {
+  document.querySelectorAll('.wb-ot-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.wb-ot-btn').forEach(b => b.classList.remove('on'));
+      this.classList.add('on');
+    });
+  });
+}
+
+// ---- Quick quantity buttons ----
+function initQtyButtons() {
+  document.querySelectorAll('.wb-qq').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const v = this.textContent;
+      if(v !== '···') {
+        const inp = document.getElementById('wb-qty');
+        if(inp) inp.value = v;
+      }
+    });
+  });
+}
+
+// ---- Bottom tabs ----
+function initBottomTabs() {
+  document.querySelectorAll('.wb-btab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.wb-btab').forEach(t => t.classList.remove('on'));
+      this.classList.add('on');
+    });
+  });
+  document.querySelectorAll('.wb-top-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.wb-top-tab').forEach(t => t.classList.remove('on'));
+      this.classList.add('on');
+    });
+  });
+  document.querySelectorAll('.wb-mid-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const grp = this.parentElement;
+      grp.querySelectorAll('.wb-mid-tab').forEach(t => t.classList.remove('on'));
+      this.classList.add('on');
+    });
+  });
+  document.querySelectorAll('.wb-ts-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.wb-ts-tab').forEach(t => t.classList.remove('on'));
+      this.classList.add('on');
+    });
+  });
+  // Range/interval buttons
+  document.querySelectorAll('.wb-range-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.classList.toggle('on');
+    });
+  });
+}
+
+// ---- Show/hide simulator ----
 function show() {
   const el = document.getElementById('wb-sim');
   if (el) el.style.display = 'grid';
@@ -1914,33 +2371,30 @@ function show() {
 function hide() {
   const el = document.getElementById('wb-sim');
   if (el) el.style.display = 'none';
+  closeTip();
 }
 
+// ---- Init ----
+let initialized = false;
 function init() {
+  if(initialized) return;
+  initialized = true;
   initPrices();
   renderWatchlist();
-  updateHeader();
-  updateOrderPanel();
+  updateTickerBar();
+  updateRightPanel();
   startTicks();
-
-  // Time interval buttons
-  document.querySelectorAll('.wb-int').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.wb-int').forEach(b => b.classList.remove('on'));
-      this.classList.add('on');
-    });
-  });
-
-  // Bottom tabs
-  document.querySelectorAll('.wb-btab').forEach(tab => {
-    tab.addEventListener('click', function() {
-      document.querySelectorAll('.wb-btab').forEach(t => t.classList.remove('on'));
-      this.classList.add('on');
-    });
-  });
+  initOrderType();
+  initQtyButtons();
+  initBottomTabs();
+  setTimeout(() => startTipCycle(), 3000);
 }
 
-return { init, show, hide, selectTicker, getActiveSym, getActiveName, getActiveExchange, updateOHLC, renderWatchlist, updateHeader, COMPANIES, prices };
+function getActiveSym() { return COMPANIES[activeSym].sym; }
+function getActiveName() { return COMPANIES[activeSym].name; }
+function getActiveExchange() { return COMPANIES[activeSym].exchange; }
+
+return { init, show, hide, selectTicker, setSide, getActiveSym, getActiveName, getActiveExchange, updateOHLC, updateOHLCChange, closeTip, showTip, renderWatchlist, updateTickerBar, COMPANIES, prices };
 })();
 
 
@@ -2213,52 +2667,64 @@ function draw(bb,opts={}){
   if(!ctx)return;
   const cW=W-PAD.l-PAD.r,cH=H-PAD.t-PAD.b;
   ctx.clearRect(0,0,W,H);
-  // Dark background
-  ctx.fillStyle='#161B2B';ctx.fillRect(0,0,W,H);
-  // Grid
-  ctx.strokeStyle='#1F2640';ctx.lineWidth=0.5;
-  for(let i=0;i<=6;i++){const y=PAD.t+(cH/6)*i;ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(W-PAD.r,y);ctx.stroke();ctx.fillStyle='#6B7394';ctx.font='10px system-ui';ctx.textAlign='left';ctx.fillText('$'+y2p(y).toFixed(2),W-PAD.r+6,y+4);}
-  // Time axis
-  bb.forEach((bar,i)=>{if(bb.length<=20||i%Math.ceil(bb.length/15)===0){const x=bx(i)+barW/2;ctx.fillStyle='#4A5078';ctx.font='9px system-ui';ctx.textAlign='center';ctx.fillText('Bar '+(i+1),x,H-PAD.b+16);}});
+  // Pure black background (Webull)
+  ctx.fillStyle='#000000';ctx.fillRect(0,0,W,H);
+  // Grid lines
+  ctx.strokeStyle='#1a1a1a';ctx.lineWidth=0.5;
+  for(let i=0;i<=8;i++){const y=PAD.t+(cH/8)*i;ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(W-PAD.r,y);ctx.stroke();ctx.fillStyle='#505050';ctx.font='10px system-ui';ctx.textAlign='left';ctx.fillText(y2p(y).toFixed(2),W-PAD.r+6,y+4);}
+  // Vertical grid
+  const vStep=Math.max(1,Math.ceil(bb.length/12));
+  bb.forEach((bar,i)=>{if(i%vStep===0){const x=bx(i)+barW/2;ctx.strokeStyle='#1a1a1a';ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(x,PAD.t);ctx.lineTo(x,H-PAD.b);ctx.stroke();}});
+  // Time axis with simulated timestamps
+  const baseH=14,baseM=Math.floor(Math.random()*4)*15;
+  bb.forEach((bar,i)=>{if(bb.length<=20||i%Math.ceil(bb.length/10)===0){const x=bx(i)+barW/2;const mins=baseM+i;const h=baseH+Math.floor(mins/60);const m=mins%60;ctx.fillStyle='#505050';ctx.font='10px system-ui';ctx.textAlign='center';ctx.fillText((h%24)+':'+(m<10?'0':'')+m,x,H-PAD.b+16);}});
+  // Dashed support/resistance line near bottom
+  if(bb.length>3){const srPrice=Math.min(...bb.map(b=>b.l))+((Math.max(...bb.map(b=>b.h))-Math.min(...bb.map(b=>b.l)))*0.12);const srY=p2y(srPrice);ctx.strokeStyle='#ff3b3b';ctx.lineWidth=1;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(PAD.l,srY);ctx.lineTo(W-PAD.r,srY);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#000000';ctx.fillRect(PAD.l-2,srY-8,64,16);ctx.fillStyle='#ff3b3b';ctx.font='10px system-ui';ctx.textAlign='left';ctx.fillText('→ '+srPrice.toFixed(2),PAD.l,srY+4);}
   // Zones
-  if(opts.zones)opts.zones.forEach(z=>{const x1=bx(z.s)-2,x2=bx(z.e)+barW+2,y1=p2y(z.hi),y2=p2y(z.lo);ctx.fillStyle=z.type==='demand'?'rgba(38,166,154,0.08)':'rgba(239,83,80,0.08)';ctx.fillRect(x1,y1,x2-x1,y2-y1);ctx.strokeStyle=z.type==='demand'?'#26A69A':'#EF5350';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.strokeRect(x1,y1,x2-x1,y2-y1);ctx.setLineDash([]);if(opts.zLabels!==false){ctx.fillStyle=z.type==='demand'?'#26A69A':'#EF5350';ctx.font='bold 9px system-ui';ctx.textAlign='left';ctx.fillText(z.type==='demand'?'Demand':'Supply',x1,y1-4);}});
+  if(opts.zones)opts.zones.forEach(z=>{const x1=bx(z.s)-2,x2=bx(z.e)+barW+2,y1=p2y(z.hi),y2=p2y(z.lo);ctx.fillStyle=z.type==='demand'?'rgba(0,200,5,0.06)':'rgba(255,59,59,0.06)';ctx.fillRect(x1,y1,x2-x1,y2-y1);ctx.strokeStyle=z.type==='demand'?'#00c805':'#ff3b3b';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.strokeRect(x1,y1,x2-x1,y2-y1);ctx.setLineDash([]);if(opts.zLabels!==false){ctx.fillStyle=z.type==='demand'?'#00c805':'#ff3b3b';ctx.font='bold 9px system-ui';ctx.textAlign='left';ctx.fillText(z.type==='demand'?'Demand':'Supply',x1,y1-4);}});
   // User drawn zones
-  drawnZ.forEach(uz=>{ctx.fillStyle=uz.type==='demand'?'rgba(38,166,154,0.14)':'rgba(239,83,80,0.14)';ctx.fillRect(uz.x,uz.y,uz.w,uz.h);ctx.strokeStyle=uz.type==='demand'?'#26A69A':'#EF5350';ctx.lineWidth=2;ctx.strokeRect(uz.x,uz.y,uz.w,uz.h);});
-  // Candles
+  drawnZ.forEach(uz=>{ctx.fillStyle=uz.type==='demand'?'rgba(0,200,5,0.12)':'rgba(255,59,59,0.12)';ctx.fillRect(uz.x,uz.y,uz.w,uz.h);ctx.strokeStyle=uz.type==='demand'?'#00c805':'#ff3b3b';ctx.lineWidth=2;ctx.strokeRect(uz.x,uz.y,uz.w,uz.h);});
+  // Candles (Webull colors: green=#00c805, red=#ff3b3b)
   bb.forEach((bar,i)=>{
     const x=bx(i),mid=x+barW/2;
     const oY=p2y(bar.o),cY=p2y(bar.c),hY=p2y(bar.h),lY=p2y(bar.l);
     const bull=bar.c>=bar.o,bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
     const isH=(hovBar===i);const hl=opts.hl?opts.hl.find(h=>h.b===i):null;
-    if(isH){ctx.fillStyle='rgba(38,166,154,0.04)';ctx.fillRect(x-3,PAD.t,barW+6,cH);}
-    const col=hl?(hl.c||'#60A5FA'):bull?'#26A69A':'#EF5350';
+    if(isH){ctx.fillStyle='rgba(0,200,5,0.03)';ctx.fillRect(x-3,PAD.t,barW+6,cH);}
+    const col=hl?(hl.c||'#60A5FA'):bull?'#00c805':'#ff3b3b';
+    // Wick
     ctx.strokeStyle=col;ctx.lineWidth=isH?2.5:1.5;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
-    if(bull){ctx.fillStyle=hl?'rgba(96,165,250,0.2)':'rgba(38,166,154,0.18)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(x,bTop,barW,bodyH);}
+    // Body
+    if(bull){ctx.fillStyle=hl?'rgba(96,165,250,0.2)':'rgba(0,200,5,0.15)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(x,bTop,barW,bodyH);}
     else{ctx.fillStyle=col;ctx.fillRect(x,bTop,barW,bodyH);}
+    // Highlight markers
     if(hl&&hl.mk){hl.mk.forEach(mk=>{const my=mk==='open'?oY:mk==='close'?cY:mk==='high'?hY:lY;ctx.beginPath();ctx.arc(mid,my,6,0,Math.PI*2);ctx.fillStyle=hl.c||'#60A5FA';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='white';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.fillText(mk.charAt(0).toUpperCase(),mid,my+3);ctx.textAlign='left';});}
   });
+  // MA5 line (purple, matching Webull)
+  if(bb.length>=5){ctx.strokeStyle='#a855f7';ctx.lineWidth=1.5;ctx.beginPath();for(let i=4;i<bb.length;i++){const ma=(bb[i].c+bb[i-1].c+bb[i-2].c+bb[i-3].c+bb[i-4].c)/5;const x=bx(i)+barW/2,y=p2y(ma);if(i===4)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();}
+  // Current price highlight on right axis
+  if(bb.length>0){const last=bb[bb.length-1];const lastY=p2y(last.c);const up=last.bull;ctx.fillStyle=up?'#00c805':'#ff3b3b';ctx.fillRect(W-PAD.r-1,lastY-9,PAD.r+1,18);ctx.fillStyle='white';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText(last.c.toFixed(2),W-PAD.r+4,lastY+4);
+  // MA price on axis
+  if(bb.length>=5){const ma5=(bb[bb.length-1].c+bb[bb.length-2].c+bb[bb.length-3].c+bb[bb.length-4].c+bb[bb.length-5].c)/5;const maY=p2y(ma5);ctx.fillStyle='#a855f7';ctx.fillRect(W-PAD.r-1,maY-8,PAD.r+1,16);ctx.fillStyle='white';ctx.font='bold 9px system-ui';ctx.fillText(ma5.toFixed(2),W-PAD.r+4,maY+3);}}
   // Forming bar
   if(opts.forming){
     const fb=opts.forming,x=bx(fb.idx),mid=x+barW/2;
     const oY=p2y(fb.o),cY=p2y(fb.cp),hY=p2y(fb.ch),lY=p2y(fb.cl);
     const bull=fb.cp>=fb.o,bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
     const pulse=0.3+Math.sin(Date.now()/300)*0.15;
-    ctx.shadowColor=bull?'rgba(38,166,154,'+pulse+')':'rgba(239,83,80,'+pulse+')';ctx.shadowBlur=14;
-    ctx.strokeStyle=bull?'#26A69A':'#EF5350';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
-    if(bull){ctx.fillStyle='rgba(38,166,154,0.25)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeRect(x,bTop,barW,bodyH);}
-    else{ctx.fillStyle='#EF5350';ctx.fillRect(x,bTop,barW,bodyH);}
+    ctx.shadowColor=bull?'rgba(0,200,5,'+pulse+')':'rgba(255,59,59,'+pulse+')';ctx.shadowBlur=14;
+    ctx.strokeStyle=bull?'#00c805':'#ff3b3b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
+    if(bull){ctx.fillStyle='rgba(0,200,5,0.25)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeRect(x,bTop,barW,bodyH);}
+    else{ctx.fillStyle='#ff3b3b';ctx.fillRect(x,bTop,barW,bodyH);}
     ctx.shadowBlur=0;ctx.shadowColor='transparent';
     // Price line
-    ctx.strokeStyle=bull?'rgba(38,166,154,0.35)':'rgba(239,83,80,0.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(PAD.l,cY);ctx.lineTo(W-PAD.r,cY);ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle=bull?'rgba(0,200,5,0.35)':'rgba(255,59,59,0.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(PAD.l,cY);ctx.lineTo(W-PAD.r,cY);ctx.stroke();ctx.setLineDash([]);
     // Price badge
-    ctx.fillStyle=bull?'#26A69A':'#EF5350';const bw2=52;ctx.fillRect(W-PAD.r,cY-9,bw2,18);ctx.fillStyle='white';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText('$'+fb.cp.toFixed(2),W-PAD.r+4,cY+4);
+    ctx.fillStyle=bull?'#00c805':'#ff3b3b';const bw2=56;ctx.fillRect(W-PAD.r,cY-9,bw2,18);ctx.fillStyle='white';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText(fb.cp.toFixed(2),W-PAD.r+4,cY+4);
   }
-  // Update toolbar OHLC
-  if(hovBar>=0&&hovBar<bb.length){
-    const hb=bb[hovBar];
-    const ohlcEl=document.getElementById('ct-ohlc');
-    if(ohlcEl)ohlcEl.innerHTML=`O: <span style="color:${hb.bull?'#26A69A':'#EF5350'}">${hb.o.toFixed(2)}</span> H: <span style="color:#26A69A">${hb.h.toFixed(2)}</span> L: <span style="color:#EF5350">${hb.l.toFixed(2)}</span> C: <span style="color:${hb.bull?'#26A69A':'#EF5350'}">${hb.c.toFixed(2)}</span>`;
-  }
+  // Update Webull OHLC row
+  if(hovBar>=0&&hovBar<bb.length){if(typeof WB!=='undefined')WB.updateOHLC(bb[hovBar]);}
+  if(bb.length>0&&typeof WB!=='undefined')WB.updateOHLCChange(bb);
 }
 
 // ---- LIVE CANDLE ANIMATION ----
