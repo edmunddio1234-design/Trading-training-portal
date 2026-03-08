@@ -924,6 +924,10 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
             </table>
           </div>
         </div>
+
+        <!-- Greeks Visualizer Panel -->
+        <div id="greeks-panel" class="greeks-panel" style="display:none;"></div>
+
       </div>
     </div>
 
@@ -3027,6 +3031,16 @@ function renderResults(trades, acct, sym, strat) {
         <td><span class="badge ${rClass}">${rLabel}</span></td>
         <td><span class="badge ${t.result}">${t.result.toUpperCase()}</span></td>
       </tr>`;
+  }
+
+  // ---- GREEKS VISUALIZER (Feature 4) ----
+  if (typeof GREEKS !== 'undefined') {
+    const lastTrade = trades[trades.length - 1];
+    const gp = document.getElementById('greeks-panel');
+    if (gp && lastTrade) {
+      gp.style.display = 'block';
+      gp.innerHTML = GREEKS.renderGreeksPanel(strat, lastTrade.entry, lastTrade.entry * (1 + lastTrade.pnlPct / 100), parseInt(document.getElementById('dte').value) || 30);
+    }
   }
 }
 
@@ -5813,45 +5827,91 @@ const PILLARS = (function() {
   async function fetchData() {
     const symbol = document.getElementById('fp-symbol').value || 'SPY';
     try {
-      const resp = await fetch(`https://query1.finance.yahoo.com/v7/finance/download/${symbol}?interval=1d&events=history&range=1y`);
-      const text = await resp.text();
-      const lines = text.trim().split('\n').slice(1);
-      data.candles = lines.map((line, idx) => {
-        const [date, open, high, low, close, adjClose, vol] = line.split(',');
-        return { 
-          d: date, 
-          o: parseFloat(open), 
-          h: parseFloat(high), 
-          l: parseFloat(low), 
-          c: parseFloat(close), 
-          v: parseInt(vol) 
-        };
-      }).reverse();
+      const resp = await fetch(`/api/stock-data?symbol=${encodeURIComponent(symbol)}&range=1y&interval=1d`);
+      const json = await resp.json();
+      if (json.candles && json.candles.length > 0) {
+        data.symbol = symbol;
+        // Reverse so index 0 = most recent (needed for pillar analysis)
+        data.candles = json.candles.slice().reverse();
+      } else {
+        throw new Error('No candle data returned');
+      }
     } catch (e) {
-      console.log('Could not fetch live data, using mock');
+      console.error('Five Pillars: API fetch failed for ' + symbol, e.message);
+      data.candles = [];
     }
   }
   
   function analyzePillars() {
-    const pillars = [
-      { name: 'Price Cycle', icon: '📦', check: () => Math.random() > 0.4 },
-      { name: 'Volume Surge', icon: '📊', check: () => Math.random() > 0.5 },
-      { name: 'Inst. Footprint', icon: '🏢', check: () => Math.random() > 0.5 },
-      { name: 'Trend Strength', icon: '📈', check: () => Math.random() > 0.4 },
-      { name: 'Risk Mgmt', icon: '🛡️', check: () => true }
+    const c = data.candles;
+    if (!c || c.length < 21) {
+      return [
+        { name: 'Price Cycle', icon: '📦', status: 'red', detail: 'Insufficient data' },
+        { name: 'Volume Surge', icon: '📊', status: 'red', detail: 'Insufficient data' },
+        { name: 'Inst. Footprint', icon: '🏢', status: 'red', detail: 'Insufficient data' },
+        { name: 'Trend Strength', icon: '📈', status: 'red', detail: 'Insufficient data' },
+        { name: 'Risk Mgmt', icon: '🛡️', status: 'green', detail: 'S.E.T. always defined' }
+      ];
+    }
+
+    // === PILLAR 1: PRICE CYCLE (Wyckoff-style HH/HL detection) ===
+    const recent = c.slice(0, 21);
+    const older = c.slice(21, 42);
+    const recentHigh = Math.max(...recent.map(x => x.high));
+    const recentLow = Math.min(...recent.map(x => x.low));
+    const olderHigh = older.length > 0 ? Math.max(...older.map(x => x.high)) : recentHigh;
+    const olderLow = older.length > 0 ? Math.min(...older.map(x => x.low)) : recentLow;
+    const priceNow = c[0].close;
+    let cyclePhase, cycleStatus;
+    if (recentHigh > olderHigh && recentLow > olderLow) {
+      cyclePhase = 'Markup (HH + HL)'; cycleStatus = 'green';
+    } else if (recentHigh < olderHigh && recentLow < olderLow) {
+      cyclePhase = 'Markdown (LH + LL)'; cycleStatus = 'red';
+    } else if (recentHigh < olderHigh && recentLow > olderLow) {
+      cyclePhase = 'Accumulation (Contracting)'; cycleStatus = 'yellow';
+    } else {
+      cyclePhase = 'Distribution (Expanding)'; cycleStatus = 'yellow';
+    }
+
+    // === PILLAR 2: VOLUME SURGE (current vs 20-day avg) ===
+    const volRecent = c.slice(0, 5).reduce((s, x) => s + (x.volume || 0), 0) / 5;
+    const volAvg20 = c.slice(0, 20).reduce((s, x) => s + (x.volume || 0), 0) / 20;
+    const volRatio = volAvg20 > 0 ? volRecent / volAvg20 : 0;
+    let volStatus, volDetail;
+    if (volRatio >= 2.0) { volStatus = 'green'; volDetail = `${volRatio.toFixed(1)}x avg — Institutional activity`; }
+    else if (volRatio >= 1.3) { volStatus = 'yellow'; volDetail = `${volRatio.toFixed(1)}x avg — Above normal`; }
+    else { volStatus = 'red'; volDetail = `${volRatio.toFixed(1)}x avg — Low participation`; }
+
+    // === PILLAR 3: INSTITUTIONAL FOOTPRINT (support/resistance proximity) ===
+    const sma50 = c.length >= 50 ? c.slice(0, 50).reduce((s, x) => s + x.close, 0) / 50 : priceNow;
+    const distFromSma = ((priceNow - sma50) / sma50 * 100);
+    let instStatus, instDetail;
+    if (Math.abs(distFromSma) < 2) { instStatus = 'green'; instDetail = `Near 50-SMA ($${sma50.toFixed(2)}) — key zone`; }
+    else if (distFromSma > 2 && distFromSma < 5) { instStatus = 'yellow'; instDetail = `${distFromSma.toFixed(1)}% above 50-SMA`; }
+    else if (distFromSma < -2 && distFromSma > -5) { instStatus = 'yellow'; instDetail = `${Math.abs(distFromSma).toFixed(1)}% below 50-SMA`; }
+    else { instStatus = 'red'; instDetail = `${distFromSma.toFixed(1)}% from 50-SMA — extended`; }
+
+    // === PILLAR 4: TREND STRENGTH (20-day momentum slope) ===
+    const sma20now = c.slice(0, 20).reduce((s, x) => s + x.close, 0) / 20;
+    const sma20prev = c.length >= 25 ? c.slice(5, 25).reduce((s, x) => s + x.close, 0) / 20 : sma20now;
+    const trendSlope = ((sma20now - sma20prev) / sma20prev) * 100;
+    let trendStatus, trendDetail;
+    if (trendSlope > 1.5) { trendStatus = 'green'; trendDetail = `Strong uptrend (+${trendSlope.toFixed(1)}% slope)`; }
+    else if (trendSlope > 0) { trendStatus = 'yellow'; trendDetail = `Weak uptrend (+${trendSlope.toFixed(1)}% slope)`; }
+    else if (trendSlope > -1.5) { trendStatus = 'yellow'; trendDetail = `Weak downtrend (${trendSlope.toFixed(1)}% slope)`; }
+    else { trendStatus = 'red'; trendDetail = `Strong downtrend (${trendSlope.toFixed(1)}% slope)`; }
+
+    // === PILLAR 5: RISK MANAGEMENT (S.E.T. always defined) ===
+    const riskStatus = 'green';
+    const riskDetail = 'S.E.T. Rule — 1% max risk defined';
+
+    return [
+      { name: 'Price Cycle', icon: '📦', status: cycleStatus, detail: cyclePhase },
+      { name: 'Volume Surge', icon: '📊', status: volStatus, detail: volDetail },
+      { name: 'Inst. Footprint', icon: '🏢', status: instStatus, detail: instDetail },
+      { name: 'Trend Strength', icon: '📈', status: trendStatus, detail: trendDetail },
+      { name: 'Risk Mgmt', icon: '🛡️', status: riskStatus, detail: riskDetail }
     ];
-    
-    const results = pillars.map(p => ({
-      ...p,
-      status: p.check() ? 'green' : (Math.random() > 0.5 ? 'yellow' : 'red'),
-      detail: p.name === 'Price Cycle' ? 'Accumulation Phase' :
-              p.name === 'Volume Surge' ? '3.2x avg volume' :
-              p.name === 'Inst. Footprint' ? 'Near support zone' :
-              p.name === 'Trend Strength' ? 'Strong uptrend' :
-              'S.E.T. defined'
-    }));
-    
-    return results;
   }
   
   function renderPillars(pillars) {
@@ -5890,8 +5950,9 @@ const PILLARS = (function() {
       
       const analysis = `
         <strong>Symbol:</strong> ${document.getElementById('fp-symbol').value || 'SPY'}<br>
-        <strong>Last Price:</strong> $${data.candles.length > 0 ? data.candles[0].c.toFixed(2) : '—'}<br>
-        <strong>Analysis:</strong> Real-time Five Pillars confluence check active. Monitor all 5 pillars for optimal entry.
+        <strong>Last Price:</strong> $${data.candles.length > 0 ? data.candles[0].close.toFixed(2) : '—'}<br>
+        <strong>Data Points:</strong> ${data.candles.length} daily candles<br>
+        <strong>Analysis:</strong> Live Five Pillars confluence — real market data from Yahoo Finance.
       `;
       document.getElementById('fp-analysis').innerHTML = analysis;
     });
