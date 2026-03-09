@@ -836,6 +836,89 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .master-guide-open { background:white; color:#065F46; padding:8px 18px; border-radius:8px; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap; margin-left:auto; transition:all .2s; }
 .master-guide-open:hover { background:#F0FDF4; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
 
+/* ---- SCANNER TAB ---- */
+.scanner-controls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:16px 20px; background:rgba(13,147,115,.06); border:1px solid rgba(13,147,115,.15); border-radius:12px; margin-bottom:16px; }
+.scanner-controls select, .scanner-controls input { padding:8px 12px; border:1px solid var(--gray-200); border-radius:8px; font-size:13px; background:white; color:var(--gray-700); }
+.scanner-controls select { min-width:160px; }
+.scan-btn { padding:10px 24px; background:var(--emerald); color:white; border:none; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:all .2s; }
+.scan-btn:hover { background:#0b7d63; transform:translateY(-1px); }
+.scan-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.scan-progress { width:100%; height:4px; background:var(--gray-200); border-radius:2px; overflow:hidden; margin-bottom:12px; display:none; }
+.scan-progress-bar { height:100%; background:var(--emerald); border-radius:2px; transition:width .3s; width:0; }
+.scanner-summary { padding:12px 16px; background:var(--navy); color:white; border-radius:10px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:16px; align-items:center; font-size:13px; display:none; }
+.scanner-summary .stat { display:flex; align-items:center; gap:6px; }
+.scanner-summary .stat-val { font-weight:700; color:var(--emerald-light); }
+.scanner-filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; display:none; }
+.scanner-filters .chip { padding:6px 14px; border-radius:20px; border:1px solid var(--gray-200); background:white; font-size:12px; cursor:pointer; transition:all .15s; }
+.scanner-filters .chip:hover { border-color:var(--emerald); }
+.scanner-filters .chip.active { background:var(--emerald); color:white; border-color:var(--emerald); }
+.scanner-results { display:flex; flex-direction:column; gap:10px; }
+.scan-card { background:white; border:1px solid var(--gray-200); border-radius:12px; overflow:hidden; transition:all .2s; cursor:pointer; }
+.scan-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.08); border-color:var(--emerald); }
+.scan-card-header { display:flex; align-items:center; gap:12px; padding:14px 16px; }
+.scan-rank { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; color:white; flex-shrink:0; }
+.scan-rank.strong { background:#10B981; }
+.scan-rank.good { background:var(--emerald); }
+.scan-rank.watch { background:var(--yellow); color:var(--navy); }
+.scan-card-info { flex:1; min-width:0; }
+.scan-card-symbol { font-size:16px; font-weight:700; color:var(--navy); }
+.scan-card-symbol .price { font-size:13px; font-weight:500; color:var(--gray-500); margin-left:8px; }
+.scan-card-symbol .chg-up { color:#10B981; }
+.scan-card-symbol .chg-dn { color:var(--red); }
+.scan-card-strat { font-size:12px; color:var(--gray-500); margin-top:2px; }
+.scan-card-score { text-align:center; flex-shrink:0; }
+.scan-card-score .score-num { font-size:22px; font-weight:800; line-height:1; }
+.scan-card-score .score-label { font-size:10px; text-transform:uppercase; font-weight:600; letter-spacing:.5px; margin-top:2px; }
+.score-strong { color:#10B981; }
+.score-good { color:var(--emerald); }
+.score-watch { color:var(--yellow); }
+.scan-set-bar { display:flex; align-items:center; gap:0; height:6px; margin:0 16px 8px; border-radius:3px; overflow:hidden; }
+.scan-set-bar .stop-zone { background:var(--red); height:100%; }
+.scan-set-bar .entry-zone { background:var(--navy); height:100%; }
+.scan-set-bar .target-zone { background:#10B981; height:100%; }
+.scan-set-labels { display:flex; justify-content:space-between; padding:0 16px 10px; font-size:11px; color:var(--gray-500); }
+.scan-set-labels .sl { color:var(--red); font-weight:600; }
+.scan-set-labels .en { color:var(--navy); font-weight:600; }
+.scan-set-labels .tg { color:#10B981; font-weight:600; }
+.scan-card-body { display:none; padding:0 16px 14px; border-top:1px solid var(--gray-100); }
+.scan-card.expanded .scan-card-body { display:block; padding-top:12px; }
+.scan-explain { font-size:13px; line-height:1.6; color:var(--gray-700); margin-bottom:10px; }
+.scan-explain strong { color:var(--navy); }
+.scan-actions { display:flex; flex-wrap:wrap; gap:6px; }
+.scan-actions button { padding:6px 14px; border:1px solid var(--gray-200); border-radius:6px; background:white; font-size:11px; cursor:pointer; transition:all .15s; color:var(--gray-700); }
+.scan-actions button:hover { border-color:var(--emerald); color:var(--emerald); background:rgba(13,147,115,.04); }
+.scan-empty { text-align:center; padding:60px 20px; color:var(--gray-500); }
+.scan-empty .icon { font-size:48px; margin-bottom:12px; }
+.scan-empty .msg { font-size:15px; margin-bottom:6px; }
+.scan-empty .sub { font-size:12px; }
+.regime-badge-scanner { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+.regime-badge-scanner.bull { background:rgba(16,185,129,.12); color:#10B981; }
+.regime-badge-scanner.bear { background:rgba(239,68,68,.12); color:var(--red); }
+.regime-badge-scanner.neutral { background:rgba(245,158,11,.12); color:var(--yellow); }
+.scanner-disclaimer { font-size:10px; color:var(--gray-500); text-align:center; padding:10px; margin-top:12px; border-top:1px solid var(--gray-100); }
+.scanner-multi-bar { display:flex; gap:6px; flex-wrap:wrap; padding:0 0 12px; align-items:center; }
+.scanner-instance { padding:6px 12px; border-radius:8px; border:1px solid var(--gray-200); background:white; font-size:12px; cursor:pointer; display:flex; align-items:center; gap:6px; transition:all .15s; }
+.scanner-instance:hover { border-color:var(--emerald); }
+.scanner-instance.active { border-color:var(--emerald); background:rgba(13,147,115,.06); }
+.scanner-instance .si-dot { width:8px; height:8px; border-radius:50%; }
+.scanner-instance .si-dot.running { background:#10B981; }
+.scanner-instance .si-dot.paused { background:var(--yellow); }
+.scanner-instance .si-dot.stopped { background:var(--gray-500); }
+.scanner-instance .si-count { font-weight:700; color:var(--emerald); }
+.add-scanner-btn { padding:6px 12px; border-radius:8px; border:1px dashed var(--gray-200); background:none; font-size:12px; cursor:pointer; color:var(--gray-500); transition:all .15s; }
+.add-scanner-btn:hover { border-color:var(--emerald); color:var(--emerald); }
+.scanner-webull-bar { display:flex; align-items:center; gap:8px; margin-left:auto; }
+.wb-status { display:flex; align-items:center; gap:4px; font-size:11px; padding:4px 10px; border-radius:12px; }
+.wb-status.connected { background:rgba(16,185,129,.12); color:#10B981; }
+.wb-status.disconnected { background:rgba(107,114,128,.08); color:var(--gray-500); }
+.toast-container { position:fixed; top:16px; right:16px; z-index:10000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+.toast { background:var(--navy); color:white; padding:14px 18px; border-radius:10px; border-left:4px solid var(--emerald); font-size:13px; box-shadow:0 4px 20px rgba(0,0,0,.25); pointer-events:auto; animation:toastIn .3s ease; max-width:360px; }
+.toast .toast-title { font-weight:700; color:var(--emerald-light); margin-bottom:4px; }
+.toast .toast-body { font-size:12px; color:#A0B0C8; }
+@keyframes toastIn { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
+.scanner-badge { position:absolute; top:-4px; right:-4px; background:var(--red); color:white; font-size:9px; font-weight:800; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 4px; display:none; }
+#scanner-tab-btn { position:relative; }
+
 </style>
 </head>
 <body>
@@ -869,6 +952,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <button class="tab-btn" onclick="showTab('pillars',this)">🎯 Five Pillars</button>
   <button class="tab-btn" onclick="showTab('training',this)">🎯 Chart Training</button>
   <button class="tab-btn" onclick="showTab('docs',this)">📚 Document Library</button>
+  <button class="tab-btn" onclick="showTab('scanner',this)" id="scanner-tab-btn">🔍 Live Scanner</button>
 
 </div>
 
@@ -2787,6 +2871,115 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
 </div>
 </div>
+
+<!-- ===== LIVE SCANNER TAB ===== -->
+<div id="tab-scanner" class="tab-content">
+  <div style="padding:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <h2 style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:4px;">🔍 Strategy-Based Live Scanner</h2>
+        <p style="font-size:12px;color:var(--gray-500);">Scans real-time market data against all 17 strategies with S.E.T. prefill</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="scanner-regime-badge" class="regime-badge-scanner neutral">⏳ Detecting...</span>
+        <div class="scanner-webull-bar">
+          <span id="wb-status" class="wb-status disconnected">⚪ Webull: Offline</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Multi-Scanner Instance Bar -->
+    <div class="scanner-multi-bar" id="scanner-multi-bar">
+      <div class="scanner-instance active" data-scanner="default" onclick="SCANNER.switchInstance('default')">
+        <span class="si-dot running"></span>
+        <span>Full Spectrum</span>
+        <span class="si-count" id="si-count-default">0</span>
+      </div>
+      <button class="add-scanner-btn" onclick="SCANNER.addInstance()">+ New Scanner</button>
+    </div>
+
+    <!-- Controls -->
+    <div class="scanner-controls">
+      <select id="scan-strategy" multiple title="Select strategies">
+        <option value="all" selected>All 17 Strategies</option>
+        <optgroup label="Directional">
+          <option value="demand_zone_bounce">📈 Demand Zone Bounce</option>
+          <option value="supply_zone_rejection">📉 Supply Zone Rejection</option>
+          <option value="bull_call_spread">📊 Bull Call Spread</option>
+          <option value="long_straddle">⚡ Long Straddle</option>
+          <option value="long_strangle">🌊 Long Strangle</option>
+        </optgroup>
+        <optgroup label="Income">
+          <option value="covered_call">📈 Covered Call</option>
+          <option value="covered_call_engine">💰 CC Income Engine</option>
+          <option value="cash_secured_put">💵 Cash-Secured Put</option>
+          <option value="csp_discount">💵 CSP Discount Entry</option>
+          <option value="iron_condor">🦅 Iron Condor</option>
+          <option value="bull_put_spread">🐂 Bull Put Spread</option>
+          <option value="bear_call_spread">🐻 Bear Call Spread</option>
+        </optgroup>
+        <optgroup label="Hedge">
+          <option value="protective_put">🛡️ Protective Put</option>
+        </optgroup>
+        <optgroup label="Advanced">
+          <option value="leaps_wealth">🏗️ LEAPS Wealth Builder</option>
+          <option value="pre_earnings_straddle">🎰 Pre-Earnings Straddle</option>
+          <option value="micro_emini_scalp">⚡ MES Scalp</option>
+          <option value="forex_crypto">🌍 Forex/Crypto</option>
+        </optgroup>
+      </select>
+      <select id="scan-universe">
+        <option value="sp50">S&P Top 30</option>
+        <option value="qqq30">QQQ Top 20</option>
+        <option value="custom">Custom Watchlist</option>
+      </select>
+      <input type="text" id="scan-custom-symbols" placeholder="AAPL, MSFT, TSLA..." style="display:none;min-width:200px;" />
+      <button class="scan-btn" id="scan-now-btn" onclick="SCANNER.scan()">🔍 Scan Now</button>
+      <label style="font-size:12px;color:var(--gray-500);display:flex;align-items:center;gap:4px;cursor:pointer;">
+        <input type="checkbox" id="scan-auto" /> Auto (5m)
+      </label>
+    </div>
+
+    <!-- Progress -->
+    <div class="scan-progress" id="scan-progress">
+      <div class="scan-progress-bar" id="scan-progress-bar"></div>
+    </div>
+
+    <!-- Summary -->
+    <div class="scanner-summary" id="scanner-summary">
+      <div class="stat">Setups: <span class="stat-val" id="ss-total">0</span></div>
+      <div class="stat">Strong (85+): <span class="stat-val" id="ss-strong">0</span></div>
+      <div class="stat">Strategies: <span class="stat-val" id="ss-strats">0</span></div>
+      <div class="stat">Symbols scanned: <span class="stat-val" id="ss-symbols">0</span></div>
+      <div class="stat">Last scan: <span class="stat-val" id="ss-time">—</span></div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="scanner-filters" id="scanner-filters">
+      <span class="chip active" onclick="SCANNER.filter('all',this)">All</span>
+      <span class="chip" onclick="SCANNER.filter('directional',this)">Directional</span>
+      <span class="chip" onclick="SCANNER.filter('income',this)">Income</span>
+      <span class="chip" onclick="SCANNER.filter('hedge',this)">Hedge</span>
+      <span class="chip" onclick="SCANNER.filter('advanced',this)">Advanced</span>
+    </div>
+
+    <!-- Results -->
+    <div class="scanner-results" id="scanner-results">
+      <div class="scan-empty">
+        <div class="icon">🔍</div>
+        <div class="msg">Ready to scan</div>
+        <div class="sub">Select strategies and click "Scan Now" to find setups across live market data</div>
+      </div>
+    </div>
+
+    <div class="scanner-disclaimer">
+      ⚠️ This scanner is an educational tool for learning purposes. It does not constitute financial advice. Always do your own research and consult a financial advisor before making investment decisions.
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification Container -->
+<div class="toast-container" id="toast-container"></div>
 
 <!-- ======================================================== -->
 <!-- JAVASCRIPT                                               -->
@@ -6326,6 +6519,790 @@ const GUIDE = (function() {
   return { toggle, show, hide, init, isOn };
 })();
 document.addEventListener('DOMContentLoaded', function() { GUIDE.init(); });
+
+
+// ============================================================
+// STRATEGY-BASED LIVE SCANNER SYSTEM
+// ============================================================
+const SCANNER = (function() {
+  // --- Symbol Universes ---
+  const UNIVERSES = {
+    sp50: ['SPY','AAPL','MSFT','AMZN','NVDA','GOOGL','META','TSLA','BRK.B','UNH','JNJ','V','XOM','JPM','PG','MA','HD','CVX','ABBV','MRK','LLY','PEP','KO','COST','AVGO','WMT','MCD','CSCO','CRM','ACN'],
+    qqq30: ['QQQ','AAPL','MSFT','AMZN','NVDA','GOOGL','META','TSLA','AVGO','COST','PEP','CSCO','ADBE','NFLX','AMD','INTC','CMCSA','QCOM','TXN','AMAT'],
+    custom: []
+  };
+
+  // --- State ---
+  let currentRegime = 'neutral';
+  let regimeScores = { bull: 33, bear: 33, neutral: 34 };
+  let scanResults = [];
+  let scanning = false;
+  let autoTimer = null;
+  let instances = [{ id: 'default', name: 'Full Spectrum', strategies: 'all', universe: 'sp50', status: 'running', results: [] }];
+  let activeInstance = 'default';
+  let webullConnected = false;
+  let dataCache = {};
+  const CACHE_TTL = 5 * 60 * 1000; // 5 min
+
+  // --- Technical Analysis Helpers ---
+  function sma(arr, period) {
+    if (arr.length < period) return null;
+    const slice = arr.slice(0, period);
+    return slice.reduce((a, b) => a + b, 0) / period;
+  }
+
+  function rsi(closes, period = 14) {
+    if (closes.length < period + 1) return 50;
+    let gains = 0, losses = 0;
+    for (let i = 0; i < period; i++) {
+      const diff = closes[i] - closes[i + 1];
+      if (diff > 0) gains += diff; else losses -= diff;
+    }
+    gains /= period; losses /= period;
+    if (losses === 0) return 100;
+    const rs = gains / losses;
+    return 100 - (100 / (1 + rs));
+  }
+
+  function atr(candles, period = 14) {
+    if (candles.length < period + 1) return 0;
+    let sum = 0;
+    for (let i = 0; i < period; i++) {
+      const c = candles[i], p = candles[i + 1];
+      const tr = Math.max(c.high - c.low, Math.abs(c.high - p.close), Math.abs(c.low - p.close));
+      sum += tr;
+    }
+    return sum / period;
+  }
+
+  function bollingerWidth(closes, period = 20) {
+    if (closes.length < period) return 0;
+    const slice = closes.slice(0, period);
+    const mean = slice.reduce((a, b) => a + b, 0) / period;
+    const variance = slice.reduce((a, b) => a + (b - mean) ** 2, 0) / period;
+    return (Math.sqrt(variance) * 2) / mean;
+  }
+
+  function volumeRatio(volumes, period = 20) {
+    if (volumes.length < period + 1) return 1;
+    const avg = volumes.slice(1, period + 1).reduce((a, b) => a + b, 0) / period;
+    return avg > 0 ? volumes[0] / avg : 1;
+  }
+
+  function macdHistogram(closes) {
+    if (closes.length < 26) return 0;
+    const ema12 = emaCalc(closes, 12);
+    const ema26 = emaCalc(closes, 26);
+    return ema12 - ema26;
+  }
+
+  function emaCalc(arr, period) {
+    if (arr.length < period) return arr[0] || 0;
+    const k = 2 / (period + 1);
+    let ema = arr.slice(-period).reduce((a, b) => a + b, 0) / period;
+    for (let i = arr.length - period - 1; i >= 0; i--) {
+      ema = arr[i] * k + ema * (1 - k);
+    }
+    return ema;
+  }
+
+  // --- Supply/Demand Zone Detection ---
+  function findDemandZones(candles) {
+    const zones = [];
+    for (let i = 2; i < Math.min(candles.length - 2, 60); i++) {
+      const c = candles[i];
+      const prev = candles[i + 1];
+      const next = candles[i - 1];
+      // Sharp move up from base
+      if (next.close > c.high * 1.015 && c.low < prev.low * 1.005) {
+        zones.push({ upper: c.high, lower: c.low, strength: (next.close - c.low) / c.low, age: i });
+      }
+    }
+    return zones.slice(0, 5);
+  }
+
+  function findSupplyZones(candles) {
+    const zones = [];
+    for (let i = 2; i < Math.min(candles.length - 2, 60); i++) {
+      const c = candles[i];
+      const prev = candles[i + 1];
+      const next = candles[i - 1];
+      // Sharp move down from top
+      if (next.close < c.low * 0.985 && c.high > prev.high * 0.995) {
+        zones.push({ upper: c.high, lower: c.low, strength: (c.high - next.close) / c.high, age: i });
+      }
+    }
+    return zones.slice(0, 5);
+  }
+
+  // --- Data Fetching ---
+  async function fetchSymbolData(symbol) {
+    const now = Date.now();
+    if (dataCache[symbol] && (now - dataCache[symbol].ts) < CACHE_TTL) {
+      return dataCache[symbol].data;
+    }
+    try {
+      const resp = await fetch('/api/stock-data?symbol=' + encodeURIComponent(symbol) + '&range=6mo&interval=1d');
+      const json = await resp.json();
+      if (json.candles && json.candles.length > 0) {
+        const data = { symbol, candles: json.candles.slice().reverse() }; // index 0 = most recent
+        dataCache[symbol] = { ts: now, data };
+        return data;
+      }
+    } catch (e) {
+      console.warn('Scanner: fetch failed for ' + symbol, e.message);
+    }
+    return null;
+  }
+
+  // --- Get Current Regime from Markov Tab ---
+  function detectCurrentRegime() {
+    try {
+      if (window.MARKOV && window.MARKOV._data) {
+        const d = window.MARKOV._data;
+        currentRegime = d.currentRegime || 'neutral';
+        regimeScores = d.regimeScores || regimeScores;
+      } else {
+        // Read from hero badge
+        const badge = document.querySelector('.regime-label');
+        if (badge) {
+          const text = badge.textContent.toLowerCase();
+          if (text.includes('bull')) currentRegime = 'bull';
+          else if (text.includes('bear')) currentRegime = 'bear';
+          else currentRegime = 'neutral';
+        }
+      }
+    } catch (e) { /* keep current */ }
+    updateRegimeBadge();
+  }
+
+  function updateRegimeBadge() {
+    const el = document.getElementById('scanner-regime-badge');
+    if (!el) return;
+    const icons = { bull: '🟢', bear: '🔴', neutral: '🟡' };
+    const labels = { bull: 'Bull Market', bear: 'Bear Market', neutral: 'Neutral' };
+    el.className = 'regime-badge-scanner ' + currentRegime;
+    el.textContent = icons[currentRegime] + ' ' + labels[currentRegime];
+  }
+
+  // --- Strategy Signal Detection ---
+  function evaluateStrategies(symbolData) {
+    const c = symbolData.candles;
+    if (!c || c.length < 30) return [];
+
+    const closes = c.map(x => x.close);
+    const volumes = c.map(x => x.volume);
+    const price = closes[0];
+    const sma20 = sma(closes, 20);
+    const sma50 = sma(closes, 50);
+    const sma200 = sma(closes, 200);
+    const rsiVal = rsi(closes);
+    const atrVal = atr(c);
+    const volRatio = volumeRatio(volumes);
+    const bWidth = bollingerWidth(closes);
+    const macd = macdHistogram(closes);
+    const demandZones = findDemandZones(c);
+    const supplyZones = findSupplyZones(c);
+
+    // IV estimate (simplified: use bWidth as proxy)
+    const ivPercentile = Math.min(100, Math.max(0, bWidth * 500));
+
+    const matches = [];
+
+    // Helper to find nearest zone within threshold
+    function nearDemand(threshold) {
+      for (const z of demandZones) {
+        if (price <= z.upper * (1 + threshold) && price >= z.lower * 0.99) return z;
+      }
+      return null;
+    }
+    function nearSupply(threshold) {
+      for (const z of supplyZones) {
+        if (price >= z.lower * (1 - threshold) && price <= z.upper * 1.01) return z;
+      }
+      return null;
+    }
+
+    // --- 1. Demand Zone Bounce ---
+    const dz = nearDemand(0.015);
+    if (dz && rsiVal >= 28 && rsiVal <= 48 && sma50 && price < sma50 * 1.05) {
+      const stop = dz.lower - 0.5 * atrVal;
+      const entry = dz.upper;
+      const target = entry + 3 * (entry - stop);
+      const rr = (target - entry) / (entry - stop);
+      if (rr >= 2) {
+        matches.push({
+          strategyId: 'demand_zone_bounce', name: 'Demand Zone Bounce', icon: '📈', cat: 'directional',
+          type: 'Directional · Long', regimeScore: getRegimeScore('demand_zone_bounce'),
+          entry: round2(entry), stop: round2(stop), target: round2(target), rr: round2(rr),
+          signals: { rsi: round2(rsiVal), volRatio: round2(volRatio), zone: round2(dz.upper), sma50: round2(sma50) },
+          explain: symbolData.symbol + ' pulled back to a demand zone at $' + round2(dz.upper) + ' where institutional buy orders wait. RSI at ' + round2(rsiVal) + ' shows oversold conditions. Volume ratio ' + round2(volRatio) + 'x suggests weak selling pressure.'
+        });
+      }
+    }
+
+    // --- 2. Supply Zone Rejection ---
+    const sz = nearSupply(0.015);
+    if (sz && rsiVal >= 52 && rsiVal <= 72 && sma50 && price > sma50 * 0.97) {
+      const stop = sz.upper + 0.5 * atrVal;
+      const entry = sz.lower;
+      const target = entry - 3 * (stop - entry);
+      const rr = (entry - target) / (stop - entry);
+      if (rr >= 2) {
+        matches.push({
+          strategyId: 'supply_zone_rejection', name: 'Supply Zone Rejection', icon: '📉', cat: 'directional',
+          type: 'Directional · Short', regimeScore: getRegimeScore('supply_zone_rejection'),
+          entry: round2(entry), stop: round2(stop), target: round2(target), rr: round2(rr),
+          signals: { rsi: round2(rsiVal), zone: round2(sz.lower) },
+          explain: symbolData.symbol + ' rallied to supply zone at $' + round2(sz.lower) + '. RSI at ' + round2(rsiVal) + ' shows overbought conditions near resistance.'
+        });
+      }
+    }
+
+    // --- 3. Bull Call Spread ---
+    if (sma20 && price > sma20 && macd > 0 && ivPercentile < 55) {
+      const stop = round2(price * 0.97);
+      const entry = round2(price);
+      const target = round2(price * 1.06);
+      matches.push({
+        strategyId: 'bull_call_spread', name: 'Bull Call Spread', icon: '📊', cat: 'directional',
+        type: 'Directional · Bullish', regimeScore: getRegimeScore('bull_call_spread'),
+        entry, stop, target, rr: round2((target - entry) / (entry - stop)),
+        signals: { macd: round2(macd), ivPct: round2(ivPercentile), aboveSMA20: true },
+        explain: symbolData.symbol + ' is above its 20-day SMA with positive MACD momentum. IV percentile at ' + round2(ivPercentile) + '% means options are reasonably priced for a debit spread.'
+      });
+    }
+
+    // --- 4. Long Straddle ---
+    if (ivPercentile < 35 && bWidth < 0.04) {
+      const premium = price * 0.03;
+      matches.push({
+        strategyId: 'long_straddle', name: 'Long Straddle', icon: '⚡', cat: 'directional',
+        type: 'Directional · Volatility', regimeScore: getRegimeScore('long_straddle'),
+        entry: round2(price), stop: round2(price - premium * 0.4), target: round2(price + premium * 2), rr: round2(2),
+        signals: { ivPct: round2(ivPercentile), bWidth: round2(bWidth * 100) },
+        explain: symbolData.symbol + ' has extremely compressed volatility (Bollinger width ' + round2(bWidth * 100) + '%). IV percentile at ' + round2(ivPercentile) + '% means cheap options before an expected expansion.'
+      });
+    }
+
+    // --- 5. Long Strangle ---
+    if (ivPercentile < 30 && bWidth < 0.035) {
+      const premium = price * 0.02;
+      matches.push({
+        strategyId: 'long_strangle', name: 'Long Strangle', icon: '🌊', cat: 'directional',
+        type: 'Directional · Volatility', regimeScore: getRegimeScore('long_strangle'),
+        entry: round2(price), stop: round2(price - premium * 0.4), target: round2(price + premium * 2.5), rr: round2(2.5),
+        signals: { ivPct: round2(ivPercentile), bWidth: round2(bWidth * 100) },
+        explain: symbolData.symbol + ' with very low IV (' + round2(ivPercentile) + '%) and tight Bollinger Bands. Cheaper OTM strangle entry for volatility expansion play.'
+      });
+    }
+
+    // --- 6. Covered Call ---
+    if (sma20 && price > sma20 && ivPercentile > 35 && sma50 && price > sma50 * 0.98) {
+      matches.push({
+        strategyId: 'covered_call', name: 'Covered Call', icon: '📈', cat: 'income',
+        type: 'Income · Bullish', regimeScore: getRegimeScore('covered_call'),
+        entry: round2(price), stop: round2(price * 0.93), target: round2(price * 1.03), rr: round2(1.5),
+        signals: { ivPct: round2(ivPercentile), aboveSMA: true },
+        explain: symbolData.symbol + ' in bullish trend above both SMAs. IV at ' + round2(ivPercentile) + '% provides good premium for selling OTM calls 1-2 strikes above $' + round2(price) + '.'
+      });
+    }
+
+    // --- 7. Covered Call Income Engine ---
+    if (sma20 && price > sma20 && ivPercentile > 38 && sma50 && price > sma50) {
+      matches.push({
+        strategyId: 'covered_call_engine', name: 'CC Income Engine', icon: '💰', cat: 'income',
+        type: 'Income · Systematic', regimeScore: getRegimeScore('covered_call_engine'),
+        entry: round2(price), stop: round2(price * 0.92), target: round2(price * 1.04), rr: round2(1.5),
+        signals: { ivPct: round2(ivPercentile), trend: 'bullish' },
+        explain: symbolData.symbol + ' optimal for systematic covered call rolling. IV rich at ' + round2(ivPercentile) + '%, strong uptrend. Ideal 30-45 DTE cycle.'
+      });
+    }
+
+    // --- 8. Cash-Secured Put ---
+    const dzCSP = nearDemand(0.04);
+    if (dzCSP && ivPercentile > 35) {
+      matches.push({
+        strategyId: 'cash_secured_put', name: 'Cash-Secured Put', icon: '💵', cat: 'income',
+        type: 'Income · Bullish Entry', regimeScore: getRegimeScore('cash_secured_put'),
+        entry: round2(dzCSP.upper), stop: round2(dzCSP.lower * 0.95), target: round2(price * 0.02), rr: round2(2),
+        signals: { zone: round2(dzCSP.upper), ivPct: round2(ivPercentile) },
+        explain: 'Sell put at $' + round2(dzCSP.upper) + ' demand zone for ' + symbolData.symbol + '. IV at ' + round2(ivPercentile) + '% provides rich premium. Willing to own shares at this institutional support level.'
+      });
+    }
+
+    // --- 9. CSP Discount Entry ---
+    if (ivPercentile > 40 && demandZones.length > 0) {
+      const deepZone = demandZones[demandZones.length - 1];
+      const strikePrice = price * 0.93;
+      matches.push({
+        strategyId: 'csp_discount', name: 'CSP Discount Entry', icon: '💵', cat: 'income',
+        type: 'Income · Value Entry', regimeScore: getRegimeScore('csp_discount'),
+        entry: round2(strikePrice), stop: round2(strikePrice * 0.92), target: round2(price * 0.025), rr: round2(2),
+        signals: { discount: '7%', ivPct: round2(ivPercentile) },
+        explain: symbolData.symbol + ' deep discount CSP at $' + round2(strikePrice) + ' (7% below current). High IV (' + round2(ivPercentile) + '%) means substantial premium income for systematic accumulation.'
+      });
+    }
+
+    // --- 10. Iron Condor ---
+    if (ivPercentile > 45 && bWidth < 0.06 && rsiVal > 35 && rsiVal < 65) {
+      matches.push({
+        strategyId: 'iron_condor', name: 'Iron Condor', icon: '🦅', cat: 'income',
+        type: 'Income · Neutral', regimeScore: getRegimeScore('iron_condor'),
+        entry: round2(price), stop: round2(price * 0.96), target: round2(price * 0.015), rr: round2(1.5),
+        signals: { ivPct: round2(ivPercentile), rsi: round2(rsiVal), rangebound: true },
+        explain: symbolData.symbol + ' is range-bound (RSI ' + round2(rsiVal) + ', tight Bollingers). IV at ' + round2(ivPercentile) + '% provides rich credit. Sell 1 SD wings for premium harvesting.'
+      });
+    }
+
+    // --- 11. Bull Put Spread ---
+    if (sma20 && price > sma20 && ivPercentile > 30 && demandZones.length > 0) {
+      const supportZone = demandZones[0];
+      matches.push({
+        strategyId: 'bull_put_spread', name: 'Bull Put Spread', icon: '🐂', cat: 'income',
+        type: 'Income · Bullish Credit', regimeScore: getRegimeScore('bull_put_spread'),
+        entry: round2(supportZone.upper), stop: round2(supportZone.lower), target: round2(price * 0.015), rr: round2(2),
+        signals: { support: round2(supportZone.upper), ivPct: round2(ivPercentile) },
+        explain: symbolData.symbol + ' above 20-SMA with demand zone support at $' + round2(supportZone.upper) + '. Sell put spread below support for credit. IV at ' + round2(ivPercentile) + '%.'
+      });
+    }
+
+    // --- 12. Bear Call Spread ---
+    if (sma20 && price < sma20 && ivPercentile > 30 && supplyZones.length > 0) {
+      const resistZone = supplyZones[0];
+      matches.push({
+        strategyId: 'bear_call_spread', name: 'Bear Call Spread', icon: '🐻', cat: 'income',
+        type: 'Income · Bearish', regimeScore: getRegimeScore('bear_call_spread'),
+        entry: round2(resistZone.lower), stop: round2(resistZone.upper), target: round2(price * 0.015), rr: round2(2),
+        signals: { resistance: round2(resistZone.lower), ivPct: round2(ivPercentile) },
+        explain: symbolData.symbol + ' below 20-SMA with supply zone resistance at $' + round2(resistZone.lower) + '. Sell call spread above resistance. IV at ' + round2(ivPercentile) + '%.'
+      });
+    }
+
+    // --- 13. Protective Put ---
+    if (currentRegime === 'bear' || (rsiVal > 65 && sma50 && price > sma50 * 1.08)) {
+      matches.push({
+        strategyId: 'protective_put', name: 'Protective Put', icon: '🛡️', cat: 'hedge',
+        type: 'Hedge', regimeScore: getRegimeScore('protective_put'),
+        entry: round2(price), stop: round2(0), target: round2(price * 0.02), rr: round2(5),
+        signals: { regime: currentRegime, extended: price > (sma50 || price) * 1.08 },
+        explain: symbolData.symbol + ' — portfolio protection recommended. ' + (currentRegime === 'bear' ? 'Bear regime detected by Markov.' : 'Price extended above 50-SMA.') + ' Buy ATM put as insurance (2% of position value).'
+      });
+    }
+
+    // --- 14. LEAPS Wealth Builder ---
+    if (sma200 && price > sma200 && sma50 && price > sma50 && currentRegime === 'bull' && ivPercentile < 45) {
+      matches.push({
+        strategyId: 'leaps_wealth', name: 'LEAPS Wealth Builder', icon: '🏗️', cat: 'advanced',
+        type: 'Long-Term · Leverage', regimeScore: getRegimeScore('leaps_wealth'),
+        entry: round2(price * 0.85), stop: round2(price * 0.55), target: round2(price * 1.5), rr: round2(3),
+        signals: { aboveSMA200: true, regime: 'bull', ivPct: round2(ivPercentile) },
+        explain: symbolData.symbol + ' in confirmed bull regime above both 50 and 200-day SMAs. IV at ' + round2(ivPercentile) + '% means LEAPS are reasonably priced. Buy deep ITM LEAPS call (delta >0.70) for 18-24 month hold.'
+      });
+    }
+
+    // --- 15. Pre-Earnings Straddle ---
+    // Simplified: look for compressed IV as proxy for pre-earnings setup
+    if (ivPercentile < 40 && bWidth < 0.045) {
+      matches.push({
+        strategyId: 'pre_earnings_straddle', name: 'Pre-Earnings Straddle', icon: '🎰', cat: 'advanced',
+        type: 'Advanced · Volatility', regimeScore: getRegimeScore('pre_earnings_straddle'),
+        entry: round2(price), stop: round2(price * 0.97), target: round2(price * 1.04), rr: round2(1.5),
+        signals: { ivPct: round2(ivPercentile), bWidth: round2(bWidth * 100) },
+        explain: symbolData.symbol + ' IV at ' + round2(ivPercentile) + '% with compressed bands. If earnings are within 3-7 days, buy ATM straddle to capture IV expansion. Sell before announcement.'
+      });
+    }
+
+    // --- 16. Micro E-mini Scalp ---
+    // Always include for SPY/QQQ as educational
+    if (['SPY', 'QQQ', 'ES', 'MES'].includes(symbolData.symbol)) {
+      matches.push({
+        strategyId: 'micro_emini_scalp', name: 'MES Futures Scalp', icon: '⚡', cat: 'advanced',
+        type: 'Futures · Day Trade', regimeScore: getRegimeScore('micro_emini_scalp'),
+        entry: round2(price), stop: round2(price - 2), target: round2(price + 6), rr: 3,
+        signals: { vwap: round2(price), intraday: true },
+        explain: symbolData.symbol + ' — MES scalp opportunity at current level $' + round2(price) + '. Stop 2 pts ($10/contract), Target 6 pts ($30/contract). 3:1 ratio. Use VWAP and volume profile for precise entry.'
+      });
+    }
+
+    // --- 17. Forex/Crypto ---
+    if (sma20 && Math.abs(price - sma20) / sma20 > 0.02 && sma50) {
+      matches.push({
+        strategyId: 'forex_crypto', name: 'Forex/Crypto Leverage', icon: '🌍', cat: 'advanced',
+        type: 'Advanced · High Leverage', regimeScore: getRegimeScore('forex_crypto'),
+        entry: round2(sma20), stop: round2(sma20 - 1.5 * atrVal), target: round2(sma20 + 4.5 * atrVal), rr: 3,
+        signals: { trend: price > sma20 ? 'up' : 'down', deviation: round2(((price - sma20) / sma20) * 100) + '%' },
+        explain: symbolData.symbol + ' showing ' + round2(((price - sma20) / sma20) * 100) + '% deviation from 20-EMA. For leveraged instruments, enter at pullback to $' + round2(sma20) + ' in trend direction.'
+      });
+    }
+
+    return matches;
+  }
+
+  // --- Get Regime Score for Strategy ---
+  function getRegimeScore(stratId) {
+    const strat = (typeof STRATEGIES !== 'undefined') ? STRATEGIES.find(s => s.id === stratId) : null;
+    if (strat && strat.regimeScore) return strat.regimeScore[currentRegime] || 50;
+    return 50;
+  }
+
+  // --- Multi-Factor Scoring ---
+  function scoreSetup(match) {
+    const regimeFit = match.regimeScore; // 0-100, weight 25%
+    const signalStrength = Math.min(100, Object.keys(match.signals).length * 25); // weight 20%
+    const rrQuality = match.rr >= 4 ? 100 : match.rr >= 3 ? 80 : match.rr >= 2 ? 60 : 30; // weight 15%
+    const volConf = match.signals.volRatio ? (match.signals.volRatio > 1.5 ? 100 : match.signals.volRatio > 1 ? 70 : 30) : 60; // weight 12%
+    const trendAlign = match.signals.aboveSMA20 || match.signals.aboveSMA ? 85 : 50; // weight 12%
+    const pillarConf = 70; // weight 10% — placeholder, would integrate with Five Pillars
+    const freshness = 90; // weight 6% — today's scan
+
+    const score = Math.round(
+      regimeFit * 0.25 +
+      signalStrength * 0.20 +
+      rrQuality * 0.15 +
+      volConf * 0.12 +
+      trendAlign * 0.12 +
+      pillarConf * 0.10 +
+      freshness * 0.06
+    );
+
+    return Math.min(100, Math.max(0, score));
+  }
+
+  // --- Utility ---
+  function round2(n) { return Math.round(n * 100) / 100; }
+
+  // --- Main Scan ---
+  async function scan() {
+    if (scanning) return;
+    scanning = true;
+
+    const btn = document.getElementById('scan-now-btn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Scanning...';
+
+    const progressEl = document.getElementById('scan-progress');
+    const progressBar = document.getElementById('scan-progress-bar');
+    progressEl.style.display = 'block';
+    progressBar.style.width = '0%';
+
+    detectCurrentRegime();
+
+    // Get selected strategies
+    const stratSelect = document.getElementById('scan-strategy');
+    const selectedStrats = Array.from(stratSelect.selectedOptions).map(o => o.value);
+    const allStrats = selectedStrats.includes('all');
+
+    // Get symbol universe
+    const universeId = document.getElementById('scan-universe').value;
+    let symbols;
+    if (universeId === 'custom') {
+      const input = document.getElementById('scan-custom-symbols').value;
+      symbols = input.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+    } else {
+      symbols = UNIVERSES[universeId] || UNIVERSES.sp50;
+    }
+
+    scanResults = [];
+    const total = symbols.length;
+
+    for (let i = 0; i < total; i++) {
+      const symbol = symbols[i];
+      progressBar.style.width = Math.round(((i + 1) / total) * 100) + '%';
+
+      const data = await fetchSymbolData(symbol);
+      if (!data) continue;
+
+      let matches = evaluateStrategies(data);
+
+      // Filter by selected strategies
+      if (!allStrats) {
+        matches = matches.filter(m => selectedStrats.includes(m.strategyId));
+      }
+
+      // Score each match
+      for (const match of matches) {
+        match.symbol = symbol;
+        match.price = data.candles[0].close;
+        match.dayChange = data.candles.length > 1 ? ((data.candles[0].close - data.candles[1].close) / data.candles[1].close * 100) : 0;
+        match.score = scoreSetup(match);
+      }
+
+      scanResults.push(...matches);
+
+      // Small delay to avoid UI freeze
+      if (i % 5 === 0) await new Promise(r => setTimeout(r, 50));
+    }
+
+    // Sort by score descending
+    scanResults.sort((a, b) => b.score - a.score);
+
+    // Filter out low scores
+    scanResults = scanResults.filter(r => r.score >= 55);
+
+    // De-duplicate: keep best score per symbol+strategy combo
+    const seen = new Set();
+    scanResults = scanResults.filter(r => {
+      const key = r.symbol + '_' + r.strategyId;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // Store in active instance
+    const inst = instances.find(i => i.id === activeInstance);
+    if (inst) inst.results = scanResults;
+
+    // Render
+    renderResults();
+    renderSummary(symbols.length);
+
+    // Fire notifications for strong setups
+    const strongSetups = scanResults.filter(r => r.score >= 85);
+    if (strongSetups.length > 0) {
+      showToast('STRONG SETUP', strongSetups[0].symbol + ' — ' + strongSetups[0].name + ' (Score: ' + strongSetups[0].score + ')');
+      updateBadge(strongSetups.length);
+    }
+
+    progressEl.style.display = 'none';
+    btn.disabled = false;
+    btn.textContent = '🔍 Scan Now';
+    scanning = false;
+  }
+
+  // --- Render Results ---
+  function renderResults(filterCat) {
+    const container = document.getElementById('scanner-results');
+    let results = scanResults;
+
+    if (filterCat && filterCat !== 'all') {
+      results = results.filter(r => r.cat === filterCat);
+    }
+
+    if (results.length === 0) {
+      container.innerHTML = '<div class="scan-empty"><div class="icon">📭</div><div class="msg">No setups found</div><div class="sub">Try expanding your symbol universe or selecting more strategies</div></div>';
+      return;
+    }
+
+    container.innerHTML = results.map((r, idx) => {
+      const scoreClass = r.score >= 85 ? 'strong' : r.score >= 70 ? 'good' : 'watch';
+      const scoreLabel = r.score >= 85 ? 'STRONG' : r.score >= 70 ? 'GOOD' : 'WATCH';
+      const chgClass = r.dayChange >= 0 ? 'chg-up' : 'chg-dn';
+      const chgStr = (r.dayChange >= 0 ? '+' : '') + round2(r.dayChange) + '%';
+
+      // S.E.T. bar proportions
+      const range = Math.abs(r.target - r.stop);
+      const stopPct = range > 0 ? Math.abs(r.entry - r.stop) / range * 100 : 33;
+      const targetPct = range > 0 ? Math.abs(r.target - r.entry) / range * 100 : 67;
+
+      return '<div class="scan-card" onclick="this.classList.toggle(\'expanded\')">' +
+        '<div class="scan-card-header">' +
+          '<div class="scan-rank ' + scoreClass + '">' + (idx + 1) + '</div>' +
+          '<div class="scan-card-info">' +
+            '<div class="scan-card-symbol">' + r.icon + ' ' + r.symbol + ' <span class="price">$' + round2(r.price) + '</span> <span class="' + chgClass + '">' + chgStr + '</span></div>' +
+            '<div class="scan-card-strat">' + r.name + ' · ' + r.type + ' · Regime Fit: ' + r.regimeScore + '%</div>' +
+          '</div>' +
+          '<div class="scan-card-score"><div class="score-num score-' + scoreClass + '">' + r.score + '</div><div class="score-label score-' + scoreClass + '">' + scoreLabel + '</div></div>' +
+        '</div>' +
+        '<div class="scan-set-bar"><div class="stop-zone" style="width:' + stopPct + '%"></div><div class="entry-zone" style="width:2%"></div><div class="target-zone" style="width:' + targetPct + '%"></div></div>' +
+        '<div class="scan-set-labels"><span class="sl">Stop: $' + r.stop + '</span><span class="en">Entry: $' + r.entry + '</span><span class="tg">Target: $' + r.target + ' (R:R ' + r.rr + ':1)</span></div>' +
+        '<div class="scan-card-body">' +
+          '<div class="scan-explain"><strong>Why this setup:</strong> ' + r.explain + '</div>' +
+          '<div class="scan-actions">' +
+            '<button onclick="event.stopPropagation();SCANNER.sendToSizer(\'' + r.symbol + '\',' + r.entry + ',' + r.stop + ',' + r.target + ')">📐 Send to Sizer</button>' +
+            '<button onclick="event.stopPropagation();SCANNER.sendToSimulator(\'' + r.symbol + '\',' + r.entry + ',' + r.stop + ',' + r.target + ')">⚡ Send to Simulator</button>' +
+            '<button onclick="event.stopPropagation();SCANNER.backtestThis(\'' + r.strategyId + '\')">📊 Backtest This</button>' +
+            '<button onclick="event.stopPropagation();SCANNER.openPlaybook(\'' + r.strategyId + '\')">📖 Open Playbook</button>' +
+            '<button onclick="event.stopPropagation();SCANNER.logToJournal(\'' + r.symbol + '\',\'' + r.name + '\',' + r.entry + ',' + r.stop + ',' + r.target + ',' + r.score + ')">📝 Log to Journal</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderSummary(symbolCount) {
+    const summary = document.getElementById('scanner-summary');
+    const filters = document.getElementById('scanner-filters');
+    summary.style.display = 'flex';
+    filters.style.display = 'flex';
+
+    document.getElementById('ss-total').textContent = scanResults.length;
+    document.getElementById('ss-strong').textContent = scanResults.filter(r => r.score >= 85).length;
+    const uniqueStrats = new Set(scanResults.map(r => r.strategyId));
+    document.getElementById('ss-strats').textContent = uniqueStrats.size;
+    document.getElementById('ss-symbols').textContent = symbolCount;
+    document.getElementById('ss-time').textContent = new Date().toLocaleTimeString();
+
+    // Update instance count
+    const countEl = document.getElementById('si-count-' + activeInstance);
+    if (countEl) countEl.textContent = scanResults.length;
+  }
+
+  // --- Filter ---
+  function filter(cat, el) {
+    document.querySelectorAll('.scanner-filters .chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    renderResults(cat);
+  }
+
+  // --- Integration Bridge ---
+  function sendToSizer(symbol, entry, stop, target) {
+    const entryEl = document.getElementById('sz-entry');
+    const stopEl = document.getElementById('sz-stop');
+    const targetEl = document.getElementById('sz-target');
+    if (entryEl) entryEl.value = entry;
+    if (stopEl) stopEl.value = stop;
+    if (targetEl) targetEl.value = target;
+    showTab('sizer', document.querySelector('[onclick*="sizer"]'));
+    if (typeof calcSET === 'function') setTimeout(calcSET, 200);
+  }
+
+  function sendToSimulator(symbol, entry, stop, target) {
+    const symEl = document.getElementById('sim-symbol') || document.getElementById('set-symbol');
+    if (symEl) symEl.value = symbol;
+    showTab('setsim', document.querySelector('[onclick*="setsim"]'));
+  }
+
+  function backtestThis(strategyId) {
+    // Select the strategy in backtester
+    const sel = document.getElementById('strat-select');
+    if (sel) {
+      for (let opt of sel.options) {
+        if (opt.value === strategyId) { sel.value = strategyId; break; }
+      }
+    }
+    showTab('backtester', document.querySelector('[onclick*="backtester"]'));
+  }
+
+  function openPlaybook(strategyId) {
+    showTab('about', document.querySelector('[onclick*="about"]'));
+    // Scroll to strategy section
+    setTimeout(() => {
+      const el = document.getElementById('playbook-' + strategyId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
+
+  function logToJournal(symbol, stratName, entry, stop, target, score) {
+    showTab('journal', document.querySelector('[onclick*="journal"]'));
+    // Pre-fill journal if possible
+    const noteEl = document.getElementById('journal-notes') || document.querySelector('[name="notes"]');
+    if (noteEl) {
+      noteEl.value = 'Scanner Setup: ' + symbol + ' - ' + stratName + ' (Score: ' + score + ')\\nEntry: $' + entry + ' | Stop: $' + stop + ' | Target: $' + target;
+    }
+  }
+
+  // --- Notifications ---
+  function showToast(title, body) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = '<div class="toast-title">🔔 ' + title + '</div><div class="toast-body">' + body + '</div>';
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(() => toast.remove(), 300); }, 8000);
+  }
+
+  function updateBadge(count) {
+    let badge = document.querySelector('.scanner-badge');
+    if (!badge) {
+      const btn = document.getElementById('scanner-tab-btn');
+      if (btn) {
+        badge = document.createElement('span');
+        badge.className = 'scanner-badge';
+        btn.appendChild(badge);
+      }
+    }
+    if (badge) {
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+  }
+
+  // --- Multi-Scanner ---
+  function addInstance() {
+    const name = prompt('Scanner name (e.g., Bull Momentum, Income Harvester):');
+    if (!name) return;
+    const id = 'scanner_' + Date.now();
+    instances.push({ id, name, strategies: 'all', universe: 'sp50', status: 'running', results: [] });
+    renderInstances();
+    switchInstance(id);
+  }
+
+  function switchInstance(id) {
+    activeInstance = id;
+    const inst = instances.find(i => i.id === id);
+    if (inst) {
+      scanResults = inst.results || [];
+      renderResults();
+    }
+    document.querySelectorAll('.scanner-instance').forEach(el => {
+      el.classList.toggle('active', el.dataset.scanner === id);
+    });
+  }
+
+  function renderInstances() {
+    const bar = document.getElementById('scanner-multi-bar');
+    if (!bar) return;
+    bar.innerHTML = instances.map(inst => {
+      const dotClass = inst.status === 'running' ? 'running' : inst.status === 'paused' ? 'paused' : 'stopped';
+      return '<div class="scanner-instance' + (inst.id === activeInstance ? ' active' : '') + '" data-scanner="' + inst.id + '" onclick="SCANNER.switchInstance(\'' + inst.id + '\')">' +
+        '<span class="si-dot ' + dotClass + '"></span>' +
+        '<span>' + inst.name + '</span>' +
+        '<span class="si-count" id="si-count-' + inst.id + '">' + (inst.results ? inst.results.length : 0) + '</span>' +
+      '</div>';
+    }).join('') + '<button class="add-scanner-btn" onclick="SCANNER.addInstance()">+ New Scanner</button>';
+  }
+
+  // --- Auto-Scan ---
+  function toggleAutoScan() {
+    const checkbox = document.getElementById('scan-auto');
+    if (checkbox && checkbox.checked) {
+      scan();
+      autoTimer = setInterval(() => scan(), 5 * 60 * 1000);
+    } else {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    }
+  }
+
+  // --- Custom universe toggle ---
+  function setupControls() {
+    const universeSelect = document.getElementById('scan-universe');
+    const customInput = document.getElementById('scan-custom-symbols');
+    if (universeSelect) {
+      universeSelect.addEventListener('change', () => {
+        customInput.style.display = universeSelect.value === 'custom' ? 'inline-block' : 'none';
+      });
+    }
+    const autoCheck = document.getElementById('scan-auto');
+    if (autoCheck) autoCheck.addEventListener('change', toggleAutoScan);
+  }
+
+  // --- Init ---
+  function init() {
+    setupControls();
+    detectCurrentRegime();
+  }
+
+  // Auto-init when scanner tab is first shown
+  let initialized = false;
+  const origShowTab = window.showTab;
+
+  return {
+    scan, filter, sendToSizer, sendToSimulator, backtestThis, openPlaybook, logToJournal,
+    addInstance, switchInstance, showToast, updateBadge, init,
+    _ensureInit: function() { if (!initialized) { initialized = true; init(); } }
+  };
+})();
+
+// Hook scanner init into showTab
+(function() {
+  const _origShowTab = showTab;
+  window.showTab = function(tab, btn) {
+    _origShowTab(tab, btn);
+    if (tab === 'scanner') SCANNER._ensureInit();
+  };
+})();
 
 </script>
 </body>
