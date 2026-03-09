@@ -32,8 +32,8 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--mint-bg); c
 .hdr-badge { background:rgba(16,185,129,.15); border:1px solid var(--emerald); color:var(--emerald-light); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; }
 
 /* ---- TABS ---- */
-.tabs { background:var(--navy); padding:0 28px; display:flex; gap:2px; border-top:1px solid rgba(255,255,255,.08); }
-.tab-btn { padding:11px 18px; background:none; border:none; color:#A0B0C8; cursor:pointer; font-size:13px; font-weight:500; border-bottom:3px solid transparent; transition:all .18s; white-space:nowrap; }
+.tabs { background:var(--navy); padding:4px 16px; display:flex; flex-wrap:wrap; gap:2px; border-top:1px solid rgba(255,255,255,.08); justify-content:center; }
+.tab-btn { padding:9px 14px; background:none; border:none; color:#A0B0C8; cursor:pointer; font-size:12px; font-weight:500; border-bottom:3px solid transparent; transition:all .18s; white-space:nowrap; }
 .tab-btn:hover { color:white; }
 .tab-btn.active { color:var(--emerald-light); border-bottom-color:var(--emerald-light); }
 .tab-content { display:none; }
@@ -488,7 +488,9 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
 /* ===== ENHANCED MARKOV REGIME ENGINE ===== */
 .regime-engine{display:grid;grid-template-columns:1fr;gap:16px;}
-.regime-top{display:grid;grid-template-columns:1fr 320px;gap:16px;}
+.regime-top{display:grid;grid-template-columns:1fr 320px;gap:16px;position:relative;}
+.regime-top > .guide-btn { grid-column:1 / -1; }
+.regime-top > .guide-overlay { grid-column:1 / -1; }
 .regime-hero{display:flex;align-items:center;gap:20px;padding:18px;border-radius:14px;margin-bottom:6px;}
 .regime-hero.bear{background:linear-gradient(135deg,#FEE2E2,#FECACA);border:2px solid #EF4444;}
 .regime-hero.bull{background:linear-gradient(135deg,#D1FAE5,#A7F3D0);border:2px solid #10B981;}
@@ -758,7 +760,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .guide-toggle.on { background: var(--emerald); }
 .guide-btn { background: var(--emerald); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
 .guide-btn.guide-hidden { display: none !important; }
-.guide-overlay { background: var(--navy); color: white; border-radius: 12px; padding: 18px; margin-top: 12px; animation: slideDown 0.25s ease-out; }
+.guide-overlay { background: var(--navy); color: white; border-radius: 12px; padding: 18px; margin-top: 12px; animation: slideDown 0.25s ease-out; position:relative; z-index:50; width:100%; box-sizing:border-box; grid-column:1 / -1; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 .guide-overlay.guide-hidden { display: none !important; }
 .guide-overlay .guide-title { font-size: 14px; font-weight: 700; color: #FFD700; margin-bottom: 12px; }
@@ -2683,83 +2685,67 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
   <!-- Bookshelf -->
   <div class="bookshelf" style="background:linear-gradient(180deg,#0F1A2E 0%,#162032 100%);border-radius:16px;padding:36px 32px 20px;border:1px solid rgba(255,255,255,0.06);">
 
-    <!-- Shelf Row 1 -->
-    <div class="shelf-row" style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding-bottom:18px;margin-bottom:32px;position:relative;">
+    <!-- Single Shelf — All 10 Books -->
+    <div class="shelf-row" style="display:flex;align-items:flex-end;justify-content:center;gap:10px;padding-bottom:18px;position:relative;flex-wrap:nowrap;">
       <!-- Book 1: Options Backtester -->
-      <a href="https://heyzine.com/flip-book/aa3282dce5.html" target="_blank" class="book book-navy" style="width:64px;min-height:210px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">📊</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Options Backtester</div>
+      <a href="https://heyzine.com/flip-book/aa3282dce5.html" target="_blank" class="book book-navy" style="width:56px;min-height:180px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">📊</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Backtester</div>
       </a>
       <!-- Book 2: Position Sizer -->
-      <a href="https://heyzine.com/flip-book/268f581233.html" target="_blank" class="book book-emerald" style="width:64px;min-height:195px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🎯</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Position Sizer S.E.T.</div>
+      <a href="https://heyzine.com/flip-book/268f581233.html" target="_blank" class="book book-emerald" style="width:56px;min-height:170px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">🎯</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Position Sizer</div>
       </a>
       <!-- Book 3: S.E.T. Simulator -->
-      <a href="https://heyzine.com/flip-book/c0201f19f3.html" target="_blank" class="book book-teal" style="width:64px;min-height:200px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">⚡</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">S.E.T. Simulator</div>
+      <a href="https://heyzine.com/flip-book/c0201f19f3.html" target="_blank" class="book book-teal" style="width:56px;min-height:175px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">⚡</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">S.E.T. Sim</div>
       </a>
       <!-- Book 4: Markov Regime -->
-      <a href="https://heyzine.com/flip-book/1c43588293.html" target="_blank" class="book book-indigo" style="width:64px;min-height:215px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🔀</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Markov Regime Detector</div>
+      <a href="https://heyzine.com/flip-book/1c43588293.html" target="_blank" class="book book-indigo" style="width:56px;min-height:185px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">🔀</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Markov Regime</div>
       </a>
       <!-- Book 5: Strategy Guide -->
-      <a href="https://heyzine.com/flip-book/13bbfffa11.html" target="_blank" class="book book-slate" style="width:64px;min-height:205px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">📖</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Strategy Guide</div>
+      <a href="https://heyzine.com/flip-book/13bbfffa11.html" target="_blank" class="book book-slate" style="width:56px;min-height:178px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">📖</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Strategy Guide</div>
       </a>
-      <!-- Wooden shelf plank -->
-      <div style="position:absolute;bottom:0;left:0;right:0;height:12px;background:linear-gradient(180deg,#8B6F47 0%,#6B5235 40%,#5A4429 100%);border-radius:2px;box-shadow:0 4px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);"></div>
-    </div>
-
-    <!-- Shelf Row 2 -->
-    <div class="shelf-row" style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding-bottom:18px;position:relative;">
       <!-- Book 6: Options Tester -->
-      <a href="https://heyzine.com/flip-book/5791933449.html" target="_blank" class="book book-amber" style="width:64px;min-height:200px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">⚡</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Options Tester</div>
+      <a href="https://heyzine.com/flip-book/5791933449.html" target="_blank" class="book book-amber" style="width:56px;min-height:172px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">⚡</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Options Tester</div>
       </a>
       <!-- Book 7: Trade Journal -->
-      <a href="https://heyzine.com/flip-book/60ee154e24.html" target="_blank" class="book book-rose" style="width:64px;min-height:210px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">📊</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Trade Journal</div>
+      <a href="https://heyzine.com/flip-book/60ee154e24.html" target="_blank" class="book book-rose" style="width:56px;min-height:182px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">📊</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Trade Journal</div>
       </a>
       <!-- Book 8: Five Pillars -->
-      <a href="https://heyzine.com/flip-book/a8ffa25c14.html" target="_blank" class="book book-purple" style="width:64px;min-height:205px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🎯</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Five Pillars</div>
+      <a href="https://heyzine.com/flip-book/a8ffa25c14.html" target="_blank" class="book book-purple" style="width:56px;min-height:176px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">🎯</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Five Pillars</div>
       </a>
       <!-- Book 9: Chart Training -->
-      <a href="https://heyzine.com/flip-book/bd8175614e.html" target="_blank" class="book book-cyan" style="width:64px;min-height:195px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="book-icon" style="font-size:16px;margin-bottom:8px;">🎯</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:white;padding:12px 4px;text-align:center;">Chart Training</div>
+      <a href="https://heyzine.com/flip-book/bd8175614e.html" target="_blank" class="book book-cyan" style="width:56px;min-height:168px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);">
+        <div class="book-edge"></div><div class="book-highlight"></div>
+        <div class="book-icon" style="font-size:14px;margin-bottom:6px;">🎯</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:white;padding:8px 3px;text-align:center;">Chart Training</div>
       </a>
-      <!-- Book 10: Master Guide (featured) -->
-      <a href="https://heyzine.com/flip-book/b72fd3cc20.html" target="_blank" class="book book-gold" style="width:72px;min-height:220px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2),0 0 20px rgba(245,158,11,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);background:linear-gradient(180deg,#B45309 0%,#92400E 50%,#78350F 100%);border:1px solid rgba(245,158,11,0.3);">
-        <div class="book-edge" style="position:absolute;left:0;top:0;bottom:0;width:4px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px;"></div>
-        <div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.15);"></div>
-        <div class="book-icon" style="font-size:18px;margin-bottom:8px;">⭐</div>
-        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:10px;font-weight:700;color:#FDE68A;padding:12px 4px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);">Complete Manual</div>
+      <!-- Book 10: Master Guide (featured, slightly taller) -->
+      <a href="https://heyzine.com/flip-book/b72fd3cc20.html" target="_blank" class="book book-gold" style="width:62px;min-height:195px;border-radius:4px 8px 8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;position:relative;cursor:pointer;box-shadow:3px 3px 12px rgba(0,0,0,0.4),-1px 0 4px rgba(0,0,0,0.2),0 0 20px rgba(245,158,11,0.2);transition:all .25s cubic-bezier(.4,0,.2,1);background:linear-gradient(180deg,#B45309 0%,#92400E 50%,#78350F 100%);border:1px solid rgba(245,158,11,0.3);">
+        <div class="book-edge"></div><div class="book-highlight" style="position:absolute;right:4px;top:8px;bottom:8px;width:1px;background:rgba(255,255,255,0.15);"></div>
+        <div class="book-icon" style="font-size:15px;margin-bottom:6px;">⭐</div>
+        <div class="book-spine-text" style="writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:700;color:#FDE68A;padding:8px 3px;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.5);">Complete Manual</div>
       </a>
       <!-- Wooden shelf plank -->
       <div style="position:absolute;bottom:0;left:0;right:0;height:12px;background:linear-gradient(180deg,#8B6F47 0%,#6B5235 40%,#5A4429 100%);border-radius:2px;box-shadow:0 4px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);"></div>
