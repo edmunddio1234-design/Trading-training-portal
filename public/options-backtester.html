@@ -7284,3 +7284,26 @@ const SCANNER = (function() {
     detectCurrentRegime();
   }
 
+  // Auto-init when scanner tab is first shown
+  let initialized = false;
+  const origShowTab = window.showTab;
+
+  return {
+    scan, filter, sendToSizer, sendToSimulator, backtestThis, openPlaybook, logToJournal,
+    addInstance, switchInstance, showToast, updateBadge, init,
+    _ensureInit: function() { if (!initialized) { initialized = true; init(); } }
+  };
+})();
+
+// Hook scanner init into showTab
+(function() {
+  const _origShowTab = showTab;
+  window.showTab = function(tab, btn) {
+    _origShowTab(tab, btn);
+    if (tab === 'scanner') SCANNER._ensureInit();
+  };
+})();
+
+</script>
+</body>
+</html>
