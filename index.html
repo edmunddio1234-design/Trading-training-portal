@@ -208,6 +208,11 @@
     .hero-banner { padding: 24px; }
     .hero-stats { flex-wrap: wrap; gap: 16px; }
   }
+  /* Subsection Video Embed */
+  .subsection-video-container { margin: 16px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); }
+  .subsection-video-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; font-size: 14px; font-weight: 600; color: var(--navy); border-bottom: 1px solid var(--border); background: var(--bg-card); }
+  .subsection-video-embed { position: relative; width: 100%; padding-bottom: 56.25%; }
+  .subsection-video-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 </style>
 </head>
 <body>
@@ -343,7 +348,7 @@ const DEFAULT_MODULES = [
     title: 'Leverage Strategy and Asset Vehicles',
     subtitle: 'Choose the right investment vehicle for your goals, timeframe, and account size.',
     sections: [
-      { title: 'Good Leverage vs. Bad Leverage', content: 'Leverage is the most misunderstood concept in trading. There are only two kinds:\n\nGood Leverage — Used on non-depreciating assets, backed by strategy and strict risk management, enhances returns without risking ruin.\n\nBad Leverage — Emotional, speculative, used on depreciating assets with no risk control. This is how accounts get destroyed overnight.\n\nThe difference is never the amount of leverage — it\'s whether you have a plan and the discipline to follow it.', type: 'text' },
+      { title: 'Good Leverage vs. Bad Leverage', content: 'Leverage is the most misunderstood concept in trading. There are only two kinds:\n\nGood Leverage — Used on non-depreciating assets, backed by strategy and strict risk management, enhances returns without risking ruin.\n\nBad Leverage — Emotional, speculative, used on depreciating assets with no risk control. This is how accounts get destroyed overnight.\n\nThe difference is never the amount of leverage — it\'s whether you have a plan and the discipline to follow it.', type: 'text', media: { youtubeUrl: 'https://youtu.be/bktyURs0EoI' } },
       { title: 'Mutual Funds vs. ETFs', type: 'table', headers: ['Feature', 'Mutual Funds', 'ETFs'], rows: [
         ['Trading', 'Once/day at market close', 'Throughout the day like stocks'],
         ['Fees', 'Higher fees & commissions', 'Lower fees, low/no commissions'],
@@ -352,8 +357,8 @@ const DEFAULT_MODULES = [
         ['Stop-Loss Orders', 'Cannot set stop-loss', 'Stop-loss orders permitted'],
         ['Market Conditions', 'Primarily for bull markets', 'Work in bull and bear markets'],
         ['Options', 'Not compatible with options', 'Compatible with options strategies']
-      ]},
-      { title: 'Options & LEAPS (10x–20x Leverage)', content: 'Options give you the right to control 100 shares of a stock for a fraction of the total cost (the premium). Your maximum possible loss is strictly capped at the premium you paid — making options perfect for the 1% risk rule.\n\nKey terms: Strike Price (the price to buy/sell the stock), Expiration Date (when the option expires, ranging from 1 day to 3 years).\n\nLEAPS (Long-Term Equity Anticipation Securities) are options expiring 2–3 years out, giving trades plenty of time to develop. Options are ideal for weekly and monthly income.', type: 'text' },
+      ], media: { youtubeUrl: 'https://youtu.be/K2QINDE__XA' } },
+      { title: 'Options & LEAPS (10x–20x Leverage)', content: 'Options give you the right to control 100 shares of a stock for a fraction of the total cost (the premium). Your maximum possible loss is strictly capped at the premium you paid — making options perfect for the 1% risk rule.\n\nKey terms: Strike Price (the price to buy/sell the stock), Expiration Date (when the option expires, ranging from 1 day to 3 years).\n\nLEAPS (Long-Term Equity Anticipation Securities) are options expiring 2–3 years out, giving trades plenty of time to develop. Options are ideal for weekly and monthly income.', type: 'text', media: { youtubeUrl: 'https://youtu.be/TvHnw8boezE' } },
       { title: 'Futures & S&P 500 Micro E-mini (20x–200x Leverage)', content: 'Futures provide massive leverage and 23-hour daily market access, significantly reducing overnight gap risk. The MES contract is 1/10th the size of the standard S&P 500 contract.\n\nKey advantages:\n• No $25,000 pattern day-trading requirement (only $2,000 needed)\n• 60/40 tax rule: 60% of gains taxed at long-term rate\n• Low commissions and exchange fees\n• 23-hour electronic trading access\n\nCritical warning: Because risk is not naturally capped like options, futures require professional-level risk management and strict use of stop orders.', type: 'text' },
       { title: 'Income Strategy by Timeframe', type: 'table', headers: ['Timeframe', 'Vehicle', 'Min. Account', 'Leverage'], rows: [
         ['Daily', 'Futures', '$2,000', '20x–200x'],
@@ -381,15 +386,15 @@ const DEFAULT_MODULES = [
     title: 'Options Deep Dive: Mechanics, LEAPS & Strategy',
     subtitle: 'Master the complete mechanics of options trading — from premiums to strike prices to expiration.',
     sections: [
-      { title: 'What Is an Options Trade?', content: 'Options give you the right, but not the obligation, to buy or sell a stock at a certain price by a certain date. The most you can ever lose is the premium you paid. Example: Pay $500 for a call option → your absolute maximum loss is $500, no matter how badly the trade goes.', type: 'text' },
+      { title: 'What Is an Options Trade?', content: 'Options give you the right, but not the obligation, to buy or sell a stock at a certain price by a certain date. The most you can ever lose is the premium you paid. Example: Pay $500 for a call option → your absolute maximum loss is $500, no matter how badly the trade goes.', type: 'text', media: { youtubeUrl: 'https://youtu.be/Sz41VWxeDaM' } },
       { title: 'How Options Are Quoted', content: 'Options are quoted per share but control 100 shares per contract:\n\nQuoted price: $5.00 per share\nActual cost: $5.00 × 100 shares = $500 total\n\nThis is critical to understand for proper position sizing and risk calculation.', type: 'text' },
       { title: '100 Shares vs. 1 Call Option', type: 'table', headers: ['Method', 'What You Control', 'Cost', 'Max Loss'], rows: [
         ['Buy 100 Shares', '100 shares directly', '$10,000', '$10,000 (full amount)'],
         ['Buy 1 Call Option', 'Right to 100 shares', '$500 (premium)', '$500 (premium only)']
-      ]},
-      { title: 'Strike Price & Expiration', content: 'Every option has two defining characteristics:\n\nStrike Price — The price at which you can buy the stock (for a call) or sell the stock (for a put). This is your target execution price.\n\nExpiration Date — The last day the option is valid. Options can expire anywhere from 1 day to 3 years (LEAPS). You always choose both before you buy.', type: 'text' },
-      { title: 'LEAPS: Long-Term Options', content: 'LEAPS (Long-Term Equity Anticipation Securities) are simply long-term options that expire up to 2–3 years in the future. They behave exactly like regular options but give your trades substantially more time to develop.\n\nAdvantages of LEAPS:\n• More time for the stock to make the move you want\n• Less time decay pressure than short-term options\n• Can be used for swing trading or position trading\n• Ideal for capturing large multi-month moves', type: 'text' },
-      { title: 'Complete Example Trade', content: 'Scenario:\n• Stock price: $100\n• Strike price: $90 (call option)\n• Premium: $5.00 per share = $500 total\n• You control: $9,000 worth of stock (100 shares × $90)\n\nOutcome if stock rises to $110:\nOption value increases significantly. Your $500 investment controls $9,000 worth of stock.\n\nOutcome if stock drops to $80:\nYour maximum loss is $500 (the premium). Not $9,000. Not $10,000. Just $500.\n\nThis is the power of defined-risk leverage.', type: 'text' },
+      ], media: { youtubeUrl: 'https://youtu.be/G-lv_8IMTZI' } },
+      { title: 'Strike Price & Expiration', content: 'Every option has two defining characteristics:\n\nStrike Price — The price at which you can buy the stock (for a call) or sell the stock (for a put). This is your target execution price.\n\nExpiration Date — The last day the option is valid. Options can expire anywhere from 1 day to 3 years (LEAPS). You always choose both before you buy.', type: 'text', media: { youtubeUrl: 'https://youtu.be/uzXOv_VhNnE' } },
+      { title: 'LEAPS: Long-Term Options', content: 'LEAPS (Long-Term Equity Anticipation Securities) are simply long-term options that expire up to 2–3 years in the future. They behave exactly like regular options but give your trades substantially more time to develop.\n\nAdvantages of LEAPS:\n• More time for the stock to make the move you want\n• Less time decay pressure than short-term options\n• Can be used for swing trading or position trading\n• Ideal for capturing large multi-month moves', type: 'text', media: { youtubeUrl: 'https://youtu.be/4Oik5Tf8PDo' } },
+      { title: 'Complete Example Trade', content: 'Scenario:\n• Stock price: $100\n• Strike price: $90 (call option)\n• Premium: $5.00 per share = $500 total\n• You control: $9,000 worth of stock (100 shares × $90)\n\nOutcome if stock rises to $110:\nOption value increases significantly. Your $500 investment controls $9,000 worth of stock.\n\nOutcome if stock drops to $80:\nYour maximum loss is $500 (the premium). Not $9,000. Not $10,000. Just $500.\n\nThis is the power of defined-risk leverage.', type: 'text', media: { youtubeUrl: 'https://youtu.be/PrARBnY4tXg' } },
       { title: 'Visual Resources', type: 'resources', resources: [
         { icon: 'learn', title: 'CME Group: Understanding Options Expiration & P/L', desc: 'Official course covering strike prices, premiums, and payoff diagrams.', url: 'https://www.cmegroup.com/education/courses/introduction-to-options/understanding-options-expiration-profit-and-loss' },
         { icon: 'learn', title: 'Options Industry Council: How LEAPS Work', desc: 'Official guide to LEAPS with payoff comparisons to short-term options.', url: 'https://www.optionseducation.org/optionsoverview/how-leaps-work' },
@@ -409,15 +414,15 @@ const DEFAULT_MODULES = [
     title: 'Futures Trading: The 23-Hour Advantage',
     subtitle: 'Master the unique benefits of futures — from tax advantages to around-the-clock market access.',
     sections: [
-      { title: 'Why 23-Hour Access Matters', content: 'Futures markets (including the S&P 500 Micro E-mini) are open nearly around the clock, providing 23-hour electronic trading access. This extended schedule offers two critical advantages:\n\n1. Flexible Income Generation — Daily income typically requires only 1–2 hours of active trading\n2. Reduced Overnight Risk — Because the market is almost continuously open, overnight price gaps are significantly reduced compared to stock trading', type: 'text' },
+      { title: 'Why 23-Hour Access Matters', content: 'Futures markets (including the S&P 500 Micro E-mini) are open nearly around the clock, providing 23-hour electronic trading access. This extended schedule offers two critical advantages:\n\n1. Flexible Income Generation — Daily income typically requires only 1–2 hours of active trading\n2. Reduced Overnight Risk — Because the market is almost continuously open, overnight price gaps are significantly reduced compared to stock trading', type: 'text', media: { youtubeUrl: 'https://youtu.be/1lwXaJIH1wo' } },
       { title: 'S&P 500 Micro E-mini (MES) Key Facts', type: 'stats', stats: [
         { num: '1/10', lbl: 'Size of Standard ES' },
         { num: '$2K', lbl: 'Min. Account' },
         { num: '23hr', lbl: 'Daily Access' },
         { num: '60/40', lbl: 'Tax Advantage' }
-      ]},
-      { title: 'Complete Futures Advantages', content: '• No $25,000 Day-Trading Minimum — Unlike stocks, you don\'t need $25K to day trade. Only ~$2,000 recommended.\n• High Leverage (20x–200x) — Capture large market moves with small capital.\n• 23-Hour Trading — Trade when it fits your schedule, not just market hours.\n• Reduced Gap Risk — Near-continuous trading means fewer surprise gaps.\n• 60/40 Tax Treatment — 60% of gains taxed at favorable long-term rate.\n• Low Commissions — Cost-efficient execution.\n• Daily & Weekly Income — Designed for active income generation.', type: 'text' },
-      { title: 'The 60/40 Tax Rule Explained', content: 'Under Section 1256 of the tax code, futures qualify for special treatment:\n\n60% of gains → Taxed at long-term capital gains rate (lower)\n40% of gains → Taxed at short-term capital gains rate (higher)\n\nThis applies regardless of how long you hold the position. A day trade in futures still gets 60/40 treatment. This structural advantage means futures traders keep significantly more of their profits compared to stock day traders who pay 100% short-term rates.', type: 'text' },
+      ], media: { youtubeUrl: 'https://youtu.be/VMCA7rbyf18' } },
+      { title: 'Complete Futures Advantages', content: '• No $25,000 Day-Trading Minimum — Unlike stocks, you don\'t need $25K to day trade. Only ~$2,000 recommended.\n• High Leverage (20x–200x) — Capture large market moves with small capital.\n• 23-Hour Trading — Trade when it fits your schedule, not just market hours.\n• Reduced Gap Risk — Near-continuous trading means fewer surprise gaps.\n• 60/40 Tax Treatment — 60% of gains taxed at favorable long-term rate.\n• Low Commissions — Cost-efficient execution.\n• Daily & Weekly Income — Designed for active income generation.', type: 'text', media: { youtubeUrl: 'https://youtu.be/i9-jDc2Q0tk' } },
+      { title: 'The 60/40 Tax Rule Explained', content: 'Under Section 1256 of the tax code, futures qualify for special treatment:\n\n60% of gains → Taxed at long-term capital gains rate (lower)\n40% of gains → Taxed at short-term capital gains rate (higher)\n\nThis applies regardless of how long you hold the position. A day trade in futures still gets 60/40 treatment. This structural advantage means futures traders keep significantly more of their profits compared to stock day traders who pay 100% short-term rates.', type: 'text', media: { youtubeUrl: 'https://youtu.be/VsuI0yzZhRY' } },
       { title: 'Major Futures Market Categories', type: 'table', headers: ['Category', 'Examples'], rows: [
         ['Equity Index', 'S&P 500, Nasdaq, Dow, Russell, DAX, Nikkei'],
         ['Interest Rates', '10-Year Treasury, 30-Year Bond, 2-Year Note'],
@@ -438,6 +443,52 @@ const DEFAULT_MODULES = [
       { question: 'What is the MES contract?', options: ['Full-size S&P 500 futures', '1/10th size of standard S&P 500 contract', 'A type of option', 'A mutual fund'], correct: 1, explanation: 'MES is the Micro E-mini S&P 500 futures contract, 1/10th the size of the regular ES contract.' },
       { question: 'Under the 60/40 rule, what percentage is taxed at long-term rates?', options: ['40%', '50%', '60%', '100%'], correct: 2, explanation: '60% of futures gains are taxed at the favorable long-term capital gains rate.' },
       { question: 'What minimum account is needed for daily futures trading?', options: ['$500', '$2,000', '$10,000', '$25,000'], correct: 1, explanation: 'Futures require only ~$2,000 for daily income trading, avoiding the $25,000 PDT rule.' }
+    ]
+  },
+  {
+    id: 'm8',
+    title: 'Trade Execution: The 4-Step Institutional Workflow',
+    subtitle: 'Learn the exact step-by-step process to execute trades like an institutional trader.',
+    sections: [
+      { title: 'The 4-Step Execution Workflow', content: 'Every successful institutional-style trade follows four precise steps in order. This workflow removes emotion, ensures preparation, and maximizes your edge on every single trade. Skipping any step introduces unnecessary risk and reduces your probability of success.\n\nThe four steps are: (1) Identify the setup using price action, (2) Spot institutional footprints in supply/demand zones, (3) Anticipate and plan your entry before price arrives, and (4) Execute the trade with your S.E.T. already defined.', type: 'text', media: { youtubeUrl: 'https://youtu.be/UPegmqq5Y1g' } },
+      { title: 'Price Action Over Indicators', content: 'Most retail traders rely heavily on lagging indicators (MACD, RSI, moving averages) that tell you what already happened. Institutional traders focus on price action — the raw movement of price itself — because it reveals what is happening right now.\n\nPrice action shows you supply and demand imbalances in real time. Indicators confirm what price already told you. By the time an indicator signals, the institutional move has already started. Learn to read the chart, not the indicator.', type: 'text', media: { youtubeUrl: 'https://youtu.be/iDVoPa86oy8' } },
+      { title: 'Confirming Trend Direction with Supply & Demand', content: 'Before executing any trade, confirm the dominant trend direction using supply and demand zone analysis. In an uptrend, demand zones hold and price makes higher highs. In a downtrend, supply zones hold and price makes lower lows.\n\nNever trade against the dominant trend unless you have extreme confluence from multiple pillars. Trading with the trend puts institutional momentum on your side.', type: 'text', media: { youtubeUrl: 'https://youtu.be/g0M94VwsNV0' } },
+      { title: 'Step 1: Identify the Setup', content: 'Scan the chart for clear supply and demand zones created by previous institutional activity. Look for areas where price moved sharply away, leaving unfilled orders behind. The strongest setups occur at fresh zones that have not been revisited yet.\n\nUse multiple timeframes: the higher timeframe (daily/weekly) establishes the trend direction, while the lower timeframe (1-hour/15-min) provides the precise entry point.', type: 'text', media: { youtubeUrl: 'https://youtu.be/e2BEjqQcYVU' } },
+      { title: 'Step 2: Spot the Institutional Footprints', content: 'Once you identify a potential zone, look for confirmation of institutional presence. Key footprints include: large-volume candles that created the zone, rapid price departure (shows urgency), and minimal time spent in the zone (institutions filled quickly).\n\nThe stronger these footprints, the higher the probability that price will react when it returns to the zone.', type: 'text', media: { youtubeUrl: 'https://youtu.be/ZQ8CoLFkryY' } },
+      { title: 'Step 3: Anticipate — Plan Before Price Arrives', content: 'Set your S.E.T. (Stop, Entry, Target) before price reaches your zone. This is critical — if you wait until price arrives, emotions will cloud your judgment.\n\nYour entry should be at the edge of the demand/supply zone. Your stop should be just beyond the zone (risking no more than 1%). Your target should be at least 3x your risk (the next opposing zone).', type: 'text', media: { youtubeUrl: 'https://youtu.be/i1Cq6UXdBIE' } },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'TrendSpider: Price Action Trading Guide', desc: 'Comprehensive guide to reading price action without indicators.', url: 'https://trendspider.com/learning-center/what-is-price-action-trading/' },
+        { icon: 'learn', title: 'CME Group: Order Flow and Market Microstructure', desc: 'Understanding how institutional orders create market movement.', url: 'https://www.cmegroup.com/education/courses/introduction-to-futures/understanding-order-types.html' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What is the first step in the 4-Step Execution Workflow?', options: ['Execute the trade', 'Set your stop loss', 'Identify the setup using price action', 'Check the news'], correct: 2, explanation: 'Step 1 is to identify the setup by scanning for clear supply and demand zones.' },
+      { question: 'Why do institutional traders prefer price action over indicators?', options: ['Indicators are too expensive', 'Price action shows real-time supply/demand', 'Indicators are illegal for institutions', 'Price action requires no chart'], correct: 1, explanation: 'Price action reveals supply and demand imbalances in real time, while indicators lag behind.' },
+      { question: 'When should you define your S.E.T. for a trade?', options: ['After the trade is open', 'While price is in the zone', 'Before price arrives at your zone', 'Only after a loss'], correct: 2, explanation: 'You must set your S.E.T. before price reaches your zone to avoid emotional decision-making.' },
+      { question: 'What confirms institutional presence in a supply/demand zone?', options: ['Social media hype', 'Large-volume candles and rapid price departure', 'Low volume consolidation', 'Moving average crossover'], correct: 1, explanation: 'Institutional footprints include large-volume candles, rapid departure, and minimal time in the zone.' }
+    ]
+  },
+  {
+    id: 'm9',
+    title: 'Volume Analysis: Reading Institutional Activity',
+    subtitle: 'Master volume analysis to confirm institutional conviction and avoid false breakouts.',
+    sections: [
+      { title: 'What Volume Bars Are', content: 'Volume bars show the total number of shares or contracts traded during a specific time period. Each bar corresponds to a price bar on your chart. Volume is the fuel behind price movement — without volume, price moves lack conviction and are more likely to reverse.\n\nThink of volume as a lie detector for price: if price moves but volume does not confirm, the move is suspicious.', type: 'text', media: { youtubeUrl: 'https://youtu.be/3RMx1zD7kmo' } },
+      { title: 'Normal Volume vs. Institutional Surges', content: 'Normal volume represents typical daily trading activity — mostly retail traders and algorithms maintaining liquidity. Institutional surges are dramatic spikes in volume (often 2x-5x normal) that signal big money entering or exiting positions.\n\nWhen you see a volume surge at a supply or demand zone, it confirms institutional participation. This is one of the strongest confirmation signals in the Master Surge Strategy.', type: 'text', media: { youtubeUrl: 'https://youtu.be/_szBnRAAmtY' } },
+      { title: 'Volume Divergence Warning Signs', content: 'Volume divergence occurs when price moves in one direction but volume does not confirm. This is a warning sign:\n\nBearish divergence: Price makes new highs but volume decreases — institutions may be distributing.\nBullish divergence: Price makes new lows but volume decreases — selling pressure is exhausting.\n\nAlways watch for divergence before entering a trade. It can save you from false breakouts.', type: 'text', media: { youtubeUrl: 'https://youtu.be/Ha67cEHHeVM' } },
+      { title: 'Practical Volume Checklist', content: 'Before every trade, run through this volume checklist:\n\n1. Is current volume above or below the 20-period average?\n2. Did the setup zone form on high volume (institutional)?\n3. Is volume increasing as price approaches your zone?\n4. Is there volume divergence warning against your trade direction?\n5. Does the volume pattern confirm or contradict the trend?\n\nIf volume does not confirm your setup, reduce position size or skip the trade entirely.', type: 'text', media: { youtubeUrl: 'https://youtu.be/XmoxstHeROA' } },
+      { title: 'Volume Surge Quick Reference', content: 'Use this quick reference to interpret volume:\n\nHigh volume + price moves up = Strong bullish signal (institutional buying)\nHigh volume + price moves down = Strong bearish signal (institutional selling)\nLow volume + price moves up = Weak rally, likely to reverse\nLow volume + price moves down = Weak decline, may find support\nVolume spike at support = Demand zone activation\nVolume spike at resistance = Supply zone activation', type: 'text', media: { youtubeUrl: 'https://youtu.be/9ONZsMCYIZY' } },
+      { title: 'Visual Resources', type: 'resources', resources: [
+        { icon: 'chart', title: 'TradingView: Volume Profile Indicator', desc: 'See where the most volume was traded at specific price levels.', url: 'https://www.tradingview.com/support/solutions/43000502040-volume-profile/' },
+        { icon: 'learn', title: 'Investopedia: Volume Analysis Guide', desc: 'Comprehensive guide to understanding and using volume in trading.', url: 'https://www.investopedia.com/terms/v/volume.asp' },
+        { icon: 'chart', title: 'CME Group: Volume and Open Interest', desc: 'Official course on interpreting volume in futures markets.', url: 'https://www.cmegroup.com/education/courses/introduction-to-futures/understanding-volume-and-open-interest.html' }
+      ]}
+    ],
+    quiz: [
+      { question: 'What do volume bars represent?', options: ['Price change per period', 'Total shares/contracts traded per period', 'Number of traders online', 'Market capitalization change'], correct: 1, explanation: 'Volume bars show the total number of shares or contracts traded during a specific time period.' },
+      { question: 'What does a volume surge at a demand zone confirm?', options: ['Retail trader activity', 'Institutional participation', 'Market manipulation', 'Random noise'], correct: 1, explanation: 'Volume surges at supply/demand zones confirm institutional participation — one of the strongest signals.' },
+      { question: 'What is bearish volume divergence?', options: ['Volume and price both rise', 'Price makes new highs but volume decreases', 'Volume spikes with no price change', 'Price drops with high volume'], correct: 1, explanation: 'Bearish divergence: price makes new highs but volume decreases, suggesting institutions may be distributing.' },
+      { question: 'If volume does not confirm your trade setup, what should you do?', options: ['Enter with full size anyway', 'Double your position', 'Reduce position size or skip the trade', 'Ignore volume completely'], correct: 2, explanation: 'If volume does not confirm your setup, reduce position size or skip the trade entirely.' }
     ]
   }
 ];
@@ -779,6 +830,34 @@ function Dashboard({ modules, completedModules, progress, onOpen }) {
 // MODULE VIEW (with AI visuals per section)
 // =============================================================================
 
+
+// =============================================================================
+// SUBSECTION VIDEO COMPONENT (per-section YouTube video embed)
+// =============================================================================
+
+function SubsectionVideo({ youtubeUrl, sectionTitle }) {
+  const getYoutubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
+  };
+  const videoId = getYoutubeId(youtubeUrl);
+  if (!youtubeUrl || !videoId) return null;
+  return (
+    <div className="subsection-video-container">
+      <div className="subsection-video-header">🎬 Video Explainer — {sectionTitle}</div>
+      <div className="subsection-video-embed">
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={`Video for ${sectionTitle}`}
+        />
+      </div>
+    </div>
+  );
+}
+
 function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCompleted, onEdit, onNext, hasNext, addToast }) {
   const moduleIndex = modules.findIndex(m => m.id === module.id);
   const mQuiz = quizState[module.id] || { current: 0, answers: {}, submitted: {} };
@@ -832,6 +911,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
             <div className="stat-grid">
               {s.stats.map((st, si) => <div key={si} className="stat-box"><div className="num">{st.num}</div><div className="lbl">{st.lbl}</div></div>)}
             </div>
+            {s.media?.youtubeUrl && <SubsectionVideo youtubeUrl={s.media.youtubeUrl} sectionTitle={s.title} />}
           </div>
         );
         if (s.type === 'table') return (
@@ -841,6 +921,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
               <thead><tr>{s.headers.map((h,hi) => <th key={hi}>{h}</th>)}</tr></thead>
               <tbody>{s.rows.map((r,ri) => <tr key={ri}>{r.map((c,ci) => <td key={ci}>{c}</td>)}</tr>)}</tbody>
             </table>
+            {s.media?.youtubeUrl && <SubsectionVideo youtubeUrl={s.media.youtubeUrl} sectionTitle={s.title} />}
           </div>
         );
         if (s.type === 'resources') return (
@@ -867,6 +948,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
               sectionTitle={s.title}
               sectionContent={s.content}
             />
+            {s.media?.youtubeUrl && <SubsectionVideo youtubeUrl={s.media.youtubeUrl} sectionTitle={s.title} />}
           </div>
         );
       })}
