@@ -267,5 +267,58 @@ module.exports = [
       { question: 'What is bearish volume divergence?', options: ['Volume and price both rise', 'Price makes new highs but volume decreases', 'Volume spikes with no price change', 'Price drops with high volume'], correct: 1, explanation: 'Bearish divergence: price makes new highs but volume decreases, suggesting institutions may be distributing.' },
       { question: 'If volume does not confirm your trade setup, what should you do?', options: ['Enter with full size anyway', 'Double your position', 'Reduce position size or skip the trade', 'Ignore volume completely'], correct: 2, explanation: 'If volume does not confirm your setup, reduce position size or skip the trade entirely.' }
     ]
+  },
+  {
+    id: 'm12',
+    title: 'Market Psychology & Historical Performance Analysis',
+    subtitle: 'Understand behavioral traps, valuation metrics, and what historical market data reveals about long-term success.',
+    sections: [
+      { title: 'Dunning-Kruger Phases & The Shiller PE Ratio CAPE', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/bIn-zj27OwA' } },
+      { title: '2022 Market Performance Stock Decline', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/eLdVrKM6JGs' } },
+      { title: 'Three Pillars of Trading Mastery', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/SrO8vC1TbIU' } },
+      { title: '2022 Market Performance Stock Decline Part 2', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/xbels7SDac4' } },
+      { title: 'Visual Resources', type: 'resources', resources: [] }
+    ],
+    quiz: []
+  },
+  {
+    id: 'm13',
+    title: 'Options Fundamentals: Calls, Puts & Why They Matter',
+    subtitle: 'Learn the core building blocks of options trading — what they are, how calls and puts work, and why traders use them.',
+    sections: [
+      { title: 'What Is an Option', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/E78vQ-2_K78' } },
+      { title: 'Call Options — The Right to Buy', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/5_rCiDpC5wM' } },
+      { title: 'Why People Use Options', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/807DBL6OFeQ' } },
+      { title: 'Put Options', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/tT7PO-nF2DQ' } },
+      { title: 'Visual Resources', type: 'resources', resources: [] }
+    ],
+    quiz: []
+  },
+  {
+    id: 'm14',
+    title: 'The Greeks: Delta, Theta, Vega & Moneyness',
+    subtitle: 'Master the option Greeks that control pricing — and understand how moneyness determines your risk and reward.',
+    sections: [
+      { title: 'Delta Δ — Direction and Speed', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/zHg7p87IDz4' } },
+      { title: 'Theta Θ — Time Decay', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/SA6sL6n6DYk' } },
+      { title: 'Vega — Volatility Sensitivity', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/7jaafzxskeQ' } },
+      { title: 'At the Money ATM vs', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/g6C2LzUb6XE' } },
+      { title: 'Visual Resources', type: 'resources', resources: [] }
+    ],
+    quiz: []
+  },
+  {
+    id: 'm15',
+    title: 'Advanced Options: Leverage, Crisis Strategy & Capital Deployment',
+    subtitle: 'Deploy advanced options strategies — from leveraged positions to crisis-based opportunity plays.',
+    sections: [
+      { title: 'Advanced Options — Leverage, Time Decay & Contingency', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/NG4LKzURUQc' } },
+      { title: 'Advanced Options v2', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/7AIf1GCVYg8' } },
+      { title: 'Never Waste a Good Crisis', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/YOTSrBcbRS8' } },
+      { title: 'Leverage Comparison $20,000 Capital', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/Ap165GgOtO4' } },
+      { title: 'Never Waste a Good Crisis v2', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/KTX4N5S0Me4' } },
+      { title: 'Visual Resources', type: 'resources', resources: [] }
+    ],
+    quiz: []
   }
 ];
