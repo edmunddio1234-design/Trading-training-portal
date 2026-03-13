@@ -634,52 +634,6 @@ const DEFAULT_MODULES = [
       { title: 'Visual Resources', type: 'resources', resources: [] }
     ],
     quiz: []
-  },
-  {
-    id: 'm12',
-    title: 'Market Psychology & Historical Performance',
-    subtitle: 'Understand cognitive biases like Dunning-Kruger, the Shiller P/E (CAPE) ratio, and how markets performed during 2022.',
-    sections: [
-      { title: '2022 Market Performance: Stock Decline vs. Recovery', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/eLdVrKM6JGs' } },
-      { title: '2022 Recovery Breakdown', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/xbels7SDac4' } },
-      { title: 'Core Trading Principles', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/SrO8vC1TbIU' } },
-      { title: 'Three Pillars of Trading Mastery', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/SrO8vC1TbIU' } },
-      { title: 'The Dunning–Kruger Effect in Trading', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/bIn-zj27OwA' } },
-      { title: 'Dunning–Kruger Phases', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/bIn-zj27OwA' } },
-      { title: 'The Shiller P/E Ratio (CAPE)', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/bIn-zj27OwA' } }
-    ],
-    quiz: []
-  },
-  {
-    id: 'm13',
-    title: 'Options Fundamentals: Calls, Puts & Why People Use Them',
-    subtitle: 'Learn what options are, why traders use them, and the mechanics of call and put options.',
-    sections: [
-      { title: 'What Is an Option?', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/E78vQ-2_K78' } },
-      { title: 'Option Contract Basics', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/E78vQ-2_K78' } },
-      { title: 'Call Options — The Right to Buy', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/5_rCiDpC5wM' } },
-      { title: 'Put Options — The Right to Sell', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/tT7PO-nF2DQ' } },
-      { title: 'Why People Use Options', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/807DBL6OFeQ' } },
-      { title: 'Simple Call Option Example', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/5_rCiDpC5wM' } },
-      { title: '100 Shares vs. 1 Call Option', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/5_rCiDpC5wM' } }
-    ],
-    quiz: []
-  },
-  {
-    id: 'm14',
-    title: 'The Options Greeks: Delta, Theta, Vega & Moneyness',
-    subtitle: 'Master the Greeks that drive options pricing — Delta, Theta, Vega — and understand ATM vs OTM vs ITM.',
-    sections: [
-      { title: 'What Are the Options Greeks?', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/SA6sL6n6DYk' } },
-      { title: 'Greeks Quick Reference', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/SA6sL6n6DYk' } },
-      { title: 'Delta (Δ) — Direction and Speed', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/zHg7p87IDz4' } },
-      { title: 'Vega — Volatility Sensitivity', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/7jaafzxskeQ' } },
-      { title: 'Volatility Comparison', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/7jaafzxskeQ' } },
-      { title: 'Theta (Θ) — Time Decay', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/SA6sL6n6DYk' } },
-      { title: 'At the Money (ATM) vs. In the Money (ITM)', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/g6C2LzUb6XE' } },
-      { title: 'Strike Price Positioning', content: '', type: 'text', media: { youtubeUrl: 'https://youtu.be/g6C2LzUb6XE' } }
-    ],
-    quiz: []
   }
 ];
 
@@ -808,19 +762,10 @@ const API = {
     return data.map(mod => {
       const def = defaultMap[mod.id];
       if (!def) return mod;
-      // Build title-based lookup from default sections for reliable matching
-      const defSecByTitle = {};
-      (def.sections || []).forEach(ds => {
-        if (ds.title && ds.media) {
-          defSecByTitle[ds.title.toLowerCase().trim()] = ds;
-        }
-      });
       return {
         ...mod,
         sections: (mod.sections || []).map((sec, i) => {
-          // Match by title first, fall back to index
-          const titleKey = sec.title ? sec.title.toLowerCase().trim() : '';
-          const defSec = defSecByTitle[titleKey] || def.sections?.[i] || null;
+          const defSec = def.sections?.[i];
           if (!defSec) return sec;
           // If backend section has no media but default does, merge it in
           if (!sec.media && defSec.media) {
