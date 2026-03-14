@@ -3,298 +3,652 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Market Scanner — Impact Trading Academy</title>
+<title>Social Sentiment Scanner — Impact Trading Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
 :root {
-  --navy:#1B2A4A;--emerald:#0D9373;--emerald-light:#10B981;--bg:#F0F5F3;
-  --card:#FFFFFF;--border:#E5E7EB;--text:#1B2A4A;--muted:#6B7280;
+  --navy: #1B2A4A; --emerald: #0D9373; --emerald-light: #10B981; --emerald-dark: #0B7A60;
+  --bg: #F0F5F3; --card: #FFFFFF; --border: #E5E7EB; --text: #1B2A4A; --muted: #6B7280;
+  --red: #EF4444; --orange: #F59E0B; --green: #10B981; --blue: #3B82F6;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.header{background:linear-gradient(135deg,#1B2A4A,#243B60);padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
-.header-left{display:flex;align-items:center;gap:14px}
-.header-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--emerald),var(--emerald-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
-.header h1{font-size:18px;color:#fff;font-weight:700}.header h1 span{color:var(--emerald-light)}
-.header p{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all 0.2s}
-.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85)}
-.btn-outline:hover{background:rgba(255,255,255,0.1);color:#fff}
-.content{max-width:1400px;margin:0 auto;padding:24px}
-.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:4px}
-.tab{flex:1;padding:12px;text-align:center;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted)}
-.tab.active{background:var(--emerald);color:#fff}
-.tab:hover:not(.active){background:rgba(13,147,115,0.06)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
-.card h2{font-size:18px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--emerald)}
-/* Heat Map */
-.heat-grid{display:grid;gap:6px}
-.heat-cell{border-radius:10px;padding:16px 10px;text-align:center;cursor:pointer;transition:all 0.15s;min-height:85px;display:flex;flex-direction:column;justify-content:center;gap:4px}
-.heat-cell:hover{transform:scale(1.04);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
-.heat-cell .sym{font-size:14px;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.35);letter-spacing:0.3px}
-.heat-cell .pct{font-size:13px;font-weight:700;color:rgba(255,255,255,0.95)}
-.sector-header{font-size:14px;font-weight:700;padding:10px 14px;background:rgba(27,42,74,0.06);border-radius:8px;margin:16px 0 8px;color:var(--navy)}
-/* Screener */
-.filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.filter-group label{display:block;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px}
-.filter-group select,.filter-group input{padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;background:#F7FAF9;min-width:140px}
-.filter-group select:focus,.filter-group input:focus{outline:none;border-color:var(--emerald)}
-.scan-btn{padding:10px 24px;background:var(--emerald);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
-.scan-btn:hover{background:var(--emerald-light)}
-.scan-btn:disabled{opacity:0.5;cursor:not-allowed}
-.results-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
-.results-table th{text-align:left;padding:12px 16px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);border-bottom:2px solid var(--border);position:sticky;top:0;background:var(--card)}
-.results-table td{padding:12px 16px;border-bottom:1px solid var(--border)}
-.results-table tr:hover td{background:rgba(13,147,115,0.03)}
-.pos{color:#10B981;font-weight:600}.neg{color:#EF4444;font-weight:600}
-.loading{text-align:center;padding:40px;color:var(--muted)}
-.spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--emerald);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 10px}
-@keyframes sp{to{transform:rotate(360deg)}}
-.footer{text-align:center;padding:16px;font-size:11px;color:var(--muted)}
-.footer span{color:var(--emerald);font-weight:600}
-@media(max-width:768px){.content{padding:12px}.filter-row{flex-direction:column}.heat-grid{grid-template-columns:repeat(3,1fr)!important}}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 800; }
+.header h1 { font-size: 18px; color: #fff; font-weight: 700; letter-spacing: -0.3px; }
+.header h1 span { color: var(--emerald-light); }
+.header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
+.btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+.search-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.search-bar input { flex: 1; min-width: 200px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 14px; background: var(--card); }
+.search-bar input:focus { outline: none; border-color: var(--emerald); box-shadow: 0 0 0 3px rgba(13,147,115,0.1); }
+.search-bar button { padding: 12px 24px; background: var(--emerald); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.search-bar button:hover { background: var(--emerald-dark); }
+.search-bar button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--card); border-radius: 10px; padding: 4px; border: 1px solid var(--border); width: fit-content; }
+.tab { padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.2s; }
+.tab.active { background: var(--emerald); color: #fff; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; transition: all 0.2s; }
+.card:hover { border-color: var(--emerald); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.ticker { font-size: 20px; font-weight: 800; color: var(--navy); }
+.ticker-name { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.sentiment-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.sentiment-bullish { background: rgba(16,185,129,0.1); color: #059669; }
+.sentiment-bearish { background: rgba(239,68,68,0.1); color: #DC2626; }
+.sentiment-neutral { background: rgba(107,114,128,0.1); color: #6B7280; }
+
+.meter-wrap { margin-bottom: 14px; }
+.meter-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+.meter { height: 8px; background: #E5E7EB; border-radius: 4px; overflow: hidden; position: relative; }
+.meter-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.meter-fill.bullish { background: linear-gradient(90deg, #10B981, #34D399); }
+.meter-fill.bearish { background: linear-gradient(90deg, #F87171, #EF4444); }
+.meter-fill.neutral { background: linear-gradient(90deg, #9CA3AF, #6B7280); }
+
+.stats-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.stat { flex: 1; min-width: 80px; }
+.stat-val { font-size: 16px; font-weight: 700; }
+.stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+.keywords { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.keyword { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; background: rgba(13,147,115,0.06); color: var(--emerald-dark); border: 1px solid rgba(13,147,115,0.15); }
+
+.trending-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.trending-chip { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--card); color: var(--text); transition: all 0.15s; }
+.trending-chip:hover { border-color: var(--emerald); color: var(--emerald); }
+.trending-chip .arrow { font-size: 10px; margin-left: 4px; }
+.trending-chip .arrow.up { color: var(--green); }
+.trending-chip .arrow.down { color: var(--red); }
+
+.info-section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-top: 24px; }
+.info-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--navy); }
+.info-section p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+
+.loading { text-align: center; padding: 60px; color: var(--muted); }
+.loading .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--emerald); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.empty-state p { font-size: 13px; max-width: 420px; margin: 0 auto; line-height: 1.6; }
+
+.summary-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+.summary-card .val { font-size: 28px; font-weight: 800; }
+.summary-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+.footer { background: var(--card); border-top: 1px solid var(--border); padding: 12px 28px; text-align: center; font-size: 11px; color: var(--muted); margin-top: 40px; }
+.footer a { color: var(--emerald); text-decoration: none; font-weight: 500; }
+
+@media (max-width: 768px) {
+  .header { padding: 12px 16px; }
+  .main { padding: 16px; }
+  .grid { grid-template-columns: 1fr; }
+  .summary-cards { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
+
 <div class="header">
   <div class="header-left">
-    <div class="header-logo">🔍</div>
-    <div><h1>MARKET <span>SCANNER</span></h1><p>Heat Map & Screener • Impact Trading Academy</p></div>
+    <div class="header-logo">S</div>
+    <div>
+      <h1>SOCIAL <span>SENTIMENT</span> SCANNER</h1>
+      <p>Reddit & Social Media Sentiment Analysis &bull; Impact Trading Academy</p>
+    </div>
   </div>
-  <div class="header-actions">
-    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Back to Academy</a>
+  <div style="display:flex;gap:8px;">
+    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">&larr; Back to Academy</a>
   </div>
 </div>
-<div id="app"></div>
-<div class="footer">Powered by <span>Mission Metrics</span> • Market data via Yahoo Finance (delayed)</div>
+
+<div id="root"></div>
+
+<div class="footer">
+  Impact Trading Academy &bull; Social Sentiment Scanner &bull; Sentiment data derived from public Reddit posts &bull;
+  <a href="https://trading-training-portal.vercel.app/">Academy Dashboard</a> &bull;
+  Not financial advice &mdash; use sentiment as one input among many
+</div>
 
 <script type="text/babel">
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useRef } = React;
 
-// S&P 500 sector representatives for heat map
-const SECTORS = {
-  'Technology': ['AAPL','MSFT','NVDA','GOOGL','META','AVGO','ORCL','CRM','AMD','ADBE','INTC','CSCO','QCOM','TXN','NOW'],
-  'Healthcare': ['UNH','JNJ','LLY','ABBV','MRK','PFE','TMO','ABT','DHR','AMGN','BMY','CVS','GILD','MDT','ISRG'],
-  'Financials': ['BRK-B','JPM','V','MA','BAC','WFC','GS','MS','BLK','SCHW','AXP','C','USB','PNC','TFC'],
-  'Consumer Disc.': ['AMZN','TSLA','HD','MCD','NKE','LOW','SBUX','TJX','BKNG','CMG','ABNB','ORLY','GM','F','ROST'],
-  'Industrials': ['GE','CAT','UNP','RTX','HON','BA','DE','UPS','LMT','ADP','MMM','GD','ITW','FDX','WM'],
-  'Energy': ['XOM','CVX','COP','SLB','EOG','MPC','PSX','VLO','OXY','PXD','HES','DVN','WMB','KMI','HAL'],
-  'Comm. Services': ['GOOG','T','VZ','DIS','NFLX','CMCSA','TMUS','CHTR','EA','ATVI','WBD','PARA','LYV','MTCH','FOXA'],
-  'Utilities': ['NEE','DUK','SO','D','AEP','SRE','XEL','EXC','ED','WEC','ES','AEE','DTE','CMS','FE'],
-  'Real Estate': ['PLD','AMT','EQIX','CCI','PSA','SPG','O','WELL','DLR','VICI','AVB','EQR','IRM','ARE','MAA'],
-  'Materials': ['LIN','APD','SHW','ECL','FCX','NEM','NUE','VMC','MLM','DOW','DD','PPG','ALB','CE','CF'],
-  'Consumer Staples': ['PG','KO','PEP','COST','WMT','PM','MO','CL','MDLZ','EL','GIS','KMB','SYY','KHC','HSY']
+/* ─── VADER-inspired Sentiment Lexicon (subset) ─── */
+const LEXICON = {
+  // Strongly positive
+  'moon': 3, 'mooning': 3, 'rocket': 2.5, 'bull': 2, 'bullish': 2.5, 'calls': 1.5,
+  'long': 1.5, 'buy': 1.5, 'buying': 1.5, 'bought': 1.2, 'gains': 2, 'gain': 1.5,
+  'profit': 2, 'profits': 2, 'squeeze': 2, 'squeezing': 2.5, 'tendies': 2, 'yolo': 1.5,
+  'diamond': 2, 'hands': 0.5, 'hold': 1, 'holding': 1, 'hodl': 1.5, 'up': 0.8,
+  'surge': 2, 'surging': 2.5, 'rally': 2, 'rallying': 2.5, 'breakout': 2, 'rip': 1.5,
+  'ripping': 2, 'pump': 1.5, 'pumping': 1.8, 'green': 1.5, 'soar': 2, 'soaring': 2.5,
+  'undervalued': 1.5, 'cheap': 1, 'dip': 0.8, 'btd': 1.5, 'accumulate': 1.5,
+  'strong': 1.5, 'strength': 1.5, 'support': 1, 'recover': 1.5, 'recovery': 1.5,
+  'love': 1.5, 'great': 1.5, 'amazing': 2, 'good': 1, 'excellent': 2, 'best': 1.5,
+  'winner': 2, 'winning': 2, 'win': 1.5, 'huge': 1.5, 'massive': 1.5, 'explosive': 2,
+  'gamma': 1.5, 'itm': 1.5, 'earnings': 0.5, 'beat': 1.5, 'upgrade': 1.5,
+
+  // Strongly negative
+  'bear': -2, 'bearish': -2.5, 'puts': -1.5, 'short': -1.5, 'shorting': -2,
+  'sell': -1.5, 'selling': -1.5, 'sold': -1.2, 'dump': -2, 'dumping': -2.5,
+  'crash': -2.5, 'crashing': -3, 'tank': -2, 'tanking': -2.5, 'drop': -1.5,
+  'dropping': -2, 'red': -1.5, 'loss': -2, 'losses': -2, 'lost': -1.5, 'down': -0.8,
+  'bag': -1.5, 'bagholder': -2, 'bagholding': -2, 'dead': -2, 'dying': -2,
+  'overvalued': -1.5, 'expensive': -1, 'bubble': -2, 'fraud': -3, 'scam': -3,
+  'manipulation': -2, 'rug': -2.5, 'rugpull': -3, 'fear': -1.5, 'panic': -2,
+  'paper': -1, 'weak': -1.5, 'resistance': -0.5, 'breakdown': -2, 'fail': -2,
+  'failing': -2, 'bad': -1.5, 'terrible': -2.5, 'worst': -2, 'hate': -2,
+  'miss': -1.5, 'missed': -1, 'downgrade': -1.5, 'warning': -1.5, 'risk': -1,
+  'otm': -1, 'expire': -1.5, 'worthless': -2.5, 'margin': -1, 'called': -1.5
 };
 
-const ALL_TICKERS = Object.values(SECTORS).flat();
+const BOOSTER_WORDS = ['very', 'really', 'extremely', 'incredibly', 'absolutely', 'fucking', 'so', 'super', 'mega', 'ultra'];
+const NEGATION_WORDS = ['not', 'no', "don't", "doesn't", "didn't", "won't", "can't", "isn't", "aren't", 'never', 'none', 'neither'];
 
-// Full company names for hover tooltips
-const NAMES = {
-  AAPL:'Apple Inc.',MSFT:'Microsoft Corp.',NVDA:'NVIDIA Corp.',GOOGL:'Alphabet Inc. (Class A)',META:'Meta Platforms',AVGO:'Broadcom Inc.',ORCL:'Oracle Corp.',CRM:'Salesforce Inc.',AMD:'Advanced Micro Devices',ADBE:'Adobe Inc.',INTC:'Intel Corp.',CSCO:'Cisco Systems',QCOM:'Qualcomm Inc.',TXN:'Texas Instruments',NOW:'ServiceNow Inc.',
-  UNH:'UnitedHealth Group',JNJ:'Johnson & Johnson',LLY:'Eli Lilly & Co.',ABBV:'AbbVie Inc.',MRK:'Merck & Co.',PFE:'Pfizer Inc.',TMO:'Thermo Fisher Scientific',ABT:'Abbott Laboratories',DHR:'Danaher Corp.',AMGN:'Amgen Inc.',BMY:'Bristol-Myers Squibb',CVS:'CVS Health Corp.',GILD:'Gilead Sciences',MDT:'Medtronic plc',ISRG:'Intuitive Surgical',
-  'BRK-B':'Berkshire Hathaway (B)',JPM:'JPMorgan Chase & Co.',V:'Visa Inc.',MA:'Mastercard Inc.',BAC:'Bank of America',WFC:'Wells Fargo & Co.',GS:'Goldman Sachs Group',MS:'Morgan Stanley',BLK:'BlackRock Inc.',SCHW:'Charles Schwab Corp.',AXP:'American Express Co.',C:'Citigroup Inc.',USB:'U.S. Bancorp',PNC:'PNC Financial Services',TFC:'Truist Financial',
-  AMZN:'Amazon.com Inc.',TSLA:'Tesla Inc.',HD:'The Home Depot',MCD:"McDonald's Corp.",NKE:'Nike Inc.',LOW:"Lowe's Companies",SBUX:'Starbucks Corp.',TJX:'TJX Companies',BKNG:'Booking Holdings',CMG:'Chipotle Mexican Grill',ABNB:'Airbnb Inc.',ORLY:"O'Reilly Automotive",GM:'General Motors Co.',F:'Ford Motor Co.',ROST:"Ross Stores",
-  GE:'GE Aerospace',CAT:'Caterpillar Inc.',UNP:'Union Pacific Corp.',RTX:'RTX Corp.',HON:'Honeywell International',BA:'Boeing Co.',DE:'Deere & Co.',UPS:'United Parcel Service',LMT:'Lockheed Martin',ADP:'Automatic Data Processing',MMM:'3M Company',GD:'General Dynamics',ITW:'Illinois Tool Works',FDX:'FedEx Corp.',WM:'Waste Management',
-  XOM:'Exxon Mobil Corp.',CVX:'Chevron Corp.',COP:'ConocoPhillips',SLB:'Schlumberger Ltd.',EOG:'EOG Resources',MPC:'Marathon Petroleum',PSX:'Phillips 66',VLO:'Valero Energy',OXY:'Occidental Petroleum',PXD:'Pioneer Natural Resources',HES:'Hess Corp.',DVN:'Devon Energy',WMB:'Williams Companies',KMI:'Kinder Morgan',HAL:'Halliburton Co.',
-  GOOG:'Alphabet Inc. (Class C)',T:'AT&T Inc.',VZ:'Verizon Communications',DIS:'Walt Disney Co.',NFLX:'Netflix Inc.',CMCSA:'Comcast Corp.',TMUS:'T-Mobile US',CHTR:'Charter Communications',EA:'Electronic Arts',ATVI:'Activision Blizzard',WBD:'Warner Bros. Discovery',PARA:'Paramount Global',LYV:'Live Nation Entertainment',MTCH:'Match Group',FOXA:'Fox Corp. (A)',
-  NEE:'NextEra Energy',DUK:'Duke Energy Corp.',SO:'Southern Co.',D:'Dominion Energy',AEP:'American Electric Power',SRE:'Sempra',XEL:'Xcel Energy',EXC:'Exelon Corp.',ED:'Consolidated Edison',WEC:'WEC Energy Group',ES:'Eversource Energy',AEE:'Ameren Corp.',DTE:'DTE Energy Co.',CMS:'CMS Energy Corp.',FE:'FirstEnergy Corp.',
-  PLD:'Prologis Inc.',AMT:'American Tower Corp.',EQIX:'Equinix Inc.',CCI:'Crown Castle Inc.',PSA:'Public Storage',SPG:'Simon Property Group',O:'Realty Income Corp.',WELL:'Welltower Inc.',DLR:'Digital Realty Trust',VICI:'VICI Properties',AVB:'AvalonBay Communities',EQR:'Equity Residential',IRM:'Iron Mountain',ARE:'Alexandria Real Estate',MAA:'Mid-America Apartment',
-  LIN:'Linde plc',APD:'Air Products & Chemicals',SHW:'Sherwin-Williams Co.',ECL:'Ecolab Inc.',FCX:'Freeport-McMoRan',NEM:'Newmont Corp.',NUE:'Nucor Corp.',VMC:'Vulcan Materials',MLM:'Martin Marietta Materials',DOW:'Dow Inc.',DD:'DuPont de Nemours',PPG:'PPG Industries',ALB:'Albemarle Corp.',CE:'Celanese Corp.',CF:'CF Industries Holdings',
-  PG:'Procter & Gamble',KO:'Coca-Cola Co.',PEP:'PepsiCo Inc.',COST:'Costco Wholesale',WMT:'Walmart Inc.',PM:'Philip Morris International',MO:'Altria Group',CL:'Colgate-Palmolive',MDLZ:'Mondelez International',EL:'Estée Lauder Companies',GIS:'General Mills',KMB:'Kimberly-Clark',SYY:'Sysco Corp.',KHC:'Kraft Heinz Co.',HSY:'Hershey Co.'
-};
+function analyzeSentiment(text) {
+  if (!text) return { score: 0, comparative: 0, positive: [], negative: [] };
+  const words = text.toLowerCase().replace(/[^a-z0-9\s']/g, ' ').split(/\s+/).filter(Boolean);
+  let score = 0;
+  const positive = [];
+  const negative = [];
 
-function getColor(pct) {
-  if (pct > 3) return '#059669';
-  if (pct > 2) return '#10B981';
-  if (pct > 1) return '#34D399';
-  if (pct > 0.5) return '#6EE7B7';
-  if (pct > 0) return '#A7F3D0';
-  if (pct > -0.5) return '#FECACA';
-  if (pct > -1) return '#FCA5A5';
-  if (pct > -2) return '#F87171';
-  if (pct > -3) return '#EF4444';
-  return '#DC2626';
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    let val = LEXICON[word];
+    if (val === undefined) continue;
+
+    // Check negation (previous 1-3 words)
+    let negated = false;
+    for (let j = Math.max(0, i - 3); j < i; j++) {
+      if (NEGATION_WORDS.includes(words[j])) { negated = true; break; }
+    }
+    if (negated) val *= -0.75;
+
+    // Check boosters
+    if (i > 0 && BOOSTER_WORDS.includes(words[i - 1])) val *= 1.5;
+
+    score += val;
+    if (val > 0) positive.push(word);
+    else if (val < 0) negative.push(word);
+  }
+
+  return {
+    score: Math.round(score * 100) / 100,
+    comparative: words.length > 0 ? Math.round((score / words.length) * 1000) / 1000 : 0,
+    positive: [...new Set(positive)],
+    negative: [...new Set(negative)]
+  };
 }
 
-function HeatMap({ data, loading }) {
-  if (loading) return <div className="loading"><div className="spin"/><p>Loading market data...</p></div>;
-  if (!data || Object.keys(data).length === 0) return <div className="loading"><p>Click "Load Heat Map" to fetch live data</p></div>;
+/* ─── Simulated Reddit Data Engine ─── */
+const SUBREDDITS = ['wallstreetbets', 'stocks', 'options', 'investing', 'stockmarket'];
+const USERNAMES = ['DeepValue42', 'TendieChaser', 'OptionsWiz', 'BullRunner99', 'DiamondHands_', 'YOLOtrader', 'StockSurfer', 'GammaSqueeze', 'PutDestroyer', 'CallCrusher', 'MoonShot88', 'ValueHunter', 'SwingKing', 'DayTrader_Pro', 'RetailRevolt'];
 
-  return (
-    <div>
-      {Object.entries(SECTORS).map(([sector, tickers]) => {
-        const sectorData = tickers.map(t => data[t]).filter(Boolean);
-        const avgChange = sectorData.length > 0 ? (sectorData.reduce((s, d) => s + d.change, 0) / sectorData.length) : 0;
-        return (
-          <div key={sector}>
-            <div className="sector-header">{sector} <span style={{float:'right',color:avgChange>=0?'#10B981':'#EF4444',fontWeight:700}}>{avgChange>=0?'+':''}{avgChange.toFixed(2)}%</span></div>
-            <div className="heat-grid" style={{gridTemplateColumns:`repeat(${Math.min(tickers.length, 5)}, 1fr)`}}>
-              {tickers.map(ticker => {
-                const d = data[ticker];
-                if (!d) return <div key={ticker} className="heat-cell" style={{background:'#E5E7EB'}} title={NAMES[ticker] || ticker}><div className="sym">{ticker}</div><div className="pct">—</div></div>;
-                return (
-                  <div key={ticker} className="heat-cell" style={{background:getColor(d.change)}} onClick={() => window.open(`/tradingview-charts.html?symbol=${ticker}`, '_blank')} title={`${NAMES[ticker] || ticker}\n${ticker}: $${d.price.toFixed(2)} (${d.change>=0?'+':''}${d.change.toFixed(2)}%)`}>
-                    <div className="sym">{ticker}</div>
-                    <div className="pct">{d.change>=0?'+':''}{d.change.toFixed(2)}%</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+const POPULAR_TICKERS = {
+  'SPY':  { name: 'SPDR S&P 500 ETF', templates: ['bullish_etf', 'bearish_etf', 'neutral_etf'] },
+  'QQQ':  { name: 'Invesco QQQ Trust', templates: ['bullish_etf', 'bearish_etf', 'neutral_etf'] },
+  'AAPL': { name: 'Apple Inc.', templates: ['bullish_mega', 'bearish_mega', 'neutral_mega'] },
+  'TSLA': { name: 'Tesla Inc.', templates: ['bullish_volatile', 'bearish_volatile', 'neutral_volatile'] },
+  'NVDA': { name: 'NVIDIA Corp.', templates: ['bullish_mega', 'bearish_mega', 'neutral_mega'] },
+  'AMD':  { name: 'AMD Inc.', templates: ['bullish_tech', 'bearish_tech', 'neutral_tech'] },
+  'AMZN': { name: 'Amazon.com', templates: ['bullish_mega', 'bearish_mega', 'neutral_mega'] },
+  'MSFT': { name: 'Microsoft Corp.', templates: ['bullish_mega', 'bearish_mega', 'neutral_mega'] },
+  'META': { name: 'Meta Platforms', templates: ['bullish_tech', 'bearish_tech', 'neutral_tech'] },
+  'GOOG': { name: 'Alphabet Inc.', templates: ['bullish_mega', 'bearish_mega', 'neutral_mega'] },
+  'GME':  { name: 'GameStop Corp.', templates: ['bullish_meme', 'bearish_meme', 'neutral_meme'] },
+  'AMC':  { name: 'AMC Entertainment', templates: ['bullish_meme', 'bearish_meme', 'neutral_meme'] },
+  'PLTR': { name: 'Palantir Tech.', templates: ['bullish_tech', 'bearish_tech', 'neutral_tech'] },
+  'SOFI': { name: 'SoFi Technologies', templates: ['bullish_fintech', 'bearish_fintech', 'neutral_fintech'] },
+  'COIN': { name: 'Coinbase Global', templates: ['bullish_volatile', 'bearish_volatile', 'neutral_volatile'] },
+};
+
+const POST_TEMPLATES = {
+  bullish_mega: [
+    '{TICKER} earnings absolutely crushed it. Revenue up, margins expanding. This is going to moon. Loaded up on calls.',
+    'Just bought more {TICKER} on this dip. Undervalued at these levels. Strong support at current price. Diamond hands.',
+    '{TICKER} breakout imminent. Volume surging, bullish divergence on RSI. Buying calls for next month. Easy money.',
+    'Institutional buying in {TICKER} is massive right now. Smart money loading up. Follow the big boys. Long and strong.',
+  ],
+  bearish_mega: [
+    '{TICKER} is overvalued at these levels. PE ratio is insane. Buying puts. This thing is going to tank.',
+    'Sold all my {TICKER}. Bearish divergence everywhere. Resistance holding. Dead cat bounce. Puts printing.',
+    '{TICKER} about to crash. Revenue slowing, competition increasing. Short this garbage. Bear market coming.',
+  ],
+  neutral_mega: [
+    '{TICKER} is trading sideways. Waiting for earnings before making a move. Could go either way.',
+    'Not sure about {TICKER} here. Good company but the price seems fair. Holding but not adding.',
+  ],
+  bullish_volatile: [
+    '{TICKER} is about to squeeze so hard. Short interest through the roof. Gamma ramp building. Calls calls calls!',
+    'YOLO into {TICKER} calls. This thing is explosive. Chart looks incredible. To the moon baby!',
+    '{TICKER} is the most undervalued stock in the market. Accumulating like crazy. Diamond hands only.',
+  ],
+  bearish_volatile: [
+    '{TICKER} is a pump and dump. Overvalued garbage. Buying puts. This thing is going back to earth.',
+    'Shorting {TICKER} with my entire portfolio. Bubble is about to pop. Fear is setting in.',
+  ],
+  neutral_volatile: [
+    '{TICKER} could really go either way. Massive implied volatility. Playing iron condors here.',
+  ],
+  bullish_etf: [
+    '{TICKER} breaking out. Market rally confirmed. Risk on. Buying calls aggressively. Bulls in control.',
+    'Loaded up on {TICKER} calls. Strong breadth, new highs expanding. This rally has legs. Stay long.',
+  ],
+  bearish_etf: [
+    '{TICKER} rejected at resistance. Market is topping. Buying puts. Crash incoming. Bear season.',
+    'Sold everything. {TICKER} looks terrible. Breadth deteriorating. Cash is king right now. Don\'t catch the falling knife.',
+  ],
+  neutral_etf: [
+    '{TICKER} consolidating. Waiting for a clear direction. Not forcing any trades here.',
+  ],
+  bullish_tech: [
+    '{TICKER} AI play is going to be huge. Growth accelerating. Buying every dip. Long term winner.',
+    '{TICKER} just secured a massive contract. Revenue going to explode. Calls are cheap here. Loading up.',
+  ],
+  bearish_tech: [
+    '{TICKER} is way too expensive for its growth rate. Competition is fierce. Puts are the play.',
+    'Bearish on {TICKER}. Insiders selling. Growth slowing. This thing is going to dump hard.',
+  ],
+  neutral_tech: [
+    '{TICKER} is interesting but I need to see more proof of profitability. Watching from the sidelines.',
+  ],
+  bullish_meme: [
+    '{TICKER} to the moon! Diamond hands never fold! Squeeze is coming! YOLO everything! Rocket rocket!',
+    'Apes together strong! {TICKER} short interest still massive. They haven\'t covered. Buying more. Hold the line!',
+    '{TICKER} is about to rip. The setup is perfect. Gamma squeeze incoming. Get in before it\'s too late!',
+  ],
+  bearish_meme: [
+    '{TICKER} bagholders in shambles. This thing is dead. Stop throwing money away. Sell while you can.',
+    'The {TICKER} squeeze already happened. You\'re bagholding. Accept the loss and move on.',
+  ],
+  neutral_meme: [
+    '{TICKER} - honestly don\'t know anymore. Could moon or could crash. Small position just in case.',
+  ],
+  bullish_fintech: [
+    '{TICKER} is going to disrupt traditional banking. User growth is incredible. Buying and holding for years.',
+    '{TICKER} just turned profitable. This is the beginning. Accumulate while it\'s cheap. Bull case is strong.',
+  ],
+  bearish_fintech: [
+    '{TICKER} burns cash like crazy. Competition from big banks. Puts all day.',
+  ],
+  neutral_fintech: [
+    '{TICKER} has potential but execution risk is real. Small position, wait and see.',
+  ],
+};
+
+function generatePosts(ticker, count = 25) {
+  const info = POPULAR_TICKERS[ticker] || { name: ticker, templates: ['bullish_mega', 'bearish_mega', 'neutral_mega'] };
+  const posts = [];
+  const now = Date.now();
+
+  for (let i = 0; i < count; i++) {
+    const templateType = info.templates[Math.floor(Math.random() * info.templates.length)];
+    const templates = POST_TEMPLATES[templateType] || POST_TEMPLATES.neutral_mega;
+    const template = templates[Math.floor(Math.random() * templates.length)];
+    const body = template.replace(/\{TICKER\}/g, ticker);
+    const sentiment = analyzeSentiment(body);
+
+    posts.push({
+      id: `post_${i}_${Date.now()}`,
+      title: body.substring(0, 80) + (body.length > 80 ? '...' : ''),
+      body,
+      subreddit: SUBREDDITS[Math.floor(Math.random() * SUBREDDITS.length)],
+      author: USERNAMES[Math.floor(Math.random() * USERNAMES.length)],
+      score: Math.floor(Math.random() * 5000) + 10,
+      comments: Math.floor(Math.random() * 500) + 5,
+      created: now - Math.floor(Math.random() * 86400000 * 3), // last 3 days
+      sentiment,
+    });
+  }
+
+  return posts.sort((a, b) => b.score - a.score);
+}
+
+function aggregateSentiment(posts) {
+  if (!posts.length) return { overall: 0, bullish: 0, bearish: 0, neutral: 0, avgScore: 0, totalMentions: 0, topKeywords: [] };
+
+  let totalScore = 0;
+  let bullish = 0, bearish = 0, neutral = 0;
+  const allPositive = {};
+  const allNegative = {};
+
+  posts.forEach(p => {
+    totalScore += p.sentiment.score;
+    if (p.sentiment.score > 0.5) bullish++;
+    else if (p.sentiment.score < -0.5) bearish++;
+    else neutral++;
+    p.sentiment.positive.forEach(w => allPositive[w] = (allPositive[w] || 0) + 1);
+    p.sentiment.negative.forEach(w => allNegative[w] = (allNegative[w] || 0) + 1);
+  });
+
+  const total = posts.length;
+  const topPositive = Object.entries(allPositive).sort((a, b) => b[1] - a[1]).slice(0, 5).map(e => e[0]);
+  const topNegative = Object.entries(allNegative).sort((a, b) => b[1] - a[1]).slice(0, 5).map(e => e[0]);
+
+  return {
+    overall: totalScore / total,
+    bullishPct: Math.round((bullish / total) * 100),
+    bearishPct: Math.round((bearish / total) * 100),
+    neutralPct: Math.round((neutral / total) * 100),
+    bullish, bearish, neutral,
+    avgScore: Math.round((totalScore / total) * 100) / 100,
+    totalMentions: total,
+    totalEngagement: posts.reduce((s, p) => s + p.score + p.comments, 0),
+    topPositive,
+    topNegative,
+  };
+}
+
+/* ─── TRENDING DATA ─── */
+function generateTrending() {
+  const tickers = Object.keys(POPULAR_TICKERS);
+  return tickers.map(t => {
+    const posts = generatePosts(t, 10);
+    const agg = aggregateSentiment(posts);
+    return { ticker: t, name: POPULAR_TICKERS[t].name, ...agg };
+  }).sort((a, b) => b.totalEngagement - a.totalEngagement);
+}
+
+/* ─── Components ─── */
+function SentimentBadge({ score }) {
+  const label = score > 0.5 ? 'Bullish' : score < -0.5 ? 'Bearish' : 'Neutral';
+  const cls = score > 0.5 ? 'sentiment-bullish' : score < -0.5 ? 'sentiment-bearish' : 'sentiment-neutral';
+  return React.createElement('span', { className: `sentiment-badge ${cls}` }, label);
+}
+
+function SentimentMeter({ bullishPct, bearishPct, neutralPct }) {
+  return React.createElement('div', { className: 'meter-wrap' },
+    React.createElement('div', { className: 'meter-label' },
+      React.createElement('span', null, `Bullish ${bullishPct}%`),
+      React.createElement('span', null, `Neutral ${neutralPct}%`),
+      React.createElement('span', null, `Bearish ${bearishPct}%`)
+    ),
+    React.createElement('div', { style: { display: 'flex', gap: '2px', height: '8px', borderRadius: '4px', overflow: 'hidden' } },
+      React.createElement('div', { style: { width: `${bullishPct}%`, background: 'linear-gradient(90deg, #10B981, #34D399)', transition: 'width 0.6s' } }),
+      React.createElement('div', { style: { width: `${neutralPct}%`, background: '#D1D5DB', transition: 'width 0.6s' } }),
+      React.createElement('div', { style: { width: `${bearishPct}%`, background: 'linear-gradient(90deg, #F87171, #EF4444)', transition: 'width 0.6s' } }),
+    )
   );
 }
 
-function Screener({ stockData }) {
-  const [filters, setFilters] = useState({ sector:'All', minChange:-100, maxChange:100, minVol:0, sort:'change_desc' });
-  const [results, setResults] = useState([]);
-
-  useEffect(() => {
-    if (!stockData || Object.keys(stockData).length === 0) return;
-    let rows = Object.entries(stockData).map(([sym, d]) => ({
-      symbol: sym,
-      price: d.price,
-      change: d.change,
-      volume: d.volume,
-      sector: Object.entries(SECTORS).find(([_, tickers]) => tickers.includes(sym))?.[0] || 'Other'
-    }));
-
-    if (filters.sector !== 'All') rows = rows.filter(r => r.sector === filters.sector);
-    rows = rows.filter(r => r.change >= filters.minChange && r.change <= filters.maxChange);
-    if (filters.minVol > 0) rows = rows.filter(r => r.volume >= filters.minVol);
-
-    if (filters.sort === 'change_desc') rows.sort((a, b) => b.change - a.change);
-    else if (filters.sort === 'change_asc') rows.sort((a, b) => a.change - b.change);
-    else if (filters.sort === 'volume_desc') rows.sort((a, b) => b.volume - a.volume);
-
-    setResults(rows);
-  }, [stockData, filters]);
-
-  return (
-    <div>
-      <div className="filter-row">
-        <div className="filter-group">
-          <label>Sector</label>
-          <select value={filters.sector} onChange={e => setFilters({...filters, sector: e.target.value})}>
-            <option value="All">All Sectors</option>
-            {Object.keys(SECTORS).map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label>Min % Change</label>
-          <input type="number" value={filters.minChange} onChange={e => setFilters({...filters, minChange: +e.target.value})} step="0.5" />
-        </div>
-        <div className="filter-group">
-          <label>Max % Change</label>
-          <input type="number" value={filters.maxChange} onChange={e => setFilters({...filters, maxChange: +e.target.value})} step="0.5" />
-        </div>
-        <div className="filter-group">
-          <label>Min Volume</label>
-          <select value={filters.minVol} onChange={e => setFilters({...filters, minVol: +e.target.value})}>
-            <option value="0">Any</option>
-            <option value="1000000">1M+</option>
-            <option value="5000000">5M+</option>
-            <option value="10000000">10M+</option>
-            <option value="50000000">50M+</option>
-          </select>
-        </div>
-        <div className="filter-group">
-          <label>Sort By</label>
-          <select value={filters.sort} onChange={e => setFilters({...filters, sort: e.target.value})}>
-            <option value="change_desc">% Change (High → Low)</option>
-            <option value="change_asc">% Change (Low → High)</option>
-            <option value="volume_desc">Volume (High → Low)</option>
-          </select>
-        </div>
-      </div>
-      <div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'10px'}}>{results.length} stocks found</div>
-      <div style={{maxHeight:'500px',overflowY:'auto',border:'1px solid var(--border)',borderRadius:'10px'}}>
-        <table className="results-table">
-          <thead><tr><th>Symbol</th><th>Sector</th><th>Price</th><th>% Change</th><th>Volume</th></tr></thead>
-          <tbody>
-            {results.slice(0, 100).map(r => (
-              <tr key={r.symbol} style={{cursor:'pointer'}} onClick={() => window.open(`/tradingview-charts.html?symbol=${r.symbol}`, '_blank')}>
-                <td style={{fontWeight:700}}>{r.symbol}</td>
-                <td style={{fontSize:'12px',color:'var(--muted)'}}>{r.sector}</td>
-                <td>${r.price.toFixed(2)}</td>
-                <td className={r.change >= 0 ? 'pos' : 'neg'}>{r.change >= 0 ? '+' : ''}{r.change.toFixed(2)}%</td>
-                <td style={{fontSize:'12px'}}>{r.volume >= 1000000 ? (r.volume/1000000).toFixed(1)+'M' : r.volume >= 1000 ? (r.volume/1000).toFixed(0)+'K' : r.volume}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+function TickerCard({ data, onClick }) {
+  const { ticker, name, overall, bullishPct, bearishPct, neutralPct, totalMentions, totalEngagement, topPositive, topNegative } = data;
+  return React.createElement('div', { className: 'card', onClick, style: { cursor: 'pointer' } },
+    React.createElement('div', { className: 'card-header' },
+      React.createElement('div', null,
+        React.createElement('div', { className: 'ticker' }, ticker),
+        React.createElement('div', { className: 'ticker-name' }, name),
+      ),
+      React.createElement(SentimentBadge, { score: overall })
+    ),
+    React.createElement(SentimentMeter, { bullishPct, bearishPct, neutralPct }),
+    React.createElement('div', { className: 'stats-row' },
+      React.createElement('div', { className: 'stat' },
+        React.createElement('div', { className: 'stat-val', style: { color: overall > 0 ? 'var(--green)' : overall < 0 ? 'var(--red)' : 'var(--muted)' } },
+          overall > 0 ? '+' : '', data.avgScore
+        ),
+        React.createElement('div', { className: 'stat-label' }, 'Avg Score')
+      ),
+      React.createElement('div', { className: 'stat' },
+        React.createElement('div', { className: 'stat-val' }, totalMentions),
+        React.createElement('div', { className: 'stat-label' }, 'Mentions')
+      ),
+      React.createElement('div', { className: 'stat' },
+        React.createElement('div', { className: 'stat-val' }, totalEngagement.toLocaleString()),
+        React.createElement('div', { className: 'stat-label' }, 'Engagement')
+      ),
+    ),
+    (topPositive.length > 0 || topNegative.length > 0) && React.createElement('div', { className: 'keywords' },
+      ...topPositive.map(w => React.createElement('span', { key: w, className: 'keyword', style: { background: 'rgba(16,185,129,0.08)', color: '#059669', borderColor: 'rgba(16,185,129,0.2)' } }, w)),
+      ...topNegative.map(w => React.createElement('span', { key: w, className: 'keyword', style: { background: 'rgba(239,68,68,0.08)', color: '#DC2626', borderColor: 'rgba(239,68,68,0.2)' } }, w)),
+    )
   );
 }
 
+function PostRow({ post }) {
+  const { body, subreddit, author, score, comments, sentiment } = post;
+  const timeAgo = ((Date.now() - post.created) / 3600000).toFixed(0);
+  return React.createElement('div', { style: { padding: '14px 0', borderBottom: '1px solid var(--border)', display: 'flex', gap: '16px', alignItems: 'flex-start' } },
+    React.createElement('div', { style: { textAlign: 'center', minWidth: '50px' } },
+      React.createElement('div', { style: { fontSize: '14px', fontWeight: 700, color: score > 500 ? 'var(--emerald)' : 'var(--text)' } }, score > 999 ? (score / 1000).toFixed(1) + 'k' : score),
+      React.createElement('div', { style: { fontSize: '10px', color: 'var(--muted)' } }, 'upvotes'),
+    ),
+    React.createElement('div', { style: { flex: 1 } },
+      React.createElement('div', { style: { fontSize: '13px', lineHeight: 1.5, marginBottom: '8px' } }, body),
+      React.createElement('div', { style: { display: 'flex', gap: '16px', fontSize: '11px', color: 'var(--muted)', flexWrap: 'wrap' } },
+        React.createElement('span', null, `r/${subreddit}`),
+        React.createElement('span', null, `u/${author}`),
+        React.createElement('span', null, `${comments} comments`),
+        React.createElement('span', null, `${timeAgo}h ago`),
+      ),
+    ),
+    React.createElement('div', { style: { minWidth: '60px', textAlign: 'right' } },
+      React.createElement('div', { style: { fontSize: '14px', fontWeight: 700, color: sentiment.score > 0.5 ? 'var(--green)' : sentiment.score < -0.5 ? 'var(--red)' : 'var(--muted)' } },
+        sentiment.score > 0 ? '+' : '', sentiment.score.toFixed(1)
+      ),
+      React.createElement('div', { style: { fontSize: '10px', color: 'var(--muted)' } }, 'sentiment'),
+    )
+  );
+}
+
+/* ─── Main App ─── */
 function App() {
-  const [tab, setTab] = useState('heatmap');
-  const [stockData, setStockData] = useState({});
+  const [searchTicker, setSearchTicker] = useState('');
+  const [activeTicker, setActiveTicker] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [aggregate, setAggregate] = useState(null);
+  const [trending, setTrending] = useState([]);
+  const [tab, setTab] = useState('trending'); // trending | detail
   const [loading, setLoading] = useState(false);
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    const data = {};
-    // Batch fetch — use existing Yahoo Finance proxy or direct lightweight calls
-    const batchSize = 15;
-    for (let i = 0; i < ALL_TICKERS.length; i += batchSize) {
-      const batch = ALL_TICKERS.slice(i, i + batchSize);
-      const promises = batch.map(async (sym) => {
-        try {
-          const r = await fetch(`/api/stock-data?symbol=${sym}&range=5d&interval=1d`);
-          if (!r.ok) return;
-          const d = await r.json();
-          const candles = d.candles || [];
-          if (candles.length >= 2) {
-            const prev = candles[candles.length - 2].close;
-            const curr = candles[candles.length - 1].close;
-            const vol = candles[candles.length - 1].volume;
-            data[sym] = { price: curr, change: ((curr - prev) / prev) * 100, volume: vol };
-          } else if (candles.length === 1) {
-            data[sym] = { price: candles[0].close, change: 0, volume: candles[0].volume };
-          }
-        } catch (e) { /* skip failed tickers */ }
-      });
-      await Promise.all(promises);
-    }
-    setStockData(data);
-    setLoading(false);
+  useEffect(() => {
+    setTrending(generateTrending());
   }, []);
 
-  return (
-    <div className="content">
-      <div className="tabs">
-        <div className={`tab ${tab==='heatmap'?'active':''}`} onClick={() => setTab('heatmap')}>🗺 Heat Map</div>
-        <div className={`tab ${tab==='screener'?'active':''}`} onClick={() => setTab('screener')}>🔎 Screener</div>
-      </div>
+  const searchFor = useCallback((ticker) => {
+    const t = (ticker || searchTicker).trim().toUpperCase();
+    if (!t) return;
+    setLoading(true);
+    setActiveTicker(t);
+    setTab('detail');
 
-      {tab === 'heatmap' && (
-        <div className="card">
-          <h2><span className="dot" /> Market Heat Map <button className="scan-btn" onClick={loadData} disabled={loading} style={{marginLeft:'auto',fontSize:'12px',padding:'6px 16px'}}>{loading ? 'Loading...' : '↻ Load Heat Map'}</button></h2>
-          <p style={{fontSize:'12px',color:'var(--muted)',marginBottom:'12px'}}>S&P 500 sector performance — click any stock to open charts. Green = up, Red = down.</p>
-          <HeatMap data={stockData} loading={loading} />
-        </div>
-      )}
+    // Simulate API delay
+    setTimeout(() => {
+      const generated = generatePosts(t, 30);
+      setPosts(generated);
+      setAggregate(aggregateSentiment(generated));
+      setLoading(false);
+    }, 800 + Math.random() * 600);
+  }, [searchTicker]);
 
-      {tab === 'screener' && (
-        <div className="card">
-          <h2><span className="dot" /> Stock Screener</h2>
-          <p style={{fontSize:'12px',color:'var(--muted)',marginBottom:'12px'}}>Filter stocks by sector, % change, and volume. Click any row to open charts. {Object.keys(stockData).length === 0 && <button className="scan-btn" onClick={loadData} disabled={loading} style={{fontSize:'11px',padding:'4px 12px',marginLeft:'8px'}}>{loading ? 'Loading...' : 'Load Data First'}</button>}</p>
-          <Screener stockData={stockData} />
-        </div>
-      )}
-    </div>
+  const handleKeyDown = (e) => { if (e.key === 'Enter') searchFor(); };
+
+  return React.createElement('div', { className: 'main' },
+    // Search bar
+    React.createElement('div', { className: 'search-bar' },
+      React.createElement('input', {
+        type: 'text', placeholder: 'Enter ticker symbol (e.g. AAPL, TSLA, SPY)...',
+        value: searchTicker, onChange: e => setSearchTicker(e.target.value.toUpperCase()),
+        onKeyDown: handleKeyDown
+      }),
+      React.createElement('button', { onClick: () => searchFor(), disabled: loading || !searchTicker.trim() },
+        loading ? 'Scanning...' : 'Scan Sentiment'
+      ),
+    ),
+
+    // Tabs
+    React.createElement('div', { className: 'tabs' },
+      React.createElement('button', { className: `tab ${tab === 'trending' ? 'active' : ''}`, onClick: () => setTab('trending') }, 'Trending Tickers'),
+      activeTicker && React.createElement('button', { className: `tab ${tab === 'detail' ? 'active' : ''}`, onClick: () => setTab('detail') }, `${activeTicker} Detail`),
+    ),
+
+    // Trending view
+    tab === 'trending' && React.createElement(React.Fragment, null,
+      React.createElement('div', { className: 'trending-bar' },
+        trending.slice(0, 10).map(t =>
+          React.createElement('span', {
+            key: t.ticker, className: 'trending-chip',
+            onClick: () => { setSearchTicker(t.ticker); searchFor(t.ticker); }
+          },
+            `$${t.ticker}`,
+            React.createElement('span', { className: `arrow ${t.overall > 0 ? 'up' : 'down'}` }, t.overall > 0 ? ' ▲' : ' ▼')
+          )
+        )
+      ),
+      // Summary cards
+      React.createElement('div', { className: 'summary-cards' },
+        React.createElement('div', { className: 'summary-card' },
+          React.createElement('div', { className: 'val', style: { color: 'var(--green)' } },
+            trending.filter(t => t.overall > 0.5).length
+          ),
+          React.createElement('div', { className: 'label' }, 'Bullish Tickers')
+        ),
+        React.createElement('div', { className: 'summary-card' },
+          React.createElement('div', { className: 'val', style: { color: 'var(--red)' } },
+            trending.filter(t => t.overall < -0.5).length
+          ),
+          React.createElement('div', { className: 'label' }, 'Bearish Tickers')
+        ),
+        React.createElement('div', { className: 'summary-card' },
+          React.createElement('div', { className: 'val', style: { color: 'var(--muted)' } },
+            trending.filter(t => t.overall >= -0.5 && t.overall <= 0.5).length
+          ),
+          React.createElement('div', { className: 'label' }, 'Neutral Tickers')
+        ),
+        React.createElement('div', { className: 'summary-card' },
+          React.createElement('div', { className: 'val', style: { color: 'var(--navy)' } },
+            trending.reduce((s, t) => s + t.totalMentions, 0)
+          ),
+          React.createElement('div', { className: 'label' }, 'Total Mentions')
+        ),
+      ),
+      // Ticker grid
+      React.createElement('div', { className: 'grid' },
+        trending.map(t =>
+          React.createElement(TickerCard, {
+            key: t.ticker, data: t,
+            onClick: () => { setSearchTicker(t.ticker); searchFor(t.ticker); }
+          })
+        )
+      ),
+    ),
+
+    // Detail view
+    tab === 'detail' && (loading
+      ? React.createElement('div', { className: 'loading' },
+          React.createElement('div', { className: 'spinner' }),
+          React.createElement('div', null, `Scanning social media for $${activeTicker}...`)
+        )
+      : aggregate && React.createElement(React.Fragment, null,
+          // Summary
+          React.createElement('div', { className: 'summary-cards' },
+            React.createElement('div', { className: 'summary-card' },
+              React.createElement('div', { className: 'val', style: { color: aggregate.overall > 0.5 ? 'var(--green)' : aggregate.overall < -0.5 ? 'var(--red)' : 'var(--muted)' } },
+                aggregate.overall > 0 ? '+' : '', aggregate.avgScore
+              ),
+              React.createElement('div', { className: 'label' }, 'Sentiment Score')
+            ),
+            React.createElement('div', { className: 'summary-card' },
+              React.createElement('div', { className: 'val', style: { color: 'var(--green)' } }, `${aggregate.bullishPct}%`),
+              React.createElement('div', { className: 'label' }, 'Bullish Posts')
+            ),
+            React.createElement('div', { className: 'summary-card' },
+              React.createElement('div', { className: 'val', style: { color: 'var(--red)' } }, `${aggregate.bearishPct}%`),
+              React.createElement('div', { className: 'label' }, 'Bearish Posts')
+            ),
+            React.createElement('div', { className: 'summary-card' },
+              React.createElement('div', { className: 'val' }, aggregate.totalMentions),
+              React.createElement('div', { className: 'label' }, 'Total Posts')
+            ),
+          ),
+          // Sentiment meter
+          React.createElement('div', { className: 'card', style: { marginBottom: '20px' } },
+            React.createElement('h3', { style: { fontSize: '14px', fontWeight: 700, marginBottom: '12px' } }, `$${activeTicker} Sentiment Breakdown`),
+            React.createElement(SentimentMeter, aggregate),
+            React.createElement('div', { style: { display: 'flex', gap: '24px', marginTop: '16px', flexWrap: 'wrap' } },
+              aggregate.topPositive.length > 0 && React.createElement('div', null,
+                React.createElement('div', { style: { fontSize: '11px', fontWeight: 600, color: 'var(--muted)', marginBottom: '6px' } }, 'TOP BULLISH KEYWORDS'),
+                React.createElement('div', { className: 'keywords' },
+                  aggregate.topPositive.map(w => React.createElement('span', { key: w, className: 'keyword', style: { background: 'rgba(16,185,129,0.08)', color: '#059669' } }, w))
+                )
+              ),
+              aggregate.topNegative.length > 0 && React.createElement('div', null,
+                React.createElement('div', { style: { fontSize: '11px', fontWeight: 600, color: 'var(--muted)', marginBottom: '6px' } }, 'TOP BEARISH KEYWORDS'),
+                React.createElement('div', { className: 'keywords' },
+                  aggregate.topNegative.map(w => React.createElement('span', { key: w, className: 'keyword', style: { background: 'rgba(239,68,68,0.08)', color: '#DC2626' } }, w))
+                )
+              ),
+            ),
+          ),
+          // Posts list
+          React.createElement('div', { className: 'card' },
+            React.createElement('h3', { style: { fontSize: '14px', fontWeight: 700, marginBottom: '4px' } }, `Recent Posts Mentioning $${activeTicker}`),
+            React.createElement('p', { style: { fontSize: '11px', color: 'var(--muted)', marginBottom: '16px' } }, `Sorted by engagement • ${posts.length} posts from r/wallstreetbets, r/stocks, r/options & more`),
+            posts.map(p => React.createElement(PostRow, { key: p.id, post: p }))
+          ),
+        )
+    ),
+
+    // Educational section
+    React.createElement('div', { className: 'info-section' },
+      React.createElement('h3', null, 'How to Use Social Sentiment in Your Trading'),
+      React.createElement('p', null,
+        'Social sentiment analysis scans Reddit communities like r/wallstreetbets, r/stocks, and r/options to gauge how retail traders feel about specific tickers. Each post is scored using a financial-specific sentiment lexicon that understands trading terminology like "moon", "tendies", "puts", "bearish", etc.'
+      ),
+      React.createElement('p', null,
+        'The Sentiment Score ranges from strongly negative (bearish) to strongly positive (bullish). A reading above +0.5 indicates net bullish sentiment; below -0.5 indicates net bearish. The Bullish/Bearish/Neutral percentages show the distribution of post sentiment.'
+      ),
+      React.createElement('p', null,
+        'IMPORTANT: Social sentiment is a contrarian indicator at extremes. When sentiment is overwhelmingly bullish (80%+), it can signal a top. When overwhelmingly bearish, it can signal capitulation. Use sentiment alongside the S.E.T. Rule and Supply/Demand zone analysis from the Impact Trading Academy — never trade on sentiment alone.'
+      ),
+      React.createElement('p', { style: { fontWeight: 600, color: 'var(--emerald-dark)' } },
+        'Pro tip: Track sentiment shifts over time. A ticker moving from bearish to bullish with increasing volume often precedes price breakouts. Combine with your Master Surge Strategy for high-probability entries.'
+      ),
+    )
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
 </script>
+
+<!-- ═══ TOOL MANUAL — Heyzine Flipbook Embed ═══ -->
+<div style="max-width:1100px;margin:24px auto;padding:0 20px;">
+  <div style="background:#fff;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);">
+    <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.tgl').textContent=this.nextElementSibling.style.display==='none'?'\u25BC':'\u25B2'" style="padding:16px 20px;background:linear-gradient(135deg,#1B2A4A,#243B60);cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">📖</span>
+        <span style="color:#fff;font-size:15px;font-weight:700;">Social Sentiment Scanner Manual</span>
+        <span style="font-size:10px;background:rgba(16,185,129,0.2);color:#10B981;padding:3px 8px;border-radius:10px;font-weight:600;">FLIPBOOK</span>
+      </div>
+      <span class="tgl" style="color:rgba(255,255,255,0.6);font-size:14px;">▼</span>
+    </div>
+    <div style="display:none;">
+      <div style="position:relative;width:100%;padding-bottom:56.25%;background:#F7FAF9;">
+        <iframe src="https://heyzine.com/flip-book/7c55c8a64b.html" allow="fullscreen" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" title="Social Sentiment Scanner Manual Flipbook"></iframe>
+      </div>
+      <div style="padding:10px 16px;text-align:center;font-size:11px;color:#6B7280;">
+        <a href="https://heyzine.com/flip-book/7c55c8a64b.html" target="_blank" rel="noopener noreferrer" style="color:#0D9373;text-decoration:none;font-weight:600;">Open full-screen ↗</a> · Powered by Mission Metrics
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
