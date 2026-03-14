@@ -1194,6 +1194,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       <div class="set-row"><div class="set-lbl">💵 Capital Deployed</div><div class="set-val" id="out-cap">$—</div></div>
       <div class="set-row"><div class="set-lbl">🏆 Reward at Target</div><div class="set-val" id="out-reward">$—</div></div>
       <div class="set-row"><div class="set-lbl">📊 Risk : Reward</div><div class="set-val" id="out-ratio">—</div></div>
+      <div id="sz-risk-warn" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(239,68,68,0.12);border:1px solid #EF4444;border-radius:8px;color:#EF4444;font-size:12px;font-weight:600;"></div>
     </div>
   </div>
 </div>
@@ -3595,10 +3596,12 @@ function calcSET() {
   const maxRisk    = acct * 0.01;
   const tradeRisk  = Math.abs(entry - stop);
   const mult       = type === 'options' ? 100 : 1;
-  const posSize    = tradeRisk > 0 ? Math.max(1, Math.floor(maxRisk / (tradeRisk * mult))) : 0;
+  const rawSize    = tradeRisk > 0 ? Math.floor(maxRisk / (tradeRisk * mult)) : 0;
+  const posSize    = tradeRisk > 0 ? Math.max(1, rawSize) : 0;
   const capital    = posSize * entry * mult;
   const reward     = posSize * Math.abs(target - entry) * mult;
   const actRisk    = posSize * tradeRisk * mult;
+  const riskExceeded = (rawSize < 1 && posSize === 1 && tradeRisk > 0);
   const auto31     = +(entry + Math.abs(entry - stop) * 3).toFixed(2);
   const ratio      = actRisk > 0 ? (reward/actRisk).toFixed(2)+':1' : '—';
 
@@ -3611,6 +3614,15 @@ function calcSET() {
   document.getElementById('out-cap').textContent    = '$'+capital.toFixed(2);
   document.getElementById('out-reward').textContent = '$'+reward.toFixed(2);
   document.getElementById('out-ratio').textContent  = ratio;
+
+  // Warn if forced 1-unit minimum exceeds the 1% risk rule
+  const warnEl = document.getElementById('sz-risk-warn');
+  if(warnEl){
+    if(riskExceeded){
+      warnEl.style.display='block';
+      warnEl.textContent='\u26A0\uFE0F Actual risk ($'+actRisk.toFixed(2)+') exceeds 1% max ($'+maxRisk.toFixed(2)+'). Minimum 1 '+(type==='options'?'contract':'share')+' forced.';
+    } else { warnEl.style.display='none'; }
+  }
 }
 calcSET();
 renderPriceCards();
@@ -5462,11 +5474,14 @@ const SIM = (function() {
     const tradeRisk = Math.abs(entry - stop);
     const tradeReward = Math.abs(target - entry);
     const ratio = tradeRisk > 0 ? (tradeReward / tradeRisk).toFixed(2) : 0;
-    const posSize = tradeRisk > 0 ? Math.max(1, Math.floor(maxRisk / tradeRisk)) : 0;
+    // mult ready for future options support (100 for options, 1 for stocks)
+    const mult = 1;
+    const rawSize = tradeRisk > 0 ? Math.floor(maxRisk / (tradeRisk * mult)) : 0;
+    const posSize = tradeRisk > 0 ? Math.max(1, rawSize) : 0;
     state.posSize = posSize;
 
-    document.getElementById('sim-m-risk').textContent = tradeRisk > 0 ? '$' + tradeRisk.toFixed(2) : '—';
-    document.getElementById('sim-m-reward').textContent = tradeReward > 0 ? '$' + tradeReward.toFixed(2) : '—';
+    document.getElementById('sim-m-risk').textContent = tradeRisk > 0 ? '$' + (tradeRisk * mult).toFixed(2) : '—';
+    document.getElementById('sim-m-reward').textContent = tradeReward > 0 ? '$' + (tradeReward * posSize).toFixed(2) : '—';
     document.getElementById('sim-m-ratio').textContent = ratio > 0 ? ratio + ':1' : '—';
     document.getElementById('sim-m-ratio').className = 'smc-val' + (ratio >= 3 ? ' pos' : ratio > 0 ? ' neg' : '');
     document.getElementById('sim-m-size').textContent = posSize > 0 ? posSize + ' shares' : '—';
@@ -5481,7 +5496,8 @@ const SIM = (function() {
     const stop = parseFloat(document.getElementById('sim-stop').value) || 0;
     if (!entry || !stop) return;
     const risk = Math.abs(entry - stop);
-    const target = +(entry + risk * 3).toFixed(2);
+    const isLong = entry > stop;
+    const target = +(isLong ? entry + risk * 3 : entry - risk * 3).toFixed(2);
     document.getElementById('sim-target').value = target;
     calcMetrics();
   }
