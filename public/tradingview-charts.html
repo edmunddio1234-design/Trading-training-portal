@@ -66,6 +66,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
     </div>
   </div>
   <div class="header-actions">
+    <button class="btn btn-outline" id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
     <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Back to Academy</a>
   </div>
 </div>
@@ -91,12 +92,16 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
     <label>Quick Add Indicators</label>
     <div class="indicator-chips">
       <span class="chip" onclick="toggleStudy(this,'RSI@tv-basicstudies')">RSI</span>
-      <span class="chip" onclick="toggleStudy(this,'CCI@tv-basicstudies')">CCI</span>
-      <span class="chip" onclick="toggleStudy(this,'ADX@tv-basicstudies')">ADX</span>
       <span class="chip" onclick="toggleStudy(this,'MACD@tv-basicstudies')">MACD</span>
+      <span class="chip" onclick="toggleStudy(this,'MAExp@tv-basicstudies')">EMA</span>
       <span class="chip" onclick="toggleStudy(this,'MASimple@tv-basicstudies')">SMA</span>
+      <span class="chip" onclick="toggleStudy(this,'VWAP@tv-basicstudies')">VWAP</span>
       <span class="chip" onclick="toggleStudy(this,'BB@tv-basicstudies')">Bollinger</span>
       <span class="chip" onclick="toggleStudy(this,'Volume@tv-basicstudies')">Volume</span>
+      <span class="chip" onclick="toggleStudy(this,'ADX@tv-basicstudies')">ADX</span>
+      <span class="chip" onclick="toggleStudy(this,'CCI@tv-basicstudies')">CCI</span>
+      <span class="chip" onclick="toggleStudy(this,'StochasticRSI@tv-basicstudies')">Stoch RSI</span>
+      <span class="chip" onclick="toggleStudy(this,'ATR@tv-basicstudies')">ATR</span>
     </div>
   </div>
 </div>
@@ -123,26 +128,29 @@ let widget = null;
 let currentSymbol = 'AAPL';
 let currentInterval = 'D';
 let activeStudies = [];
+let chartTheme = 'light';
 
 function createWidget() {
   const container = document.getElementById('tradingview_chart');
   container.innerHTML = '';
+  const isDark = chartTheme === 'dark';
 
   widget = new TradingView.widget({
     autosize: true,
     symbol: currentSymbol,
     interval: currentInterval,
     timezone: 'America/Chicago',
-    theme: 'light',
-    style: '1', // candlesticks
+    theme: isDark ? 'dark' : 'light',
+    style: '1',
     locale: 'en',
-    toolbar_bg: '#F7FAF9',
+    toolbar_bg: isDark ? '#1A1F35' : '#F7FAF9',
     enable_publishing: false,
     allow_symbol_change: true,
     hide_side_toolbar: false,
+    hide_top_toolbar: false,
     details: true,
-    hotlist: false,
-    calendar: false,
+    hotlist: true,
+    calendar: true,
     studies: activeStudies,
     container_id: 'tradingview_chart',
     withdateranges: true,
@@ -150,15 +158,71 @@ function createWidget() {
     show_popup_button: true,
     popup_width: '1200',
     popup_height: '800',
+    watchlist: ['SPY','QQQ','AAPL','MSFT','NVDA','TSLA','AMD','AMZN','META','GOOG'],
+    drawings_access: { type: 'all' },
+    enabled_features: [
+      'header_compare',
+      'header_symbol_search',
+      'header_saveload',
+      'header_screenshot',
+      'header_chart_type',
+      'header_indicators',
+      'header_undo_redo',
+      'header_fullscreen_button',
+      'control_bar',
+      'timeframes_toolbar',
+      'use_localstorage_for_settings',
+      'side_toolbar_in_fullscreen_mode',
+      'countdown',
+      'display_market_status'
+    ],
+    disabled_features: [
+      'header_widget_dom_node',
+      'go_to_date'
+    ],
+    loading_screen: { backgroundColor: isDark ? '#161B2B' : '#F0F5F3', foregroundColor: '#10B981' },
     overrides: {
       'mainSeriesProperties.candleStyle.upColor': '#10B981',
       'mainSeriesProperties.candleStyle.downColor': '#EF4444',
-      'mainSeriesProperties.candleStyle.borderUpColor': '#0D9373',
-      'mainSeriesProperties.candleStyle.borderDownColor': '#DC2626',
+      'mainSeriesProperties.candleStyle.borderUpColor': '#10B981',
+      'mainSeriesProperties.candleStyle.borderDownColor': '#EF4444',
       'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
       'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+      'scalesProperties.lineColor': isDark ? '#1F2640' : '#E5E7EB',
+      'scalesProperties.textColor': isDark ? '#6B7394' : '#6B7280',
+      'paneProperties.background': isDark ? '#161B2B' : '#FFFFFF',
+      'paneProperties.vertGridProperties.color': isDark ? '#1F2640' : '#F0F0F0',
+      'paneProperties.horzGridProperties.color': isDark ? '#1F2640' : '#F0F0F0',
     }
   });
+}
+
+function toggleTheme() {
+  chartTheme = chartTheme === 'light' ? 'dark' : 'light';
+  const isDark = chartTheme === 'dark';
+  const btn = document.getElementById('themeToggle');
+  btn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+  // Update page chrome
+  document.body.style.background = isDark ? '#0F1423' : '#F0F5F3';
+  document.body.style.color = isDark ? '#E0E4F0' : '#1B2A4A';
+  document.querySelector('.header').style.background = isDark ? 'linear-gradient(135deg, #0F1423 0%, #1A1F35 100%)' : 'linear-gradient(135deg, #1B2A4A 0%, #243B60 100%)';
+  document.querySelector('.toolbar').style.background = isDark ? '#161B2B' : '#FFFFFF';
+  document.querySelector('.toolbar').style.borderColor = isDark ? '#1F2640' : '#E5E7EB';
+  document.querySelector('.info-bar').style.background = isDark ? '#161B2B' : '#FFFFFF';
+  document.querySelector('.info-bar').style.borderColor = isDark ? '#1F2640' : '#E5E7EB';
+  document.querySelectorAll('.toolbar input, .toolbar select').forEach(el => {
+    el.style.background = isDark ? '#1A1F35' : '#F7FAF9';
+    el.style.color = isDark ? '#E0E4F0' : '#1B2A4A';
+    el.style.borderColor = isDark ? '#262D47' : '#E5E7EB';
+  });
+  document.querySelectorAll('.tf-btn').forEach(el => {
+    if (!el.classList.contains('active')) {
+      el.style.background = isDark ? '#1A1F35' : '#FFFFFF';
+      el.style.color = isDark ? '#E0E4F0' : '#1B2A4A';
+      el.style.borderColor = isDark ? '#262D47' : '#E5E7EB';
+    }
+  });
+  createWidget();
 }
 
 function changeSymbol() {
