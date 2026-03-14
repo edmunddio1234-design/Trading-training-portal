@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mission Metrics — Options Backtester</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <style>
 :root {
   --navy: #1B2A4A;
@@ -163,7 +164,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .strat-box .warn{color:#EF4444;font-weight:600;}
 .strat-box .hl{background:#FEF3C7;padding:1px 6px;border-radius:4px;font-weight:600;}
 .strat-example{background:linear-gradient(135deg,#0B1426 0%,#1B2A4A 100%);border-radius:12px;padding:18px 20px;color:white;margin-bottom:14px;}
-.strat-example h4{font-size:14px;font-weight:700;color:#26A69A;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
+.strat-example h4{font-size:14px;font-weight:700;color:#10B981;margin:0 0 10px;display:flex;align-items:center;gap:6px;}
 .strat-example .ex-row{display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px;line-height:1.7;}
 .strat-example .ex-col{flex:1;min-width:200px;}
 .strat-example .ex-label{color:#9BA3C2;font-weight:600;display:block;}
@@ -220,7 +221,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 /* ============================================ */
 
 /* --- Webull Dark Theme Palette --- */
-.train-dark { --chart-bg:#161B2B; --chart-grid:#1F2640; --chart-text:#6B7394; --candle-up:#26A69A; --candle-up-fill:rgba(38,166,154,0.25); --candle-dn:#EF5350; --candle-dn-fill:#EF5350; --price-line:rgba(255,255,255,0.06); --crosshair:#4A5078; --axis-text:#7B83A6; --tooltip-bg:rgba(22,27,43,0.95); --panel-bg:#1A1F35; --panel-border:#262D47; --hover-glow:rgba(38,166,154,0.08); }
+.train-dark { --chart-bg:#161B2B; --chart-grid:#1F2640; --chart-text:#6B7394; --candle-up:#10B981; --candle-up-fill:rgba(16,185,129,0.25); --candle-dn:#EF4444; --candle-dn-fill:#EF4444; --price-line:rgba(255,255,255,0.06); --crosshair:#4A5078; --axis-text:#7B83A6; --tooltip-bg:rgba(22,27,43,0.95); --panel-bg:#1A1F35; --panel-border:#262D47; --hover-glow:rgba(16,185,129,0.08); }
 
 /* --- Training Dashboard --- */
 .train-dash { padding:28px 0; }
@@ -279,7 +280,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .ct-price.dn { color:var(--candle-dn); }
 .ct-tag { font-size:10px; padding:2px 8px; border-radius:4px; font-weight:600; }
 .ct-tag.tut { background:rgba(59,130,246,0.15); color:#60A5FA; }
-.ct-tag.live { background:rgba(38,166,154,0.15); color:var(--candle-up); }
+.ct-tag.live { background:rgba(16,185,129,0.15); color:var(--candle-up); }
 .ct-ohlc { display:flex; gap:10px; margin-left:auto; font-size:11px; color:var(--chart-text); }
 .ct-ohlc span { font-weight:600; }
 .chart-canvas-wrap { position:relative; }
@@ -297,8 +298,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .anno .anno-x:hover { color:white; }
 .anno .anno-hd { font-size:14px; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
 .anno .anno-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:8px; }
-.anno-badge.grn { background:rgba(38,166,154,0.2); color:#26A69A; }
-.anno-badge.red { background:rgba(239,83,80,0.2); color:#EF5350; }
+.anno-badge.grn { background:rgba(16,185,129,0.2); color:#10B981; }
+.anno-badge.red { background:rgba(239,68,68,0.2); color:#EF4444; }
 .anno-badge.blu { background:rgba(59,130,246,0.2); color:#60A5FA; }
 .anno .anno-txt { font-size:12px; color:#B0B8D4; line-height:1.55; margin-bottom:6px; }
 .anno .anno-det { font-size:11px; color:#7B83A6; padding-top:6px; border-top:1px solid #2A3154; }
@@ -306,13 +307,13 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .hover-tip { position:absolute; z-index:30; pointer-events:none; background:rgba(22,27,43,0.96); border:1px solid #323B5C; border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.45); padding:12px 14px; min-width:240px; max-width:320px; color:white; font-size:12px; line-height:1.5; opacity:0; transition:opacity 0.15s ease; }
 .hover-tip.show { opacity:1; }
 .hover-tip .ht-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
-.hover-tip .ht-label.bull { color:#26A69A; }
-.hover-tip .ht-label.bear { color:#EF5350; }
+.hover-tip .ht-label.bull { color:#10B981; }
+.hover-tip .ht-label.bear { color:#EF4444; }
 .hover-tip .ht-label.neutral { color:#60A5FA; }
 .hover-tip .ht-vals { font-size:11px; color:#B0B8D4; margin-bottom:6px; display:grid; grid-template-columns:1fr 1fr; gap:2px 12px; }
 .hover-tip .ht-vals span { color:#E0E4F0; font-weight:600; }
 .hover-tip .ht-edu { font-size:11px; color:#9BA3C2; padding-top:6px; border-top:1px solid #2A3154; line-height:1.55; }
-.hover-tip .ht-edu em { color:#26A69A; font-style:normal; font-weight:600; }
+.hover-tip .ht-edu em { color:#10B981; font-style:normal; font-weight:600; }
 .hover-tip .ht-hint { font-size:11px; color:#F59E0B; padding-top:6px; border-top:1px solid #2A3154; margin-top:4px; }
 .hover-tip .ht-hint::before { content:'💡 '; }
 .reset-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border:1px solid #EF4444; color:#EF4444; background:transparent; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; margin-top:12px; }
@@ -342,7 +343,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .expl-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-500);padding:4px 8px;}
 .expl-body{padding:20px;display:flex;flex-direction:column;gap:16px;}
 .expl-chart-area{background:#0B1426;border-radius:12px;padding:10px;text-align:center;}
-.expl-chart-area canvas{width:100%;max-width:780px;border-radius:8px;}
+.expl-chart-area canvas{width:100%;max-width:100%;border-radius:8px;}
 .expl-section{background:#F8FAFC;border-radius:10px;padding:14px 16px;}
 .expl-section h4{margin:0 0 8px;font-size:14px;color:var(--navy);display:flex;align-items:center;gap:6px;}
 .expl-section p,.expl-section ul{margin:4px 0;font-size:13px;color:#4B5563;line-height:1.55;}
@@ -635,17 +636,35 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
 /* ===== S.E.T. SIMULATOR ===== */
 .sim-grid{display:grid;grid-template-columns:320px 1fr;gap:18px;}
-.sim-chart-area{background:#161B2B;border-radius:14px;overflow:hidden;position:relative;min-height:480px;}
+.sim-chart-area{background:#161B2B;border-radius:14px;overflow:hidden;position:relative;min-height:750px;}
+/* TradingView Reference Chart */
+.tv-ref-wrap{position:relative;height:500px;border-bottom:2px solid #262D47;}
+.tv-ref-toolbar{display:flex;align-items:center;gap:8px;padding:6px 14px;background:#1A1F35;border-bottom:1px solid #262D47;flex-wrap:wrap;}
+.tv-ref-toolbar .tv-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#7B83A6;}
+.tv-ref-toolbar .tv-chip{padding:4px 10px;border-radius:16px;font-size:10px;font-weight:600;background:rgba(16,185,129,0.08);color:#10B981;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.tv-ref-toolbar .tv-chip:hover{border-color:#10B981;}
+.tv-ref-toolbar .tv-chip.active{background:#10B981;color:#fff;}
+.tv-ref-chart{height:calc(100% - 36px);width:100%;}
+.tv-theme-btn{padding:4px 10px;border-radius:16px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid #262D47;transition:all .15s;margin-left:auto;}
+.tv-theme-btn.dark-mode{background:#1A1F35;color:#E0E4F0;}
+.tv-theme-btn.dark-mode:hover{border-color:#10B981;color:#10B981;}
+.tv-theme-btn.light-mode{background:#F0F5F3;color:#1B2A4A;border-color:#E5E7EB;}
+.tv-theme-btn.light-mode:hover{border-color:#10B981;color:#0D9373;}
+.tv-ref-wrap.light-theme{background:#FFFFFF;}
+.tv-ref-wrap.light-theme .tv-ref-toolbar{background:#F7FAF9;border-bottom-color:#E5E7EB;}
+.tv-ref-wrap.light-theme .tv-label{color:#6B7280;}
+.tv-ref-wrap.light-theme .tv-chip{background:rgba(13,147,115,0.08);color:#0D9373;}
+.tv-ref-wrap.light-theme .tv-chip.active{background:#0D9373;color:#fff;}
 .sim-toolbar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#1A1F35;border-bottom:1px solid #262D47;}
 .sim-toolbar .stb-sym{font-size:15px;font-weight:800;color:#E0E4F0;letter-spacing:.3px;}
 .sim-toolbar .stb-price{font-size:13px;color:var(--emerald-light);font-weight:600;margin-left:6px;}
 .sim-toolbar .stb-chg{font-size:11px;margin-left:4px;font-weight:600;}
-.sim-toolbar .stb-chg.up{color:#26A69A;}.sim-toolbar .stb-chg.dn{color:#EF5350;}
-.sim-canvas-wrap{position:relative;width:100%;height:420px;}
+.sim-toolbar .stb-chg.up{color:#10B981;}.sim-toolbar .stb-chg.dn{color:#EF4444;}
+.sim-canvas-wrap{position:relative;width:100%;height:650px;}
 .sim-canvas-wrap canvas{display:block;width:100%;height:100%;cursor:crosshair;}
 .sim-ohlc-bar{display:flex;gap:12px;padding:4px 14px;background:#1A1F35;font-size:11px;color:#7B83A6;}
 .sim-ohlc-bar span{font-weight:600;}
-.sim-ohlc-bar .sol{color:#26A69A;}.sim-ohlc-bar .soh{color:#26A69A;}.sim-ohlc-bar .soll{color:#EF5350;}.sim-ohlc-bar .soc{color:#E0E4F0;}
+.sim-ohlc-bar .sol{color:#10B981;}.sim-ohlc-bar .soh{color:#10B981;}.sim-ohlc-bar .soll{color:#EF4444;}.sim-ohlc-bar .soc{color:#E0E4F0;}
 
 /* Sim Controls */
 .sim-controls{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#1A1F35;border-top:1px solid #262D47;}
@@ -701,7 +720,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .sim-pnl-bar{background:var(--navy);border-radius:10px;padding:14px;color:white;text-align:center;}
 .sim-pnl-bar .spb-label{font-size:10px;color:#A0B0C8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
 .sim-pnl-bar .spb-val{font-size:28px;font-weight:900;}
-.sim-pnl-bar .spb-val.pos{color:#26A69A;}.sim-pnl-bar .spb-val.neg{color:#EF5350;}
+.sim-pnl-bar .spb-val.pos{color:#10B981;}.sim-pnl-bar .spb-val.neg{color:#EF4444;}
 .sim-pnl-bar .spb-sub{font-size:11px;color:#7B83A6;margin-top:2px;}
 
 /* Education Panel */
@@ -752,7 +771,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .sim-dist-bar.to-stop .sdb-val{color:#EF4444;}
 .sim-dist-bar.to-target .sdb-val{color:#10B981;}
 
-@media(max-width:900px){.sim-grid{grid-template-columns:1fr;}.sim-chart-area{min-height:350px;}}
+@media(max-width:900px){.sim-grid{grid-template-columns:1fr;}.sim-chart-area{min-height:500px;}.tv-ref-wrap{height:350px;}}
 
 
 /* ===== GUIDE MODE SYSTEM ===== */
@@ -1272,11 +1291,35 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     <div>
       <!-- Chart Area -->
       <div class="sim-chart-area" id="sim-chart-area">
+        <!-- TradingView Reference Chart -->
+        <div class="tv-ref-wrap" id="sim-tv-wrap">
+          <div class="tv-ref-toolbar">
+            <span class="tv-label">Live Chart</span>
+            <span class="tv-chip active" onclick="simTVtf('D',this)">1D</span>
+            <span class="tv-chip" onclick="simTVtf('W',this)">1W</span>
+            <span class="tv-chip" onclick="simTVtf('60',this)">1H</span>
+            <span class="tv-chip" onclick="simTVtf('15',this)">15m</span>
+            <span class="tv-chip" onclick="simTVtf('5',this)">5m</span>
+            <span style="width:1px;height:16px;background:#262D47;margin:0 4px;"></span>
+            <span class="tv-label">Indicators</span>
+            <span class="tv-chip" onclick="simTVind(this,'RSI@tv-basicstudies')">RSI</span>
+            <span class="tv-chip" onclick="simTVind(this,'CCI@tv-basicstudies')">CCI</span>
+            <span class="tv-chip" onclick="simTVind(this,'ADX@tv-basicstudies')">ADX</span>
+            <span class="tv-chip" onclick="simTVind(this,'MACD@tv-basicstudies')">MACD</span>
+            <span class="tv-chip" onclick="simTVind(this,'MASimple@tv-basicstudies')">SMA</span>
+            <span class="tv-chip" onclick="simTVind(this,'BB@tv-basicstudies')">Bollinger</span>
+            <span class="tv-chip" onclick="simTVind(this,'Volume@tv-basicstudies')">Volume</span>
+            <span class="tv-theme-btn dark-mode" onclick="toggleTVTheme('sim',this)">☀️ Light</span>
+          </div>
+          <div class="tv-ref-chart" id="sim-tv-chart"></div>
+        </div>
+        <!-- Simulation Canvas -->
         <div class="sim-toolbar">
           <span class="stb-sym" id="sim-tb-sym">—</span>
           <span class="stb-price" id="sim-tb-price">—</span>
           <span class="stb-chg" id="sim-tb-chg">—</span>
           <div style="flex:1;"></div>
+          <span style="font-size:10px;color:#7B83A6;font-weight:600;">S.E.T. SIMULATION ↓</span>
           <span class="sim-status waiting" id="sim-status">Waiting</span>
         </div>
         <div class="sim-ohlc-bar" id="sim-ohlc-bar">
@@ -2597,6 +2640,31 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
     <div class="badge-row" id="badge-row"></div>
 
+    <!-- TradingView Reference Chart for Training -->
+    <div id="train-tv-wrap" style="background:#161B2B;border-radius:14px;overflow:hidden;margin-bottom:16px;">
+      <div class="tv-ref-toolbar">
+        <span class="tv-label">Live Reference Chart</span>
+        <span class="tv-chip active" onclick="trainTVtf('D',this)">1D</span>
+        <span class="tv-chip" onclick="trainTVtf('W',this)">1W</span>
+        <span class="tv-chip" onclick="trainTVtf('60',this)">1H</span>
+        <span class="tv-chip" onclick="trainTVtf('15',this)">15m</span>
+        <span style="width:1px;height:16px;background:#262D47;margin:0 4px;"></span>
+        <span class="tv-label">Indicators</span>
+        <span class="tv-chip" onclick="trainTVind(this,'RSI@tv-basicstudies')">RSI</span>
+        <span class="tv-chip" onclick="trainTVind(this,'CCI@tv-basicstudies')">CCI</span>
+        <span class="tv-chip" onclick="trainTVind(this,'ADX@tv-basicstudies')">ADX</span>
+        <span class="tv-chip" onclick="trainTVind(this,'MACD@tv-basicstudies')">MACD</span>
+        <span class="tv-chip" onclick="trainTVind(this,'MASimple@tv-basicstudies')">SMA</span>
+        <span class="tv-chip" onclick="trainTVind(this,'BB@tv-basicstudies')">Bollinger</span>
+        <span class="tv-chip" onclick="trainTVind(this,'Volume@tv-basicstudies')">Volume</span>
+        <span class="tv-theme-btn dark-mode" onclick="toggleTVTheme('train',this)">☀️ Light</span>
+        <span style="flex:1;"></span>
+        <input type="text" id="train-tv-sym" placeholder="Symbol..." value="SPY" style="padding:4px 8px;border:1px solid #262D47;border-radius:6px;background:#1A1F35;color:#E0E4F0;font-size:12px;width:100px;" onkeydown="if(event.key==='Enter')loadTrainTV()">
+        <button onclick="loadTrainTV()" style="padding:4px 10px;background:#10B981;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">Load</button>
+      </div>
+      <div id="train-tv-chart" style="height:480px;width:100%;"></div>
+    </div>
+
     <div class="train-modes">
       <div class="mode-card" onclick="TM.startMode('ohlc')">
         <span class="mc-icon">📊</span><h3>OHLC Mastery</h3>
@@ -2671,7 +2739,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div class="ct-ohlc" id="ct-ohlc">O: <span>—</span> H: <span>—</span> L: <span>—</span> C: <span>—</span></div>
       </div>
       <div class="chart-canvas-wrap" id="chart-wrap">
-        <canvas id="train-canvas" width="900" height="420"></canvas>
+        <canvas id="train-canvas" width="900" height="600"></canvas>
         <div class="anno" id="anno" style="display:none;">
           <button class="anno-x" onclick="TM.xAnno()">✕</button>
           <div class="anno-hd" id="anno-hd"></div>
@@ -4171,11 +4239,11 @@ const TUT = (function(){
       const bull=bar.c>=bar.o;
       const bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
       // Wick
-      c.strokeStyle=bull?'#26A69A':'#EF5350';c.lineWidth=1.5;
+      c.strokeStyle=bull?'#10B981':'#EF4444';c.lineWidth=1.5;
       c.beginPath();c.moveTo(mid,hY);c.lineTo(mid,lY);c.stroke();
       // Body
-      if(bull){c.fillStyle='rgba(38,166,154,0.2)';c.fillRect(x,bTop,bw,bodyH);c.strokeStyle='#26A69A';c.lineWidth=1.5;c.strokeRect(x,bTop,bw,bodyH);}
-      else{c.fillStyle='#EF5350';c.fillRect(x,bTop,bw,bodyH);}
+      if(bull){c.fillStyle='rgba(16,185,129,0.2)';c.fillRect(x,bTop,bw,bodyH);c.strokeStyle='#10B981';c.lineWidth=1.5;c.strokeRect(x,bTop,bw,bodyH);}
+      else{c.fillStyle='#EF4444';c.fillRect(x,bTop,bw,bodyH);}
     });
     // Annotations based on tutorial step
     c.font='bold 10px system-ui';
@@ -4183,7 +4251,7 @@ const TUT = (function(){
       const b0=bars[3],x0=bx(3),mid0=x0+bw/2;
       if(s===0||s===4) { // OHLC labels
         const pts=[['Open',b0.o],['High',b0.h],['Low',b0.l],['Close',b0.c]];
-        const colors=['#60A5FA','#EF5350','#26A69A','#FBBF24'];
+        const colors=['#60A5FA','#EF4444','#10B981','#FBBF24'];
         pts.forEach(([label,price],j)=>{
           const y=py(price);
           c.fillStyle=colors[j]; c.beginPath();c.arc(mid0,y,5,0,Math.PI*2);c.fill();
@@ -4199,7 +4267,7 @@ const TUT = (function(){
       if(s===1) { // Bullish/Bearish labels
         bars.forEach((b,i)=>{
           const x=bx(i)+bw/2;
-          c.fillStyle=b.bull?'#26A69A':'#EF5350';c.font='bold 9px system-ui';c.textAlign='center';
+          c.fillStyle=b.bull?'#10B981':'#EF4444';c.font='bold 9px system-ui';c.textAlign='center';
           c.fillText(b.bull?'BULL':'BEAR',x,H-8);c.textAlign='left';
         });
       }
@@ -4236,11 +4304,11 @@ const TUT = (function(){
       zones.forEach(z=>{
         const x1=bx(z.s)-2,x2=bx(z.e)+bw+2;
         const y1=py(z.hi),y2=py(z.lo);
-        c.fillStyle=z.type==='demand'?'rgba(38,166,154,0.12)':'rgba(239,83,80,0.12)';
+        c.fillStyle=z.type==='demand'?'rgba(16,185,129,0.12)':'rgba(239,68,68,0.12)';
         c.fillRect(x1,y1,x2-x1,y2-y1);
-        c.strokeStyle=z.type==='demand'?'#26A69A':'#EF5350';
+        c.strokeStyle=z.type==='demand'?'#10B981':'#EF4444';
         c.lineWidth=1.5;c.setLineDash([4,3]);c.strokeRect(x1,y1,x2-x1,y2-y1);c.setLineDash([]);
-        c.fillStyle=z.type==='demand'?'#26A69A':'#EF5350';c.font='bold 10px system-ui';
+        c.fillStyle=z.type==='demand'?'#10B981':'#EF4444';c.font='bold 10px system-ui';
         c.fillText(z.type==='demand'?'DEMAND ZONE':'SUPPLY ZONE',x1,y1-5);
       });
     }
@@ -4341,19 +4409,19 @@ function draw(bb,opts={}){
   // Time axis
   bb.forEach((bar,i)=>{if(bb.length<=20||i%Math.ceil(bb.length/15)===0){const x=bx(i)+barW/2;ctx.fillStyle='#4A5078';ctx.font='9px system-ui';ctx.textAlign='center';ctx.fillText('Bar '+(i+1),x,H-PAD.b+16);}});
   // Zones
-  if(opts.zones)opts.zones.forEach(z=>{const x1=bx(z.s)-2,x2=bx(z.e)+barW+2,y1=p2y(z.hi),y2=p2y(z.lo);ctx.fillStyle=z.type==='demand'?'rgba(38,166,154,0.08)':'rgba(239,83,80,0.08)';ctx.fillRect(x1,y1,x2-x1,y2-y1);ctx.strokeStyle=z.type==='demand'?'#26A69A':'#EF5350';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.strokeRect(x1,y1,x2-x1,y2-y1);ctx.setLineDash([]);if(opts.zLabels!==false){ctx.fillStyle=z.type==='demand'?'#26A69A':'#EF5350';ctx.font='bold 9px system-ui';ctx.textAlign='left';ctx.fillText(z.type==='demand'?'Demand':'Supply',x1,y1-4);}});
+  if(opts.zones)opts.zones.forEach(z=>{const x1=bx(z.s)-2,x2=bx(z.e)+barW+2,y1=p2y(z.hi),y2=p2y(z.lo);ctx.fillStyle=z.type==='demand'?'rgba(16,185,129,0.08)':'rgba(239,68,68,0.08)';ctx.fillRect(x1,y1,x2-x1,y2-y1);ctx.strokeStyle=z.type==='demand'?'#10B981':'#EF4444';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.strokeRect(x1,y1,x2-x1,y2-y1);ctx.setLineDash([]);if(opts.zLabels!==false){ctx.fillStyle=z.type==='demand'?'#10B981':'#EF4444';ctx.font='bold 9px system-ui';ctx.textAlign='left';ctx.fillText(z.type==='demand'?'Demand':'Supply',x1,y1-4);}});
   // User drawn zones
-  drawnZ.forEach(uz=>{ctx.fillStyle=uz.type==='demand'?'rgba(38,166,154,0.14)':'rgba(239,83,80,0.14)';ctx.fillRect(uz.x,uz.y,uz.w,uz.h);ctx.strokeStyle=uz.type==='demand'?'#26A69A':'#EF5350';ctx.lineWidth=2;ctx.strokeRect(uz.x,uz.y,uz.w,uz.h);});
+  drawnZ.forEach(uz=>{ctx.fillStyle=uz.type==='demand'?'rgba(16,185,129,0.14)':'rgba(239,68,68,0.14)';ctx.fillRect(uz.x,uz.y,uz.w,uz.h);ctx.strokeStyle=uz.type==='demand'?'#10B981':'#EF4444';ctx.lineWidth=2;ctx.strokeRect(uz.x,uz.y,uz.w,uz.h);});
   // Candles
   bb.forEach((bar,i)=>{
     const x=bx(i),mid=x+barW/2;
     const oY=p2y(bar.o),cY=p2y(bar.c),hY=p2y(bar.h),lY=p2y(bar.l);
     const bull=bar.c>=bar.o,bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
     const isH=(hovBar===i);const hl=opts.hl?opts.hl.find(h=>h.b===i):null;
-    if(isH){ctx.fillStyle='rgba(38,166,154,0.04)';ctx.fillRect(x-3,PAD.t,barW+6,cH);}
-    const col=hl?(hl.c||'#60A5FA'):bull?'#26A69A':'#EF5350';
+    if(isH){ctx.fillStyle='rgba(16,185,129,0.04)';ctx.fillRect(x-3,PAD.t,barW+6,cH);}
+    const col=hl?(hl.c||'#60A5FA'):bull?'#10B981':'#EF4444';
     ctx.strokeStyle=col;ctx.lineWidth=isH?2.5:1.5;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
-    if(bull){ctx.fillStyle=hl?'rgba(96,165,250,0.2)':'rgba(38,166,154,0.18)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(x,bTop,barW,bodyH);}
+    if(bull){ctx.fillStyle=hl?'rgba(96,165,250,0.2)':'rgba(16,185,129,0.18)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(x,bTop,barW,bodyH);}
     else{ctx.fillStyle=col;ctx.fillRect(x,bTop,barW,bodyH);}
     if(hl&&hl.mk){hl.mk.forEach(mk=>{const my=mk==='open'?oY:mk==='close'?cY:mk==='high'?hY:lY;ctx.beginPath();ctx.arc(mid,my,6,0,Math.PI*2);ctx.fillStyle=hl.c||'#60A5FA';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='white';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.fillText(mk.charAt(0).toUpperCase(),mid,my+3);ctx.textAlign='left';});}
   });
@@ -4363,21 +4431,21 @@ function draw(bb,opts={}){
     const oY=p2y(fb.o),cY=p2y(fb.cp),hY=p2y(fb.ch),lY=p2y(fb.cl);
     const bull=fb.cp>=fb.o,bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
     const pulse=0.3+Math.sin(Date.now()/300)*0.15;
-    ctx.shadowColor=bull?'rgba(38,166,154,'+pulse+')':'rgba(239,83,80,'+pulse+')';ctx.shadowBlur=14;
-    ctx.strokeStyle=bull?'#26A69A':'#EF5350';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
-    if(bull){ctx.fillStyle='rgba(38,166,154,0.25)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeRect(x,bTop,barW,bodyH);}
-    else{ctx.fillStyle='#EF5350';ctx.fillRect(x,bTop,barW,bodyH);}
+    ctx.shadowColor=bull?'rgba(16,185,129,'+pulse+')':'rgba(239,68,68,'+pulse+')';ctx.shadowBlur=14;
+    ctx.strokeStyle=bull?'#10B981':'#EF4444';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
+    if(bull){ctx.fillStyle='rgba(16,185,129,0.25)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeRect(x,bTop,barW,bodyH);}
+    else{ctx.fillStyle='#EF4444';ctx.fillRect(x,bTop,barW,bodyH);}
     ctx.shadowBlur=0;ctx.shadowColor='transparent';
     // Price line
-    ctx.strokeStyle=bull?'rgba(38,166,154,0.35)':'rgba(239,83,80,0.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(PAD.l,cY);ctx.lineTo(W-PAD.r,cY);ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle=bull?'rgba(16,185,129,0.35)':'rgba(239,68,68,0.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(PAD.l,cY);ctx.lineTo(W-PAD.r,cY);ctx.stroke();ctx.setLineDash([]);
     // Price badge
-    ctx.fillStyle=bull?'#26A69A':'#EF5350';const bw2=52;ctx.fillRect(W-PAD.r,cY-9,bw2,18);ctx.fillStyle='white';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText('$'+fb.cp.toFixed(2),W-PAD.r+4,cY+4);
+    ctx.fillStyle=bull?'#10B981':'#EF4444';const bw2=52;ctx.fillRect(W-PAD.r,cY-9,bw2,18);ctx.fillStyle='white';ctx.font='bold 10px system-ui';ctx.textAlign='left';ctx.fillText('$'+fb.cp.toFixed(2),W-PAD.r+4,cY+4);
   }
   // Update toolbar OHLC
   if(hovBar>=0&&hovBar<bb.length){
     const hb=bb[hovBar];
     const ohlcEl=document.getElementById('ct-ohlc');
-    if(ohlcEl)ohlcEl.innerHTML=`O: <span style="color:${hb.bull?'#26A69A':'#EF5350'}">${hb.o.toFixed(2)}</span> H: <span style="color:#26A69A">${hb.h.toFixed(2)}</span> L: <span style="color:#EF5350">${hb.l.toFixed(2)}</span> C: <span style="color:${hb.bull?'#26A69A':'#EF5350'}">${hb.c.toFixed(2)}</span>`;
+    if(ohlcEl)ohlcEl.innerHTML=`O: <span style="color:${hb.bull?'#10B981':'#EF4444'}">${hb.o.toFixed(2)}</span> H: <span style="color:#10B981">${hb.h.toFixed(2)}</span> L: <span style="color:#EF4444">${hb.l.toFixed(2)}</span> C: <span style="color:${hb.bull?'#10B981':'#EF4444'}">${hb.c.toFixed(2)}</span>`;
   }
 }
 
@@ -4658,7 +4726,7 @@ function grade(correct,q,score){
   showFB(correct,q,score);
   document.getElementById('ar-str').textContent='🔥 '+streak;
   if(q.tb!==undefined){
-    const hl=[{b:q.tb,c:correct?'#26A69A':'#EF5350',mk:[q.ans||'open']}];
+    const hl=[{b:q.tb,c:correct?'#10B981':'#EF4444',mk:[q.ans||'open']}];
     draw(bars,{hl,zones:q.zones});
   }
   if(q.type==='mc'){document.querySelectorAll('.qo').forEach(btn=>{btn.disabled=true;if(btn.textContent===q.cor)btn.classList.add('ok');});}
@@ -4822,11 +4890,11 @@ function drawExplChart(q,ok){
     const x=pad.l+i*(bw+2);
     const bull=b.c>=b.o;
     // Wick
-    ectx.strokeStyle=bull?'#26A69A':'#EF5350';ectx.lineWidth=1;
+    ectx.strokeStyle=bull?'#10B981':'#EF4444';ectx.lineWidth=1;
     ectx.beginPath();ectx.moveTo(x+bw/2,scaleY(b.h));ectx.lineTo(x+bw/2,scaleY(b.l));ectx.stroke();
     // Body
     const top=scaleY(Math.max(b.o,b.c)),bot=scaleY(Math.min(b.o,b.c));
-    ectx.fillStyle=bull?'#26A69A':'#EF5350';
+    ectx.fillStyle=bull?'#10B981':'#EF4444';
     ectx.fillRect(x,top,bw,Math.max(1,bot-top));
   });
   // Highlight relevant bar if question references one
@@ -4845,9 +4913,9 @@ function drawExplChart(q,ok){
     zones.forEach(z=>{
       const x1=pad.l+z.s*(bw+2);const x2=pad.l+z.e*(bw+2)+bw;
       const yt=scaleY(z.hi);const yb=scaleY(z.lo);
-      ectx.fillStyle=q.zt==='demand'?'rgba(38,166,154,0.15)':'rgba(239,83,80,0.15)';
+      ectx.fillStyle=q.zt==='demand'?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.15)';
       ectx.fillRect(x1,yt,x2-x1,yb-yt);
-      ectx.strokeStyle=q.zt==='demand'?'#26A69A':'#EF5350';
+      ectx.strokeStyle=q.zt==='demand'?'#10B981':'#EF4444';
       ectx.lineWidth=1;ectx.setLineDash([4,3]);
       ectx.strokeRect(x1,yt,x2-x1,yb-yt);
       ectx.setLineDash([]);
@@ -5433,7 +5501,7 @@ const SIM = (function() {
     if (!canvas || !wrap) return;
     const ctx = canvas.getContext('2d');
     const W = wrap.clientWidth;
-    const H = wrap.clientHeight || 420;
+    const H = wrap.clientHeight || 650;
     canvas.width = W * (window.devicePixelRatio || 1);
     canvas.height = H * (window.devicePixelRatio || 1);
     canvas.style.width = W + 'px';
@@ -5531,7 +5599,7 @@ const SIM = (function() {
       const bodyH = Math.max(1, bodyBot - bodyTop);
 
       // Wick
-      ctx.strokeStyle = isUp ? '#26A69A' : '#EF5350';
+      ctx.strokeStyle = isUp ? '#10B981' : '#EF4444';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x, toY(c.high));
@@ -5539,7 +5607,7 @@ const SIM = (function() {
       ctx.stroke();
 
       // Body
-      ctx.fillStyle = isUp ? 'rgba(38,166,154,0.85)' : '#EF5350';
+      ctx.fillStyle = isUp ? 'rgba(16,185,129,0.85)' : '#EF4444';
       ctx.fillRect(x - barW / 2, bodyTop, barW, bodyH);
 
       // Highlight current candle in simulation
@@ -5584,7 +5652,7 @@ const SIM = (function() {
     if (!el) return;
     if (price <= 0) { el.style.display = 'none'; return; }
     const y = toY(price);
-    if (y < 20 || y > 400) { el.style.display = 'none'; return; }
+    if (y < 20 || y > 620) { el.style.display = 'none'; return; }
     el.style.display = 'block';
     el.style.top = (y - 10) + 'px';
   }
@@ -6070,7 +6138,7 @@ const VOL_SURGE = (function() {
       const y = h - height;
       
       const { surge } = detectSurge(recentCandles.slice(0, idx + 1));
-      ctx.fillStyle = surge ? '#FCD34D' : '#26A69A';
+      ctx.fillStyle = surge ? '#FCD34D' : '#10B981';
       ctx.fillRect(x + 2, y, barWidth - 4, height);
     });
   }
@@ -7301,6 +7369,178 @@ const SCANNER = (function() {
   window.showTab = function(tab, btn) {
     _origShowTab(tab, btn);
     if (tab === 'scanner') SCANNER._ensureInit();
+    // Auto-load training TV chart when training tab opens
+    if (tab === 'training' && !window._trainTVLoaded) {
+      window._trainTVLoaded = true;
+      setTimeout(loadTrainTV, 200);
+    }
+  };
+})();
+
+// ===== TradingView Integration for S.E.T. Simulator =====
+// ===== Theme Toggle State =====
+let tvThemes = { sim: 'dark', train: 'dark' };
+
+function toggleTVTheme(target, btnEl) {
+  const isDark = tvThemes[target] === 'dark';
+  tvThemes[target] = isDark ? 'light' : 'dark';
+  // Update button appearance
+  btnEl.className = 'tv-theme-btn ' + (isDark ? 'light-mode' : 'dark-mode');
+  btnEl.innerHTML = isDark ? '🌙 Dark' : '☀️ Light';
+  // Update wrapper class for light toolbar styling
+  const wrapId = target === 'sim' ? 'sim-tv-wrap' : 'train-tv-wrap';
+  const wrap = document.getElementById(wrapId);
+  if (wrap) {
+    if (isDark) wrap.classList.add('light-theme'); else wrap.classList.remove('light-theme');
+  }
+  // Recreate the widget with new theme
+  if (target === 'sim') {
+    const sym = SIM.state ? SIM.state.symbol : 'SPY';
+    createSimTV(sym || 'SPY');
+  } else {
+    loadTrainTV();
+  }
+}
+
+let simTVWidget = null;
+let simTVInterval = 'D';
+let simTVStudies = [];
+
+function createSimTV(symbol) {
+  const container = document.getElementById('sim-tv-chart');
+  if (!container || typeof TradingView === 'undefined') return;
+  container.innerHTML = '';
+  const isLight = tvThemes.sim === 'light';
+  simTVWidget = new TradingView.widget({
+    autosize: true,
+    symbol: symbol || 'SPY',
+    interval: simTVInterval,
+    timezone: 'America/Chicago',
+    theme: isLight ? 'light' : 'dark',
+    style: '1',
+    locale: 'en',
+    toolbar_bg: isLight ? '#F7FAF9' : '#1A1F35',
+    enable_publishing: false,
+    allow_symbol_change: true,
+    hide_side_toolbar: false,
+    details: true,
+    hotlist: false,
+    calendar: false,
+    studies: simTVStudies,
+    container_id: 'sim-tv-chart',
+    withdateranges: true,
+    save_image: true,
+    show_popup_button: true,
+    popup_width: '1200',
+    popup_height: '800',
+    overrides: {
+      'mainSeriesProperties.candleStyle.upColor': '#10B981',
+      'mainSeriesProperties.candleStyle.downColor': '#EF4444',
+      'mainSeriesProperties.candleStyle.borderUpColor': '#0D9373',
+      'mainSeriesProperties.candleStyle.borderDownColor': '#DC2626',
+      'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
+      'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+    }
+  });
+}
+
+function simTVtf(tf, el) {
+  simTVInterval = tf;
+  el.parentElement.querySelectorAll('.tv-chip').forEach(c => { if (!c.onclick.toString().includes('simTVind')) c.classList.remove('active'); });
+  el.classList.add('active');
+  const sym = SIM.state ? SIM.state.symbol : 'SPY';
+  createSimTV(sym || 'SPY');
+}
+
+function simTVind(el, studyId) {
+  el.classList.toggle('active');
+  const idx = simTVStudies.indexOf(studyId);
+  if (idx > -1) simTVStudies.splice(idx, 1);
+  else simTVStudies.push(studyId);
+  const sym = SIM.state ? SIM.state.symbol : 'SPY';
+  createSimTV(sym || 'SPY');
+}
+
+// Hook into SIM.loadTicker to also load TradingView chart
+(function() {
+  const origLoad = SIM.loadTicker;
+  if (origLoad) {
+    SIM.loadTicker = function(sym) {
+      origLoad.call(SIM, sym);
+      setTimeout(() => createSimTV(sym), 100);
+    };
+  }
+})();
+
+// ===== TradingView Integration for Chart Training =====
+let trainTVWidget = null;
+let trainTVInterval = 'D';
+let trainTVStudies = [];
+
+function loadTrainTV() {
+  const container = document.getElementById('train-tv-chart');
+  if (!container || typeof TradingView === 'undefined') return;
+  const sym = (document.getElementById('train-tv-sym') || {}).value || 'SPY';
+  container.innerHTML = '';
+  const isLight = tvThemes.train === 'light';
+  trainTVWidget = new TradingView.widget({
+    autosize: true,
+    symbol: sym,
+    interval: trainTVInterval,
+    timezone: 'America/Chicago',
+    theme: isLight ? 'light' : 'dark',
+    style: '1',
+    locale: 'en',
+    toolbar_bg: isLight ? '#F7FAF9' : '#1A1F35',
+    enable_publishing: false,
+    allow_symbol_change: true,
+    hide_side_toolbar: false,
+    details: true,
+    hotlist: false,
+    calendar: false,
+    studies: trainTVStudies,
+    container_id: 'train-tv-chart',
+    withdateranges: true,
+    save_image: true,
+    show_popup_button: true,
+    popup_width: '1200',
+    popup_height: '800',
+    overrides: {
+      'mainSeriesProperties.candleStyle.upColor': '#10B981',
+      'mainSeriesProperties.candleStyle.downColor': '#EF4444',
+      'mainSeriesProperties.candleStyle.borderUpColor': '#0D9373',
+      'mainSeriesProperties.candleStyle.borderDownColor': '#DC2626',
+      'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
+      'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+    }
+  });
+}
+
+function trainTVtf(tf, el) {
+  trainTVInterval = tf;
+  el.parentElement.querySelectorAll('.tv-chip').forEach(c => { if (!c.onclick.toString().includes('trainTVind')) c.classList.remove('active'); });
+  el.classList.add('active');
+  loadTrainTV();
+}
+
+function trainTVind(el, studyId) {
+  el.classList.toggle('active');
+  const idx = trainTVStudies.indexOf(studyId);
+  if (idx > -1) trainTVStudies.splice(idx, 1);
+  else trainTVStudies.push(studyId);
+  loadTrainTV();
+}
+
+// Init S.E.T. Simulator TV chart on first tab load
+(function() {
+  const origSetsim = showTab;
+  let simTVinited = false;
+  window.showTab = function(tab, btn) {
+    origSetsim(tab, btn);
+    if (tab === 'setsim' && !simTVinited) {
+      simTVinited = true;
+      setTimeout(() => createSimTV('SPY'), 200);
+    }
   };
 })();
 
