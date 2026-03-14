@@ -15,6 +15,12 @@
     { "source": "/options-backtester.html", "destination": "/public/options-backtester.html" },
     { "source": "/training-manual.html", "destination": "/public/training-manual.html" },
     { "source": "/advanced-options-mastery.html", "destination": "/public/advanced-options-mastery.html" },
+    { "source": "/tradingview-charts.html", "destination": "/public/tradingview-charts.html" },
+    { "source": "/market-scanner.html", "destination": "/public/market-scanner.html" },
+    { "source": "/halt-tracker.html", "destination": "/public/halt-tracker.html" },
+    { "source": "/trade-journal.html", "destination": "/public/trade-journal.html" },
+    { "source": "/sentiment-scanner.html", "destination": "/public/sentiment-scanner.html" },
+    { "source": "/ml-indicator.html", "destination": "/public/ml-indicator.html" },
     { "source": "/(.*)", "destination": "/public/index.html" }
   ]
 }
