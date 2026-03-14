@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Charts — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1B2A4A; --emerald: #0D9373; --emerald-light: #10B981; --emerald-dark: #0B7A60;
+  --bg: #F0F5F3; --card: #FFFFFF; --border: #E5E7EB; --text: #1B2A4A; --muted: #6B7280;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 800; }
+.header h1 { font-size: 18px; color: #fff; font-weight: 700; letter-spacing: -0.3px; }
+.header h1 span { color: var(--emerald-light); }
+.header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.header-actions { display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
+.btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.toolbar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.toolbar input, .toolbar select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: #F7FAF9; color: var(--text); }
+.toolbar input:focus, .toolbar select:focus { outline: none; border-color: var(--emerald); }
+.toolbar input[type="text"] { width: 180px; }
+.tf-btn { padding: 7px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; }
+.tf-btn:hover { border-color: var(--emerald); color: var(--emerald); }
+.tf-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+.indicator-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: rgba(13,147,115,0.08); color: var(--emerald); cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+.chip:hover { border-color: var(--emerald); }
+.chip.active { background: var(--emerald); color: #fff; }
+
+.chart-container { flex: 1; padding: 0; min-height: 0; }
+.chart-container > div { height: 100%; }
+
+.info-bar { background: var(--card); border-top: 1px solid var(--border); padding: 10px 28px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); }
+.info-bar a { color: var(--emerald); text-decoration: none; font-weight: 500; }
+.info-bar a:hover { text-decoration: underline; }
+.quick-links { display: flex; gap: 16px; }
+.quick-links a { font-size: 11px; }
+
+@media (max-width: 768px) {
+  .header { padding: 12px 16px; }
+  .toolbar { padding: 10px 16px; gap: 8px; }
+  .toolbar input[type="text"] { width: 120px; }
+  .info-bar { padding: 8px 16px; flex-direction: column; gap: 6px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">📈</div>
+    <div>
+      <h1>LIVE <span>CHARTS</span></h1>
+      <p>Powered by TradingView • Impact Trading Academy</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Back to Academy</a>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div>
+    <label>Symbol</label>
+    <input type="text" id="symbolInput" value="AAPL" placeholder="AAPL, SPY, BTC..." onkeydown="if(event.key==='Enter')changeSymbol()">
+  </div>
+  <div>
+    <label>Timeframe</label>
+    <div style="display:flex;gap:4px;">
+      <button class="tf-btn" onclick="changeTF('1')">1m</button>
+      <button class="tf-btn" onclick="changeTF('5')">5m</button>
+      <button class="tf-btn" onclick="changeTF('15')">15m</button>
+      <button class="tf-btn" onclick="changeTF('60')">1H</button>
+      <button class="tf-btn active" onclick="changeTF('D')">1D</button>
+      <button class="tf-btn" onclick="changeTF('W')">1W</button>
+      <button class="tf-btn" onclick="changeTF('M')">1M</button>
+    </div>
+  </div>
+  <div>
+    <label>Quick Add Indicators</label>
+    <div class="indicator-chips">
+      <span class="chip" onclick="toggleStudy(this,'RSI@tv-basicstudies')">RSI</span>
+      <span class="chip" onclick="toggleStudy(this,'CCI@tv-basicstudies')">CCI</span>
+      <span class="chip" onclick="toggleStudy(this,'ADX@tv-basicstudies')">ADX</span>
+      <span class="chip" onclick="toggleStudy(this,'MACD@tv-basicstudies')">MACD</span>
+      <span class="chip" onclick="toggleStudy(this,'MASimple@tv-basicstudies')">SMA</span>
+      <span class="chip" onclick="toggleStudy(this,'BB@tv-basicstudies')">Bollinger</span>
+      <span class="chip" onclick="toggleStudy(this,'Volume@tv-basicstudies')">Volume</span>
+    </div>
+  </div>
+</div>
+
+<div class="chart-container" id="chartWrap">
+  <!-- TradingView Advanced Chart Widget -->
+  <div class="tradingview-widget-container" style="height:100%;width:100%">
+    <div id="tradingview_chart" style="height:100%;width:100%"></div>
+  </div>
+</div>
+
+<div class="info-bar">
+  <span>Impact Trading Academy • Live Charts powered by TradingView • Data may be delayed</span>
+  <div class="quick-links">
+    <a href="https://trading-training-portal.vercel.app/">Academy Dashboard</a>
+    <a href="/options-backtester.html">Options Backtester</a>
+    <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView ↗</a>
+  </div>
+</div>
+
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+let widget = null;
+let currentSymbol = 'AAPL';
+let currentInterval = 'D';
+let activeStudies = [];
+
+function createWidget() {
+  const container = document.getElementById('tradingview_chart');
+  container.innerHTML = '';
+
+  widget = new TradingView.widget({
+    autosize: true,
+    symbol: currentSymbol,
+    interval: currentInterval,
+    timezone: 'America/Chicago',
+    theme: 'light',
+    style: '1', // candlesticks
+    locale: 'en',
+    toolbar_bg: '#F7FAF9',
+    enable_publishing: false,
+    allow_symbol_change: true,
+    hide_side_toolbar: false,
+    details: true,
+    hotlist: false,
+    calendar: false,
+    studies: activeStudies,
+    container_id: 'tradingview_chart',
+    withdateranges: true,
+    save_image: true,
+    show_popup_button: true,
+    popup_width: '1200',
+    popup_height: '800',
+    overrides: {
+      'mainSeriesProperties.candleStyle.upColor': '#10B981',
+      'mainSeriesProperties.candleStyle.downColor': '#EF4444',
+      'mainSeriesProperties.candleStyle.borderUpColor': '#0D9373',
+      'mainSeriesProperties.candleStyle.borderDownColor': '#DC2626',
+      'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
+      'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+    }
+  });
+}
+
+function changeSymbol() {
+  const input = document.getElementById('symbolInput');
+  const sym = input.value.trim().toUpperCase();
+  if (sym) {
+    currentSymbol = sym;
+    createWidget();
+  }
+}
+
+function changeTF(tf) {
+  currentInterval = tf;
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  createWidget();
+}
+
+function toggleStudy(el, studyId) {
+  el.classList.toggle('active');
+  const idx = activeStudies.indexOf(studyId);
+  if (idx > -1) activeStudies.splice(idx, 1);
+  else activeStudies.push(studyId);
+  createWidget();
+}
+
+// Initialize
+createWidget();
+</script>
+</body>
+</html>
