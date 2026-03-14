@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Scanner — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+:root {
+  --navy:#1B2A4A;--emerald:#0D9373;--emerald-light:#10B981;--bg:#F0F5F3;
+  --card:#FFFFFF;--border:#E5E7EB;--text:#1B2A4A;--muted:#6B7280;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:linear-gradient(135deg,#1B2A4A,#243B60);padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--emerald),var(--emerald-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.header h1{font-size:18px;color:#fff;font-weight:700}.header h1 span{color:var(--emerald-light)}
+.header p{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all 0.2s}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85)}
+.btn-outline:hover{background:rgba(255,255,255,0.1);color:#fff}
+.content{max-width:1400px;margin:0 auto;padding:20px}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:4px}
+.tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted)}
+.tab.active{background:var(--emerald);color:#fff}
+.tab:hover:not(.active){background:rgba(13,147,115,0.06)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.card h2{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--emerald)}
+/* Heat Map */
+.heat-grid{display:grid;gap:3px}
+.heat-cell{border-radius:6px;padding:8px 6px;text-align:center;cursor:pointer;transition:all 0.15s;min-height:60px;display:flex;flex-direction:column;justify-content:center}
+.heat-cell:hover{transform:scale(1.03);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.heat-cell .sym{font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
+.heat-cell .pct{font-size:10px;font-weight:600;color:rgba(255,255,255,0.9)}
+.sector-header{font-size:12px;font-weight:700;padding:8px 12px;background:rgba(27,42,74,0.06);border-radius:8px;margin:12px 0 6px;color:var(--navy)}
+/* Screener */
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filter-group label{display:block;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px}
+.filter-group select,.filter-group input{padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;background:#F7FAF9;min-width:140px}
+.filter-group select:focus,.filter-group input:focus{outline:none;border-color:var(--emerald)}
+.scan-btn{padding:10px 24px;background:var(--emerald);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.scan-btn:hover{background:var(--emerald-light)}
+.scan-btn:disabled{opacity:0.5;cursor:not-allowed}
+.results-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.results-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);border-bottom:2px solid var(--border);position:sticky;top:0;background:var(--card)}
+.results-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.results-table tr:hover td{background:rgba(13,147,115,0.03)}
+.pos{color:#10B981;font-weight:600}.neg{color:#EF4444;font-weight:600}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+.spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--emerald);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.footer{text-align:center;padding:16px;font-size:11px;color:var(--muted)}
+.footer span{color:var(--emerald);font-weight:600}
+@media(max-width:768px){.content{padding:12px}.filter-row{flex-direction:column}.heat-grid{grid-template-columns:repeat(4,1fr)!important}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">🔍</div>
+    <div><h1>MARKET <span>SCANNER</span></h1><p>Heat Map & Screener • Impact Trading Academy</p></div>
+  </div>
+  <div class="header-actions">
+    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Back to Academy</a>
+  </div>
+</div>
+<div id="app"></div>
+<div class="footer">Powered by <span>Mission Metrics</span> • Market data via Yahoo Finance (delayed)</div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+// S&P 500 sector representatives for heat map
+const SECTORS = {
+  'Technology': ['AAPL','MSFT','NVDA','GOOGL','META','AVGO','ORCL','CRM','AMD','ADBE','INTC','CSCO','QCOM','TXN','NOW'],
+  'Healthcare': ['UNH','JNJ','LLY','ABBV','MRK','PFE','TMO','ABT','DHR','AMGN','BMY','CVS','GILD','MDT','ISRG'],
+  'Financials': ['BRK-B','JPM','V','MA','BAC','WFC','GS','MS','BLK','SCHW','AXP','C','USB','PNC','TFC'],
+  'Consumer Disc.': ['AMZN','TSLA','HD','MCD','NKE','LOW','SBUX','TJX','BKNG','CMG','ABNB','ORLY','GM','F','ROST'],
+  'Industrials': ['GE','CAT','UNP','RTX','HON','BA','DE','UPS','LMT','ADP','MMM','GD','ITW','FDX','WM'],
+  'Energy': ['XOM','CVX','COP','SLB','EOG','MPC','PSX','VLO','OXY','PXD','HES','DVN','WMB','KMI','HAL'],
+  'Comm. Services': ['GOOG','T','VZ','DIS','NFLX','CMCSA','TMUS','CHTR','EA','ATVI','WBD','PARA','LYV','MTCH','FOXA'],
+  'Utilities': ['NEE','DUK','SO','D','AEP','SRE','XEL','EXC','ED','WEC','ES','AEE','DTE','CMS','FE'],
+  'Real Estate': ['PLD','AMT','EQIX','CCI','PSA','SPG','O','WELL','DLR','VICI','AVB','EQR','IRM','ARE','MAA'],
+  'Materials': ['LIN','APD','SHW','ECL','FCX','NEM','NUE','VMC','MLM','DOW','DD','PPG','ALB','CE','CF'],
+  'Consumer Staples': ['PG','KO','PEP','COST','WMT','PM','MO','CL','MDLZ','EL','GIS','KMB','SYY','KHC','HSY']
+};
+
+const ALL_TICKERS = Object.values(SECTORS).flat();
+
+function getColor(pct) {
+  if (pct > 3) return '#059669';
+  if (pct > 2) return '#10B981';
+  if (pct > 1) return '#34D399';
+  if (pct > 0.5) return '#6EE7B7';
+  if (pct > 0) return '#A7F3D0';
+  if (pct > -0.5) return '#FECACA';
+  if (pct > -1) return '#FCA5A5';
+  if (pct > -2) return '#F87171';
+  if (pct > -3) return '#EF4444';
+  return '#DC2626';
+}
+
+function HeatMap({ data, loading }) {
+  if (loading) return <div className="loading"><div className="spin"/><p>Loading market data...</p></div>;
+  if (!data || Object.keys(data).length === 0) return <div className="loading"><p>Click "Load Heat Map" to fetch live data</p></div>;
+
+  return (
+    <div>
+      {Object.entries(SECTORS).map(([sector, tickers]) => {
+        const sectorData = tickers.map(t => data[t]).filter(Boolean);
+        const avgChange = sectorData.length > 0 ? (sectorData.reduce((s, d) => s + d.change, 0) / sectorData.length) : 0;
+        return (
+          <div key={sector}>
+            <div className="sector-header">{sector} <span style={{float:'right',color:avgChange>=0?'#10B981':'#EF4444',fontWeight:700}}>{avgChange>=0?'+':''}{avgChange.toFixed(2)}%</span></div>
+            <div className="heat-grid" style={{gridTemplateColumns:`repeat(${Math.min(tickers.length, 8)}, 1fr)`}}>
+              {tickers.map(ticker => {
+                const d = data[ticker];
+                if (!d) return <div key={ticker} className="heat-cell" style={{background:'#E5E7EB'}}><div className="sym">{ticker}</div><div className="pct">—</div></div>;
+                return (
+                  <div key={ticker} className="heat-cell" style={{background:getColor(d.change)}} onClick={() => window.open(`/tradingview-charts.html?symbol=${ticker}`, '_blank')} title={`${ticker}: ${d.price} (${d.change>=0?'+':''}${d.change.toFixed(2)}%)`}>
+                    <div className="sym">{ticker}</div>
+                    <div className="pct">{d.change>=0?'+':''}{d.change.toFixed(2)}%</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Screener({ stockData }) {
+  const [filters, setFilters] = useState({ sector:'All', minChange:-100, maxChange:100, minVol:0, sort:'change_desc' });
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    if (!stockData || Object.keys(stockData).length === 0) return;
+    let rows = Object.entries(stockData).map(([sym, d]) => ({
+      symbol: sym,
+      price: d.price,
+      change: d.change,
+      volume: d.volume,
+      sector: Object.entries(SECTORS).find(([_, tickers]) => tickers.includes(sym))?.[0] || 'Other'
+    }));
+
+    if (filters.sector !== 'All') rows = rows.filter(r => r.sector === filters.sector);
+    rows = rows.filter(r => r.change >= filters.minChange && r.change <= filters.maxChange);
+    if (filters.minVol > 0) rows = rows.filter(r => r.volume >= filters.minVol);
+
+    if (filters.sort === 'change_desc') rows.sort((a, b) => b.change - a.change);
+    else if (filters.sort === 'change_asc') rows.sort((a, b) => a.change - b.change);
+    else if (filters.sort === 'volume_desc') rows.sort((a, b) => b.volume - a.volume);
+
+    setResults(rows);
+  }, [stockData, filters]);
+
+  return (
+    <div>
+      <div className="filter-row">
+        <div className="filter-group">
+          <label>Sector</label>
+          <select value={filters.sector} onChange={e => setFilters({...filters, sector: e.target.value})}>
+            <option value="All">All Sectors</option>
+            {Object.keys(SECTORS).map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+        <div className="filter-group">
+          <label>Min % Change</label>
+          <input type="number" value={filters.minChange} onChange={e => setFilters({...filters, minChange: +e.target.value})} step="0.5" />
+        </div>
+        <div className="filter-group">
+          <label>Max % Change</label>
+          <input type="number" value={filters.maxChange} onChange={e => setFilters({...filters, maxChange: +e.target.value})} step="0.5" />
+        </div>
+        <div className="filter-group">
+          <label>Min Volume</label>
+          <select value={filters.minVol} onChange={e => setFilters({...filters, minVol: +e.target.value})}>
+            <option value="0">Any</option>
+            <option value="1000000">1M+</option>
+            <option value="5000000">5M+</option>
+            <option value="10000000">10M+</option>
+            <option value="50000000">50M+</option>
+          </select>
+        </div>
+        <div className="filter-group">
+          <label>Sort By</label>
+          <select value={filters.sort} onChange={e => setFilters({...filters, sort: e.target.value})}>
+            <option value="change_desc">% Change (High → Low)</option>
+            <option value="change_asc">% Change (Low → High)</option>
+            <option value="volume_desc">Volume (High → Low)</option>
+          </select>
+        </div>
+      </div>
+      <div style={{fontSize:'12px',color:'var(--muted)',marginBottom:'10px'}}>{results.length} stocks found</div>
+      <div style={{maxHeight:'500px',overflowY:'auto',border:'1px solid var(--border)',borderRadius:'10px'}}>
+        <table className="results-table">
+          <thead><tr><th>Symbol</th><th>Sector</th><th>Price</th><th>% Change</th><th>Volume</th></tr></thead>
+          <tbody>
+            {results.slice(0, 100).map(r => (
+              <tr key={r.symbol} style={{cursor:'pointer'}} onClick={() => window.open(`/tradingview-charts.html?symbol=${r.symbol}`, '_blank')}>
+                <td style={{fontWeight:700}}>{r.symbol}</td>
+                <td style={{fontSize:'12px',color:'var(--muted)'}}>{r.sector}</td>
+                <td>${r.price.toFixed(2)}</td>
+                <td className={r.change >= 0 ? 'pos' : 'neg'}>{r.change >= 0 ? '+' : ''}{r.change.toFixed(2)}%</td>
+                <td style={{fontSize:'12px'}}>{r.volume >= 1000000 ? (r.volume/1000000).toFixed(1)+'M' : r.volume >= 1000 ? (r.volume/1000).toFixed(0)+'K' : r.volume}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [tab, setTab] = useState('heatmap');
+  const [stockData, setStockData] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    const data = {};
+    // Batch fetch — use existing Yahoo Finance proxy or direct lightweight calls
+    const batchSize = 15;
+    for (let i = 0; i < ALL_TICKERS.length; i += batchSize) {
+      const batch = ALL_TICKERS.slice(i, i + batchSize);
+      const promises = batch.map(async (sym) => {
+        try {
+          const r = await fetch(`/api/stock-data?symbol=${sym}&range=5d&interval=1d`);
+          if (!r.ok) return;
+          const d = await r.json();
+          const candles = d.candles || [];
+          if (candles.length >= 2) {
+            const prev = candles[candles.length - 2].close;
+            const curr = candles[candles.length - 1].close;
+            const vol = candles[candles.length - 1].volume;
+            data[sym] = { price: curr, change: ((curr - prev) / prev) * 100, volume: vol };
+          } else if (candles.length === 1) {
+            data[sym] = { price: candles[0].close, change: 0, volume: candles[0].volume };
+          }
+        } catch (e) { /* skip failed tickers */ }
+      });
+      await Promise.all(promises);
+    }
+    setStockData(data);
+    setLoading(false);
+  }, []);
+
+  return (
+    <div className="content">
+      <div className="tabs">
+        <div className={`tab ${tab==='heatmap'?'active':''}`} onClick={() => setTab('heatmap')}>🗺 Heat Map</div>
+        <div className={`tab ${tab==='screener'?'active':''}`} onClick={() => setTab('screener')}>🔎 Screener</div>
+      </div>
+
+      {tab === 'heatmap' && (
+        <div className="card">
+          <h2><span className="dot" /> Market Heat Map <button className="scan-btn" onClick={loadData} disabled={loading} style={{marginLeft:'auto',fontSize:'12px',padding:'6px 16px'}}>{loading ? 'Loading...' : '↻ Load Heat Map'}</button></h2>
+          <p style={{fontSize:'12px',color:'var(--muted)',marginBottom:'12px'}}>S&P 500 sector performance — click any stock to open charts. Green = up, Red = down.</p>
+          <HeatMap data={stockData} loading={loading} />
+        </div>
+      )}
+
+      {tab === 'screener' && (
+        <div className="card">
+          <h2><span className="dot" /> Stock Screener</h2>
+          <p style={{fontSize:'12px',color:'var(--muted)',marginBottom:'12px'}}>Filter stocks by sector, % change, and volume. Click any row to open charts. {Object.keys(stockData).length === 0 && <button className="scan-btn" onClick={loadData} disabled={loading} style={{fontSize:'11px',padding:'4px 12px',marginLeft:'8px'}}>{loading ? 'Loading...' : 'Load Data First'}</button>}</p>
+          <Screener stockData={stockData} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('app'));
+</script>
+</body>
+</html>
