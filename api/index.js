@@ -1163,7 +1163,75 @@ Live Market Success Protocol:
 3. Liquidity Check — Has price swept a recent high/low?
 4. Zone Validation — Is price entering a True Zone?
 5. Execution Confirmation — AIP or Control Shift candle at the zone?
-6. Risk Check — 1% risk, 3:1 RR, Contingency Order set?`;
+6. Risk Check — 1% risk, 3:1 RR, Contingency Order set?
+
+--- CORRELATION REPORT 2: Market Mechanics vs. Professional Execution ---
+
+Module 2 Strategic Overview:
+Module 2 constitutes the critical transition from psychological theory to the high-frequency execution environment. This phase functions as the bridge between internal mindset and external market microstructure. Identifying institutional footprints is the non-negotiable prerequisite for capturing alpha.
+
+Mission Metrics for Module 2:
+- Market Literacy: Recognition that 80-90% of volume is professional, not retail (Institutional Dominance)
+- Order Flow Dynamics: Comprehension of price movement as a result of order consumption (Supply and Demand Physics)
+- Price Bar Interpretation: Decoding buyer/seller consensus via bar relationships (OHLC Microstructure)
+
+Lesson-by-Lesson Breakdown:
+Lesson 1 - Who Really Moves the Market: Identifies hedge funds and pension funds as the primary drivers of the $50T global market. Introduces the "Footprints in the Sand" metaphor.
+Lesson 2 - Market Volume Breakdown: Quantifies the institutional (80-90%) vs. retail (10-20%) imbalance.
+Lesson 3 - Supply and Demand: Price appreciation occurs when demand consumes available supply; depreciation occurs when supply overwhelms demand.
+Lesson 4 - Reading the Price Bar (OHLC): Deconstructs the four critical data points to reveal buyer vs. seller control.
+Lesson 5 - Demand and Supply Zones: Unfilled institutional orders create zones of pending liquidity, serving as future catalysts.
+Lesson 6 - How Orders Create Movement: Balance to Imbalance to Movement. Imbalances represent institutional intervention.
+
+OHLC Bar Reading Workflows:
+- Close > Open (Bullish Consensus): Buyers consumed supply; price ended higher.
+- Close < Open (Bearish Consensus): Sellers dominated; price concluded lower.
+- Close near High: Unrelenting buying pressure and professional control into the close.
+- Close near Low: Extreme selling pressure and seller dominance.
+- Large Range (High minus Low): High-stakes volatility and lack of consensus.
+- Topping Tails: Visual manifestation of bearish consensus (Close far from High).
+
+The Balance to Imbalance to Movement Cycle:
+Balance = equilibrium (buy and sell orders equal). Imbalance = massive institutional order consumes liquidity on one side. Movement = price shifts rapidly until new Balance. Unfilled orders at Imbalance create tradeable Demand and Supply Zones.
+
+The 5 Pillars of Stock Selection (Practical Execution Filter):
+1. Already Up 10%: Baseline momentum validation.
+2. Relative Volume (RVOL) > 5x: Proves institutional footprints are present vs 20-day average.
+3. News Catalyst: Fresh information (biotech, earnings, sector themes) sparking professional interest.
+4. Low Float (<10M): Restricted supply ensures demand imbalance = explosive movement.
+5. Price (2-20): Sector most susceptible to volatility once institutional momentum is established.
+
+Position Management — The Icebreaker Strategy:
+- Entry: Quarter-size starter position (e.g., 5,000 shares toward 20,000-share goal).
+- Profit Threshold: Stay at quarter-size until $1,000 profit cushion realized.
+- Scaling: Only after trade is validated and $1,000 threshold met, scale into Full Size.
+- This prevents emotional hijacking during choppy cycles.
+
+The Micro Pullback Setup:
+When a ticker rips on breaking news = massive Imbalance. The Micro Pullback (one-candle rest in uptrend) allows entry on first candle to make new high. Captures the Movement phase with risk defined at the low of the pullback. This is the Front Side of the move.
+
+Cross-Reference Matrix (Theory to Practice):
+- Institutional Footprints = Day Trade Dash Scanners (High RVOL) — HIGH alignment
+- Demand Zones = Buying the Dip / Micro Pullbacks — HIGH alignment
+- Order Flow Imbalance = Level 2 Analysis / Sellers on the Ask — HIGH alignment
+- Short Trade Mechanics = Short Squeezes / Jack-knife Rejections — MEDIUM alignment
+- Balance/Imbalance = Front Side (Imbalance) vs. Back Side (Balance) — HIGH alignment
+
+Critical Execution Rules:
+- Rule of Three: Walk away after three consecutive losses to prevent revenge trading.
+- Slippage and Predatory Algos: Jack-knife Candles = HFT algorithms consuming liquidity. Always check spread before entry.
+- No scaling to full size without $1,000 profit cushion (Icebreaker rule).
+- Integrate 5 Pillars into Demand Zone Identification as a hard filter.
+- Add Spread and Slippage check to every entry to ensure viable risk-to-reward.
+
+Master Workflow for Module 2 Success:
+1. Scan: Identify tickers meeting 5 Pillars (Price, RVOL > 5x, News, Float < 10M, Up 10%).
+2. Filter: Isolate Institutional Footprint — high-volume price departure.
+3. Map: Define Demand Zone at origin of imbalance.
+4. Wait: Radical Acceptance as price pulls back to zone.
+5. Enter: Quarter-Size Icebreaker at first candle to make new high, risk capped at pullback low.
+6. Scale: Full Size only after $1,000 profit cushion.
+7. Exit: Lock in the 18-cent base hit to build daily equity.`;
 
 app.post('/api/trading-ai/ask', async (req, res) => {
   try {
