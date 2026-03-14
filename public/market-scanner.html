@@ -23,21 +23,21 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all 0.2s}
 .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85)}
 .btn-outline:hover{background:rgba(255,255,255,0.1);color:#fff}
-.content{max-width:1400px;margin:0 auto;padding:20px}
+.content{max-width:1400px;margin:0 auto;padding:24px}
 .tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:4px}
-.tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted)}
+.tab{flex:1;padding:12px;text-align:center;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted)}
 .tab.active{background:var(--emerald);color:#fff}
 .tab:hover:not(.active){background:rgba(13,147,115,0.06)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
-.card h2{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
+.card h2{font-size:18px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--emerald)}
 /* Heat Map */
-.heat-grid{display:grid;gap:3px}
-.heat-cell{border-radius:6px;padding:8px 6px;text-align:center;cursor:pointer;transition:all 0.15s;min-height:60px;display:flex;flex-direction:column;justify-content:center}
-.heat-cell:hover{transform:scale(1.03);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
-.heat-cell .sym{font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
-.heat-cell .pct{font-size:10px;font-weight:600;color:rgba(255,255,255,0.9)}
-.sector-header{font-size:12px;font-weight:700;padding:8px 12px;background:rgba(27,42,74,0.06);border-radius:8px;margin:12px 0 6px;color:var(--navy)}
+.heat-grid{display:grid;gap:6px}
+.heat-cell{border-radius:10px;padding:16px 10px;text-align:center;cursor:pointer;transition:all 0.15s;min-height:85px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.heat-cell:hover{transform:scale(1.04);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+.heat-cell .sym{font-size:14px;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.35);letter-spacing:0.3px}
+.heat-cell .pct{font-size:13px;font-weight:700;color:rgba(255,255,255,0.95)}
+.sector-header{font-size:14px;font-weight:700;padding:10px 14px;background:rgba(27,42,74,0.06);border-radius:8px;margin:16px 0 8px;color:var(--navy)}
 /* Screener */
 .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .filter-group label{display:block;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px}
@@ -46,9 +46,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .scan-btn{padding:10px 24px;background:var(--emerald);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .scan-btn:hover{background:var(--emerald-light)}
 .scan-btn:disabled{opacity:0.5;cursor:not-allowed}
-.results-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
-.results-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);border-bottom:2px solid var(--border);position:sticky;top:0;background:var(--card)}
-.results-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.results-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.results-table th{text-align:left;padding:12px 16px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);border-bottom:2px solid var(--border);position:sticky;top:0;background:var(--card)}
+.results-table td{padding:12px 16px;border-bottom:1px solid var(--border)}
 .results-table tr:hover td{background:rgba(13,147,115,0.03)}
 .pos{color:#10B981;font-weight:600}.neg{color:#EF4444;font-weight:600}
 .loading{text-align:center;padding:40px;color:var(--muted)}
@@ -56,7 +56,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 @keyframes sp{to{transform:rotate(360deg)}}
 .footer{text-align:center;padding:16px;font-size:11px;color:var(--muted)}
 .footer span{color:var(--emerald);font-weight:600}
-@media(max-width:768px){.content{padding:12px}.filter-row{flex-direction:column}.heat-grid{grid-template-columns:repeat(4,1fr)!important}}
+@media(max-width:768px){.content{padding:12px}.filter-row{flex-direction:column}.heat-grid{grid-template-columns:repeat(3,1fr)!important}}
 </style>
 </head>
 <body>
@@ -117,7 +117,7 @@ function HeatMap({ data, loading }) {
         return (
           <div key={sector}>
             <div className="sector-header">{sector} <span style={{float:'right',color:avgChange>=0?'#10B981':'#EF4444',fontWeight:700}}>{avgChange>=0?'+':''}{avgChange.toFixed(2)}%</span></div>
-            <div className="heat-grid" style={{gridTemplateColumns:`repeat(${Math.min(tickers.length, 8)}, 1fr)`}}>
+            <div className="heat-grid" style={{gridTemplateColumns:`repeat(${Math.min(tickers.length, 5)}, 1fr)`}}>
               {tickers.map(ticker => {
                 const d = data[ticker];
                 if (!d) return <div key={ticker} className="heat-cell" style={{background:'#E5E7EB'}}><div className="sym">{ticker}</div><div className="pct">—</div></div>;
