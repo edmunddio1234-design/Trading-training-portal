@@ -1524,8 +1524,11 @@ function App() {
   const openModule = (id) => {
     setCurrentModuleId(id);
     setCurrentView('module');
-    window.scrollTo(0, 0);
-    document.querySelector('.main-content')?.scrollTo(0, 0);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      document.querySelector('.main-content')?.scrollTo({ top: 0, behavior: 'instant' });
+      document.querySelector('.content-body')?.scrollTo({ top: 0, behavior: 'instant' });
+    }, 0);
   };
   const goToDashboard = () => { setCurrentView('dashboard'); setCurrentModuleId(null); };
   const completeModule = (id) => setCompletedModules(prev => ({...prev, [id]: true}));
