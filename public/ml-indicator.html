@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Prediction Indicator — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root {
+  --navy: #1B2A4A; --emerald: #0D9373; --emerald-light: #10B981; --emerald-dark: #0B7A60;
+  --bg: #F0F5F3; --card: #FFFFFF; --border: #E5E7EB; --text: #1B2A4A; --muted: #6B7280;
+  --red: #EF4444; --green: #10B981; --orange: #F59E0B;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; font-weight: 800; }
+.header h1 { font-size: 18px; color: #fff; font-weight: 700; letter-spacing: -0.3px; }
+.header h1 span { color: var(--emerald-light); }
+.header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
+.btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+.controls { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: flex-end; }
+.control-group { display: flex; flex-direction: column; gap: 4px; }
+.control-group label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.control-group input, .control-group select { padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 13px; background: var(--card); color: var(--text); }
+.control-group input:focus, .control-group select:focus { outline: none; border-color: var(--emerald); box-shadow: 0 0 0 3px rgba(13,147,115,0.1); }
+.run-btn { padding: 10px 28px; background: var(--emerald); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; align-self: flex-end; }
+.run-btn:hover { background: var(--emerald-dark); }
+.run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.dashboard { display: grid; grid-template-columns: 1fr 340px; gap: 20px; margin-bottom: 24px; }
+@media (max-width: 1024px) { .dashboard { grid-template-columns: 1fr; } }
+
+.chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.chart-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.chart-header h2 { font-size: 15px; font-weight: 700; }
+
+.signal-panel { display: flex; flex-direction: column; gap: 16px; }
+.signal-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.signal-card h3 { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+.big-signal { text-align: center; padding: 24px; }
+.big-signal .direction { font-size: 48px; font-weight: 800; line-height: 1; }
+.big-signal .conf { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.big-signal .conf strong { font-weight: 700; }
+
+.indicator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ind-item { padding: 10px; background: var(--bg); border-radius: 8px; }
+.ind-item .ind-name { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.ind-item .ind-val { font-size: 18px; font-weight: 700; margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+.neighbors-list { max-height: 220px; overflow-y: auto; }
+.neighbor-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.neighbor-row:last-child { border-bottom: none; }
+.neighbor-dist { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 11px; }
+.neighbor-outcome { font-weight: 700; padding: 3px 10px; border-radius: 12px; font-size: 11px; }
+
+canvas { width: 100%; }
+
+.legend { display: flex; gap: 20px; padding: 12px 20px; font-size: 11px; color: var(--muted); justify-content: center; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+.info-section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-top: 20px; }
+.info-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+.info-section p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+.info-section code { font-family: 'JetBrains Mono', monospace; background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+.loading { text-align: center; padding: 80px; }
+.spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--emerald); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.footer { background: var(--card); border-top: 1px solid var(--border); padding: 12px 28px; text-align: center; font-size: 11px; color: var(--muted); margin-top: 40px; }
+.footer a { color: var(--emerald); text-decoration: none; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">ML</div>
+    <div>
+      <h1>ML PREDICTION <span>INDICATOR</span></h1>
+      <p>kNN Machine Learning Engine &bull; RSI &bull; CCI &bull; ADX &bull; Impact Trading Academy</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">&larr; Back to Academy</a>
+  </div>
+</div>
+
+<div id="root"></div>
+
+<div class="footer">
+  Impact Trading Academy &bull; ML Prediction Indicator &bull;
+  <a href="https://trading-training-portal.vercel.app/">Academy Dashboard</a> &bull;
+  Not financial advice &mdash; ML predictions are probabilistic, not certain
+</div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ═══════════════════════════════════════════
+   TECHNICAL INDICATOR CALCULATIONS
+   ═══════════════════════════════════════════ */
+
+function calcSMA(data, period) {
+  const result = [];
+  for (let i = 0; i < data.length; i++) {
+    if (i < period - 1) { result.push(null); continue; }
+    let sum = 0;
+    for (let j = i - period + 1; j <= i; j++) sum += data[j];
+    result.push(sum / period);
+  }
+  return result;
+}
+
+function calcEMA(data, period) {
+  const result = [];
+  const k = 2 / (period + 1);
+  let ema = null;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i] === null || data[i] === undefined) { result.push(null); continue; }
+    if (ema === null) { ema = data[i]; }
+    else { ema = data[i] * k + ema * (1 - k); }
+    result.push(ema);
+  }
+  return result;
+}
+
+function calcRSI(closes, period = 14) {
+  const result = [];
+  let avgGain = 0, avgLoss = 0;
+  for (let i = 0; i < closes.length; i++) {
+    if (i === 0) { result.push(null); continue; }
+    const change = closes[i] - closes[i - 1];
+    const gain = change > 0 ? change : 0;
+    const loss = change < 0 ? -change : 0;
+    if (i <= period) {
+      avgGain += gain;
+      avgLoss += loss;
+      if (i === period) {
+        avgGain /= period;
+        avgLoss /= period;
+        const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+        result.push(100 - (100 / (1 + rs)));
+      } else {
+        result.push(null);
+      }
+    } else {
+      avgGain = (avgGain * (period - 1) + gain) / period;
+      avgLoss = (avgLoss * (period - 1) + loss) / period;
+      const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+      result.push(100 - (100 / (1 + rs)));
+    }
+  }
+  return result;
+}
+
+function calcCCI(highs, lows, closes, period = 20) {
+  const result = [];
+  for (let i = 0; i < closes.length; i++) {
+    if (i < period - 1) { result.push(null); continue; }
+    const tps = [];
+    for (let j = i - period + 1; j <= i; j++) {
+      tps.push((highs[j] + lows[j] + closes[j]) / 3);
+    }
+    const mean = tps.reduce((a, b) => a + b, 0) / period;
+    const meanDev = tps.reduce((a, b) => a + Math.abs(b - mean), 0) / period;
+    const tp = (highs[i] + lows[i] + closes[i]) / 3;
+    result.push(meanDev === 0 ? 0 : (tp - mean) / (0.015 * meanDev));
+  }
+  return result;
+}
+
+function calcADX(highs, lows, closes, period = 14) {
+  const plusDI = [], minusDI = [], adx = [];
+  const trueRanges = [];
+  const plusDMs = [], minusDMs = [];
+
+  for (let i = 0; i < closes.length; i++) {
+    if (i === 0) {
+      trueRanges.push(highs[i] - lows[i]);
+      plusDMs.push(0); minusDMs.push(0);
+      plusDI.push(null); minusDI.push(null); adx.push(null);
+      continue;
+    }
+    const tr = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i-1]), Math.abs(lows[i] - closes[i-1]));
+    const upMove = highs[i] - highs[i-1];
+    const downMove = lows[i-1] - lows[i];
+    const pDM = (upMove > downMove && upMove > 0) ? upMove : 0;
+    const mDM = (downMove > upMove && downMove > 0) ? downMove : 0;
+    trueRanges.push(tr);
+    plusDMs.push(pDM);
+    minusDMs.push(mDM);
+
+    if (i < period) {
+      plusDI.push(null); minusDI.push(null); adx.push(null);
+      continue;
+    }
+
+    let smoothTR = 0, smoothPDM = 0, smoothMDM = 0;
+    if (i === period) {
+      for (let j = i - period + 1; j <= i; j++) { smoothTR += trueRanges[j]; smoothPDM += plusDMs[j]; smoothMDM += minusDMs[j]; }
+    } else {
+      const prevPDI = plusDI[i-1] || 0;
+      const prevMDI = minusDI[i-1] || 0;
+      smoothTR = trueRanges.slice(i - period + 1, i + 1).reduce((a,b) => a+b, 0);
+      smoothPDM = plusDMs.slice(i - period + 1, i + 1).reduce((a,b) => a+b, 0);
+      smoothMDM = minusDMs.slice(i - period + 1, i + 1).reduce((a,b) => a+b, 0);
+    }
+
+    const pdi = smoothTR === 0 ? 0 : (smoothPDM / smoothTR) * 100;
+    const mdi = smoothTR === 0 ? 0 : (smoothMDM / smoothTR) * 100;
+    plusDI.push(pdi);
+    minusDI.push(mdi);
+
+    const dx = (pdi + mdi) === 0 ? 0 : (Math.abs(pdi - mdi) / (pdi + mdi)) * 100;
+    if (i < period * 2) { adx.push(null); }
+    else if (i === period * 2) {
+      let sumDX = 0;
+      // Approximate first ADX
+      adx.push(dx);
+    } else {
+      const prevADX = adx[i-1] || dx;
+      adx.push(((prevADX * (period - 1)) + dx) / period);
+    }
+  }
+  return { adx, plusDI, minusDI };
+}
+
+function calcMACD(closes) {
+  const ema12 = calcEMA(closes, 12);
+  const ema26 = calcEMA(closes, 26);
+  const macdLine = closes.map((_, i) => (ema12[i] !== null && ema26[i] !== null) ? ema12[i] - ema26[i] : null);
+  const signal = calcEMA(macdLine.filter(v => v !== null), 9);
+  // Align signal
+  const signalAligned = [];
+  let si = 0;
+  for (let i = 0; i < macdLine.length; i++) {
+    if (macdLine[i] === null) signalAligned.push(null);
+    else { signalAligned.push(signal[si] || null); si++; }
+  }
+  const histogram = macdLine.map((v, i) => (v !== null && signalAligned[i] !== null) ? v - signalAligned[i] : null);
+  return { macdLine, signal: signalAligned, histogram };
+}
+
+function calcStochastic(highs, lows, closes, kPeriod = 14) {
+  const result = [];
+  for (let i = 0; i < closes.length; i++) {
+    if (i < kPeriod - 1) { result.push(null); continue; }
+    let hh = -Infinity, ll = Infinity;
+    for (let j = i - kPeriod + 1; j <= i; j++) {
+      if (highs[j] > hh) hh = highs[j];
+      if (lows[j] < ll) ll = lows[j];
+    }
+    result.push(hh === ll ? 50 : ((closes[i] - ll) / (hh - ll)) * 100);
+  }
+  return result;
+}
+
+function calcATR(highs, lows, closes, period = 14) {
+  const result = [];
+  for (let i = 0; i < closes.length; i++) {
+    if (i === 0) { result.push(highs[i] - lows[i]); continue; }
+    const tr = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i-1]), Math.abs(lows[i] - closes[i-1]));
+    if (i < period) { result.push(null); continue; }
+    if (i === period) {
+      let sum = 0;
+      for (let j = 0; j <= i; j++) {
+        const t = j === 0 ? highs[j] - lows[j] : Math.max(highs[j] - lows[j], Math.abs(highs[j] - closes[j-1]), Math.abs(lows[j] - closes[j-1]));
+        sum += t;
+      }
+      result.push(sum / (period + 1));
+    } else {
+      const prev = result[i-1] || tr;
+      result.push(((prev * (period - 1)) + tr) / period);
+    }
+  }
+  return result;
+}
+
+/* ═══════════════════════════════════════════
+   kNN PREDICTION ENGINE
+   ═══════════════════════════════════════════ */
+
+function euclideanDistance(a, b) {
+  let sum = 0;
+  for (let i = 0; i < a.length; i++) {
+    const diff = (a[i] || 0) - (b[i] || 0);
+    sum += diff * diff;
+  }
+  return Math.sqrt(sum);
+}
+
+function normalizeFeatures(features) {
+  // Min-max normalization per feature dimension
+  const dims = features[0].length;
+  const mins = new Array(dims).fill(Infinity);
+  const maxs = new Array(dims).fill(-Infinity);
+
+  features.forEach(f => {
+    f.forEach((v, i) => {
+      if (v !== null && v !== undefined) {
+        if (v < mins[i]) mins[i] = v;
+        if (v > maxs[i]) maxs[i] = v;
+      }
+    });
+  });
+
+  return features.map(f =>
+    f.map((v, i) => {
+      const range = maxs[i] - mins[i];
+      return range === 0 ? 0.5 : ((v || 0) - mins[i]) / range;
+    })
+  );
+}
+
+function runKNN(features, outcomes, queryIdx, k = 8, lookahead = 5) {
+  // Features[queryIdx] is our query point
+  // We compare against all points BEFORE queryIdx (no look-ahead bias)
+  const query = features[queryIdx];
+  const distances = [];
+
+  for (let i = lookahead; i < queryIdx - lookahead; i++) {
+    const dist = euclideanDistance(query, features[i]);
+    distances.push({ idx: i, distance: dist, outcome: outcomes[i] });
+  }
+
+  distances.sort((a, b) => a.distance - b.distance);
+  const neighbors = distances.slice(0, k);
+
+  if (neighbors.length === 0) return { prediction: 0, confidence: 0, neighbors: [] };
+
+  // Weight by inverse distance
+  let weightedSum = 0, weightTotal = 0;
+  neighbors.forEach(n => {
+    const w = n.distance === 0 ? 100 : 1 / n.distance;
+    weightedSum += n.outcome * w;
+    weightTotal += w;
+  });
+
+  const prediction = weightTotal === 0 ? 0 : weightedSum / weightTotal;
+  // Confidence: agreement among neighbors (0 to 1)
+  const bullishCount = neighbors.filter(n => n.outcome > 0).length;
+  const bearishCount = neighbors.filter(n => n.outcome < 0).length;
+  const confidence = Math.abs(bullishCount - bearishCount) / k;
+
+  return { prediction, confidence, neighbors };
+}
+
+/* ═══════════════════════════════════════════
+   SYNTHETIC OHLCV DATA GENERATOR
+   ═══════════════════════════════════════════ */
+
+function generateOHLCV(symbol, days = 252) {
+  const data = [];
+  // Start prices based on common tickers
+  const startPrices = { AAPL: 175, TSLA: 245, NVDA: 480, SPY: 450, QQQ: 380, AMD: 130, AMZN: 170, MSFT: 380, META: 360, GOOG: 140 };
+  let close = startPrices[symbol] || 100 + Math.random() * 200;
+  const baseVol = symbol === 'SPY' ? 80000000 : symbol === 'TSLA' ? 50000000 : 20000000;
+  const now = new Date();
+
+  for (let i = days; i >= 0; i--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - i);
+    // Skip weekends
+    if (date.getDay() === 0 || date.getDay() === 6) continue;
+
+    const volatility = 0.015 + Math.random() * 0.02;
+    const drift = (Math.random() - 0.48) * volatility; // slight upward bias
+    const change = close * (drift + (Math.random() - 0.5) * volatility);
+
+    const open = close + (Math.random() - 0.5) * close * 0.005;
+    close = close + change;
+    const high = Math.max(open, close) + Math.random() * close * volatility * 0.5;
+    const low = Math.min(open, close) - Math.random() * close * volatility * 0.5;
+    const volume = Math.floor(baseVol * (0.5 + Math.random()));
+
+    data.push({
+      date: date.toISOString().split('T')[0],
+      open: Math.round(open * 100) / 100,
+      high: Math.round(high * 100) / 100,
+      low: Math.round(low * 100) / 100,
+      close: Math.round(close * 100) / 100,
+      volume,
+    });
+  }
+  return data;
+}
+
+/* ═══════════════════════════════════════════
+   CANVAS CHART RENDERER
+   ═══════════════════════════════════════════ */
+
+function drawChart(canvas, ohlcv, predictions, showCandles = true) {
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width;
+  const H = 420;
+
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  // Clear
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, H);
+
+  if (!ohlcv.length) return;
+
+  const margin = { top: 20, right: 60, bottom: 60, left: 70 };
+  const chartW = W - margin.left - margin.right;
+  const priceH = H * 0.65 - margin.top;
+  const predH = H * 0.25;
+  const predTop = priceH + margin.top + 30;
+
+  // Price range
+  const visibleData = ohlcv.slice(-120);
+  const visiblePreds = predictions.slice(-120);
+  let minP = Infinity, maxP = -Infinity;
+  visibleData.forEach(d => { if (d.low < minP) minP = d.low; if (d.high > maxP) maxP = d.high; });
+  const pRange = maxP - minP || 1;
+  const padP = pRange * 0.05;
+  minP -= padP; maxP += padP;
+
+  const barW = Math.max(2, (chartW / visibleData.length) - 1);
+  const gap = chartW / visibleData.length;
+
+  const toX = (i) => margin.left + i * gap + gap / 2;
+  const toY = (price) => margin.top + (1 - (price - minP) / (maxP - minP)) * priceH;
+
+  // Grid lines
+  ctx.strokeStyle = '#F3F4F6';
+  ctx.lineWidth = 0.5;
+  const priceStep = Math.pow(10, Math.floor(Math.log10(pRange))) / 2;
+  for (let p = Math.ceil(minP / priceStep) * priceStep; p <= maxP; p += priceStep) {
+    const y = toY(p);
+    ctx.beginPath(); ctx.moveTo(margin.left, y); ctx.lineTo(W - margin.right, y); ctx.stroke();
+    ctx.fillStyle = '#9CA3AF'; ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'right';
+    ctx.fillText(p.toFixed(2), margin.left - 8, y + 3);
+  }
+
+  // Price labels on right
+  ctx.textAlign = 'left';
+  const lastPrice = visibleData[visibleData.length - 1].close;
+  const ly = toY(lastPrice);
+  ctx.fillStyle = lastPrice >= visibleData[0].close ? '#10B981' : '#EF4444';
+  ctx.font = 'bold 11px JetBrains Mono, monospace';
+  ctx.fillText(lastPrice.toFixed(2), W - margin.right + 8, ly + 4);
+
+  // Candlesticks
+  visibleData.forEach((d, i) => {
+    const x = toX(i);
+    const isGreen = d.close >= d.open;
+    ctx.strokeStyle = isGreen ? '#0D9373' : '#DC2626';
+    ctx.fillStyle = isGreen ? '#10B981' : '#EF4444';
+
+    // Wick
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, toY(d.high));
+    ctx.lineTo(x, toY(d.low));
+    ctx.stroke();
+
+    // Body
+    const bodyTop = toY(Math.max(d.open, d.close));
+    const bodyBot = toY(Math.min(d.open, d.close));
+    const bodyH = Math.max(1, bodyBot - bodyTop);
+    ctx.fillRect(x - barW / 2, bodyTop, barW, bodyH);
+  });
+
+  // ─── ML PREDICTION BASELINE ───
+  // Separator line
+  ctx.strokeStyle = '#E5E7EB';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(margin.left, predTop - 15); ctx.lineTo(W - margin.right, predTop - 15); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Label
+  ctx.fillStyle = '#6B7280'; ctx.font = 'bold 10px Inter, sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('ML PREDICTION BASELINE', margin.left, predTop - 4);
+
+  // Draw prediction baseline bars
+  if (visiblePreds.length > 0) {
+    visiblePreds.forEach((pred, i) => {
+      if (!pred || pred.prediction === undefined) return;
+      const x = toX(i);
+      const centerY = predTop + predH / 2;
+      const maxBarH = predH / 2 - 4;
+
+      const { prediction, confidence } = pred;
+      const barHeight = Math.abs(prediction) * maxBarH * 3; // Scale up
+      const clampedH = Math.min(barHeight, maxBarH);
+
+      let color;
+      if (prediction > 0.1) {
+        const alpha = 0.3 + confidence * 0.7;
+        color = `rgba(16, 185, 129, ${alpha})`; // green
+      } else if (prediction < -0.1) {
+        const alpha = 0.3 + confidence * 0.7;
+        color = `rgba(239, 68, 68, ${alpha})`; // red
+      } else {
+        color = `rgba(156, 163, 175, ${0.3 + confidence * 0.4})`; // grey
+      }
+
+      ctx.fillStyle = color;
+      if (prediction >= 0) {
+        ctx.fillRect(x - barW / 2, centerY - clampedH, barW, clampedH);
+      } else {
+        ctx.fillRect(x - barW / 2, centerY, barW, clampedH);
+      }
+    });
+
+    // Center line for prediction area
+    ctx.strokeStyle = '#D1D5DB';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(margin.left, predTop + predH / 2);
+    ctx.lineTo(W - margin.right, predTop + predH / 2);
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = '#10B981'; ctx.font = '9px Inter'; ctx.textAlign = 'right';
+    ctx.fillText('BULLISH', margin.left - 8, predTop + 12);
+    ctx.fillStyle = '#EF4444';
+    ctx.fillText('BEARISH', margin.left - 8, predTop + predH - 4);
+  }
+
+  // Date labels
+  ctx.fillStyle = '#9CA3AF'; ctx.font = '10px Inter'; ctx.textAlign = 'center';
+  const labelEvery = Math.max(1, Math.floor(visibleData.length / 8));
+  visibleData.forEach((d, i) => {
+    if (i % labelEvery === 0) {
+      const parts = d.date.split('-');
+      ctx.fillText(`${parts[1]}/${parts[2]}`, toX(i), H - 8);
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════
+   MAIN APP
+   ═══════════════════════════════════════════ */
+
+function App() {
+  const [symbol, setSymbol] = useState('AAPL');
+  const [k, setK] = useState(8);
+  const [lookahead, setLookahead] = useState(5);
+  const [loading, setLoading] = useState(false);
+  const [ohlcv, setOhlcv] = useState([]);
+  const [predictions, setPredictions] = useState([]);
+  const [currentSignal, setCurrentSignal] = useState(null);
+  const [indicators, setIndicators] = useState(null);
+  const [accuracy, setAccuracy] = useState(null);
+  const canvasRef = useRef(null);
+
+  const runAnalysis = useCallback(() => {
+    setLoading(true);
+    setTimeout(() => {
+      // Generate or fetch data
+      const data = generateOHLCV(symbol.toUpperCase(), 300);
+      setOhlcv(data);
+
+      const closes = data.map(d => d.close);
+      const highs = data.map(d => d.high);
+      const lows = data.map(d => d.low);
+
+      // Calculate all indicators
+      const rsi = calcRSI(closes, 14);
+      const cci = calcCCI(highs, lows, closes, 20);
+      const adxData = calcADX(highs, lows, closes, 14);
+      const macd = calcMACD(closes);
+      const stoch = calcStochastic(highs, lows, closes, 14);
+      const atr = calcATR(highs, lows, closes, 14);
+
+      // Build feature vectors: [RSI, CCI, ADX, +DI, -DI, MACD_hist, Stoch_K, ATR_norm]
+      const features = data.map((d, i) => [
+        rsi[i] || 50,
+        cci[i] || 0,
+        adxData.adx[i] || 20,
+        adxData.plusDI[i] || 0,
+        adxData.minusDI[i] || 0,
+        (macd.histogram[i] || 0) * 100, // Scale up
+        stoch[i] || 50,
+        atr[i] ? (atr[i] / closes[i]) * 100 : 1, // Normalized ATR as % of price
+      ]);
+
+      // Outcomes: price change over next `lookahead` bars (normalized)
+      const outcomes = data.map((d, i) => {
+        if (i + lookahead >= data.length) return 0;
+        return (data[i + lookahead].close - d.close) / d.close;
+      });
+
+      // Normalize features for distance calculation
+      const normFeatures = normalizeFeatures(features);
+
+      // Run kNN for each bar (from bar 60 onward to have enough history)
+      const preds = data.map((d, i) => {
+        if (i < 60) return null;
+        return runKNN(normFeatures, outcomes, i, k, lookahead);
+      });
+
+      setPredictions(preds);
+
+      // Current signal (last bar)
+      const lastIdx = data.length - 1;
+      const lastPred = preds[lastIdx];
+      const lastIndicators = {
+        rsi: rsi[lastIdx],
+        cci: cci[lastIdx],
+        adx: adxData.adx[lastIdx],
+        plusDI: adxData.plusDI[lastIdx],
+        minusDI: adxData.minusDI[lastIdx],
+        macdHist: macd.histogram[lastIdx],
+        stochK: stoch[lastIdx],
+        atrPct: atr[lastIdx] ? (atr[lastIdx] / closes[lastIdx]) * 100 : 0,
+      };
+
+      setCurrentSignal(lastPred);
+      setIndicators(lastIndicators);
+
+      // Backtest accuracy
+      let correct = 0, total = 0;
+      for (let i = 60; i < data.length - lookahead; i++) {
+        if (!preds[i]) continue;
+        const actualChange = data[i + lookahead].close - data[i].close;
+        const predicted = preds[i].prediction;
+        if ((predicted > 0 && actualChange > 0) || (predicted < 0 && actualChange < 0) || (Math.abs(predicted) < 0.001 && Math.abs(actualChange) < data[i].close * 0.001)) {
+          correct++;
+        }
+        total++;
+      }
+      setAccuracy(total > 0 ? { correct, total, pct: Math.round((correct / total) * 100) } : null);
+
+      setLoading(false);
+    }, 600 + Math.random() * 400);
+  }, [symbol, k, lookahead]);
+
+  // Draw chart when data changes
+  useEffect(() => {
+    if (canvasRef.current && ohlcv.length > 0) {
+      drawChart(canvasRef.current, ohlcv, predictions);
+      const handleResize = () => drawChart(canvasRef.current, ohlcv, predictions);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [ohlcv, predictions]);
+
+  // Auto-run on mount
+  useEffect(() => { runAnalysis(); }, []);
+
+  const getSignalColor = (pred) => {
+    if (!pred) return 'var(--muted)';
+    return pred.prediction > 0.1 ? 'var(--green)' : pred.prediction < -0.1 ? 'var(--red)' : 'var(--muted)';
+  };
+
+  const getSignalLabel = (pred) => {
+    if (!pred) return 'N/A';
+    if (pred.prediction > 0.3) return 'STRONG BUY';
+    if (pred.prediction > 0.1) return 'BUY';
+    if (pred.prediction < -0.3) return 'STRONG SELL';
+    if (pred.prediction < -0.1) return 'SELL';
+    return 'NEUTRAL';
+  };
+
+  return React.createElement('div', { className: 'main' },
+    // Controls
+    React.createElement('div', { className: 'controls' },
+      React.createElement('div', { className: 'control-group' },
+        React.createElement('label', null, 'Symbol'),
+        React.createElement('input', { type: 'text', value: symbol, onChange: e => setSymbol(e.target.value.toUpperCase()), style: { width: '120px' }, onKeyDown: e => e.key === 'Enter' && runAnalysis() })
+      ),
+      React.createElement('div', { className: 'control-group' },
+        React.createElement('label', null, 'k Neighbors'),
+        React.createElement('select', { value: k, onChange: e => setK(Number(e.target.value)) },
+          [3,5,8,10,15,20].map(v => React.createElement('option', { key: v, value: v }, v))
+        )
+      ),
+      React.createElement('div', { className: 'control-group' },
+        React.createElement('label', null, 'Lookahead Bars'),
+        React.createElement('select', { value: lookahead, onChange: e => setLookahead(Number(e.target.value)) },
+          [1,3,5,10,20].map(v => React.createElement('option', { key: v, value: v }, `${v} bars`))
+        )
+      ),
+      React.createElement('button', { className: 'run-btn', onClick: runAnalysis, disabled: loading },
+        loading ? 'Computing...' : 'Run ML Analysis'
+      ),
+    ),
+
+    loading
+      ? React.createElement('div', { className: 'loading' },
+          React.createElement('div', { className: 'spinner' }),
+          React.createElement('div', { style: { color: 'var(--muted)', fontSize: '14px' } }, `Running kNN analysis on $${symbol}...`),
+          React.createElement('div', { style: { color: 'var(--muted)', fontSize: '12px', marginTop: '4px' } }, 'Computing RSI, CCI, ADX, MACD, Stochastic, ATR features...')
+        )
+      : React.createElement(React.Fragment, null,
+          // Dashboard
+          React.createElement('div', { className: 'dashboard' },
+            // Chart
+            React.createElement('div', { className: 'chart-card' },
+              React.createElement('div', { className: 'chart-header' },
+                React.createElement('h2', null, `$${symbol} — Price + ML Baseline`),
+                accuracy && React.createElement('div', { style: { fontSize: '12px', color: 'var(--muted)' } },
+                  'Backtest: ',
+                  React.createElement('strong', { style: { color: accuracy.pct >= 55 ? 'var(--green)' : accuracy.pct >= 50 ? 'var(--orange)' : 'var(--red)' } }, `${accuracy.pct}%`),
+                  ` (${accuracy.correct}/${accuracy.total})`
+                )
+              ),
+              React.createElement('div', { style: { padding: '0 4px' } },
+                React.createElement('canvas', { ref: canvasRef })
+              ),
+              React.createElement('div', { className: 'legend' },
+                React.createElement('div', { className: 'legend-item' },
+                  React.createElement('div', { className: 'legend-dot', style: { background: '#10B981' } }),
+                  'Bullish candle'
+                ),
+                React.createElement('div', { className: 'legend-item' },
+                  React.createElement('div', { className: 'legend-dot', style: { background: '#EF4444' } }),
+                  'Bearish candle'
+                ),
+                React.createElement('div', { className: 'legend-item' },
+                  React.createElement('div', { className: 'legend-dot', style: { background: 'rgba(16,185,129,0.7)' } }),
+                  'ML: Buy signal'
+                ),
+                React.createElement('div', { className: 'legend-item' },
+                  React.createElement('div', { className: 'legend-dot', style: { background: 'rgba(239,68,68,0.7)' } }),
+                  'ML: Sell signal'
+                ),
+                React.createElement('div', { className: 'legend-item' },
+                  React.createElement('div', { className: 'legend-dot', style: { background: 'rgba(156,163,175,0.5)' } }),
+                  'ML: Neutral'
+                ),
+              ),
+            ),
+
+            // Signal panel
+            React.createElement('div', { className: 'signal-panel' },
+              // Current signal
+              React.createElement('div', { className: 'signal-card' },
+                React.createElement('h3', null, 'Current ML Signal'),
+                React.createElement('div', { className: 'big-signal' },
+                  React.createElement('div', { className: 'direction', style: { color: getSignalColor(currentSignal) } },
+                    getSignalLabel(currentSignal)
+                  ),
+                  currentSignal && React.createElement('div', { className: 'conf' },
+                    'Confidence: ',
+                    React.createElement('strong', { style: { color: getSignalColor(currentSignal) } },
+                      `${Math.round(currentSignal.confidence * 100)}%`
+                    ),
+                    ` | Prediction: ${currentSignal.prediction > 0 ? '+' : ''}${(currentSignal.prediction * 100).toFixed(2)}%`
+                  ),
+                ),
+              ),
+
+              // Feature values
+              indicators && React.createElement('div', { className: 'signal-card' },
+                React.createElement('h3', null, 'Feature Vector (Current Bar)'),
+                React.createElement('div', { className: 'indicator-grid' },
+                  React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, 'RSI (14)'),
+                    React.createElement('div', { className: 'ind-val', style: { color: indicators.rsi > 70 ? 'var(--red)' : indicators.rsi < 30 ? 'var(--green)' : 'var(--text)' } },
+                      indicators.rsi?.toFixed(1) || 'N/A')
+                  ),
+                  React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, 'CCI (20)'),
+                    React.createElement('div', { className: 'ind-val', style: { color: indicators.cci > 100 ? 'var(--green)' : indicators.cci < -100 ? 'var(--red)' : 'var(--text)' } },
+                      indicators.cci?.toFixed(1) || 'N/A')
+                  ),
+                  React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, 'ADX (14)'),
+                    React.createElement('div', { className: 'ind-val', style: { color: indicators.adx > 25 ? 'var(--emerald)' : 'var(--muted)' } },
+                      indicators.adx?.toFixed(1) || 'N/A')
+                  ),
+                  React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, 'Stoch %K'),
+                    React.createElement('div', { className: 'ind-val' }, indicators.stochK?.toFixed(1) || 'N/A')
+                  ),
+                  React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, '+DI / -DI'),
+                    React.createElement('div', { className: 'ind-val' },
+                      `${indicators.plusDI?.toFixed(0) || '?'} / ${indicators.minusDI?.toFixed(0) || '?'}`)
+                  ),
+                  React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, 'MACD Hist'),
+                    React.createElement('div', { className: 'ind-val', style: { color: (indicators.macdHist || 0) > 0 ? 'var(--green)' : 'var(--red)' } },
+                      indicators.macdHist?.toFixed(3) || 'N/A')
+                  ),
+                  React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, 'ATR %'),
+                    React.createElement('div', { className: 'ind-val' }, `${indicators.atrPct?.toFixed(2) || 'N/A'}%`)
+                  ),
+                  accuracy && React.createElement('div', { className: 'ind-item' },
+                    React.createElement('div', { className: 'ind-name' }, 'Backtest Hit'),
+                    React.createElement('div', { className: 'ind-val', style: { color: accuracy.pct >= 55 ? 'var(--green)' : 'var(--red)' } },
+                      `${accuracy.pct}%`)
+                  ),
+                ),
+              ),
+
+              // Nearest neighbors
+              currentSignal && currentSignal.neighbors.length > 0 && React.createElement('div', { className: 'signal-card' },
+                React.createElement('h3', null, `${k} Nearest Neighbors`),
+                React.createElement('div', { className: 'neighbors-list' },
+                  currentSignal.neighbors.map((n, i) =>
+                    React.createElement('div', { key: i, className: 'neighbor-row' },
+                      React.createElement('span', null, `Bar #${n.idx} (${ohlcv[n.idx]?.date || '?'})`),
+                      React.createElement('span', { className: 'neighbor-dist' }, `d=${n.distance.toFixed(3)}`),
+                      React.createElement('span', {
+                        className: 'neighbor-outcome',
+                        style: {
+                          background: n.outcome > 0 ? 'rgba(16,185,129,0.1)' : n.outcome < 0 ? 'rgba(239,68,68,0.1)' : 'rgba(107,114,128,0.1)',
+                          color: n.outcome > 0 ? '#059669' : n.outcome < 0 ? '#DC2626' : '#6B7280',
+                        }
+                      }, `${n.outcome > 0 ? '+' : ''}${(n.outcome * 100).toFixed(2)}%`)
+                    )
+                  )
+                ),
+              ),
+            ),
+          ),
+
+          // How it works
+          React.createElement('div', { className: 'info-section' },
+            React.createElement('h3', null, 'How the ML Prediction Indicator Works'),
+            React.createElement('p', null,
+              'This indicator uses k-Nearest Neighbors (kNN) regression — a machine learning algorithm that predicts future price direction by finding historically similar market conditions. For each bar, we build an 8-dimensional feature vector from technical indicators: RSI, CCI, ADX, +DI, -DI, MACD Histogram, Stochastic %K, and normalized ATR.'
+            ),
+            React.createElement('p', null,
+              `The algorithm finds the ${k} most similar historical moments (using Euclidean distance in normalized feature space) and averages their outcomes (price change over the next ${lookahead} bars), weighted by inverse distance. Closer matches have more influence on the prediction.`
+            ),
+            React.createElement('p', null,
+              'The baseline visualization uses color and opacity to convey both direction and confidence. Green bars = bullish prediction, red bars = bearish, grey = neutral. Darker bars indicate higher confidence (more neighbor agreement). The backtest accuracy shows how often the model correctly predicted direction on historical data.'
+            ),
+            React.createElement('p', { style: { fontWeight: 600, color: 'var(--emerald-dark)' } },
+              'Integration with Master Surge Strategy: Use the ML signal as a confluence factor. When the ML indicator aligns with your Supply/Demand zone analysis and the S.E.T. Rule criteria, you have a high-probability setup. Never rely on any single indicator — the Five Pillars approach means layering multiple confirmations.'
+            ),
+          ),
+        ),
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
