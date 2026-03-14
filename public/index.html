@@ -1280,6 +1280,7 @@ function ModuleAudio({ audioUrl, moduleTitle }) {
   const isApplePodcast = audioUrl.includes('podcasts.apple.com');
   if (isApplePodcast) {
     const embedUrl = audioUrl.replace('podcasts.apple.com', 'embed.podcasts.apple.com');
+    const isSingleEpisode = audioUrl.includes('?i=');
     return (
       <div className="module-audio-container">
         <div className="module-audio-header">🎧 Module Podcast — {moduleTitle}</div>
@@ -1287,7 +1288,7 @@ function ModuleAudio({ audioUrl, moduleTitle }) {
           <iframe
             allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
             frameBorder="0"
-            height="450"
+            height={isSingleEpisode ? "175" : "450"}
             style={{width: '100%', overflow: 'hidden', borderRadius: '0 0 12px 12px'}}
             sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
             src={embedUrl}
