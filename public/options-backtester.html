@@ -222,6 +222,21 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
 /* --- Webull Dark Theme Palette --- */
 .train-dark { --chart-bg:#161B2B; --chart-grid:#1F2640; --chart-text:#6B7394; --candle-up:#10B981; --candle-up-fill:rgba(16,185,129,0.25); --candle-dn:#EF4444; --candle-dn-fill:#EF4444; --price-line:rgba(255,255,255,0.06); --crosshair:#4A5078; --axis-text:#7B83A6; --tooltip-bg:rgba(22,27,43,0.95); --panel-bg:#1A1F35; --panel-border:#262D47; --hover-glow:rgba(16,185,129,0.08); }
+.train-light { --chart-bg:#FFFFFF; --chart-grid:#E5E7EB; --chart-text:#6B7280; --candle-up:#0D9373; --candle-up-fill:rgba(13,147,115,0.18); --candle-dn:#DC2626; --candle-dn-fill:#DC2626; --price-line:rgba(0,0,0,0.06); --crosshair:#9CA3AF; --axis-text:#6B7280; --tooltip-bg:rgba(255,255,255,0.96); --panel-bg:#F7FAF9; --panel-border:#E5E7EB; --hover-glow:rgba(13,147,115,0.06); }
+.train-light .chart-outer { background:#FFFFFF; }
+.train-light .chart-toolbar { background:#F7FAF9; border-bottom-color:#E5E7EB; }
+.train-light .ct-sym { color:#1B2A4A; }
+.train-light .ct-diff-btn { background:rgba(13,147,115,0.08); color:#0D9373; border-color:#E5E7EB; }
+.train-light .ct-diff-btn.active { background:#0D9373; color:#fff; }
+.train-light .ct-mode-label { color:#6B7280; }
+.train-light .ct-progress-bar { background:#E5E7EB; }
+.train-light .expl-panel { background:#FFFFFF; border-color:#E5E7EB; }
+.train-light .expl-panel h4 { color:#1B2A4A; }
+.train-light .expl-panel p { color:#4B5563; }
+.train-light .chart-legend span { color:#6B7280; }
+.train-light .chart-legend strong { color:#1B2A4A; }
+.ct-theme-btn { padding:4px 10px; border-radius:16px; font-size:10px; font-weight:700; cursor:pointer; border:1px solid var(--panel-border); transition:all .15s; margin-left:8px; background:var(--panel-bg); color:var(--chart-text); }
+.ct-theme-btn:hover { border-color:var(--candle-up); color:var(--candle-up); }
 
 /* --- Training Dashboard --- */
 .train-dash { padding:28px 0; }
@@ -636,7 +651,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 
 /* ===== S.E.T. SIMULATOR ===== */
 .sim-grid{display:grid;grid-template-columns:320px 1fr;gap:18px;}
-.sim-chart-area{background:#161B2B;border-radius:14px;overflow:hidden;position:relative;min-height:750px;}
+.sim-chart-area{background:#161B2B;border-radius:14px;overflow:hidden;position:relative;min-height:auto;}
 /* TradingView Reference Chart */
 .tv-ref-wrap{position:relative;height:500px;border-bottom:2px solid #262D47;}
 .tv-ref-toolbar{display:flex;align-items:center;gap:8px;padding:6px 14px;background:#1A1F35;border-bottom:1px solid #262D47;flex-wrap:wrap;}
@@ -660,7 +675,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .sim-toolbar .stb-price{font-size:13px;color:var(--emerald-light);font-weight:600;margin-left:6px;}
 .sim-toolbar .stb-chg{font-size:11px;margin-left:4px;font-weight:600;}
 .sim-toolbar .stb-chg.up{color:#10B981;}.sim-toolbar .stb-chg.dn{color:#EF4444;}
-.sim-canvas-wrap{position:relative;width:100%;height:650px;}
+.sim-canvas-wrap{position:relative;width:100%;height:420px;}
 .sim-canvas-wrap canvas{display:block;width:100%;height:100%;cursor:crosshair;}
 .sim-ohlc-bar{display:flex;gap:12px;padding:4px 14px;background:#1A1F35;font-size:11px;color:#7B83A6;}
 .sim-ohlc-bar span{font-weight:600;}
@@ -771,7 +786,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .sim-dist-bar.to-stop .sdb-val{color:#EF4444;}
 .sim-dist-bar.to-target .sdb-val{color:#10B981;}
 
-@media(max-width:900px){.sim-grid{grid-template-columns:1fr;}.sim-chart-area{min-height:500px;}.tv-ref-wrap{height:350px;}}
+@media(max-width:900px){.sim-grid{grid-template-columns:1fr;}.sim-chart-area{min-height:auto;}.tv-ref-wrap{height:350px;}}
 
 
 /* ===== GUIDE MODE SYSTEM ===== */
@@ -2738,6 +2753,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <span class="ct-price up" id="ct-price">$0.00</span>
         <span class="ct-tag live" id="ct-tag">LIVE SIM</span>
         <div class="ct-ohlc" id="ct-ohlc">O: <span>—</span> H: <span>—</span> L: <span>—</span> C: <span>—</span></div>
+        <span class="ct-theme-btn" id="ct-theme-btn" onclick="toggleChartTheme()">☀️ Light</span>
       </div>
       <div class="chart-canvas-wrap" id="chart-wrap">
         <canvas id="train-canvas" width="900" height="600"></canvas>
@@ -3602,7 +3618,8 @@ function calcSET() {
   const reward     = posSize * Math.abs(target - entry) * mult;
   const actRisk    = posSize * tradeRisk * mult;
   const riskExceeded = (rawSize < 1 && posSize === 1 && tradeRisk > 0);
-  const auto31     = +(entry + Math.abs(entry - stop) * 3).toFixed(2);
+  const szIsLong   = entry > stop;
+  const auto31     = +(szIsLong ? entry + Math.abs(entry - stop) * 3 : entry - Math.abs(entry - stop) * 3).toFixed(2);
   const ratio      = actRisk > 0 ? (reward/actRisk).toFixed(2)+':1' : '—';
 
   document.getElementById('out-stop').textContent   = '$'+stop.toFixed(2);
@@ -4340,6 +4357,26 @@ const TUT = (function(){
   return {open,close,next,prev};
 })();
 
+// ==================== CHART THEME CONFIG ====================
+const CT_DARK = { bg:'#161B2B', grid:'#1F2640', text:'#6B7394', axisText:'#4A5078', up:'#10B981', dn:'#EF4444', upFill:'rgba(16,185,129,0.18)', dnFill:'#EF4444', upFillHollow:'rgba(16,185,129,0.2)', hoverGlow:'rgba(16,185,129,0.04)', priceBg:'#1A1F35', panelBg:'#1A1F35', priceText:'white', labelText:'white', explBg:'#0B1426' };
+const CT_LIGHT = { bg:'#FFFFFF', grid:'#E5E7EB', text:'#6B7280', axisText:'#9CA3AF', up:'#0D9373', dn:'#DC2626', upFill:'rgba(13,147,115,0.15)', dnFill:'#DC2626', upFillHollow:'rgba(13,147,115,0.18)', hoverGlow:'rgba(13,147,115,0.04)', priceBg:'#F7FAF9', panelBg:'#F7FAF9', priceText:'#1B2A4A', labelText:'#1B2A4A', explBg:'#F9FAFB' };
+let ctTheme = CT_DARK;
+let ctThemeMode = 'dark';
+
+function toggleChartTheme() {
+  const isDark = ctThemeMode === 'dark';
+  ctThemeMode = isDark ? 'light' : 'dark';
+  ctTheme = isDark ? CT_LIGHT : CT_DARK;
+  const btn = document.getElementById('ct-theme-btn');
+  if (btn) btn.innerHTML = isDark ? '🌙 Dark' : '☀️ Light';
+  const trainTab = document.getElementById('tab-training');
+  if (trainTab) {
+    const inner = trainTab.querySelector('.container');
+    if (inner) { inner.classList.remove('train-dark', 'train-light'); inner.classList.add(isDark ? 'train-light' : 'train-dark'); }
+  }
+  if (typeof TM !== 'undefined' && TM.redraw) TM.redraw();
+}
+
 // ==================== MAIN TRAINING MODULE ====================
 const TM = (function(){
 'use strict';
@@ -4411,15 +4448,16 @@ function calcL(bb){
 // ---- WEBULL-STYLE CHART DRAW ----
 function draw(bb,opts={}){
   if(!ctx)return;
+  const T=ctTheme;
   const cW=W-PAD.l-PAD.r,cH=H-PAD.t-PAD.b;
   ctx.clearRect(0,0,W,H);
-  // Dark background
-  ctx.fillStyle='#161B2B';ctx.fillRect(0,0,W,H);
+  // Background
+  ctx.fillStyle=T.bg;ctx.fillRect(0,0,W,H);
   // Grid
-  ctx.strokeStyle='#1F2640';ctx.lineWidth=0.5;
-  for(let i=0;i<=6;i++){const y=PAD.t+(cH/6)*i;ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(W-PAD.r,y);ctx.stroke();ctx.fillStyle='#6B7394';ctx.font='10px system-ui';ctx.textAlign='left';ctx.fillText('$'+y2p(y).toFixed(2),W-PAD.r+6,y+4);}
+  ctx.strokeStyle=T.grid;ctx.lineWidth=0.5;
+  for(let i=0;i<=6;i++){const y=PAD.t+(cH/6)*i;ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(W-PAD.r,y);ctx.stroke();ctx.fillStyle=T.text;ctx.font='10px system-ui';ctx.textAlign='left';ctx.fillText('$'+y2p(y).toFixed(2),W-PAD.r+6,y+4);}
   // Time axis
-  bb.forEach((bar,i)=>{if(bb.length<=20||i%Math.ceil(bb.length/15)===0){const x=bx(i)+barW/2;ctx.fillStyle='#4A5078';ctx.font='9px system-ui';ctx.textAlign='center';ctx.fillText('Bar '+(i+1),x,H-PAD.b+16);}});
+  bb.forEach((bar,i)=>{if(bb.length<=20||i%Math.ceil(bb.length/15)===0){const x=bx(i)+barW/2;ctx.fillStyle=T.axisText;ctx.font='9px system-ui';ctx.textAlign='center';ctx.fillText('Bar '+(i+1),x,H-PAD.b+16);}});
   // Zones
   if(opts.zones)opts.zones.forEach(z=>{const x1=bx(z.s)-2,x2=bx(z.e)+barW+2,y1=p2y(z.hi),y2=p2y(z.lo);ctx.fillStyle=z.type==='demand'?'rgba(16,185,129,0.08)':'rgba(239,68,68,0.08)';ctx.fillRect(x1,y1,x2-x1,y2-y1);ctx.strokeStyle=z.type==='demand'?'#10B981':'#EF4444';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.strokeRect(x1,y1,x2-x1,y2-y1);ctx.setLineDash([]);if(opts.zLabels!==false){ctx.fillStyle=z.type==='demand'?'#10B981':'#EF4444';ctx.font='bold 9px system-ui';ctx.textAlign='left';ctx.fillText(z.type==='demand'?'Demand':'Supply',x1,y1-4);}});
   // User drawn zones
@@ -4430,10 +4468,10 @@ function draw(bb,opts={}){
     const oY=p2y(bar.o),cY=p2y(bar.c),hY=p2y(bar.h),lY=p2y(bar.l);
     const bull=bar.c>=bar.o,bTop=Math.min(oY,cY),bBot=Math.max(oY,cY),bodyH=Math.max(1,bBot-bTop);
     const isH=(hovBar===i);const hl=opts.hl?opts.hl.find(h=>h.b===i):null;
-    if(isH){ctx.fillStyle='rgba(16,185,129,0.04)';ctx.fillRect(x-3,PAD.t,barW+6,cH);}
-    const col=hl?(hl.c||'#60A5FA'):bull?'#10B981':'#EF4444';
+    if(isH){ctx.fillStyle=T.hoverGlow;ctx.fillRect(x-3,PAD.t,barW+6,cH);}
+    const col=hl?(hl.c||'#60A5FA'):bull?T.up:T.dn;
     ctx.strokeStyle=col;ctx.lineWidth=isH?2.5:1.5;ctx.beginPath();ctx.moveTo(mid,hY);ctx.lineTo(mid,lY);ctx.stroke();
-    if(bull){ctx.fillStyle=hl?'rgba(96,165,250,0.2)':'rgba(16,185,129,0.18)';ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(x,bTop,barW,bodyH);}
+    if(bull){ctx.fillStyle=hl?'rgba(96,165,250,0.2)':T.upFill;ctx.fillRect(x,bTop,barW,bodyH);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(x,bTop,barW,bodyH);}
     else{ctx.fillStyle=col;ctx.fillRect(x,bTop,barW,bodyH);}
     if(hl&&hl.mk){hl.mk.forEach(mk=>{const my=mk==='open'?oY:mk==='close'?cY:mk==='high'?hY:lY;ctx.beginPath();ctx.arc(mid,my,6,0,Math.PI*2);ctx.fillStyle=hl.c||'#60A5FA';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='white';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.fillText(mk.charAt(0).toUpperCase(),mid,my+3);ctx.textAlign='left';});}
   });
@@ -5234,7 +5272,9 @@ function resetProgress(){
   updateDash();
 }
 
-return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,toggleHints,closeExpl,xAnno,initTraining,genChart,resetProgress};
+function redraw(){ if(bars&&bars.length>0&&ctx){ calcL(bars); const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined; draw(bars,{zones,zLabels:diff==='easy'}); } }
+
+return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,toggleHints,closeExpl,xAnno,initTraining,genChart,resetProgress,redraw};
 })();
 
 // Hash-based tab switching (for iframe embedding)
@@ -5517,7 +5557,7 @@ const SIM = (function() {
     if (!canvas || !wrap) return;
     const ctx = canvas.getContext('2d');
     const W = wrap.clientWidth;
-    const H = wrap.clientHeight || 650;
+    const H = wrap.clientHeight || 420;
     canvas.width = W * (window.devicePixelRatio || 1);
     canvas.height = H * (window.devicePixelRatio || 1);
     canvas.style.width = W + 'px';
@@ -5668,7 +5708,7 @@ const SIM = (function() {
     if (!el) return;
     if (price <= 0) { el.style.display = 'none'; return; }
     const y = toY(price);
-    if (y < 20 || y > 620) { el.style.display = 'none'; return; }
+    if (y < 20 || y > 400) { el.style.display = 'none'; return; }
     el.style.display = 'block';
     el.style.top = (y - 10) + 'px';
   }
@@ -7439,8 +7479,9 @@ function createSimTV(symbol) {
     enable_publishing: false,
     allow_symbol_change: true,
     hide_side_toolbar: false,
+    hide_top_toolbar: false,
     details: true,
-    hotlist: false,
+    hotlist: true,
     calendar: false,
     studies: simTVStudies,
     container_id: 'sim-tv-chart',
@@ -7449,13 +7490,23 @@ function createSimTV(symbol) {
     show_popup_button: true,
     popup_width: '1200',
     popup_height: '800',
+    watchlist: ['SPY','QQQ','AAPL','MSFT','NVDA','TSLA','AMD'],
+    drawings_access: { type: 'all' },
+    enabled_features: ['header_compare','header_symbol_search','header_indicators','header_undo_redo','header_screenshot','control_bar','timeframes_toolbar','countdown','display_market_status','side_toolbar_in_fullscreen_mode'],
+    disabled_features: ['header_widget_dom_node','go_to_date'],
+    loading_screen: { backgroundColor: isLight ? '#F0F5F3' : '#161B2B', foregroundColor: '#10B981' },
     overrides: {
       'mainSeriesProperties.candleStyle.upColor': '#10B981',
       'mainSeriesProperties.candleStyle.downColor': '#EF4444',
-      'mainSeriesProperties.candleStyle.borderUpColor': '#0D9373',
-      'mainSeriesProperties.candleStyle.borderDownColor': '#DC2626',
+      'mainSeriesProperties.candleStyle.borderUpColor': '#10B981',
+      'mainSeriesProperties.candleStyle.borderDownColor': '#EF4444',
       'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
       'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+      'scalesProperties.lineColor': isLight ? '#E5E7EB' : '#1F2640',
+      'scalesProperties.textColor': isLight ? '#6B7280' : '#6B7394',
+      'paneProperties.background': isLight ? '#FFFFFF' : '#161B2B',
+      'paneProperties.vertGridProperties.color': isLight ? '#F0F0F0' : '#1F2640',
+      'paneProperties.horzGridProperties.color': isLight ? '#F0F0F0' : '#1F2640',
     }
   });
 }
@@ -7511,8 +7562,9 @@ function loadTrainTV() {
     enable_publishing: false,
     allow_symbol_change: true,
     hide_side_toolbar: false,
+    hide_top_toolbar: false,
     details: true,
-    hotlist: false,
+    hotlist: true,
     calendar: false,
     studies: trainTVStudies,
     container_id: 'train-tv-chart',
@@ -7521,13 +7573,23 @@ function loadTrainTV() {
     show_popup_button: true,
     popup_width: '1200',
     popup_height: '800',
+    watchlist: ['SPY','QQQ','AAPL','MSFT','NVDA','TSLA','AMD'],
+    drawings_access: { type: 'all' },
+    enabled_features: ['header_compare','header_symbol_search','header_indicators','header_undo_redo','header_screenshot','control_bar','timeframes_toolbar','countdown','display_market_status','side_toolbar_in_fullscreen_mode'],
+    disabled_features: ['header_widget_dom_node','go_to_date'],
+    loading_screen: { backgroundColor: isLight ? '#F0F5F3' : '#161B2B', foregroundColor: '#10B981' },
     overrides: {
       'mainSeriesProperties.candleStyle.upColor': '#10B981',
       'mainSeriesProperties.candleStyle.downColor': '#EF4444',
-      'mainSeriesProperties.candleStyle.borderUpColor': '#0D9373',
-      'mainSeriesProperties.candleStyle.borderDownColor': '#DC2626',
+      'mainSeriesProperties.candleStyle.borderUpColor': '#10B981',
+      'mainSeriesProperties.candleStyle.borderDownColor': '#EF4444',
       'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
       'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
+      'scalesProperties.lineColor': isLight ? '#E5E7EB' : '#1F2640',
+      'scalesProperties.textColor': isLight ? '#6B7280' : '#6B7394',
+      'paneProperties.background': isLight ? '#FFFFFF' : '#161B2B',
+      'paneProperties.vertGridProperties.color': isLight ? '#F0F0F0' : '#1F2640',
+      'paneProperties.horzGridProperties.color': isLight ? '#F0F0F0' : '#1F2640',
     }
   });
 }
