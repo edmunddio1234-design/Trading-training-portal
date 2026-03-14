@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trade Journal — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+:root{--navy:#1B2A4A;--emerald:#0D9373;--emerald-light:#10B981;--bg:#F0F5F3;--card:#FFF;--border:#E5E7EB;--text:#1B2A4A;--muted:#6B7280;--red:#EF4444;--green:#10B981}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:linear-gradient(135deg,#1B2A4A,#243B60);padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--emerald),var(--emerald-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.header h1{font-size:18px;color:#fff;font-weight:700}.header h1 span{color:var(--emerald-light)}
+.header p{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px}
+.btn-outline{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;background:transparent;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85);transition:all 0.2s}
+.btn-outline:hover{background:rgba(255,255,255,0.1)}
+.content{max-width:1100px;margin:0 auto;padding:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.card h2{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--emerald)}
+/* Upload */
+.drop{border:2px dashed var(--border);border-radius:12px;padding:44px 20px;text-align:center;cursor:pointer;transition:0.2s}
+.drop:hover,.drop.over{border-color:var(--emerald);background:rgba(16,185,129,0.03)}
+.drop p{font-size:14px;margin-top:8px}.drop .hint{font-size:12px;color:var(--muted);margin-top:4px}
+.drop input{display:none}
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:#F7FAF9;border-radius:10px;padding:14px;text-align:center}
+.stat .lbl{font-size:10px;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:0.5px}
+.stat .val{font-size:22px;font-weight:800;margin-top:4px}
+.pos{color:#10B981}.neg{color:#EF4444}
+/* Calendar */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:12px}
+.cal-header{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);text-align:center;padding:4px}
+.cal-day{border-radius:6px;padding:6px 4px;text-align:center;font-size:11px;min-height:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px}
+.cal-day .num{font-weight:700;font-size:12px}
+.cal-day .pnl{font-size:9px;font-weight:600}
+.cal-empty{background:transparent}
+.cal-zero{background:#F3F4F6;color:var(--muted)}
+.cal-green{background:#D1FAE5;color:#059669}.cal-green-dark{background:#6EE7B7;color:#065F46}
+.cal-red{background:#FEE2E2;color:#DC2626}.cal-red-dark{background:#FCA5A5;color:#991B1B}
+/* Table */
+.trades-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+.trades-table th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);position:sticky;top:0;background:var(--card);letter-spacing:0.3px}
+.trades-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.trades-table tr:hover td{background:rgba(13,147,115,0.02)}
+.btn-g{padding:8px 20px;background:var(--emerald);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-g:hover{background:var(--emerald-light)}
+.tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:4px}
+.tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--muted)}
+.tab.active{background:var(--emerald);color:#fff}
+.footer{text-align:center;padding:16px;font-size:11px;color:var(--muted)}.footer span{color:var(--emerald);font-weight:600}
+@media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr)}.cal-grid{gap:2px}.content{padding:12px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">📋</div>
+    <div><h1>TRADE <span>JOURNAL</span></h1><p>Performance Tracker • Webull CSV Import • Impact Trading Academy</p></div>
+  </div>
+  <a href="https://trading-training-portal.vercel.app/" class="btn-outline">← Back to Academy</a>
+</div>
+<div id="app"></div>
+<div class="footer">Powered by <span>Mission Metrics</span> • Your data stays in your browser — nothing is uploaded to a server</div>
+
+<script type="text/babel">
+const { useState, useCallback, useMemo } = React;
+
+// ========================
+// WEBULL CSV PARSER
+// ========================
+function parseWebullCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
+
+  const symbolIdx = headers.findIndex(h => h.includes('symbol') || h.includes('ticker'));
+  const sideIdx = headers.findIndex(h => h.includes('side') || h.includes('action') || h.includes('type'));
+  const qtyIdx = headers.findIndex(h => h.includes('qty') || h.includes('quantity') || h.includes('shares'));
+  const priceIdx = headers.findIndex(h => h.includes('price') || h.includes('avg') || h.includes('fill'));
+  const dateIdx = headers.findIndex(h => h.includes('date') || h.includes('time') || h.includes('filled'));
+  const feeIdx = headers.findIndex(h => h.includes('fee') || h.includes('commission'));
+  const totalIdx = headers.findIndex(h => h.includes('total') || h.includes('amount') || h.includes('net'));
+
+  const trades = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+    if (!cols) continue;
+    const clean = cols.map(c => c.replace(/"/g, '').trim());
+
+    const symbol = symbolIdx >= 0 ? clean[symbolIdx] : '';
+    const side = sideIdx >= 0 ? clean[sideIdx] : '';
+    const qty = qtyIdx >= 0 ? parseFloat(clean[qtyIdx]) || 0 : 0;
+    const price = priceIdx >= 0 ? parseFloat(clean[priceIdx]) || 0 : 0;
+    const date = dateIdx >= 0 ? clean[dateIdx] : '';
+    const fee = feeIdx >= 0 ? parseFloat(clean[feeIdx]) || 0 : 0;
+    const total = totalIdx >= 0 ? parseFloat(clean[totalIdx]) || 0 : 0;
+
+    if (symbol && (qty > 0 || total !== 0)) {
+      trades.push({ symbol, side, qty, price, date, fee, total: total || (qty * price), raw: clean });
+    }
+  }
+  return trades;
+}
+
+// Pair buys and sells to compute P&L
+function computeTradeStats(trades) {
+  // Group by symbol and date
+  const byDate = {};
+  const bySymbol = {};
+  let totalGain = 0, totalLoss = 0, totalFees = 0, winCount = 0, lossCount = 0, totalTrades = 0;
+
+  // Simple: compute P&L per closed round-trip
+  const positions = {};
+  const closedTrades = [];
+
+  trades.forEach(t => {
+    const isBuy = t.side.toLowerCase().includes('buy') || t.side.toLowerCase() === 'b';
+    const isSell = !isBuy;
+
+    if (!positions[t.symbol]) positions[t.symbol] = { qty: 0, costBasis: 0 };
+    const pos = positions[t.symbol];
+
+    if (isBuy) {
+      pos.costBasis = ((pos.costBasis * pos.qty) + (t.price * t.qty)) / (pos.qty + t.qty || 1);
+      pos.qty += t.qty;
+    } else if (isSell && pos.qty > 0) {
+      const sellQty = Math.min(t.qty, pos.qty);
+      const pnl = (t.price - pos.costBasis) * sellQty - t.fee;
+      closedTrades.push({
+        symbol: t.symbol,
+        date: t.date,
+        entryPrice: pos.costBasis,
+        exitPrice: t.price,
+        qty: sellQty,
+        pnl,
+        fee: t.fee
+      });
+      pos.qty -= sellQty;
+      if (pos.qty <= 0) { pos.qty = 0; pos.costBasis = 0; }
+
+      totalTrades++;
+      totalFees += t.fee;
+      if (pnl >= 0) { totalGain += pnl; winCount++; }
+      else { totalLoss += Math.abs(pnl); lossCount++; }
+
+      // Aggregate by date
+      const dateKey = t.date.split(' ')[0].split('T')[0];
+      if (!byDate[dateKey]) byDate[dateKey] = 0;
+      byDate[dateKey] += pnl;
+
+      if (!bySymbol[t.symbol]) bySymbol[t.symbol] = { pnl: 0, trades: 0 };
+      bySymbol[t.symbol].pnl += pnl;
+      bySymbol[t.symbol].trades++;
+    }
+  });
+
+  return {
+    closedTrades,
+    totalTrades,
+    totalGain,
+    totalLoss,
+    netPnl: totalGain - totalLoss,
+    winRate: totalTrades > 0 ? (winCount / totalTrades * 100) : 0,
+    winCount,
+    lossCount,
+    totalFees,
+    avgWin: winCount > 0 ? totalGain / winCount : 0,
+    avgLoss: lossCount > 0 ? totalLoss / lossCount : 0,
+    byDate,
+    bySymbol
+  };
+}
+
+function Calendar({ byDate }) {
+  const dates = Object.keys(byDate).sort();
+  if (dates.length === 0) return null;
+
+  const firstDate = new Date(dates[0] + 'T12:00:00');
+  const lastDate = new Date(dates[dates.length - 1] + 'T12:00:00');
+  const year = lastDate.getFullYear();
+  const month = lastDate.getMonth();
+
+  const firstOfMonth = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDow = firstOfMonth.getDay();
+
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthName = firstOfMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  const cells = [];
+  for (let i = 0; i < startDow; i++) cells.push(<div key={`e${i}`} className="cal-day cal-empty" />);
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const pnl = byDate[key];
+    let cls = 'cal-zero';
+    if (pnl !== undefined) {
+      if (pnl > 100) cls = 'cal-green-dark';
+      else if (pnl > 0) cls = 'cal-green';
+      else if (pnl < -100) cls = 'cal-red-dark';
+      else if (pnl < 0) cls = 'cal-red';
+    }
+
+    cells.push(
+      <div key={key} className={`cal-day ${cls}`}>
+        <div className="num">{d}</div>
+        {pnl !== undefined && <div className="pnl">{pnl >= 0 ? '+' : ''}{pnl.toFixed(0)}</div>}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{textAlign:'center',fontWeight:700,fontSize:'14px',marginBottom:'8px'}}>{monthName}</div>
+      <div className="cal-grid">
+        {days.map(d => <div key={d} className="cal-header">{d}</div>)}
+        {cells}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [rawTrades, setRawTrades] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [tab, setTab] = useState('overview');
+
+  const handleFile = useCallback((file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const trades = parseWebullCSV(e.target.result);
+      setRawTrades(trades);
+      if (trades.length > 0) {
+        setStats(computeTradeStats(trades));
+      }
+    };
+    reader.readAsText(file);
+  }, []);
+
+  const handleDrop = (e) => { e.preventDefault(); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); };
+
+  if (!stats) {
+    return (
+      <div className="content">
+        <div className="card">
+          <h2><span className="dot" /> Import Your Webull Trades</h2>
+          <p style={{fontSize:'13px',color:'var(--muted)',marginBottom:'14px'}}>Export your trade history CSV from Webull, then drag it here or click to upload. All data stays in your browser — nothing is sent to any server.</p>
+          <div className="drop" onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('over'); }} onDragLeave={e => e.currentTarget.classList.remove('over')} onDrop={handleDrop} onClick={() => document.getElementById('fileIn').click()}>
+            <div style={{fontSize:'36px'}}>📁</div>
+            <p><strong>Drop your Webull CSV here</strong></p>
+            <p className="hint">or click to browse • Supports Webull trade history exports</p>
+            <input type="file" id="fileIn" accept=".csv,.txt" onChange={e => { if (e.target.files.length) handleFile(e.target.files[0]); }} />
+          </div>
+          <div style={{marginTop:'16px',background:'rgba(27,42,74,0.04)',borderRadius:'10px',padding:'16px',fontSize:'12px',color:'var(--text)',lineHeight:1.7}}>
+            <strong>How to export from Webull:</strong> Open Webull → Account → Trade History → Select date range → Click "Export" → Upload the CSV here.
+          </div>
+        </div>
+        <div className="card">
+          <h2><span className="dot" /> Or Try with Sample Data</h2>
+          <button className="btn-g" onClick={() => {
+            const sample = `Date,Symbol,Side,Qty,Price,Fee,Total
+2024-03-01 09:35:00,AAPL,Buy,10,178.50,0.00,1785.00
+2024-03-01 10:12:00,AAPL,Sell,10,181.20,0.02,1812.00
+2024-03-01 09:45:00,TSLA,Buy,5,202.10,0.00,1010.50
+2024-03-01 11:30:00,TSLA,Sell,5,198.40,0.01,992.00
+2024-03-04 09:32:00,NVDA,Buy,8,875.00,0.00,7000.00
+2024-03-04 10:45:00,NVDA,Sell,8,892.50,0.03,7140.00
+2024-03-04 13:00:00,SPY,Buy,20,510.25,0.00,10205.00
+2024-03-04 14:30:00,SPY,Sell,20,508.10,0.02,10162.00
+2024-03-05 09:31:00,META,Buy,6,495.00,0.00,2970.00
+2024-03-05 11:00:00,META,Sell,6,502.80,0.02,3016.80
+2024-03-06 10:00:00,AMZN,Buy,12,178.30,0.00,2139.60
+2024-03-06 14:00:00,AMZN,Sell,12,175.90,0.02,2110.80
+2024-03-07 09:33:00,AAPL,Buy,15,180.00,0.00,2700.00
+2024-03-07 12:00:00,AAPL,Sell,15,183.50,0.03,2752.50
+2024-03-08 09:35:00,TSLA,Buy,8,205.00,0.00,1640.00
+2024-03-08 13:45:00,TSLA,Sell,8,210.25,0.02,1682.00`;
+            const trades = parseWebullCSV(sample);
+            setRawTrades(trades);
+            setStats(computeTradeStats(trades));
+          }}>Load Sample Trades</button>
+        </div>
+      </div>
+    );
+  }
+
+  const topSymbols = Object.entries(stats.bySymbol).sort((a, b) => b[1].pnl - a[1].pnl);
+
+  return (
+    <div className="content">
+      <div className="tabs">
+        <div className={`tab ${tab==='overview'?'active':''}`} onClick={() => setTab('overview')}>📊 Overview</div>
+        <div className={`tab ${tab==='calendar'?'active':''}`} onClick={() => setTab('calendar')}>📅 Calendar</div>
+        <div className={`tab ${tab==='trades'?'active':''}`} onClick={() => setTab('trades')}>📋 All Trades</div>
+      </div>
+
+      {tab === 'overview' && (
+        <>
+          <div className="card">
+            <h2><span className="dot" /> Performance Summary</h2>
+            <div className="stats-grid">
+              <div className="stat"><div className="lbl">Net P&L</div><div className={`val ${stats.netPnl>=0?'pos':'neg'}`}>{stats.netPnl>=0?'+':''}${stats.netPnl.toFixed(2)}</div></div>
+              <div className="stat"><div className="lbl">Total Trades</div><div className="val">{stats.totalTrades}</div></div>
+              <div className="stat"><div className="lbl">Win Rate</div><div className={`val ${stats.winRate>=50?'pos':'neg'}`}>{stats.winRate.toFixed(1)}%</div></div>
+              <div className="stat"><div className="lbl">Wins / Losses</div><div className="val"><span className="pos">{stats.winCount}</span> / <span className="neg">{stats.lossCount}</span></div></div>
+              <div className="stat"><div className="lbl">Total Gains</div><div className="val pos">+${stats.totalGain.toFixed(2)}</div></div>
+              <div className="stat"><div className="lbl">Total Losses</div><div className="val neg">-${stats.totalLoss.toFixed(2)}</div></div>
+              <div className="stat"><div className="lbl">Avg Win</div><div className="val pos">+${stats.avgWin.toFixed(2)}</div></div>
+              <div className="stat"><div className="lbl">Avg Loss</div><div className="val neg">-${stats.avgLoss.toFixed(2)}</div></div>
+              <div className="stat"><div className="lbl">Profit Factor</div><div className="val">{stats.totalLoss > 0 ? (stats.totalGain / stats.totalLoss).toFixed(2) : '∞'}</div></div>
+              <div className="stat"><div className="lbl">Total Fees</div><div className="val" style={{color:'var(--muted)'}}>${stats.totalFees.toFixed(2)}</div></div>
+            </div>
+          </div>
+          <div className="card">
+            <h2><span className="dot" /> By Symbol</h2>
+            <div style={{maxHeight:'300px',overflowY:'auto'}}>
+              {topSymbols.map(([sym, data]) => (
+                <div key={sym} style={{display:'flex',alignItems:'center',padding:'8px 12px',borderBottom:'1px solid var(--border)',gap:'12px'}}>
+                  <span style={{fontWeight:700,minWidth:'60px'}}>{sym}</span>
+                  <span style={{fontSize:'12px',color:'var(--muted)'}}>{data.trades} trades</span>
+                  <span className={data.pnl >= 0 ? 'pos' : 'neg'} style={{marginLeft:'auto',fontWeight:700}}>{data.pnl>=0?'+':''}${data.pnl.toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {tab === 'calendar' && (
+        <div className="card">
+          <h2><span className="dot" /> Daily P&L Calendar</h2>
+          <p style={{fontSize:'12px',color:'var(--muted)',marginBottom:'12px'}}>Green = profitable day, Red = losing day. Darker = bigger P&L.</p>
+          <Calendar byDate={stats.byDate} />
+        </div>
+      )}
+
+      {tab === 'trades' && (
+        <div className="card">
+          <h2><span className="dot" /> All Closed Trades ({stats.closedTrades.length})</h2>
+          <div style={{maxHeight:'500px',overflowY:'auto',border:'1px solid var(--border)',borderRadius:'10px'}}>
+            <table className="trades-table">
+              <thead><tr><th>Date</th><th>Symbol</th><th>Qty</th><th>Entry</th><th>Exit</th><th>P&L</th><th>Fee</th></tr></thead>
+              <tbody>
+                {stats.closedTrades.map((t, i) => (
+                  <tr key={i}>
+                    <td style={{fontSize:'11px'}}>{t.date.split(' ')[0]}</td>
+                    <td style={{fontWeight:700}}>{t.symbol}</td>
+                    <td>{t.qty}</td>
+                    <td>${t.entryPrice.toFixed(2)}</td>
+                    <td>${t.exitPrice.toFixed(2)}</td>
+                    <td className={t.pnl>=0?'pos':'neg'} style={{fontWeight:700}}>{t.pnl>=0?'+':''}${t.pnl.toFixed(2)}</td>
+                    <td style={{fontSize:'11px',color:'var(--muted)'}}>${t.fee.toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      <div style={{textAlign:'center',margin:'12px 0'}}>
+        <button className="btn-g" onClick={() => { setStats(null); setRawTrades([]); }} style={{background:'var(--navy)'}}>↻ Import New CSV</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('app'));
+</script>
+</body>
+</html>
