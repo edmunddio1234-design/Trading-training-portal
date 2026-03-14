@@ -92,6 +92,21 @@ const SECTORS = {
 
 const ALL_TICKERS = Object.values(SECTORS).flat();
 
+// Full company names for hover tooltips
+const NAMES = {
+  AAPL:'Apple Inc.',MSFT:'Microsoft Corp.',NVDA:'NVIDIA Corp.',GOOGL:'Alphabet Inc. (Class A)',META:'Meta Platforms',AVGO:'Broadcom Inc.',ORCL:'Oracle Corp.',CRM:'Salesforce Inc.',AMD:'Advanced Micro Devices',ADBE:'Adobe Inc.',INTC:'Intel Corp.',CSCO:'Cisco Systems',QCOM:'Qualcomm Inc.',TXN:'Texas Instruments',NOW:'ServiceNow Inc.',
+  UNH:'UnitedHealth Group',JNJ:'Johnson & Johnson',LLY:'Eli Lilly & Co.',ABBV:'AbbVie Inc.',MRK:'Merck & Co.',PFE:'Pfizer Inc.',TMO:'Thermo Fisher Scientific',ABT:'Abbott Laboratories',DHR:'Danaher Corp.',AMGN:'Amgen Inc.',BMY:'Bristol-Myers Squibb',CVS:'CVS Health Corp.',GILD:'Gilead Sciences',MDT:'Medtronic plc',ISRG:'Intuitive Surgical',
+  'BRK-B':'Berkshire Hathaway (B)',JPM:'JPMorgan Chase & Co.',V:'Visa Inc.',MA:'Mastercard Inc.',BAC:'Bank of America',WFC:'Wells Fargo & Co.',GS:'Goldman Sachs Group',MS:'Morgan Stanley',BLK:'BlackRock Inc.',SCHW:'Charles Schwab Corp.',AXP:'American Express Co.',C:'Citigroup Inc.',USB:'U.S. Bancorp',PNC:'PNC Financial Services',TFC:'Truist Financial',
+  AMZN:'Amazon.com Inc.',TSLA:'Tesla Inc.',HD:'The Home Depot',MCD:"McDonald's Corp.",NKE:'Nike Inc.',LOW:"Lowe's Companies",SBUX:'Starbucks Corp.',TJX:'TJX Companies',BKNG:'Booking Holdings',CMG:'Chipotle Mexican Grill',ABNB:'Airbnb Inc.',ORLY:"O'Reilly Automotive",GM:'General Motors Co.',F:'Ford Motor Co.',ROST:"Ross Stores",
+  GE:'GE Aerospace',CAT:'Caterpillar Inc.',UNP:'Union Pacific Corp.',RTX:'RTX Corp.',HON:'Honeywell International',BA:'Boeing Co.',DE:'Deere & Co.',UPS:'United Parcel Service',LMT:'Lockheed Martin',ADP:'Automatic Data Processing',MMM:'3M Company',GD:'General Dynamics',ITW:'Illinois Tool Works',FDX:'FedEx Corp.',WM:'Waste Management',
+  XOM:'Exxon Mobil Corp.',CVX:'Chevron Corp.',COP:'ConocoPhillips',SLB:'Schlumberger Ltd.',EOG:'EOG Resources',MPC:'Marathon Petroleum',PSX:'Phillips 66',VLO:'Valero Energy',OXY:'Occidental Petroleum',PXD:'Pioneer Natural Resources',HES:'Hess Corp.',DVN:'Devon Energy',WMB:'Williams Companies',KMI:'Kinder Morgan',HAL:'Halliburton Co.',
+  GOOG:'Alphabet Inc. (Class C)',T:'AT&T Inc.',VZ:'Verizon Communications',DIS:'Walt Disney Co.',NFLX:'Netflix Inc.',CMCSA:'Comcast Corp.',TMUS:'T-Mobile US',CHTR:'Charter Communications',EA:'Electronic Arts',ATVI:'Activision Blizzard',WBD:'Warner Bros. Discovery',PARA:'Paramount Global',LYV:'Live Nation Entertainment',MTCH:'Match Group',FOXA:'Fox Corp. (A)',
+  NEE:'NextEra Energy',DUK:'Duke Energy Corp.',SO:'Southern Co.',D:'Dominion Energy',AEP:'American Electric Power',SRE:'Sempra',XEL:'Xcel Energy',EXC:'Exelon Corp.',ED:'Consolidated Edison',WEC:'WEC Energy Group',ES:'Eversource Energy',AEE:'Ameren Corp.',DTE:'DTE Energy Co.',CMS:'CMS Energy Corp.',FE:'FirstEnergy Corp.',
+  PLD:'Prologis Inc.',AMT:'American Tower Corp.',EQIX:'Equinix Inc.',CCI:'Crown Castle Inc.',PSA:'Public Storage',SPG:'Simon Property Group',O:'Realty Income Corp.',WELL:'Welltower Inc.',DLR:'Digital Realty Trust',VICI:'VICI Properties',AVB:'AvalonBay Communities',EQR:'Equity Residential',IRM:'Iron Mountain',ARE:'Alexandria Real Estate',MAA:'Mid-America Apartment',
+  LIN:'Linde plc',APD:'Air Products & Chemicals',SHW:'Sherwin-Williams Co.',ECL:'Ecolab Inc.',FCX:'Freeport-McMoRan',NEM:'Newmont Corp.',NUE:'Nucor Corp.',VMC:'Vulcan Materials',MLM:'Martin Marietta Materials',DOW:'Dow Inc.',DD:'DuPont de Nemours',PPG:'PPG Industries',ALB:'Albemarle Corp.',CE:'Celanese Corp.',CF:'CF Industries Holdings',
+  PG:'Procter & Gamble',KO:'Coca-Cola Co.',PEP:'PepsiCo Inc.',COST:'Costco Wholesale',WMT:'Walmart Inc.',PM:'Philip Morris International',MO:'Altria Group',CL:'Colgate-Palmolive',MDLZ:'Mondelez International',EL:'Estée Lauder Companies',GIS:'General Mills',KMB:'Kimberly-Clark',SYY:'Sysco Corp.',KHC:'Kraft Heinz Co.',HSY:'Hershey Co.'
+};
+
 function getColor(pct) {
   if (pct > 3) return '#059669';
   if (pct > 2) return '#10B981';
@@ -120,9 +135,9 @@ function HeatMap({ data, loading }) {
             <div className="heat-grid" style={{gridTemplateColumns:`repeat(${Math.min(tickers.length, 5)}, 1fr)`}}>
               {tickers.map(ticker => {
                 const d = data[ticker];
-                if (!d) return <div key={ticker} className="heat-cell" style={{background:'#E5E7EB'}}><div className="sym">{ticker}</div><div className="pct">—</div></div>;
+                if (!d) return <div key={ticker} className="heat-cell" style={{background:'#E5E7EB'}} title={NAMES[ticker] || ticker}><div className="sym">{ticker}</div><div className="pct">—</div></div>;
                 return (
-                  <div key={ticker} className="heat-cell" style={{background:getColor(d.change)}} onClick={() => window.open(`/tradingview-charts.html?symbol=${ticker}`, '_blank')} title={`${ticker}: ${d.price} (${d.change>=0?'+':''}${d.change.toFixed(2)}%)`}>
+                  <div key={ticker} className="heat-cell" style={{background:getColor(d.change)}} onClick={() => window.open(`/tradingview-charts.html?symbol=${ticker}`, '_blank')} title={`${NAMES[ticker] || ticker}\n${ticker}: $${d.price.toFixed(2)} (${d.change>=0?'+':''}${d.change.toFixed(2)}%)`}>
                     <div className="sym">{ticker}</div>
                     <div className="pct">{d.change>=0?'+':''}{d.change.toFixed(2)}%</div>
                   </div>
