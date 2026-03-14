@@ -133,7 +133,10 @@ app.get('/api/settings', async (req, res) => {
   const masked = settings.geminiApiKey
     ? '********' + settings.geminiApiKey.slice(-4)
     : '';
-  res.json({ geminiApiKey: masked, hasKey: !!settings.geminiApiKey });
+  const anthropicMasked = settings.anthropicApiKey
+    ? '********' + settings.anthropicApiKey.slice(-4)
+    : '';
+  res.json({ geminiApiKey: masked, hasKey: !!settings.geminiApiKey, anthropicApiKey: anthropicMasked, hasAnthropicKey: !!settings.anthropicApiKey });
 });
 
 app.put('/api/settings', async (req, res) => {
@@ -1013,6 +1016,277 @@ app.get('/api/stock-search', async (req, res) => {
     res.json([]);
   }
 });
+
+// =============================================================================
+// AI TUTOR ENDPOINT (Anthropic Claude API)
+// Answers student questions using module content + correlation reports
+// =============================================================================
+
+// Rate limiting: max 30 questions per hour (stored in KV)
+async function checkTutorRateLimit() {
+  const key = 'tutor_rate_limit';
+  const now = Date.now();
+  const window = 60 * 60 * 1000; // 1 hour
+  const maxRequests = 30;
+
+  let data = await kvGet(key, { requests: [] });
+  // Filter to only requests within the window
+  data.requests = (data.requests || []).filter(t => now - t < window);
+  if (data.requests.length >= maxRequests) {
+    return false; // Rate limited
+  }
+  data.requests.push(now);
+  await kvSet(key, data);
+  return true;
+}
+
+// Correlation reports — rich source material from NotebookLM, keyed by module ID
+const TUTOR_SOURCES = {};
+
+// Module 1 source
+TUTOR_SOURCES['m1'] = `Module 1 Concept Correlation Report: Video-to-Theory Mapping
+
+Core Concept Analysis: Financial Reality vs. Retail Myths
+Success in financial markets is predicated on internalizing statistical probabilities and institutional mechanics. There is a fundamental divergence between the 99% (retail) and the 1% (institutional).
+
+The 1% Reality vs. The 99% Myth:
+- "The Profitability Divide": Retail traders fail due to a lack of a statistical edge, ignoring the Statistical Theory of Ruin. Only 3% of day traders are profitable; a mere 1% achieve long-term consistency.
+- "Institutional Liquidity Generation": Large entities must "induce" retail selling/buying to fill hundred-million-dollar positions. Institutions drive prices past retail "support" to trigger stop-losses, creating the necessary counterparties.
+- Market Narrative over Patterns: Price action requires a fundamental catalyst to sustain institutional momentum.
+
+The Mathematics of Control:
+Institutional leverage is defined by the concept of Notional Control.
+Leverage Ratio = (Stock Price x 100) / Option Premium Paid
+- Retail Constraint: Buying a stock at $799/share with $20,000 allows only 25 shares.
+- Institutional Leverage: Utilizing options permits the control of hundreds of shares with the same capital. A 10% move in the underlying asset can yield 50%-100%+ returns.
+- Risk Management: The 1% Risk Rule is non-negotiable. On a $60,000 trade, a 7% stop-loss at $19.13 limits the loss to $4,200.
+
+Psychological Framework: The Investor Arc and Mindset Mastery
+The "Investor Psychology Arc" tracks the emotional journey of market participants.
+
+Three Mindset Shifts for Institutional Alignment:
+1. Indecision as "Disbelief": Small-bodied candles with equal wicks signify a draw between buyers and sellers, appearing before major breakouts or reversals.
+2. The Control Shift as "Transition": Long wicks and small bodies represent a "Market Structure Signature." A large upper wick indicates buyers were rejected by institutional supply.
+3. Strength as "Optimism/Markup": Large-bodied candles with minimal wicks indicate institutional momentum. The body-to-wick ratio confirms sellers have been fully absorbed.
+
+Navigating "The Chasm of Fear" (Crisis & Opportunity):
+The "Chasm of Fear" is the period of maximum emotional volatility where retail sentiment reaches peak panic.
+- During the Iranian missile attack on Israel, Bitcoin dropped $10,000 and Nvidia lost $212 billion in market cap.
+- While the 99% capitulated, the principle states: "If you have been sidelined, believe this is a good opportunity to scale into high conviction tokens. Do not capitulate."
+- A Module 1 trader utilizes the "Chasm" to execute contrarian entries, identifying that peak geopolitical or social panic often marks institutional bottoming.
+
+Institutional Mechanics: Liquidity, Inducement, and the "1% Strategy":
+Phase 3: Distribution — sideways chop is not "market confusion," but institutions managing exits by selling positions to retail buyers still trapped in the "Euphoria" stage.
+- Technical Definition of an Inducement Trap: An area that appears to be a valid "Order Block" or "Support Zone" but lacks an institutional Imbalance. A true imbalance has at least 3x more volume than its diagonal counterpart on a footprint chart.
+
+The Five Pillars of Success:
+1. Stack the odds in your favor — Use strategies backed by data and history, not gut feelings.
+2. Follow rules — Rules protect you from emotional mistakes that destroy accounts.
+3. Be disciplined — Consistency beats intensity every single time.
+4. Be coachable — Learn from others with proven results and be willing to adapt.
+5. Be decisive — Success requires taking action, not endless analysis paralysis.
+
+The S.E.T. Rule: Every trade must have Stop, Entry, and Target defined before execution. The 1% Risk Rule limits risk to 1% of total account per trade. With a 3:1 reward-to-risk ratio, even a 30% win rate is profitable.`;
+
+// Module 2 source
+TUTOR_SOURCES['m2'] = `Module 2 Correlation Report: Market Mechanics & TradingLab Video Implementations
+
+Market Mechanics: Level 2 Data and Order Flow Dynamics
+The Bid/Ask Mechanism:
+- Bid: The highest price buyers are willing to pay.
+- Ask: The lowest price sellers are willing to accept.
+- Spread: The gap between the two. A tight spread = high liquidity; wide spread = volatility and risk.
+
+Institutional Footprints: Stacking vs. Imbalances
+- Stacking (Intent): Identified on Level 2 when multiple exchanges show large orders at the same price. A "wall" or intent to defend a level.
+- Imbalances (Execution): Unlike price bars, imbalances are read diagonally. Buyers attack sellers one price level above, and sellers attack buyers one price level below. An imbalance is confirmed when one side has at least 3x more volume than its diagonal counterpart.
+
+Key Order Flow Metrics:
+- VAH/VAL (Value Area High/Low): The boundaries containing 70% of the candle's volume.
+- CVD (Cumulative Volume Delta): Tracks total buying/selling pressure over time. CVD Divergence indicates seller exhaustion and an imminent institutional reversal.
+
+Advanced Chart Reading: Beyond Pattern Memorization
+The Three-Candle Classification:
+1. Strength Candles: Large bodies, minimal wicks. One side has absolute control.
+2. Control Shift Candles: Long wicks, small bodies. The previous side lost the battle; the "story" is in the wick, not the color.
+3. Indecision Candles (Dojis): Small bodies, equal wicks. A draw in effort, often preceding a major breakout.
+
+Storytelling: The "22 vs. 4" Case Study:
+If it takes sellers 22 candles to drop price to a certain level, but buyers erase that entire move in only 4 candles, the "story" is one of overwhelming buyer dominance. Any retail "bearish pattern" is irrelevant.
+
+The Story of the Wick:
+- Large Upper Wick: Sellers absorbing buyers; expect downward movement.
+- Large Lower Wick: Buyers absorbing sellers; expect upward movement.
+- Wickless (Bullish): Absolute buyer control; no resistance.
+- Wickless (Bearish): Absolute seller control; no resistance.
+
+Supply & Demand: Institutional Zones and Inducement Traps
+Zone Identification Workflow:
+1. Locate Fair Value Gaps (FVG): Identify explosive three-candle moves that leave a gap.
+2. Identify the Origin: The candle that initiated the move is the True Zone.
+3. Identify Inducement: A weak support/resistance level that sits above a True Demand zone or below a True Supply zone.
+
+The Trap Mechanism: Institutions require liquidity (sell orders) to fill large buy orders. They create Inducement — a persuasive area that influences retail traders to enter early. Price sweeps through the Inducement Zone to trigger stops, providing liquidity for institutional orders at the True Zone.
+
+Confirmation: Absorption Initiation Pattern (AIP):
+1. Absorption: Price enters the zone and a candle shows sellers/buyers being "soaked up."
+2. Initiation: A follow-up candle closes in the trade's direction with imbalance agreement.
+
+Fibonacci "Sniper" Strategy:
+1. Identify an unmitigated 4-hour Fair Value Gap (FVG).
+2. Wait for price to sweep a recent low (liquidity grab).
+3. Wait for a "Change of Character" (CHoCH).
+4. Draw Fib from the low to the high of the CHoCH move.
+5. Execute at the Golden Zone (0.706, 0.618, 0.79 retracement).
+
+RSI Mastery:
+- 2-Day RSI Divergence: Price makes lower low but RSI makes higher low = 81.16% win rate on SPY.
+- 80/20 RSI Settings: Shift from retail 70/30 to 80/20 to filter noise.
+- Upper Quadrant Bounce: In strong uptrends, RSI pullback to 50 Midline = long entry.
+
+Market Structure and Price Cycle Phases:
+1. Accumulation: Quiet buying at lows. Sideways range after downtrend. Wait for breakout.
+2. Markup: Riding price higher. HH/HL staircase. Buy pullbacks to demand.
+3. Distribution: Quiet selling at highs. Sideways chop; upper wicks. Tighten stops.
+4. Markdown: Riding price lower. LH/LL staircase. Sell rallies to supply.
+
+Transition Signals: A valid phase transition requires a 2x-5x volume surge above the recent average on the breakout/breakdown candle, and a first successful pullback retest.
+
+Risk Management:
+- 1% Rule: Never risk more than 1% of total equity on a single trade.
+- Contingency vs. Stop Loss: Standard stops on options fail because option prices are "Noise." Use Contingency Orders — exit only when the underlying stock price hits a technical level.
+- S.E.T. Rule: No trade without pre-defined Stop, Entry, and Target. Every setup must provide at least 3:1 Reward-to-Risk.
+
+Live Market Success Protocol:
+1. Phase Recognition — Confirmed Markup or Markdown?
+2. Transition Confirmation — 2x-5x volume surge on breakout?
+3. Liquidity Check — Has price swept a recent high/low?
+4. Zone Validation — Is price entering a True Zone?
+5. Execution Confirmation — AIP or Control Shift candle at the zone?
+6. Risk Check — 1% risk, 3:1 RR, Contingency Order set?`;
+
+app.post('/api/trading-ai/ask', async (req, res) => {
+  try {
+    const { question, moduleId, history } = req.body;
+
+    if (!question || !question.trim()) {
+      return res.status(400).json({ error: 'Question is required' });
+    }
+
+    // Rate limiting
+    const allowed = await checkTutorRateLimit();
+    if (!allowed) {
+      return res.json({
+        success: false,
+        answer: "You've reached the question limit (30/hour). Take a break, review the module material, and come back shortly!",
+        rateLimited: true
+      });
+    }
+
+    // Get Anthropic API key
+    const settings = await kvGet('settings', {});
+    const apiKey = settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({
+        error: 'No Anthropic API key configured. Go to Settings to add your key.'
+      });
+    }
+
+    // Get module content from KV for additional context
+    const modules = await getModules();
+    const mod = modules.find(m => m.id === moduleId);
+    const moduleContent = mod
+      ? (mod.sections || [])
+          .filter(s => s.type === 'text' || !s.type)
+          .map(s => `${s.title}: ${(s.content || '').substring(0, 500)}`)
+          .join('\n\n')
+      : '';
+
+    // Get correlation report source material
+    const correlationReport = TUTOR_SOURCES[moduleId] || '';
+
+    // Build the system prompt
+    const systemPrompt = `You are the Impact Trading Academy AI Tutor — an expert trading educator powered by the Master Surge Strategy curriculum. You are helping a student who is studying ${mod ? `Module: "${mod.title}"` : 'the trading curriculum'}.
+
+YOUR KNOWLEDGE BASE (answer ONLY from this material):
+${correlationReport ? `\n--- CORRELATION REPORT (PRIMARY SOURCE) ---\n${correlationReport}\n---\n` : ''}
+${moduleContent ? `\n--- MODULE LESSON CONTENT ---\n${moduleContent}\n---\n` : ''}
+
+RULES:
+1. Answer ONLY using the knowledge base above. If the question is outside the module material, say "That topic isn't covered in this module. Try checking the relevant module or ask a different question."
+2. Be encouraging but precise. Use specific terms from the curriculum (S.E.T. Rule, Chasm of Fear, Five Pillars, Notional Control, AIP, etc.)
+3. When explaining concepts, reference the specific framework or strategy name.
+4. If the student asks about a trading calculation, walk them through it step by step.
+5. Keep answers concise but thorough — aim for 2-4 paragraphs unless a longer explanation is needed.
+6. Never give specific financial advice or recommend specific trades. You are an educator, not an advisor.
+7. If asked about risk, ALWAYS reinforce the 1% Rule and S.E.T. Rule.
+8. Use the "institutional vs. retail" framing from the curriculum when relevant.
+9. End longer answers with a follow-up question or study tip to keep the student engaged.`;
+
+    // Build messages array with conversation history
+    const messages = [];
+    if (Array.isArray(history)) {
+      for (const h of history.slice(-4)) { // Keep last 4 exchanges for context
+        if (h.role === 'user' || h.role === 'assistant') {
+          messages.push({ role: h.role, content: h.content });
+        }
+      }
+    }
+    messages.push({ role: 'user', content: question });
+
+    // Call Anthropic Claude API
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: messages
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      console.error('Anthropic API error:', response.status, errData);
+      return res.status(response.status).json({
+        error: errData.error?.message || `Anthropic API returned ${response.status}`
+      });
+    }
+
+    const data = await response.json();
+    const answer = data.content
+      ?.filter(c => c.type === 'text')
+      ?.map(c => c.text)
+      ?.join('\n') || 'I was unable to generate a response. Please try again.';
+
+    res.json({
+      success: true,
+      answer,
+      moduleId,
+      model: data.model,
+      usage: data.usage
+    });
+
+  } catch (error) {
+    console.error('AI Tutor error:', error);
+    res.status(500).json({ error: error.message || 'Failed to get AI tutor response' });
+  }
+});
+
+// Endpoint to check if AI Tutor is available (has API key)
+app.get('/api/trading-ai/status', async (req, res) => {
+  const settings = await kvGet('settings', {});
+  const hasKey = !!(settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY);
+  // Check which modules have correlation reports loaded
+  const availableModules = Object.keys(TUTOR_SOURCES);
+  res.json({ available: hasKey, modules: availableModules });
+});
+
 
 // =============================================================================
 // HEALTH CHECK
