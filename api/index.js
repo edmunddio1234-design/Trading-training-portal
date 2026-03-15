@@ -1244,7 +1244,7 @@ app.post('/api/trading-ai/ask', async (req, res) => {
     // Rate limiting
     const allowed = await checkTutorRateLimit();
     if (!allowed) {
-      return res.json({
+      return res.status(429).json({
         success: false,
         answer: "You've reached the question limit (30/hour). Take a break, review the module material, and come back shortly!",
         rateLimited: true
@@ -1413,6 +1413,109 @@ app.get('/api/company-lookup', async (req, res) => {
   }
 });
 
+
+// =============================================================================
+// AI TRADE REVIEW — Server-side Claude analysis of a trade setup
+// Called by the backtester confirmation modal before running simulations
+// =============================================================================
+
+app.post('/api/ai-trade-review', async (req, res) => {
+  try {
+    const { symbol, direction, entry, stop, target, risk, reward, ratio, posSize } = req.body;
+
+    if (!symbol || !entry || !stop || !target) {
+      return res.status(400).json({ error: 'Missing required trade setup fields (symbol, entry, stop, target).' });
+    }
+
+    // Rate limiting — reuse tutor rate limit (shared 30/hr Claude budget)
+    const allowed = await checkTutorRateLimit();
+    if (!allowed) {
+      return res.status(429).json({
+        error: 'Rate limit reached (30 AI reviews/hour). Try again shortly.',
+        rateLimited: true
+      });
+    }
+
+    // Get Anthropic API key
+    const settings = await kvGet('settings', {});
+    const apiKey = settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({ error: 'No Anthropic API key configured. Go to Settings to add your key.' });
+    }
+
+    const dir = direction || 'LONG';
+    const prompt = `You are a trading coach for the Impact Trading Academy. Analyze this trade setup briefly and practically.
+
+SETUP:
+- Symbol: ${symbol}
+- Direction: ${dir}
+- Entry: $${Number(entry).toFixed(2)}
+- Stop: $${Number(stop).toFixed(2)}
+- Target: $${Number(target).toFixed(2)}
+- Risk/Share: $${Number(risk || 0).toFixed(2)}
+- Reward/Share: $${Number(reward || 0).toFixed(2)}
+- R:R Ratio: ${ratio || '?'}:1
+- Position Size: ${posSize || '?'} shares
+
+Provide exactly this JSON (no markdown, just raw JSON):
+{
+  "grade": "A/B/C/D/F",
+  "label": "one of: Clean Setup, Solid Plan, Acceptable, Risky, Weak, Aggressive",
+  "summary": "1-2 sentence overall assessment",
+  "pros": ["2-3 strengths of this setup"],
+  "cons": ["1-3 concerns or weaknesses"],
+  "suggestion": "One specific actionable suggestion to improve this setup"
+}`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        system: 'You are a trading analyst. Return ONLY valid JSON. Apply the S.E.T. Rule framework: Stop first, Entry second, Target last. A 3:1 reward-to-risk ratio is the standard. Be honest but constructive.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      console.error('AI Trade Review API error:', response.status, errData);
+      return res.status(response.status).json({
+        error: errData.error?.message || `Anthropic API returned ${response.status}`
+      });
+    }
+
+    const data = await response.json();
+    const rawText = data.content?.filter(c => c.type === 'text')?.map(c => c.text)?.join('') || '';
+
+    // Parse the JSON response
+    let analysis;
+    try {
+      analysis = JSON.parse(rawText);
+    } catch (parseErr) {
+      // Try to extract JSON from response if it has extra text
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        analysis = JSON.parse(jsonMatch[0]);
+      } else {
+        return res.json({ success: true, raw: rawText, parseFailed: true });
+      }
+    }
+
+    res.json({ success: true, analysis, model: data.model, usage: data.usage });
+
+  } catch (error) {
+    console.error('AI Trade Review error:', error);
+    res.status(500).json({ error: error.message || 'Failed to analyze trade setup' });
+  }
+});
+
+
 // =============================================================================
 // COMPANY SNAPSHOT — Live Intelligence + Claude AI Analysis
 // Returns market data + AI-generated trading insights for any ticker
@@ -1433,6 +1536,12 @@ app.get('/api/company-snapshot', async (req, res) => {
     const cached = await kvGet(cacheKey);
     if (cached && cached.fetchedAt && Date.now() - cached.fetchedAt < 900000) {
       return res.json({ ...cached, cached: true });
+    }
+
+    // Rate limiting for non-cached requests (shares budget with AI tutor)
+    const rateLimitOk = await checkTutorRateLimit();
+    if (!rateLimitOk) {
+      return res.status(429).json({ error: 'Rate limit reached (30 AI requests/hour). Cached results still available.' });
     }
 
     // --- STEP 1: Fetch comprehensive Yahoo Finance data ---
