@@ -7,12 +7,40 @@
 const express = require('express');
 const cors = require('cors');
 const { kv } = require('@vercel/kv');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 
+// =============================================================================
+// CONSTANTS
+// =============================================================================
+
+const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '10mb' }));
+
+// =============================================================================
+// AUTH MIDDLEWARE
+// =============================================================================
+
+// requireAuth middleware: validates Bearer token against stored session
+async function requireAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authorization required' });
+  }
+
+  const token = authHeader.slice(7); // Remove 'Bearer '
+  const storedToken = await kvGet('session_token');
+
+  if (!storedToken || token !== storedToken) {
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+
+  next();
+}
 
 // =============================================================================
 // DATA PERSISTENCE LAYER (Vercel KV — replaces JSON file storage)
@@ -79,7 +107,7 @@ app.get('/api/modules', async (req, res) => {
   res.json(modules);
 });
 
-app.put('/api/modules', async (req, res) => {
+app.put('/api/modules', requireAuth, async (req, res) => {
   const modules = req.body;
   if (!Array.isArray(modules)) return res.status(400).json({ error: 'Modules must be an array' });
   await kvSet('modules', modules);
@@ -94,7 +122,7 @@ app.post('/api/modules', async (req, res) => {
   res.json({ success: true, module: newModule });
 });
 
-app.put('/api/modules/:id', async (req, res) => {
+app.put('/api/modules/:id', requireAuth, async (req, res) => {
   const modules = await kvGet('modules', []);
   const idx = modules.findIndex(m => m.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Module not found' });
@@ -103,7 +131,7 @@ app.put('/api/modules/:id', async (req, res) => {
   res.json({ success: true, module: modules[idx] });
 });
 
-app.delete('/api/modules/:id', async (req, res) => {
+app.delete('/api/modules/:id', requireAuth, async (req, res) => {
   let modules = await kvGet('modules', []);
   modules = modules.filter(m => m.id !== req.params.id);
   await kvSet('modules', modules);
@@ -119,7 +147,7 @@ app.get('/api/progress', async (req, res) => {
   res.json(progress);
 });
 
-app.put('/api/progress', async (req, res) => {
+app.put('/api/progress', requireAuth, async (req, res) => {
   await kvSet('progress', req.body);
   res.json({ success: true });
 });
@@ -139,7 +167,7 @@ app.get('/api/settings', async (req, res) => {
   res.json({ geminiApiKey: masked, hasKey: !!settings.geminiApiKey, anthropicApiKey: anthropicMasked, hasAnthropicKey: !!settings.anthropicApiKey });
 });
 
-app.put('/api/settings', async (req, res) => {
+app.put('/api/settings', requireAuth, async (req, res) => {
   const current = await kvGet('settings', {});
   const updated = { ...current, ...req.body };
   await kvSet('settings', updated);
@@ -200,7 +228,7 @@ app.post('/api/generate-visual', async (req, res) => {
       });
     }
 
-    const { GoogleGenAI } = require('@google/genai');
+    
     const ai = new GoogleGenAI({ apiKey });
     const prompt = buildImagePrompt(moduleTitle, sectionTitle, sectionContent);
 
@@ -266,7 +294,7 @@ app.post('/api/generate-module-visuals', async (req, res) => {
 
   const results = [];
   const contentSections = (mod.sections || []).filter(s => s.type === 'text' || !s.type);
-  const { GoogleGenAI } = require('@google/genai');
+  
   const ai = new GoogleGenAI({ apiKey });
 
   for (let i = 0; i < contentSections.length; i++) {
@@ -371,7 +399,7 @@ app.post('/api/generate-infographic', async (req, res) => {
       });
     }
 
-    const { GoogleGenAI } = require('@google/genai');
+    
     const ai = new GoogleGenAI({ apiKey });
     const prompt = buildInfographicPrompt(mod.title, mod.subtitle, mod.sections || []);
 
@@ -555,7 +583,7 @@ REQUIREMENTS:
 Return ONLY a valid JSON array (no markdown, no code blocks):
 [{"question":"...","options":["A","B","C","D"],"correct":0,"explanation":"...","difficulty":"easy"},...]`;
 
-    const { GoogleGenAI } = require('@google/genai');
+    
     const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
@@ -707,7 +735,7 @@ IMPORTANT: For any chart references: UP/bullish = GREEN, DOWN/bearish = RED (rea
 Return ONLY valid JSON (no markdown, no code blocks):
 {"strategyName":"...","principleSource":"...","marketConditions":"...","setupConditions":["..."],"entryRules":["..."],"positionSizing":"...","stopLossRules":"...","profitTargets":"...","commonMistakes":["..."],"whenNotToUse":["..."]}`;
 
-    const { GoogleGenAI } = require('@google/genai');
+    
     const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
@@ -857,7 +885,7 @@ app.get('/api/youtube/:moduleId', async (req, res) => {
   res.json({ success: true, moduleId, videos: [], source: 'none' });
 });
 
-app.put('/api/youtube/:moduleId', async (req, res) => {
+app.put('/api/youtube/:moduleId', requireAuth, async (req, res) => {
   try {
     const { videos } = req.body;
     if (!Array.isArray(videos)) return res.status(400).json({ error: 'Videos must be an array' });
@@ -888,7 +916,7 @@ app.get('/api/onboarding', async (req, res) => {
   res.json({ success: true, ...onboarding, completionPercent: Math.round((done / steps.length) * 100), isComplete: done === steps.length });
 });
 
-app.put('/api/onboarding', async (req, res) => {
+app.put('/api/onboarding', requireAuth, async (req, res) => {
   try {
     const current = await kvGet('onboarding', {});
     const updated = { ...current, ...req.body };
@@ -1022,9 +1050,8 @@ app.get('/api/stock-search', async (req, res) => {
 // Answers student questions using module content + correlation reports
 // =============================================================================
 
-// Rate limiting: max 30 questions per hour (stored in KV)
-async function checkTutorRateLimit() {
-  const key = 'tutor_rate_limit';
+// Rate limiting helper: max 30 requests per hour (stored in KV)
+async function checkRateLimit(key) {
   const now = Date.now();
   const window = 60 * 60 * 1000; // 1 hour
   const maxRequests = 30;
@@ -1039,6 +1066,11 @@ async function checkTutorRateLimit() {
   await kvSet(key, data);
   return true;
 }
+
+// Rate limiting: per-endpoint keys
+async function checkTutorRateLimit() { return checkRateLimit('rate_limit_tutor'); }
+async function checkTradeReviewRateLimit() { return checkRateLimit('rate_limit_trade_review'); }
+async function checkSnapshotRateLimit() { return checkRateLimit('rate_limit_snapshot'); }
 
 // Correlation reports — rich source material from NotebookLM, keyed by module ID
 const TUTOR_SOURCES = {};
@@ -1320,7 +1352,7 @@ RULES:
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: CLAUDE_MODEL,
         max_tokens: 1024,
         system: systemPrompt,
         messages: messages
@@ -1427,8 +1459,8 @@ app.post('/api/ai-trade-review', async (req, res) => {
       return res.status(400).json({ error: 'Missing required trade setup fields (symbol, entry, stop, target).' });
     }
 
-    // Rate limiting — reuse tutor rate limit (shared 30/hr Claude budget)
-    const allowed = await checkTutorRateLimit();
+    // Rate limiting — separate from tutor endpoint
+    const allowed = await checkTradeReviewRateLimit();
     if (!allowed) {
       return res.status(429).json({
         error: 'Rate limit reached (30 AI reviews/hour). Try again shortly.',
@@ -1475,7 +1507,7 @@ Provide exactly this JSON (no markdown, just raw JSON):
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: CLAUDE_MODEL,
         max_tokens: 400,
         system: 'You are a trading analyst. Return ONLY valid JSON. Apply the S.E.T. Rule framework: Stop first, Entry second, Target last. A 3:1 reward-to-risk ratio is the standard. Be honest but constructive.',
         messages: [{ role: 'user', content: prompt }]
@@ -1538,8 +1570,8 @@ app.get('/api/company-snapshot', async (req, res) => {
       return res.json({ ...cached, cached: true });
     }
 
-    // Rate limiting for non-cached requests (shares budget with AI tutor)
-    const rateLimitOk = await checkTutorRateLimit();
+    // Rate limiting for non-cached requests (separate from AI tutor)
+    const rateLimitOk = await checkSnapshotRateLimit();
     if (!rateLimitOk) {
       return res.status(429).json({ error: 'Rate limit reached (30 AI requests/hour). Cached results still available.' });
     }
@@ -1715,7 +1747,7 @@ Provide exactly this JSON structure (no markdown, just raw JSON):
             'anthropic-version': '2023-06-01'
           },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
+            model: CLAUDE_MODEL,
             max_tokens: 512,
             system: 'You are a trading analyst for the Impact Trading Academy. Return ONLY valid JSON, no markdown fences, no explanation text. Apply the Master Surge Strategy framework: institutional footprints, supply/demand zones, 1% risk rule, S.E.T. discipline.',
             messages: [{ role: 'user', content: dataPrompt }]
