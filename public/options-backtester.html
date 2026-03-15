@@ -136,6 +136,35 @@
 .page-theme-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all .15s; font-family: inherit; display: flex; align-items: center; gap: 6px; }
 .page-theme-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
 
+/* ===== STRATEGY DEEP DIVE PANEL ===== */
+.strat-info-panel{margin-top:8px;background:linear-gradient(135deg,rgba(27,42,74,0.03),rgba(13,147,115,0.05));border:1.5px solid var(--emerald);border-radius:12px;padding:16px 18px;font-size:12px;line-height:1.7;color:var(--gray-700);animation:slideUp .25s ease-out;}
+.strat-info-panel .sip-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.strat-info-panel .sip-icon{font-size:24px;}
+.strat-info-panel .sip-title{font-size:15px;font-weight:800;color:var(--navy);}
+.strat-info-panel .sip-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;}
+.sip-badge.income{background:rgba(59,130,246,0.12);color:#3B82F6;}
+.sip-badge.directional{background:rgba(245,158,11,0.12);color:#F59E0B;}
+.sip-badge.hedge{background:rgba(139,92,246,0.12);color:#8B5CF6;}
+.sip-badge.volatility{background:rgba(239,68,68,0.12);color:#EF4444;}
+.strat-info-panel .sip-what{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.strat-info-panel .sip-desc{margin-bottom:12px;}
+.strat-info-panel .sip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.strat-info-panel .sip-box{background:white;border-radius:8px;padding:10px 12px;border:1px solid var(--gray-200);}
+.strat-info-panel .sip-box-title{font-size:10px;font-weight:700;color:var(--emerald);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+.strat-info-panel .sip-box-text{font-size:11.5px;color:var(--gray-700);line-height:1.6;}
+.strat-info-panel .sip-verdict{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.sip-verdict.recommended{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);color:#065F46;}
+.sip-verdict.situational{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);color:#92400E;}
+.sip-verdict.advanced-use{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:#991B1B;}
+[data-theme="dark"] .strat-info-panel{background:linear-gradient(135deg,rgba(16,185,129,0.04),rgba(59,130,246,0.04));border-color:#1F4A3E;}
+[data-theme="dark"] .strat-info-panel .sip-title{color:#E2E8F0;}
+[data-theme="dark"] .strat-info-panel .sip-what{color:#E2E8F0;}
+[data-theme="dark"] .strat-info-panel .sip-desc,[data-theme="dark"] .strat-info-panel .sip-box-text{color:#CBD5E1;}
+[data-theme="dark"] .strat-info-panel .sip-box{background:#111B2E;border-color:#1F2E4A;}
+[data-theme="dark"] .sip-verdict.recommended{background:rgba(16,185,129,0.1);color:#6EE7B7;}
+[data-theme="dark"] .sip-verdict.situational{background:rgba(245,158,11,0.1);color:#FCD34D;}
+[data-theme="dark"] .sip-verdict.advanced-use{background:rgba(239,68,68,0.1);color:#FCA5A5;}
+
 /* ===== ENHANCED SYMBOL SEARCH ===== */
 .sim-ac-item{padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .1s;border-bottom:1px solid var(--gray-200);}
 .sim-ac-item:last-child{border-bottom:none;}
@@ -1197,11 +1226,11 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <div class="fg">
             <label>Start Date</label>
-            <input type="date" id="dt-start" value="2023-01-01" data-tip="Start date for historical simulation">
+            <input type="date" id="dt-start" value="2024-03-05" data-tip="Start date for historical simulation (data: Mar 2024 – Mar 2026)">
           </div>
           <div class="fg">
             <label>End Date</label>
-            <input type="date" id="dt-end" value="2025-01-01" data-tip="End date for historical simulation">
+            <input type="date" id="dt-end" value="2026-03-04" data-tip="End date for historical simulation (data: Mar 2024 – Mar 2026)">
           </div>
         </div>
 
@@ -1223,6 +1252,9 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
             <option value="bull_call_spread">Bull Call Spread (Vertical)</option>
           </select>
         </div>
+
+        <!-- Strategy Deep Dive Panel -->
+        <div id="strat-info-panel"></div>
 
         <div id="params-box"></div>
 
@@ -3368,18 +3400,6 @@ function renderChain() {
   document.getElementById('puts-body').innerHTML  = rows(data.puts,'put');
 }
 
-// Override simulated prices with real data
-function genPrices(startDate, endDate, s0, mu, sigma, seed) {
-  const sym = document.getElementById('sym')?.value||'SPY';
-  const raw = LIVE_PRICES[sym];
-  if (!raw) return {dates:[],prices:[]};
-  const res = {dates:[],prices:[]};
-  raw.dates.forEach((d,i) => {
-    if (d >= startDate && d <= endDate) { res.dates.push(d); res.prices.push(raw.prices[i]); }
-  });
-  return res.dates.length > 10 ? res : {dates:raw.dates, prices:raw.prices};
-}
-
 // === END LIVE DATA SECTION ===
 
 "use strict";
@@ -3393,8 +3413,21 @@ function makeRng(seed) {
   };
 }
 
-// ---- PRICE SERIES (GBM) ----
+// ---- PRICE SERIES — Uses real data first, falls back to synthetic GBM ----
 function genPrices(startDate, endDate, s0, mu, sigma, seed) {
+  // Try live data first
+  const sym = document.getElementById('sym')?.value || 'SPY';
+  const raw = LIVE_PRICES?.[sym];
+  if (raw && raw.dates && raw.dates.length) {
+    const res = { dates: [], prices: [] };
+    raw.dates.forEach((d, i) => {
+      if (d >= startDate && d <= endDate) { res.dates.push(d); res.prices.push(raw.prices[i]); }
+    });
+    if (res.dates.length > 10) return res;
+    // If filtered range too small, use full live dataset
+    if (raw.dates.length > 10) return { dates: raw.dates, prices: raw.prices };
+  }
+  // Fallback: synthetic GBM
   const rng = makeRng(seed);
   const dates = [], prices = [];
   let price = s0;
@@ -3638,8 +3671,114 @@ const PARAMS_HTML = {
 function loadParams() {
   const s = document.getElementById('strat').value;
   document.getElementById('params-box').innerHTML = PARAMS_HTML[s] || '';
+  showStratInfo(s);
 }
 loadParams();
+
+// ===== STRATEGY DEEP DIVE EXPLANATIONS =====
+const STRAT_INFO = {
+  covered_call: {
+    icon: '📈', title: 'Covered Call', category: 'income', catLabel: 'Income Strategy',
+    what: 'You own 100 shares of a stock and sell a call option against those shares.',
+    how: 'You collect the option premium upfront as income. If the stock stays below the strike price by expiration, you keep the premium AND your shares. If the stock rises above the strike, your shares get called away (sold) at the strike price — you still profit, but your upside is capped.',
+    when: 'Use in neutral-to-mildly-bullish markets. Ideal when you expect the stock to trade sideways or grind slowly higher. Best when implied volatility (IV) is elevated — you collect fatter premiums. Works especially well in the Neutral regime identified by the Markov Regime Detector.',
+    why: 'It generates consistent income from stocks you already own. Time decay (theta) works in your favor every day. Even if the stock doesn\'t move, you still profit from the premium. At a 3% OTM strike, you keep upside room while collecting cash.',
+    risk: 'Your downside is NOT protected — if the stock drops sharply, you lose on the shares (offset slightly by the premium collected). Your upside is capped at the strike price. You can be assigned early if the option goes deep in-the-money.',
+    verdict: 'recommended', verdictText: 'Highly recommended for beginners and income seekers. One of the safest options strategies — you\'re reducing risk compared to just holding stock.'
+  },
+  cash_secured_put: {
+    icon: '💵', title: 'Cash-Secured Put', category: 'income', catLabel: 'Income Strategy',
+    what: 'You sell a put option while holding enough cash to buy 100 shares if assigned.',
+    how: 'You receive premium upfront. If the stock stays above the strike price, the put expires worthless — you keep the premium as pure profit. If the stock drops below the strike, you\'re obligated to buy 100 shares at the strike price, but your effective cost basis is reduced by the premium you collected.',
+    when: 'Use when you\'re bullish on a stock and want to buy it at a discount. Best in neutral-to-bullish regimes. Great when IV is elevated — you collect more premium, creating a bigger discount. Use it to build positions in stocks you want to own long-term.',
+    why: 'It\'s like placing a limit order AND getting paid to wait. If you want to buy Apple at $170 but it\'s trading at $180, selling a $170 put means you either: (a) buy it at your target price minus premium, or (b) pocket the premium if it never drops. You win either way.',
+    risk: 'If the stock crashes well below your strike, you\'re forced to buy at the strike — your loss can be significant (stock drops to zero minus premium = max loss). This is NOT a hedge strategy. Requires enough cash margin to cover the full purchase.',
+    verdict: 'recommended', verdictText: 'Recommended for students ready to own shares. The "get paid to wait for your price" strategy. Pairs beautifully with the 1% Rule.'
+  },
+  iron_condor: {
+    icon: '🦅', title: 'Iron Condor', category: 'income', catLabel: 'Income Strategy',
+    what: 'You sell an OTM call spread AND an OTM put spread simultaneously — creating a "profit zone" where the stock can move within and you still win.',
+    how: 'You sell a call above the current price and buy a further-out call (bear call spread). You also sell a put below the current price and buy a further-out put (bull put spread). This creates a range. If the stock stays inside that range by expiration, ALL four options expire worthless and you keep the entire premium collected.',
+    when: 'Use in low-volatility, range-bound, neutral markets. This is the #1 strategy for the Neutral regime. Best when IV is moderate-to-high (fatter premiums) but you expect the stock to stay flat. Ideal for indices like SPY and QQQ that tend to mean-revert.',
+    why: 'Defined risk on both sides — you know your exact max loss before entering. Time decay erodes all four legs in your favor. You don\'t need to pick a direction — you just need the stock to NOT make a big move. Statistical edge: most stocks stay in range most of the time.',
+    risk: 'If the stock makes a large move in either direction past your wings, you hit max loss. Max loss = wing width minus premium collected. Both sides can\'t lose simultaneously, but one side can. Earnings, Fed announcements, or sector shocks can blow through your range.',
+    verdict: 'recommended', verdictText: 'Recommended for intermediate students. The "steady paycheck" of options trading. Excellent probability of profit in calm markets.'
+  },
+  straddle: {
+    icon: '⚡', title: 'Long Straddle', category: 'volatility', catLabel: 'Volatility Play',
+    what: 'You buy an ATM (at-the-money) call AND an ATM put at the same strike price and expiration.',
+    how: 'You pay premium on both legs. For a profit, the stock must move far enough in EITHER direction to exceed the total premium paid. If the stock rockets up — your call explodes in value while the put expires worthless. If the stock crashes — your put explodes while the call dies. You profit from movement itself, regardless of direction.',
+    when: 'Use before high-impact catalysts: earnings announcements, FDA decisions, major product launches, Fed rate decisions. Best when IV is LOW (cheap premiums) but you expect a volatility expansion. The key is buying BEFORE the big move happens, not after IV has already spiked.',
+    why: 'You don\'t need to guess the direction — just that a big move is coming. Before earnings, stocks often compress in a tight range and then explode. The straddle lets you profit from that explosion either way. It\'s the ultimate "something big is about to happen" play.',
+    risk: 'If the stock doesn\'t move enough, BOTH legs lose value from time decay — this is a double theta bleed. If IV was already high when you entered, a post-event IV crush can destroy both legs even if the stock moves. This is the most common way straddles lose money. Expensive to enter — you\'re paying two premiums.',
+    verdict: 'situational', verdictText: 'Situational — powerful before earnings/catalysts but expensive. Only use when you have strong conviction a big move is coming AND IV is relatively low.'
+  },
+  strangle: {
+    icon: '🌊', title: 'Long Strangle', category: 'volatility', catLabel: 'Volatility Play',
+    what: 'You buy an OTM call AND an OTM put at different strikes — wider apart than a straddle.',
+    how: 'Cheaper than a straddle because both options are out-of-the-money. However, the stock needs to make an even BIGGER move to become profitable. The call profits if the stock surges past the upper strike + premium. The put profits if the stock plunges past the lower strike + premium.',
+    when: 'Use before major volatility events when you want directional exposure in both directions but want to spend less capital than a straddle. Best when you expect a MASSIVE move (5%+), not just a moderate one. Often used for high-beta stocks like TSLA before earnings.',
+    why: 'Lower cost of entry = less capital at risk. If the move is big enough, the winning leg can return multiples of the initial investment. Works great on stocks known for violent earnings reactions (TSLA, NFLX, META). The 1% Rule keeps your total risk capped even if both legs expire worthless.',
+    risk: 'Needs a bigger move than a straddle to profit. Both legs bleed from theta decay daily. IV crush after earnings can destroy value even with a moderate stock move. If the stock moves but stays between your strikes, both legs lose. Higher probability of total loss than a straddle.',
+    verdict: 'situational', verdictText: 'Situational — cheaper entry than a straddle but needs a bigger move. Best for known volatility monsters (TSLA, NFLX) before major catalysts.'
+  },
+  protective_put: {
+    icon: '🛡️', title: 'Protective Put', category: 'hedge', catLabel: 'Hedge / Insurance',
+    what: 'You own 100 shares and buy a put option as downside insurance — like buying a policy on your stock position.',
+    how: 'The put gives you the right to sell your shares at the strike price regardless of how far the stock drops. If the stock crashes to $0, your put guarantees you can sell at the strike. Your maximum loss is: (current price – strike price) + premium paid. Your upside remains unlimited.',
+    when: 'Use when you\'re bullish long-term but nervous about a near-term pullback. Before earnings when you want to hold through but can\'t afford a big gap down. During periods of elevated uncertainty (elections, Fed meetings, geopolitical events). When the Markov Regime Detector shows transitioning conditions.',
+    why: 'Peace of mind. You stay in the trade with unlimited upside while knowing your worst-case scenario is defined. This is pure insurance — it costs money (the premium) but protects against catastrophic loss. It\'s the difference between "I hope this works" and "I know my max loss."',
+    risk: 'The premium is a sunk cost — if the stock goes up, the put expires worthless and you paid for nothing (like insurance you didn\'t use). Ongoing cost if you keep renewing. Time decay erodes the put value daily. Can reduce your overall return in strong bull markets.',
+    verdict: 'recommended', verdictText: 'Recommended for anyone holding positions through uncertainty. The most defensive options strategy — prioritizes capital preservation over maximum profit.'
+  },
+  bull_call_spread: {
+    icon: '📊', title: 'Bull Call Spread (Vertical)', category: 'directional', catLabel: 'Directional Play',
+    what: 'You buy a call at a lower strike and sell a call at a higher strike — same expiration. This is a defined-risk, defined-reward bullish bet.',
+    how: 'The long call gives you upside exposure. The short call caps your profit but also reduces your cost (you collect premium from selling it). Max profit = spread width – net debit. Max loss = net debit paid. If the stock closes above the upper strike at expiration, you hit max profit. Below the lower strike = max loss.',
+    when: 'Use when you\'re moderately bullish — expecting a move up but not an explosion. Works in Bull regimes identified by the Markov Detector. Best when IV is moderate. Great when you want directional exposure but can\'t afford (or don\'t want to risk) a naked long call.',
+    why: 'Capital efficient — costs much less than buying shares or a single call. Both risk and reward are defined before you enter. The sold call subsidizes the bought call, reducing your breakeven. Excellent risk-to-reward when the spread width is well-chosen relative to the expected move.',
+    risk: 'Profit is capped at the spread width. If the stock doesn\'t reach your lower strike, you lose the entire debit. Time decay works against you (but less than a single long call because the sold call decays in your favor). Early assignment risk on the short leg if it goes deep ITM.',
+    verdict: 'recommended', verdictText: 'Recommended for directional conviction with controlled risk. The go-to strategy when you believe a stock will rise within a defined range.'
+  }
+};
+
+function showStratInfo(stratKey) {
+  const panel = document.getElementById('strat-info-panel');
+  const info = STRAT_INFO[stratKey];
+  if (!info) { panel.innerHTML = ''; return; }
+
+  panel.innerHTML = `
+    <div class="strat-info-panel">
+      <div class="sip-header">
+        <span class="sip-icon">${info.icon}</span>
+        <span class="sip-title">${info.title}</span>
+        <span class="sip-badge ${info.category}">${info.catLabel}</span>
+      </div>
+      <div class="sip-what">${info.what}</div>
+      <div class="sip-grid">
+        <div class="sip-box">
+          <div class="sip-box-title">How It Works</div>
+          <div class="sip-box-text">${info.how}</div>
+        </div>
+        <div class="sip-box">
+          <div class="sip-box-title">When To Use It</div>
+          <div class="sip-box-text">${info.when}</div>
+        </div>
+        <div class="sip-box">
+          <div class="sip-box-title">Why It's Effective</div>
+          <div class="sip-box-text">${info.why}</div>
+        </div>
+        <div class="sip-box">
+          <div class="sip-box-title">Risk & Dangers</div>
+          <div class="sip-box-text">${info.risk}</div>
+        </div>
+      </div>
+      <div class="sip-verdict ${info.verdict}">
+        <span>${info.verdict === 'recommended' ? '✅' : info.verdict === 'situational' ? '⚠️' : '🔥'}</span>
+        <span>${info.verdictText}</span>
+      </div>
+    </div>`;
+}
 
 function getParams() {
   return {
@@ -3656,6 +3795,16 @@ function updateMaxRisk() {
 }
 updateMaxRisk();
 
+// ---- AUTO-SET DATE RANGE FROM LIVE DATA ----
+(function autoSetDates() {
+  const sym = document.getElementById('sym')?.value || 'SPY';
+  const raw = typeof LIVE_PRICES !== 'undefined' && LIVE_PRICES[sym];
+  if (raw && raw.dates && raw.dates.length > 1) {
+    document.getElementById('dt-start').value = raw.dates[0];
+    document.getElementById('dt-end').value = raw.dates[raw.dates.length - 1];
+  }
+})();
+
 // ---- CHART INSTANCES ----
 let eqChart = null, plChart = null;
 
@@ -3669,18 +3818,26 @@ function runBacktest() {
   const dte    = parseInt(document.getElementById('dte').value);
   const params = getParams();
 
-  if (!TICKERS[sym]) return;
+  if (!TICKERS[sym]) { alert('Symbol not available for backtesting. Select SPY, QQQ, AAPL, TSLA, or NVDA.'); return; }
+  if (!start || !end || start >= end) { alert('Please set a valid date range. Start date must be before End date.'); return; }
   document.getElementById('loading-overlay').classList.add('show');
 
   setTimeout(() => {
     try {
       const [s0, mu, sigma, seed] = TICKERS[sym];
       const { dates, prices } = genPrices(start, end, s0, mu, sigma, seed);
+      if (!prices.length || prices.length < 5) {
+        document.getElementById('nores').style.display = 'block';
+        document.getElementById('nores').innerHTML = '<p style="color:var(--gray-500);text-align:center;padding:20px;">Not enough price data for the selected date range. Try expanding your dates (data available: Mar 2024 – Mar 2026).</p>';
+        document.getElementById('results-box').style.display = 'none';
+        return;
+      }
       const regimes = detectRegimes(prices);
       const raw = dispatch(strat, prices, dates, regimes, params, dte);
 
       if (!raw.length) {
         document.getElementById('nores').style.display = 'block';
+        document.getElementById('nores').innerHTML = '<p style="color:var(--gray-500);text-align:center;padding:20px;">No trades generated for this strategy/date combination. Try a longer date range or different expiration cycle.</p>';
         document.getElementById('results-box').style.display = 'none';
         return;
       }
