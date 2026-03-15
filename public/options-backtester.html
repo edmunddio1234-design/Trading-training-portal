@@ -3673,7 +3673,7 @@ function loadParams() {
   document.getElementById('params-box').innerHTML = PARAMS_HTML[s] || '';
   showStratInfo(s);
 }
-loadParams();
+// NOTE: loadParams() call moved AFTER STRAT_INFO + showStratInfo definitions (see below)
 
 // ===== STRATEGY DEEP DIVE EXPLANATIONS =====
 const STRAT_INFO = {
@@ -3794,6 +3794,7 @@ function updateMaxRisk() {
   document.getElementById('maxrisk-disp').textContent = (a * 0.01).toFixed(0);
 }
 updateMaxRisk();
+loadParams(); // Initialize strategy params + deep dive panel (moved here so STRAT_INFO is defined)
 
 // ---- AUTO-SET DATE RANGE FROM LIVE DATA ----
 (function autoSetDates() {
