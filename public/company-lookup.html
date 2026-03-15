@@ -7,11 +7,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://s3.tradingview.com/tv.js"></script>
 <style>
+  /* ===== LIGHT THEME (DEFAULT) ===== */
   :root {
     --navy: #1B2A4A;
     --emerald: #10B981;
     --emerald-dark: #0D9373;
     --red: #EF4444;
+    --bg: #FFFFFF;
+    --bg-card: #F8FAFB;
+    --bg-input: #F1F5F9;
+    --border: #E2E8F0;
+    --border-light: #CBD5E1;
+    --text: #1E293B;
+    --text-muted: #64748B;
+    --text-dim: #94A3B8;
+    --glow: rgba(16, 185, 129, 0.10);
+    --header-bg: #1B2A4A;
+    --header-text: #FFFFFF;
+    --header-sub: rgba(255,255,255,0.5);
+    --loading-bg: rgba(255,255,255,0.88);
+    --shadow: rgba(0,0,0,0.06);
+    --price-big: #0F172A;
+    --snap-title: #0F172A;
+    --ctrl-bg: #F1F5F9;
+    --ctrl-hover: #E2E8F0;
+    --ctrl-active: var(--emerald);
+  }
+
+  /* ===== DARK THEME ===== */
+  [data-theme="dark"] {
     --bg: #0B1426;
     --bg-card: #111B2E;
     --bg-input: #1A2540;
@@ -21,17 +45,33 @@
     --text-muted: #6B7394;
     --text-dim: #4A5078;
     --glow: rgba(16, 185, 129, 0.15);
+    --header-bg: #1B2A4A;
+    --header-text: #FFFFFF;
+    --header-sub: rgba(255,255,255,0.5);
+    --loading-bg: rgba(11,20,38,0.85);
+    --shadow: rgba(0,0,0,0.3);
+    --price-big: #FFFFFF;
+    --snap-title: #FFFFFF;
+    --ctrl-bg: #1A2540;
+    --ctrl-hover: #243354;
+    --ctrl-active: var(--emerald);
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background .25s, color .25s; }
 
   /* Header */
-  .header { background: var(--navy); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .header { background: var(--header-bg); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
   .header-left { display: flex; align-items: center; gap: 14px; }
-  .header-left h1 { font-size: 16px; color: #fff; font-weight: 700; }
+  .header-left h1 { font-size: 16px; color: var(--header-text); font-weight: 700; }
   .header-left h1 span { color: var(--emerald); }
+  .header-right { display: flex; align-items: center; gap: 12px; }
   .back-btn { background: none; border: 1px solid var(--border-light); color: var(--emerald); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none; transition: all .15s; }
   .back-btn:hover { background: var(--glow); border-color: var(--emerald); }
+
+  /* Theme Toggle */
+  .theme-toggle { background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--header-text); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all .15s; display: flex; align-items: center; gap: 6px; font-family: inherit; }
+  .theme-toggle:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
 
   /* Layout */
   .container { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
@@ -39,16 +79,16 @@
   /* Search Section */
   .search-section { margin-bottom: 28px; }
   .search-wrap { position: relative; max-width: 600px; }
-  .search-input { width: 100%; padding: 14px 18px 14px 44px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 12px; color: var(--text); font-size: 15px; font-family: inherit; outline: none; transition: border-color .2s; }
+  .search-input { width: 100%; padding: 14px 18px 14px 44px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 12px; color: var(--text); font-size: 15px; font-family: inherit; outline: none; transition: border-color .2s, background .25s, color .25s; }
   .search-input:focus { border-color: var(--emerald); box-shadow: 0 0 0 3px var(--glow); }
   .search-input::placeholder { color: var(--text-dim); }
   .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; pointer-events: none; }
   .search-hint { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
 
   /* Autocomplete Dropdown */
-  .ac-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 10px; margin-top: 4px; max-height: 320px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .ac-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 10px; margin-top: 4px; max-height: 320px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 12px 40px var(--shadow); }
   .ac-dropdown.show { display: block; }
-  .ac-item { padding: 12px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: background .1s; border-bottom: 1px solid rgba(31,46,74,0.5); }
+  .ac-item { padding: 12px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: background .1s; border-bottom: 1px solid var(--border); }
   .ac-item:last-child { border-bottom: none; }
   .ac-item:hover, .ac-item.active { background: var(--glow); }
   .ac-sym { font-weight: 700; color: var(--emerald); font-size: 14px; min-width: 70px; }
@@ -62,7 +102,7 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
   .snap-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-  .snap-identity h2 { font-size: 24px; font-weight: 800; color: #fff; }
+  .snap-identity h2 { font-size: 24px; font-weight: 800; color: var(--snap-title); }
   .snap-identity h2 .sym { color: var(--emerald); }
   .snap-identity .sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
   .snap-actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -73,8 +113,8 @@
   .snap-btn-back:hover { background: var(--glow); border-color: var(--emerald); }
 
   /* Price Banner */
-  .price-banner { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
-  .price-big { font-size: 36px; font-weight: 800; color: #fff; }
+  .price-banner { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; box-shadow: 0 2px 8px var(--shadow); }
+  .price-big { font-size: 36px; font-weight: 800; color: var(--price-big); }
   .price-change { font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
   .price-change.up { background: rgba(16,185,129,0.15); color: var(--emerald); }
   .price-change.dn { background: rgba(239,68,68,0.15); color: var(--red); }
@@ -87,12 +127,11 @@
   .snap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
   @media (max-width: 768px) { .snap-grid { grid-template-columns: 1fr; } }
 
-  .snap-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .snap-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 8px var(--shadow); }
   .snap-card h3 { font-size: 12px; color: var(--emerald); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
   /* Metrics Grid */
   .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .metric { }
   .metric .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
   .metric .val { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 2px; }
   .metric .val.up { color: var(--emerald); }
@@ -116,19 +155,44 @@
   .perf-val { font-size: 12px; font-weight: 700; min-width: 52px; }
 
   /* AI Insights */
-  .ai-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
+  .ai-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 8px var(--shadow); }
   .ai-section h3 { font-size: 12px; color: var(--emerald); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
   .ai-text { font-size: 13px; line-height: 1.7; color: var(--text); margin-bottom: 12px; }
   .ai-nuggets { list-style: none; padding: 0; }
-  .ai-nuggets li { padding: 8px 0; border-bottom: 1px solid rgba(31,46,74,0.5); font-size: 13px; line-height: 1.5; color: var(--text); display: flex; gap: 8px; }
+  .ai-nuggets li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.5; color: var(--text); display: flex; gap: 8px; }
   .ai-nuggets li:last-child { border-bottom: none; }
-  .ai-nuggets li::before { content: '▸'; color: var(--emerald); font-weight: 700; flex-shrink: 0; }
+  .ai-nuggets li::before { content: '\25B8'; color: var(--emerald); font-weight: 700; flex-shrink: 0; }
   .ai-takeaway { background: var(--glow); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; padding: 12px 16px; font-size: 13px; font-weight: 600; color: var(--emerald); margin-top: 12px; }
 
-  /* TradingView Mini Chart */
-  .tv-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
-  .tv-section h3 { font-size: 12px; color: var(--emerald); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 16px 20px 0; }
-  .tv-chart-wrap { width: 100%; height: 420px; }
+  /* ===== TRADINGVIEW SECTION ===== */
+  .tv-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 8px var(--shadow); }
+  .tv-toolbar { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid var(--border); }
+  .tv-toolbar-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .tv-toolbar h3 { font-size: 12px; color: var(--emerald); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin: 0; white-space: nowrap; }
+  .tv-chart-wrap { width: 100%; height: 520px; }
+
+  /* Timeframe Selector */
+  .tf-selector { display: flex; gap: 3px; flex-wrap: wrap; }
+  .tf-btn { background: var(--ctrl-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all .15s; font-family: inherit; letter-spacing: 0.3px; }
+  .tf-btn:hover { border-color: var(--emerald); color: var(--emerald); background: var(--glow); }
+  .tf-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+
+  /* ===== CHART CONTROL KEYPAD ===== */
+  .chart-controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ctrl-group { display: flex; align-items: center; gap: 3px; background: var(--ctrl-bg); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+  .ctrl-group-label { font-size: 9px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 6px; white-space: nowrap; }
+  .ctrl-btn { background: transparent; border: 1px solid transparent; color: var(--text-muted); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all .12s; font-family: inherit; padding: 0; }
+  .ctrl-btn:hover { background: var(--ctrl-hover); color: var(--emerald); border-color: var(--border-light); }
+  .ctrl-btn:active { background: var(--emerald); color: #fff; transform: scale(0.92); }
+  .ctrl-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ctrl-btn.ctrl-focus { font-size: 11px; width: auto; padding: 0 10px; font-weight: 700; letter-spacing: 0.3px; }
+  .ctrl-btn.ctrl-focus:hover { background: var(--emerald); color: #fff; }
+
+  /* Zoom Range Presets */
+  .zoom-presets { display: flex; gap: 3px; flex-wrap: wrap; }
+  .zoom-btn { background: var(--ctrl-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 5px 9px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; transition: all .15s; font-family: inherit; letter-spacing: 0.3px; }
+  .zoom-btn:hover { border-color: #3B82F6; color: #3B82F6; background: rgba(59,130,246,0.08); }
+  .zoom-btn.active { background: #3B82F6; color: #fff; border-color: #3B82F6; }
 
   /* Key Levels */
   .levels-row { display: flex; gap: 16px; margin-top: 10px; }
@@ -139,7 +203,7 @@
   .level-box.resistance .val { color: var(--red); }
 
   /* Loading */
-  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(11,20,38,0.85); z-index: 200; justify-content: center; align-items: center; flex-direction: column; gap: 16px; }
+  .loading-overlay { display: none; position: fixed; inset: 0; background: var(--loading-bg); z-index: 200; justify-content: center; align-items: center; flex-direction: column; gap: 16px; }
   .loading-overlay.show { display: flex; }
   .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--emerald); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -149,6 +213,13 @@
   .quick-picks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
   .qp-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; font-family: inherit; }
   .qp-btn:hover { border-color: var(--emerald); color: var(--emerald); background: var(--glow); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .tv-toolbar-row { flex-direction: column; align-items: flex-start; }
+    .chart-controls { width: 100%; }
+    .ctrl-group { flex-wrap: wrap; }
+  }
 </style>
 </head>
 <body>
@@ -156,10 +227,16 @@
 <!-- Header -->
 <div class="header">
   <div class="header-left">
-    <a href="/" class="back-btn">← Academy</a>
+    <a href="/" class="back-btn">&larr; Academy</a>
     <h1>Company <span>Intelligence</span></h1>
   </div>
-  <div style="font-size:11px;color:rgba(255,255,255,0.5);">Ticker Lookup + Live Snapshot</div>
+  <div class="header-right">
+    <div style="font-size:11px;color:var(--header-sub);">Ticker Lookup + Live Snapshot</div>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+      <span id="themeIcon">&#9790;</span>
+      <span id="themeLabel">Dark</span>
+    </button>
+  </div>
 </div>
 
 <!-- Loading Overlay -->
@@ -222,9 +299,74 @@
       </div>
     </div>
 
-    <!-- TradingView Chart -->
+    <!-- TradingView Chart with Full Controls -->
     <div class="tv-section">
-      <h3>Live Chart</h3>
+      <div class="tv-toolbar">
+
+        <!-- Row 1: Title + Timeframe Intervals -->
+        <div class="tv-toolbar-row">
+          <h3>Live Chart</h3>
+          <div class="tf-selector" id="tfSelector">
+            <button class="tf-btn" data-tf="10S" onclick="changeTimeframe('10S',this)">10s</button>
+            <button class="tf-btn" data-tf="1" onclick="changeTimeframe('1',this)">1m</button>
+            <button class="tf-btn" data-tf="5" onclick="changeTimeframe('5',this)">5m</button>
+            <button class="tf-btn" data-tf="15" onclick="changeTimeframe('15',this)">15m</button>
+            <button class="tf-btn" data-tf="30" onclick="changeTimeframe('30',this)">30m</button>
+            <button class="tf-btn active" data-tf="D" onclick="changeTimeframe('D',this)">1D</button>
+            <button class="tf-btn" data-tf="W" onclick="changeTimeframe('W',this)">1W</button>
+            <button class="tf-btn" data-tf="M" onclick="changeTimeframe('M',this)">1M</button>
+          </div>
+        </div>
+
+        <!-- Row 2: Chart Control Keypad -->
+        <div class="tv-toolbar-row">
+
+          <!-- Pan Controls -->
+          <div class="chart-controls">
+            <div class="ctrl-group">
+              <span class="ctrl-group-label">Pan</span>
+              <button class="ctrl-btn" onclick="chartPan('far-left')" title="Jump to earliest data">
+                <svg viewBox="0 0 24 24"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+              </button>
+              <button class="ctrl-btn" onclick="chartPan('left')" title="Scroll left">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="ctrl-btn" onclick="chartPan('right')" title="Scroll right">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <button class="ctrl-btn" onclick="chartPan('far-right')" title="Jump to latest data">
+                <svg viewBox="0 0 24 24"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+              </button>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="ctrl-group">
+              <span class="ctrl-group-label">Zoom</span>
+              <button class="ctrl-btn" onclick="chartZoom('in')" title="Zoom in">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              </button>
+              <button class="ctrl-btn" onclick="chartZoom('out')" title="Zoom out">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              </button>
+              <button class="ctrl-btn ctrl-focus" onclick="chartFocus()" title="Reset to latest view">FOCUS</button>
+            </div>
+          </div>
+
+          <!-- Zoom Range Presets -->
+          <div class="zoom-presets" id="zoomPresets">
+            <button class="zoom-btn" data-range="1D" onclick="setRange('1D',this)">1D</button>
+            <button class="zoom-btn" data-range="5D" onclick="setRange('5D',this)">5D</button>
+            <button class="zoom-btn active" data-range="1M" onclick="setRange('1M',this)">1M</button>
+            <button class="zoom-btn" data-range="3M" onclick="setRange('3M',this)">3M</button>
+            <button class="zoom-btn" data-range="6M" onclick="setRange('6M',this)">6M</button>
+            <button class="zoom-btn" data-range="YTD" onclick="setRange('YTD',this)">YTD</button>
+            <button class="zoom-btn" data-range="12M" onclick="setRange('12M',this)">1Y</button>
+            <button class="zoom-btn" data-range="60M" onclick="setRange('60M',this)">5Y</button>
+            <button class="zoom-btn" data-range="ALL" onclick="setRange('ALL',this)">ALL</button>
+          </div>
+        </div>
+
+      </div>
       <div class="tv-chart-wrap" id="tvChartWrap"></div>
     </div>
 
@@ -296,6 +438,123 @@ let acResults = [];
 let acIndex = -1;
 let debounceTimer = null;
 let currentTVWidget = null;
+let currentSymbol = '';
+let currentInterval = 'D';
+let currentRange = '1M';
+
+// ---------- THEME MANAGEMENT ----------
+
+function getTheme() {
+  return document.documentElement.getAttribute('data-theme') || 'light';
+}
+
+function setTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeIcon').innerHTML = '&#9728;';
+    document.getElementById('themeLabel').textContent = 'Light';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    document.getElementById('themeIcon').innerHTML = '&#9790;';
+    document.getElementById('themeLabel').textContent = 'Dark';
+  }
+  // Reload TradingView chart with new theme
+  if (currentSymbol) {
+    loadTVChart(currentSymbol, currentInterval, currentRange);
+  }
+}
+
+function toggleTheme() {
+  setTheme(getTheme() === 'dark' ? 'light' : 'dark');
+}
+
+// ---------- TIMEFRAME MANAGEMENT ----------
+
+function changeTimeframe(tf, btn) {
+  currentInterval = tf;
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (currentSymbol) loadTVChart(currentSymbol, tf, currentRange);
+}
+
+// ---------- ZOOM RANGE PRESETS ----------
+
+function setRange(range, btn) {
+  currentRange = range;
+  document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (currentSymbol) loadTVChart(currentSymbol, currentInterval, range);
+}
+
+// ---------- CHART CONTROL KEYPAD ----------
+
+function getTVIframe() {
+  const wrap = document.getElementById('tvChartWrap');
+  return wrap ? wrap.querySelector('iframe') : null;
+}
+
+function focusChart() {
+  const iframe = getTVIframe();
+  if (iframe) {
+    iframe.focus();
+    iframe.contentWindow.focus();
+  }
+}
+
+function sendKey(key, opts) {
+  const iframe = getTVIframe();
+  if (!iframe) return;
+  // Focus the iframe first
+  iframe.focus();
+  try { iframe.contentWindow.focus(); } catch(e) {}
+  // Dispatch keyboard events on the iframe element itself
+  const evDown = new KeyboardEvent('keydown', { key: key, code: opts?.code || key, bubbles: true, cancelable: true, ...opts });
+  const evUp = new KeyboardEvent('keyup', { key: key, code: opts?.code || key, bubbles: true, cancelable: true, ...opts });
+  iframe.dispatchEvent(evDown);
+  iframe.dispatchEvent(evUp);
+}
+
+function chartPan(direction) {
+  focusChart();
+  const count = direction.startsWith('far') ? 20 : 5;
+  const key = direction.includes('left') ? 'ArrowLeft' : 'ArrowRight';
+  // Send multiple key presses for scroll effect
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => sendKey(key, { code: key }), i * 30);
+  }
+}
+
+function chartZoom(dir) {
+  focusChart();
+  if (dir === 'in') {
+    // Zoom in = show less data = shorter range
+    const ranges = ['ALL','60M','12M','YTD','6M','3M','1M','5D','1D'];
+    const idx = ranges.indexOf(currentRange);
+    if (idx < ranges.length - 1) {
+      const newRange = ranges[idx + 1];
+      const btn = document.querySelector(`.zoom-btn[data-range="${newRange}"]`);
+      setRange(newRange, btn);
+    }
+  } else {
+    // Zoom out = show more data = longer range
+    const ranges = ['ALL','60M','12M','YTD','6M','3M','1M','5D','1D'];
+    const idx = ranges.indexOf(currentRange);
+    if (idx > 0) {
+      const newRange = ranges[idx - 1];
+      const btn = document.querySelector(`.zoom-btn[data-range="${newRange}"]`);
+      setRange(newRange, btn);
+    }
+  }
+}
+
+function chartFocus() {
+  // Reset to default 1M range and focus latest data
+  currentRange = '1M';
+  document.querySelectorAll('.zoom-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-range') === '1M'));
+  if (currentSymbol) loadTVChart(currentSymbol, currentInterval, '1M');
+  // Focus the iframe after reload
+  setTimeout(focusChart, 500);
+}
 
 // ---------- AUTOCOMPLETE ----------
 
@@ -378,6 +637,7 @@ async function doLookup(query) {
       return;
     }
     const data = await resp.json();
+    currentSymbol = data.symbol || query.toUpperCase();
     renderSnapshot(data);
   } catch (e) {
     alert('Network error. Please try again.');
@@ -394,8 +654,8 @@ function renderSnapshot(d) {
   snapshot.classList.add('show');
 
   // Header
-  document.getElementById('snapTitle').innerHTML = `<span class="sym">${esc(d.symbol)}</span> — ${esc(d.companyName)}`;
-  document.getElementById('snapSub').textContent = [d.sector, d.industry, d.exchange].filter(Boolean).join(' · ');
+  document.getElementById('snapTitle').innerHTML = `<span class="sym">${esc(d.symbol)}</span> \u2014 ${esc(d.companyName)}`;
+  document.getElementById('snapSub').textContent = [d.sector, d.industry, d.exchange].filter(Boolean).join(' \u00B7 ');
 
   // TradingView link
   document.getElementById('tvLink').href = `/tradingview-charts.html?symbol=${encodeURIComponent(d.symbol)}`;
@@ -412,7 +672,7 @@ function renderSnapshot(d) {
   document.getElementById('snapMcap').textContent = fmtMcap(d.marketCap);
   document.getElementById('snapAvgVol').textContent = fmtVol(d.avgVolume);
   document.getElementById('snapCurVol').textContent = fmtVol(d.currentVolume);
-  document.getElementById('snapExchange').textContent = d.exchange || '—';
+  document.getElementById('snapExchange').textContent = d.exchange || '\u2014';
 
   // Market Data
   document.getElementById('snap52H').textContent = '$' + d.high52;
@@ -447,7 +707,7 @@ function renderSnapshot(d) {
     const val = d.performance?.[key];
     if (val == null) continue;
     const isUp = val >= 0;
-    const width = Math.min(Math.abs(val), 50); // cap at 50% for display
+    const width = Math.min(Math.abs(val), 50);
     perfHTML += `<div class="perf-row">
       <div class="perf-label">${label}</div>
       <div class="perf-bar-wrap"><div class="perf-bar ${isUp ? 'up' : 'dn'}" style="width:${width * 2}%"></div></div>
@@ -456,8 +716,14 @@ function renderSnapshot(d) {
   }
   perfContainer.innerHTML = perfHTML;
 
-  // TradingView Mini Chart
-  loadTVChart(d.symbol);
+  // Reset controls to defaults
+  currentInterval = 'D';
+  currentRange = '1M';
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-tf') === 'D'));
+  document.querySelectorAll('.zoom-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-range') === '1M'));
+
+  // TradingView Chart
+  loadTVChart(d.symbol, 'D', '1M');
 
   // AI Insights
   const aiSec = document.getElementById('aiSection');
@@ -471,8 +737,8 @@ function renderSnapshot(d) {
 
     if (d.aiInsights.keyLevels) {
       document.getElementById('aiLevels').style.display = 'flex';
-      document.getElementById('aiSupport').textContent = '$' + (d.aiInsights.keyLevels.support || '—');
-      document.getElementById('aiResistance').textContent = '$' + (d.aiInsights.keyLevels.resistance || '—');
+      document.getElementById('aiSupport').textContent = '$' + (d.aiInsights.keyLevels.support || '\u2014');
+      document.getElementById('aiResistance').textContent = '$' + (d.aiInsights.keyLevels.resistance || '\u2014');
     }
 
     document.getElementById('aiTakeaway').textContent = d.aiInsights.traderTakeaway || '';
@@ -480,54 +746,62 @@ function renderSnapshot(d) {
     aiSec.style.display = 'none';
   }
 
-  // Scroll to top of snapshot
   snapshot.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ---------- TRADINGVIEW MINI CHART ----------
+// ---------- TRADINGVIEW CHART ----------
 
-function loadTVChart(symbol) {
+function loadTVChart(symbol, interval, range) {
   const container = document.getElementById('tvChartWrap');
   container.innerHTML = '';
 
   if (currentTVWidget) { try { currentTVWidget.remove(); } catch(e) {} }
 
-  currentTVWidget = new TradingView.widget({
+  const isDark = getTheme() === 'dark';
+
+  const config = {
     container_id: 'tvChartWrap',
     symbol: symbol,
-    interval: 'D',
+    interval: interval || 'D',
     timezone: 'America/New_York',
-    theme: 'dark',
+    theme: isDark ? 'dark' : 'light',
     style: '1',
     locale: 'en',
-    toolbar_bg: '#111B2E',
+    toolbar_bg: isDark ? '#111B2E' : '#F8FAFB',
     enable_publishing: false,
     hide_side_toolbar: false,
     allow_symbol_change: true,
-    watchlist: ['SPY', 'QQQ', 'AAPL', 'TSLA', 'NVDA', 'AMZN', 'MSFT', 'META', 'AMD', 'GOOGL'],
+    watchlist: ['SPY','QQQ','AAPL','TSLA','NVDA','AMZN','MSFT','META','AMD','GOOGL'],
     details: true,
     hotlist: true,
     calendar: true,
-    studies: ['RSI@tv-basicstudies', 'MASimple@tv-basicstudies'],
+    studies: ['RSI@tv-basicstudies','MASimple@tv-basicstudies'],
     width: '100%',
-    height: 420,
+    height: 520,
     save_image: false,
     hide_volume: false,
     support_host: 'https://www.tradingview.com',
     overrides: {
-      'paneProperties.background': '#111B2E',
-      'paneProperties.vertGridProperties.color': '#1F2E4A',
-      'paneProperties.horzGridProperties.color': '#1F2E4A',
-      'scalesProperties.textColor': '#6B7394'
+      'paneProperties.background': isDark ? '#111B2E' : '#F8FAFB',
+      'paneProperties.vertGridProperties.color': isDark ? '#1F2E4A' : '#E2E8F0',
+      'paneProperties.horzGridProperties.color': isDark ? '#1F2E4A' : '#E2E8F0',
+      'scalesProperties.textColor': isDark ? '#6B7394' : '#64748B'
     },
-    loading_screen: { backgroundColor: '#111B2E', foregroundColor: '#10B981' }
-  });
+    loading_screen: { backgroundColor: isDark ? '#111B2E' : '#F8FAFB', foregroundColor: '#10B981' }
+  };
+
+  // Add range if specified (controls zoom level)
+  if (range) {
+    config.range = range;
+  }
+
+  currentTVWidget = new TradingView.widget(config);
 }
 
 // ---------- HELPERS ----------
 
 function fmtMcap(n) {
-  if (!n || n === 0) return '—';
+  if (!n || n === 0) return '\u2014';
   if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
   if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
   if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
@@ -535,7 +809,7 @@ function fmtMcap(n) {
 }
 
 function fmtVol(n) {
-  if (!n) return '—';
+  if (!n) return '\u2014';
   if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
   if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
   return n.toLocaleString();
@@ -549,13 +823,14 @@ function resetSearch() {
   snapshot.classList.remove('show');
   searchInput.value = '';
   searchInput.focus();
+  currentSymbol = '';
   if (currentTVWidget) { try { document.getElementById('tvChartWrap').innerHTML = ''; currentTVWidget = null; } catch(e) {} }
 }
 
-// Auto-focus on load
+// Auto-focus
 searchInput.focus();
 
-// Handle URL params (e.g., ?symbol=AAPL from other pages)
+// URL params (e.g., ?symbol=AAPL)
 const urlParams = new URLSearchParams(window.location.search);
 const urlSymbol = urlParams.get('symbol');
 if (urlSymbol) { doLookup(urlSymbol); }
