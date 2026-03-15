@@ -136,6 +136,70 @@
 .page-theme-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all .15s; font-family: inherit; display: flex; align-items: center; gap: 6px; }
 .page-theme-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
 
+/* ===== ENHANCED SYMBOL SEARCH ===== */
+.sim-ac-item{padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .1s;border-bottom:1px solid var(--gray-200);}
+.sim-ac-item:last-child{border-bottom:none;}
+.sim-ac-item:hover,.sim-ac-item.active{background:rgba(16,185,129,0.08);}
+.sim-ac-sym{font-weight:700;color:var(--emerald);font-size:13px;min-width:60px;}
+.sim-ac-name{flex:1;font-size:12px;color:var(--gray-700);margin-left:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sim-ac-type{font-size:9px;color:var(--gray-500);background:var(--gray-100);padding:2px 6px;border-radius:4px;font-weight:600;}
+[data-theme="dark"] .sim-ac-item{border-bottom-color:#1F2E4A;}
+[data-theme="dark"] .sim-ac-item:hover,[data-theme="dark"] .sim-ac-item.active{background:rgba(16,185,129,0.12);}
+[data-theme="dark"] .sim-ac-name{color:#E2E8F0;}
+[data-theme="dark"] .sim-ac-type{background:#1A2540;color:#8B92AB;}
+
+/* ===== CLICK-TO-FILL MODE ===== */
+.ctf-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(16,185,129,0.08));border:1.5px solid var(--emerald);border-radius:10px;margin-bottom:8px;animation:ctfPulse 2s infinite;}
+@keyframes ctfPulse{0%,100%{border-color:var(--emerald);}50%{border-color:#3B82F6;}}
+.ctf-bar .ctf-icon{font-size:16px;}
+.ctf-bar .ctf-text{font-size:11px;font-weight:600;color:var(--navy);flex:1;}
+[data-theme="dark"] .ctf-bar .ctf-text{color:#E2E8F0;}
+.ctf-bar .ctf-step{font-size:10px;font-weight:800;color:var(--emerald);text-transform:uppercase;letter-spacing:.5px;}
+.ctf-btn{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--emerald);background:rgba(16,185,129,0.08);color:var(--emerald);transition:all .15s;font-family:inherit;}
+.ctf-btn:hover{background:var(--emerald);color:white;}
+.ctf-btn.active{background:var(--emerald);color:white;box-shadow:0 2px 8px rgba(16,185,129,0.3);}
+.ctf-cancel{padding:4px 8px;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--red);background:none;color:var(--red);transition:all .12s;font-family:inherit;}
+.ctf-cancel:hover{background:var(--red);color:white;}
+.sim-canvas-wrap.click-mode{cursor:crosshair !important;}
+.sim-canvas-wrap.click-mode canvas{cursor:crosshair !important;}
+
+/* ===== CONFIRMATION MODAL ===== */
+.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;justify-content:center;align-items:center;animation:fadeIn .2s;}
+.confirm-overlay.show{display:flex;}
+.confirm-modal{background:white;border-radius:16px;width:94%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:slideUp .3s;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+[data-theme="dark"] .confirm-modal{background:#111B2E;color:#E2E8F0;}
+.cm-header{padding:20px 24px 14px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;}
+[data-theme="dark"] .cm-header{border-bottom-color:#1F2E4A;}
+.cm-header h3{font-size:16px;font-weight:800;color:var(--navy);margin:0;}
+[data-theme="dark"] .cm-header h3{color:#E2E8F0;}
+.cm-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray-500);padding:4px 8px;}
+.cm-body{padding:20px 24px;}
+.cm-summary{background:var(--gray-100);border-radius:10px;padding:16px;margin-bottom:16px;}
+[data-theme="dark"] .cm-summary{background:#1A2540;}
+.cm-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;}
+.cm-row .cm-label{color:var(--gray-500);font-weight:600;}
+.cm-row .cm-val{font-weight:700;color:var(--navy);}
+[data-theme="dark"] .cm-row .cm-val{color:#E2E8F0;}
+.cm-row .cm-val.pos{color:var(--emerald);}
+.cm-row .cm-val.neg{color:var(--red);}
+.cm-plan{font-size:13px;line-height:1.7;color:var(--gray-700);margin-bottom:16px;padding:12px 16px;background:rgba(16,185,129,0.06);border-radius:8px;border-left:3px solid var(--emerald);}
+[data-theme="dark"] .cm-plan{color:#CBD5E1;background:rgba(16,185,129,0.08);}
+.cm-ai{margin-bottom:16px;}
+.cm-ai-title{font-size:11px;font-weight:700;color:var(--emerald);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.cm-ai-body{font-size:12px;line-height:1.6;color:var(--gray-700);padding:12px;background:var(--gray-100);border-radius:8px;}
+[data-theme="dark"] .cm-ai-body{background:#1A2540;color:#CBD5E1;}
+.cm-ai-loading{text-align:center;padding:16px;color:var(--gray-500);}
+.cm-ai-loading .ai-spin{display:inline-block;width:20px;height:20px;border:2px solid var(--gray-200);border-top-color:var(--emerald);border-radius:50%;animation:spin .6s linear infinite;}
+.cm-actions{display:flex;gap:10px;padding:0 24px 20px;}
+.cm-btn{flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:inherit;}
+.cm-btn.confirm{background:var(--emerald);color:white;}
+.cm-btn.confirm:hover{background:#0a7a5f;transform:translateY(-1px);box-shadow:0 4px 14px rgba(13,147,115,.3);}
+.cm-btn.cancel{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200);}
+[data-theme="dark"] .cm-btn.cancel{background:#1A2540;color:#E2E8F0;border-color:#1F2E4A;}
+.cm-btn.cancel:hover{background:var(--gray-200);}
+
+
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--mint-bg); color:var(--gray-700); min-height:100vh; }
 
@@ -1367,6 +1431,15 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       </div>
 
       <div class="set-input-group">
+      <!-- Click-to-Fill Mode -->
+      <div id="ctf-bar" style="display:none;">
+        <div class="ctf-bar">
+          <span class="ctf-icon">🎯</span>
+          <span class="ctf-text">Click on chart to set: <strong id="ctf-current-level">STOP</strong></span>
+          <span class="ctf-step" id="ctf-step">Step 1/3</span>
+          <button class="ctf-cancel" onclick="exitClickMode()">✕ Exit</button>
+        </div>
+      </div>
         <div class="sig-title">🎯 S.E.T. Rule Setup</div>
 <button class="guide-btn guide-hidden" onclick="GUIDE.show('set-setup')">🔍</button>
 <div id="guide-set-setup" class="guide-overlay guide-hidden" style="margin-top:10px;"><button class="guide-close" onclick="GUIDE.hide('set-setup')">✕</button><div class="guide-title">📚 S.E.T. Rule Setup</div><div class="guide-item"><div class="label">What</div><div class="content">Your trade planning panel where you define Stop, Entry, and Target on the live chart.</div></div><div class="guide-item"><div class="label">How</div><div class="content">Set Entry (your trigger price), Stop (your protective floor), and Target (your goal). Click "Auto 3:1" to automatically calculate a 3:1 target. The chart updates with colored lines.</div></div><div class="guide-item"><div class="label">Why</div><div class="content">Module 1 teaches: Stop first, Entry second, Target last. This simulator lets you practice the discipline of planning BEFORE entering.</div></div><div class="guide-item"><div class="label">Focus</div><div class="content">Watch the Risk/Share and Reward/Share metrics. The dashed lines on the chart show your exact S.E.T. levels visually.</div></div><div class="guide-tips"><div style="font-weight: 700; color: #FFD700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Tips</div><div class="guide-tip">• Red dashed line = Stop (protective floor). Blue = Entry (trigger). Green = Target (goal)</div><div class="guide-tip">• The 'Auto 3:1' button calculates your target automatically based on your stop distance</div><div class="guide-tip">• Trade Commentary below the chart gives educational feedback as you interact</div></div></div>
@@ -1387,6 +1460,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
           <input type="number" id="sim-target" step="0.01" placeholder="Profit target" oninput="SIM.calcMetrics()" data-tip="Your profit target — 3x your risk distance">
         </div>
         <div style="display:flex;gap:6px;margin-top:4px;">
+          <button class="ctf-btn" onclick="enterClickMode()" style="flex:1;font-size:11px;" data-tip="Click directly on the chart to set S.E.T. levels">📍 Click to Set</button>
           <button class="sim-btn reset" onclick="SIM.autoSET()" style="flex:1;font-size:11px;" data-tip="Auto-calculates a 3:1 target from your stop">🤖 Auto 3:1</button>
           <button class="sim-btn reset" onclick="SIM.clearSET()" style="flex:1;font-size:11px;">✕ Clear</button>
         </div>
@@ -1416,7 +1490,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div class="spb-sub" id="sim-pnl-sub">—</div>
       </div>
 
-      <button class="run-btn" id="sim-run-btn" onclick="SIM.start()" style="margin-top:4px;" data-tip="Starts the price simulation with your S.E.T. levels">▶ RUN SIMULATION</button>
+      <button class="run-btn" id="sim-run-btn" onclick="openConfirmModal()" style="margin-top:4px;" data-tip="Review your trade plan before running">▶ RUN SIMULATION</button>
     </div>
 
     <!-- RIGHT: CHART + EDUCATION -->
@@ -5558,38 +5632,54 @@ const SIM = (function() {
 
   // ---------- TICKER SEARCH ----------
   let searchTimeout = null;
+  let acIdx = -1;
+  let acItems = [];
   function initSearch() {
     const input = document.getElementById('sim-ticker-search');
     const results = document.getElementById('sim-search-results');
     if (!input) return;
+    input.setAttribute('placeholder', 'Search ticker or company name (AAPL, Apple, Tesla...)');
     input.addEventListener('input', function() {
       clearTimeout(searchTimeout);
       const q = this.value.trim();
-      if (q.length < 1) { results.classList.remove('show'); return; }
+      if (q.length < 1) { results.classList.remove('show'); acItems = []; acIdx = -1; return; }
       searchTimeout = setTimeout(async () => {
         try {
-          const resp = await fetch(`/api/stock-search?q=${encodeURIComponent(q)}`);
+          const resp = await fetch(`/api/company-lookup?q=${encodeURIComponent(q)}`);
           const data = await resp.json();
-          if (!data.length) { results.classList.remove('show'); return; }
-          results.innerHTML = data.map(r =>
-            `<div class="sim-result-item" onclick="SIM.loadTicker('${r.symbol}')">
-              <span class="sri-sym">${r.symbol}</span>
-              <span class="sri-name">${r.name}</span>
-            </div>`
-          ).join('');
+          acItems = data.results || data || [];
+          if (!acItems.length) { results.classList.remove('show'); return; }
+          acIdx = -1;
+          renderAC();
           results.classList.add('show');
-        } catch(e) { results.classList.remove('show'); }
-      }, 300);
+        } catch(e) { results.classList.remove('show'); acItems = []; }
+      }, 250);
     });
     input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        const q = this.value.trim().toUpperCase();
-        if (q) { loadTicker(q); results.classList.remove('show'); }
+      if (!results.classList.contains('show')) {
+        if (e.key === 'Enter' && this.value.trim()) { loadTicker(this.value.trim().toUpperCase()); results.classList.remove('show'); }
+        return;
       }
+      if (e.key === 'ArrowDown') { e.preventDefault(); acIdx = Math.min(acIdx + 1, acItems.length - 1); renderAC(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); acIdx = Math.max(acIdx - 1, 0); renderAC(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (acIdx >= 0 && acItems[acIdx]) { loadTicker(acItems[acIdx].symbol); results.classList.remove('show'); acItems = []; } else if (this.value.trim()) { loadTicker(this.value.trim().toUpperCase()); results.classList.remove('show'); } }
+      else if (e.key === 'Escape') { results.classList.remove('show'); }
     });
     document.addEventListener('click', function(e) {
-      if (!e.target.closest('.sim-search-wrap')) results.classList.remove('show');
+      if (!e.target.closest('.sim-search-wrap')) { results.classList.remove('show'); acItems = []; }
     });
+
+    function setAcIdx(i) { acIdx = i; renderAC(); }
+    function renderAC() {
+      results.innerHTML = acItems.map((r, i) =>
+        `<div class="sim-ac-item${i === acIdx ? ' active' : ''}" onmouseenter="SIM._setAcIdx(${i})" onclick="SIM.loadTicker('${esc(r.symbol)}')">
+          <span class="sim-ac-sym">${esc(r.symbol)}</span>
+          <span class="sim-ac-name">${esc(r.name || r.shortName || '')}</span>
+          <span class="sim-ac-type">${esc(r.type || '')}</span>
+        </div>`
+      ).join('');
+    }
+    function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   }
 
   // ---------- LOAD TICKER DATA ----------
@@ -6248,7 +6338,7 @@ const SIM = (function() {
   return {
     state, loadTicker, calcMetrics, autoSET, clearSET,
     start, togglePlay, setSpeed, reset, showEdu, hideEdu,
-    closeOutcome, init
+    closeOutcome, init, _setAcIdx: function(i) { setAcIdx(i); }
   };
 })();
 
@@ -7854,6 +7944,220 @@ function togglePageTheme() {
   }
 }
 
+
+// ===== CLICK-TO-FILL S.E.T. LEVELS =====
+let clickMode = false;
+let clickStep = 0; // 0=stop, 1=entry, 2=target
+const clickLabels = ['STOP', 'ENTRY', 'TARGET'];
+const clickColors = ['#EF4444', '#3B82F6', '#10B981'];
+
+function enterClickMode() {
+  if (!SIM.state.candles.length) { alert('Load a stock first before setting levels.'); return; }
+  clickMode = true;
+  clickStep = 0;
+  document.getElementById('ctf-bar').style.display = 'block';
+  updateClickModeUI();
+  document.getElementById('sim-canvas-wrap').classList.add('click-mode');
+  // Add click listener
+  const canvas = document.getElementById('sim-chart-canvas');
+  canvas._ctfHandler = function(e) {
+    if (!clickMode || !SIM.state.chartLayout) return;
+    const rect = canvas.getBoundingClientRect();
+    const my = e.clientY - rect.top;
+    const { pMin, pMax, pad } = SIM.state.chartLayout;
+    const H = SIM.state.chartLayout.H;
+    const cH = H - pad.top - pad.bottom;
+    const price = pMax - ((my - pad.top) / cH) * (pMax - pMin);
+    if (price <= 0) return;
+    const rounded = +price.toFixed(2);
+    if (clickStep === 0) {
+      document.getElementById('sim-stop').value = rounded;
+    } else if (clickStep === 1) {
+      document.getElementById('sim-entry').value = rounded;
+    } else if (clickStep === 2) {
+      document.getElementById('sim-target').value = rounded;
+    }
+    SIM.calcMetrics();
+    clickStep++;
+    if (clickStep > 2) {
+      exitClickMode();
+    } else {
+      updateClickModeUI();
+    }
+  };
+  canvas.addEventListener('click', canvas._ctfHandler);
+}
+
+function updateClickModeUI() {
+  document.getElementById('ctf-current-level').textContent = clickLabels[clickStep];
+  document.getElementById('ctf-current-level').style.color = clickColors[clickStep];
+  document.getElementById('ctf-step').textContent = 'Step ' + (clickStep + 1) + '/3';
+}
+
+function exitClickMode() {
+  clickMode = false;
+  clickStep = 0;
+  document.getElementById('ctf-bar').style.display = 'none';
+  document.getElementById('sim-canvas-wrap').classList.remove('click-mode');
+  const canvas = document.getElementById('sim-chart-canvas');
+  if (canvas._ctfHandler) {
+    canvas.removeEventListener('click', canvas._ctfHandler);
+    canvas._ctfHandler = null;
+  }
+}
+
+// ===== PRE-BACKTEST CONFIRMATION MODAL =====
+function openConfirmModal() {
+  const s = SIM.state;
+  if (!s.candles.length) { SIM.start(); return; }
+  if (!s.entry || !s.stop || !s.target) { SIM.start(); return; }
+
+  const entry = s.entry, stop = s.stop, target = s.target;
+  const isLong = entry > stop;
+  const risk = Math.abs(entry - stop);
+  const reward = Math.abs(target - entry);
+  const ratio = risk > 0 ? (reward / risk).toFixed(2) : 0;
+  const maxRisk = (s.acct || 10000) * 0.01;
+  const posSize = risk > 0 ? Math.max(1, Math.floor(maxRisk / risk)) : 0;
+
+  // Populate modal
+  document.getElementById('cm-symbol').textContent = s.symbol || '—';
+  document.getElementById('cm-direction').textContent = isLong ? '⬆ LONG' : '⬇ SHORT';
+  document.getElementById('cm-direction').style.color = isLong ? '#10B981' : '#EF4444';
+  document.getElementById('cm-entry').textContent = '$' + entry.toFixed(2);
+  document.getElementById('cm-stop').textContent = '$' + stop.toFixed(2);
+  document.getElementById('cm-target').textContent = '$' + target.toFixed(2);
+  document.getElementById('cm-risk').textContent = '$' + risk.toFixed(2);
+  document.getElementById('cm-reward').textContent = '$' + reward.toFixed(2);
+  document.getElementById('cm-ratio').textContent = ratio + ':1';
+  document.getElementById('cm-ratio').style.color = ratio >= 3 ? '#10B981' : ratio >= 2 ? '#F59E0B' : '#EF4444';
+  document.getElementById('cm-size').textContent = posSize + ' shares';
+  document.getElementById('cm-maxloss').textContent = '-$' + (risk * posSize).toFixed(2);
+  document.getElementById('cm-maxgain').textContent = '+$' + (reward * posSize).toFixed(2);
+
+  // Plain English plan
+  const dir = isLong ? 'long' : 'short';
+  const planText = `You are planning a <strong>${dir} trade</strong> on <strong>${s.symbol}</strong>. ` +
+    `Entry is set at <strong>$${entry.toFixed(2)}</strong>, ` +
+    `with a protective stop at <strong>$${stop.toFixed(2)}</strong> ` +
+    `and a profit target at <strong>$${target.toFixed(2)}</strong>. ` +
+    `Your reward-to-risk ratio is <strong>${ratio}:1</strong>. ` +
+    `You're risking <strong>$${(risk * posSize).toFixed(2)}</strong> to potentially gain <strong>$${(reward * posSize).toFixed(2)}</strong>.`;
+  document.getElementById('cm-plan-text').innerHTML = planText;
+
+  // Show modal
+  document.getElementById('confirmOverlay').classList.add('show');
+
+  // Fetch AI analysis
+  fetchAIReview(s.symbol, entry, stop, target, risk, reward, ratio, isLong, posSize);
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirmOverlay').classList.remove('show');
+}
+
+function confirmAndRun() {
+  closeConfirmModal();
+  SIM.start();
+}
+
+// ===== AI SETUP RECOMMENDATIONS =====
+async function fetchAIReview(symbol, entry, stop, target, risk, reward, ratio, isLong, posSize) {
+  const aiBody = document.getElementById('cm-ai-body');
+  aiBody.innerHTML = '<div class="cm-ai-loading"><div class="ai-spin"></div><br>Claude is analyzing your setup...</div>';
+
+  try {
+    const direction = isLong ? 'LONG' : 'SHORT';
+    const resp = await fetch('/api/ai-trade-review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol, direction, entry, stop, target, risk, reward, ratio, posSize })
+    });
+
+    if (resp.status === 429) {
+      aiBody.innerHTML = '<div style="color:var(--gray-500);font-size:12px;text-align:center;padding:12px;">AI review rate limit reached (30/hr). You can still run the simulation.</div>';
+      return;
+    }
+
+    const data = await resp.json();
+
+    if (!resp.ok || data.error) {
+      aiBody.innerHTML = `<div style="color:var(--gray-500);font-size:12px;text-align:center;padding:12px;">${data.error || 'AI analysis unavailable. You can still run the simulation.'}</div>`;
+      return;
+    }
+
+    const ai = data.analysis;
+    if (!ai) {
+      aiBody.innerHTML = '<div style="color:var(--gray-500);font-size:12px;text-align:center;padding:12px;">AI analysis unavailable. You can still run the simulation.</div>';
+      return;
+    }
+
+    const gradeColor = { A: '#10B981', B: '#10B981', C: '#F59E0B', D: '#EF4444', F: '#EF4444' };
+    const gc = gradeColor[ai.grade] || '#6B7280';
+
+    let html = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">`;
+    html += `<span style="font-size:28px;font-weight:900;color:${gc};">${ai.grade}</span>`;
+    html += `<span style="font-size:13px;font-weight:700;color:${gc};">${ai.label}</span></div>`;
+    html += `<div style="font-size:12px;line-height:1.6;margin-bottom:10px;">${ai.summary}</div>`;
+    if (ai.pros?.length) {
+      html += `<div style="font-size:11px;font-weight:700;color:#10B981;margin-bottom:4px;">Strengths</div>`;
+      html += ai.pros.map(p => `<div style="font-size:11px;padding:2px 0;color:var(--gray-700);">• ${p}</div>`).join('');
+    }
+    if (ai.cons?.length) {
+      html += `<div style="font-size:11px;font-weight:700;color:#EF4444;margin-top:8px;margin-bottom:4px;">Concerns</div>`;
+      html += ai.cons.map(c => `<div style="font-size:11px;padding:2px 0;color:var(--gray-700);">• ${c}</div>`).join('');
+    }
+    if (ai.suggestion) {
+      html += `<div style="margin-top:10px;padding:8px 12px;background:rgba(16,185,129,0.06);border-radius:6px;font-size:11px;font-weight:600;color:var(--emerald);">${ai.suggestion}</div>`;
+    }
+    aiBody.innerHTML = html;
+  } catch(e) {
+    aiBody.innerHTML = `<div style="color:var(--gray-500);font-size:12px;text-align:center;padding:12px;">AI analysis unavailable. You can still run the simulation.</div>`;
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('confirmOverlay')?.addEventListener('click', function(e) {
+  if (e.target === this) closeConfirmModal();
+});
+
 </script>
+
+<!-- ===== PRE-BACKTEST CONFIRMATION MODAL ===== -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-modal">
+    <div class="cm-header">
+      <h3>📋 Trade Plan Review</h3>
+      <button class="cm-close" onclick="closeConfirmModal()">&times;</button>
+    </div>
+    <div class="cm-body">
+      <div class="cm-plan" id="cm-plan-text"></div>
+      <div class="cm-summary">
+        <div class="cm-row"><span class="cm-label">Symbol</span><span class="cm-val" id="cm-symbol">—</span></div>
+        <div class="cm-row"><span class="cm-label">Direction</span><span class="cm-val" id="cm-direction">—</span></div>
+        <div class="cm-row"><span class="cm-label">Entry</span><span class="cm-val" id="cm-entry">—</span></div>
+        <div class="cm-row"><span class="cm-label">Stop</span><span class="cm-val neg" id="cm-stop">—</span></div>
+        <div class="cm-row"><span class="cm-label">Target</span><span class="cm-val pos" id="cm-target">—</span></div>
+        <div class="cm-row"><span class="cm-label">Risk / Share</span><span class="cm-val neg" id="cm-risk">—</span></div>
+        <div class="cm-row"><span class="cm-label">Reward / Share</span><span class="cm-val pos" id="cm-reward">—</span></div>
+        <div class="cm-row"><span class="cm-label">R:R Ratio</span><span class="cm-val" id="cm-ratio">—</span></div>
+        <div class="cm-row"><span class="cm-label">Position Size</span><span class="cm-val" id="cm-size">—</span></div>
+        <div class="cm-row"><span class="cm-label">Max Loss</span><span class="cm-val neg" id="cm-maxloss">—</span></div>
+        <div class="cm-row"><span class="cm-label">Max Gain</span><span class="cm-val pos" id="cm-maxgain">—</span></div>
+      </div>
+      <div class="cm-ai" id="cm-ai-section">
+        <div class="cm-ai-title">🤖 AI Setup Analysis</div>
+        <div class="cm-ai-body" id="cm-ai-body">
+          <div class="cm-ai-loading"><div class="ai-spin"></div><br>Analyzing your setup...</div>
+        </div>
+      </div>
+    </div>
+    <div class="cm-actions">
+      <button class="cm-btn cancel" onclick="closeConfirmModal()">✕ Cancel</button>
+      <button class="cm-btn confirm" id="cm-confirm-btn" onclick="confirmAndRun()">▶ Run Simulation</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
