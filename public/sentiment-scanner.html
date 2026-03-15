@@ -36,6 +36,15 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .search-bar button:hover { background: var(--emerald-dark); }
 .search-bar button:disabled { opacity: 0.6; cursor: not-allowed; }
 
+.ac-wrap { position: relative; flex: 1; min-width: 200px; }
+.ac-dropdown { position: absolute; top: 100%; left: 0; right: 0; max-height: 260px; overflow-y: auto; background: var(--card); border: 1px solid var(--emerald); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 100; margin-top: 4px; }
+.ac-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background 0.1s; border-bottom: 1px solid var(--border); }
+.ac-item:last-child { border-bottom: none; }
+.ac-item:hover, .ac-item.ac-active { background: rgba(13,147,115,0.08); }
+.ac-ticker { font-size: 14px; font-weight: 700; color: var(--navy); min-width: 52px; }
+.ac-name { font-size: 13px; color: var(--muted); }
+.ac-highlight { color: var(--emerald); font-weight: 700; }
+
 .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--card); border-radius: 10px; padding: 4px; border: 1px solid var(--border); width: fit-content; }
 .tab { padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.2s; }
 .tab.active { background: var(--emerald); color: #fff; }
@@ -457,6 +466,26 @@ function App() {
   const [trending, setTrending] = useState([]);
   const [tab, setTab] = useState('trending'); // trending | detail
   const [loading, setLoading] = useState(false);
+  const [showAC, setShowAC] = useState(false);
+  const [acIndex, setAcIndex] = useState(-1);
+  const acRef = useRef(null);
+
+  // Build autocomplete list: search by ticker code OR company name
+  const TICKER_LIST = Object.entries(POPULAR_TICKERS).map(([code, info]) => ({ code, name: info.name }));
+
+  const acMatches = searchTicker.length > 0
+    ? TICKER_LIST.filter(t =>
+        t.code.includes(searchTicker.toUpperCase()) ||
+        t.name.toUpperCase().includes(searchTicker.toUpperCase())
+      )
+    : [];
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => { if (acRef.current && !acRef.current.contains(e.target)) setShowAC(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   useEffect(() => {
     setTrending(generateTrending());
@@ -478,17 +507,69 @@ function App() {
     }, 800 + Math.random() * 600);
   }, [searchTicker]);
 
-  const handleKeyDown = (e) => { if (e.key === 'Enter') searchFor(); };
+  const selectAC = (code) => {
+    setSearchTicker(code);
+    setShowAC(false);
+    setAcIndex(-1);
+    searchFor(code);
+  };
+
+  const handleKeyDown = (e) => {
+    if (showAC && acMatches.length > 0) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setAcIndex(prev => Math.min(prev + 1, acMatches.length - 1)); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setAcIndex(prev => Math.max(prev - 1, 0)); return; }
+      if (e.key === 'Enter' && acIndex >= 0) { e.preventDefault(); selectAC(acMatches[acIndex].code); return; }
+      if (e.key === 'Escape') { setShowAC(false); return; }
+    }
+    if (e.key === 'Enter') searchFor();
+  };
+
+  const handleInputChange = (e) => {
+    const val = e.target.value.toUpperCase();
+    setSearchTicker(val);
+    setShowAC(val.length > 0);
+    setAcIndex(-1);
+  };
+
+  // Highlight matching portion in text
+  const highlightMatch = (text, query) => {
+    if (!query) return text;
+    const idx = text.toUpperCase().indexOf(query.toUpperCase());
+    if (idx === -1) return text;
+    return React.createElement('span', null,
+      text.slice(0, idx),
+      React.createElement('span', { className: 'ac-highlight' }, text.slice(idx, idx + query.length)),
+      text.slice(idx + query.length)
+    );
+  };
 
   return React.createElement('div', { className: 'main' },
-    // Search bar
+    // Search bar with autocomplete
     React.createElement('div', { className: 'search-bar' },
-      React.createElement('input', {
-        type: 'text', placeholder: 'Enter ticker symbol (e.g. AAPL, TSLA, SPY)...',
-        value: searchTicker, onChange: e => setSearchTicker(e.target.value.toUpperCase()),
-        onKeyDown: handleKeyDown
-      }),
-      React.createElement('button', { onClick: () => searchFor(), disabled: loading || !searchTicker.trim() },
+      React.createElement('div', { className: 'ac-wrap', ref: acRef },
+        React.createElement('input', {
+          type: 'text', placeholder: 'Search by ticker or company name (e.g. AAPL, Apple, TSLA, Tesla)...',
+          value: searchTicker, onChange: handleInputChange,
+          onKeyDown: handleKeyDown,
+          onFocus: () => { if (searchTicker.length > 0) setShowAC(true); },
+          style: { width: '100%', padding: '12px 16px', border: '1px solid var(--border)', borderRadius: '10px', fontFamily: 'inherit', fontSize: '14px', background: 'var(--card)' },
+          autoComplete: 'off'
+        }),
+        showAC && acMatches.length > 0 && React.createElement('div', { className: 'ac-dropdown' },
+          acMatches.map((item, i) =>
+            React.createElement('div', {
+              key: item.code,
+              className: `ac-item${i === acIndex ? ' ac-active' : ''}`,
+              onMouseDown: (e) => { e.preventDefault(); selectAC(item.code); },
+              onMouseEnter: () => setAcIndex(i)
+            },
+              React.createElement('span', { className: 'ac-ticker' }, highlightMatch(item.code, searchTicker)),
+              React.createElement('span', { className: 'ac-name' }, highlightMatch(item.name, searchTicker))
+            )
+          )
+        )
+      ),
+      React.createElement('button', { onClick: () => { setShowAC(false); searchFor(); }, disabled: loading || !searchTicker.trim() },
         loading ? 'Scanning...' : 'Scan Sentiment'
       ),
     ),
