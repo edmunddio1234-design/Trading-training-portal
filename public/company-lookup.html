@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Intelligence — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://s3.tradingview.com/tv.js"></script>
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --emerald: #10B981;
+    --emerald-dark: #0D9373;
+    --red: #EF4444;
+    --bg: #0B1426;
+    --bg-card: #111B2E;
+    --bg-input: #1A2540;
+    --border: #1F2E4A;
+    --border-light: #2A3B5C;
+    --text: #E2E8F0;
+    --text-muted: #6B7394;
+    --text-dim: #4A5078;
+    --glow: rgba(16, 185, 129, 0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Header */
+  .header { background: var(--navy); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-left h1 { font-size: 16px; color: #fff; font-weight: 700; }
+  .header-left h1 span { color: var(--emerald); }
+  .back-btn { background: none; border: 1px solid var(--border-light); color: var(--emerald); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none; transition: all .15s; }
+  .back-btn:hover { background: var(--glow); border-color: var(--emerald); }
+
+  /* Layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+
+  /* Search Section */
+  .search-section { margin-bottom: 28px; }
+  .search-wrap { position: relative; max-width: 600px; }
+  .search-input { width: 100%; padding: 14px 18px 14px 44px; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 12px; color: var(--text); font-size: 15px; font-family: inherit; outline: none; transition: border-color .2s; }
+  .search-input:focus { border-color: var(--emerald); box-shadow: 0 0 0 3px var(--glow); }
+  .search-input::placeholder { color: var(--text-dim); }
+  .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; pointer-events: none; }
+  .search-hint { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+  /* Autocomplete Dropdown */
+  .ac-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 10px; margin-top: 4px; max-height: 320px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .ac-dropdown.show { display: block; }
+  .ac-item { padding: 12px 16px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: background .1s; border-bottom: 1px solid rgba(31,46,74,0.5); }
+  .ac-item:last-child { border-bottom: none; }
+  .ac-item:hover, .ac-item.active { background: var(--glow); }
+  .ac-sym { font-weight: 700; color: var(--emerald); font-size: 14px; min-width: 70px; }
+  .ac-name { flex: 1; font-size: 13px; color: var(--text); margin-left: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ac-type { font-size: 10px; color: var(--text-muted); background: var(--bg-input); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+  .ac-loading { padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
+
+  /* Snapshot Card */
+  .snapshot { display: none; animation: fadeIn .3s; }
+  .snapshot.show { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .snap-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+  .snap-identity h2 { font-size: 24px; font-weight: 800; color: #fff; }
+  .snap-identity h2 .sym { color: var(--emerald); }
+  .snap-identity .sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .snap-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .snap-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1px solid var(--border-light); transition: all .15s; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+  .snap-btn-tv { background: linear-gradient(135deg, #2962FF 0%, #1E88E5 100%); color: #fff; border-color: #2962FF; }
+  .snap-btn-tv:hover { box-shadow: 0 4px 16px rgba(41,98,255,0.4); transform: translateY(-1px); }
+  .snap-btn-back { background: var(--bg-input); color: var(--emerald); }
+  .snap-btn-back:hover { background: var(--glow); border-color: var(--emerald); }
+
+  /* Price Banner */
+  .price-banner { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .price-big { font-size: 36px; font-weight: 800; color: #fff; }
+  .price-change { font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
+  .price-change.up { background: rgba(16,185,129,0.15); color: var(--emerald); }
+  .price-change.dn { background: rgba(239,68,68,0.15); color: var(--red); }
+  .price-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-left: auto; }
+  .price-meta-item { text-align: center; }
+  .price-meta-item .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .price-meta-item .val { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 2px; }
+
+  /* Grid Layout */
+  .snap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 768px) { .snap-grid { grid-template-columns: 1fr; } }
+
+  .snap-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .snap-card h3 { font-size: 12px; color: var(--emerald); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+  /* Metrics Grid */
+  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .metric { }
+  .metric .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+  .metric .val { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  .metric .val.up { color: var(--emerald); }
+  .metric .val.dn { color: var(--red); }
+  .metric .val.neutral { color: #F59E0B; }
+
+  /* Classification Badges */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+  .badge-green { background: rgba(16,185,129,0.15); color: var(--emerald); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-yellow { background: rgba(245,158,11,0.15); color: #F59E0B; }
+  .badge-blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
+
+  /* Performance Bar */
+  .perf-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .perf-label { font-size: 11px; color: var(--text-muted); min-width: 36px; text-align: right; }
+  .perf-bar-wrap { flex: 1; height: 8px; background: var(--bg-input); border-radius: 4px; overflow: hidden; position: relative; }
+  .perf-bar { height: 100%; border-radius: 4px; transition: width .5s; min-width: 2px; }
+  .perf-bar.up { background: var(--emerald); }
+  .perf-bar.dn { background: var(--red); }
+  .perf-val { font-size: 12px; font-weight: 700; min-width: 52px; }
+
+  /* AI Insights */
+  .ai-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
+  .ai-section h3 { font-size: 12px; color: var(--emerald); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+  .ai-text { font-size: 13px; line-height: 1.7; color: var(--text); margin-bottom: 12px; }
+  .ai-nuggets { list-style: none; padding: 0; }
+  .ai-nuggets li { padding: 8px 0; border-bottom: 1px solid rgba(31,46,74,0.5); font-size: 13px; line-height: 1.5; color: var(--text); display: flex; gap: 8px; }
+  .ai-nuggets li:last-child { border-bottom: none; }
+  .ai-nuggets li::before { content: '▸'; color: var(--emerald); font-weight: 700; flex-shrink: 0; }
+  .ai-takeaway { background: var(--glow); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; padding: 12px 16px; font-size: 13px; font-weight: 600; color: var(--emerald); margin-top: 12px; }
+
+  /* TradingView Mini Chart */
+  .tv-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  .tv-section h3 { font-size: 12px; color: var(--emerald); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 16px 20px 0; }
+  .tv-chart-wrap { width: 100%; height: 420px; }
+
+  /* Key Levels */
+  .levels-row { display: flex; gap: 16px; margin-top: 10px; }
+  .level-box { flex: 1; background: var(--bg-input); border-radius: 8px; padding: 10px 14px; text-align: center; }
+  .level-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+  .level-box .val { font-size: 18px; font-weight: 800; margin-top: 4px; }
+  .level-box.support .val { color: var(--emerald); }
+  .level-box.resistance .val { color: var(--red); }
+
+  /* Loading */
+  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(11,20,38,0.85); z-index: 200; justify-content: center; align-items: center; flex-direction: column; gap: 16px; }
+  .loading-overlay.show { display: flex; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--emerald); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: var(--text-muted); }
+
+  /* Quick Picks */
+  .quick-picks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .qp-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; font-family: inherit; }
+  .qp-btn:hover { border-color: var(--emerald); color: var(--emerald); background: var(--glow); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <a href="/" class="back-btn">← Academy</a>
+    <h1>Company <span>Intelligence</span></h1>
+  </div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.5);">Ticker Lookup + Live Snapshot</div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Fetching company data...</div>
+</div>
+
+<div class="container">
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search by ticker (AAPL) or company name (Apple)..." autocomplete="off" spellcheck="false">
+      <div class="ac-dropdown" id="acDropdown"></div>
+    </div>
+    <div class="search-hint">Enter a ticker symbol or company name. Results powered by Yahoo Finance + Claude AI.</div>
+    <div class="quick-picks">
+      <button class="qp-btn" onclick="doLookup('SPY')">SPY</button>
+      <button class="qp-btn" onclick="doLookup('QQQ')">QQQ</button>
+      <button class="qp-btn" onclick="doLookup('AAPL')">AAPL</button>
+      <button class="qp-btn" onclick="doLookup('TSLA')">TSLA</button>
+      <button class="qp-btn" onclick="doLookup('NVDA')">NVDA</button>
+      <button class="qp-btn" onclick="doLookup('AMZN')">AMZN</button>
+      <button class="qp-btn" onclick="doLookup('MSFT')">MSFT</button>
+      <button class="qp-btn" onclick="doLookup('META')">META</button>
+      <button class="qp-btn" onclick="doLookup('AMD')">AMD</button>
+      <button class="qp-btn" onclick="doLookup('GOOGL')">GOOGL</button>
+    </div>
+  </div>
+
+  <!-- Snapshot (hidden until lookup) -->
+  <div class="snapshot" id="snapshot">
+
+    <!-- Header Row -->
+    <div class="snap-header">
+      <div class="snap-identity">
+        <h2 id="snapTitle"></h2>
+        <div class="sub" id="snapSub"></div>
+      </div>
+      <div class="snap-actions">
+        <a class="snap-btn snap-btn-tv" id="tvLink" href="#" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Open in TradingView
+        </a>
+        <button class="snap-btn snap-btn-back" onclick="resetSearch()">New Search</button>
+      </div>
+    </div>
+
+    <!-- Price Banner -->
+    <div class="price-banner">
+      <div class="price-big" id="snapPrice"></div>
+      <div class="price-change" id="snapChange"></div>
+      <div class="price-meta">
+        <div class="price-meta-item"><div class="label">Market Cap</div><div class="val" id="snapMcap"></div></div>
+        <div class="price-meta-item"><div class="label">Avg Volume</div><div class="val" id="snapAvgVol"></div></div>
+        <div class="price-meta-item"><div class="label">Today Volume</div><div class="val" id="snapCurVol"></div></div>
+        <div class="price-meta-item"><div class="label">Exchange</div><div class="val" id="snapExchange"></div></div>
+      </div>
+    </div>
+
+    <!-- TradingView Chart -->
+    <div class="tv-section">
+      <h3>Live Chart</h3>
+      <div class="tv-chart-wrap" id="tvChartWrap"></div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="snap-grid">
+
+      <!-- Market Data Card -->
+      <div class="snap-card">
+        <h3>&#128202; Market Data</h3>
+        <div class="metrics">
+          <div class="metric"><div class="lbl">52-Week High</div><div class="val" id="snap52H"></div></div>
+          <div class="metric"><div class="lbl">52-Week Low</div><div class="val" id="snap52L"></div></div>
+          <div class="metric"><div class="lbl">20-Day High</div><div class="val" id="snapR20H"></div></div>
+          <div class="metric"><div class="lbl">20-Day Low</div><div class="val" id="snapR20L"></div></div>
+          <div class="metric"><div class="lbl">SMA 20</div><div class="val" id="snapSMA20"></div></div>
+          <div class="metric"><div class="lbl">SMA 50</div><div class="val" id="snapSMA50"></div></div>
+        </div>
+      </div>
+
+      <!-- Classifications Card -->
+      <div class="snap-card">
+        <h3>&#127919; Classifications</h3>
+        <div class="metrics">
+          <div class="metric"><div class="lbl">Trend</div><div class="val" id="snapTrend"></div></div>
+          <div class="metric"><div class="lbl">RSI (14)</div><div class="val" id="snapRSI"></div></div>
+          <div class="metric"><div class="lbl">Volatility</div><div class="val" id="snapVol"></div></div>
+          <div class="metric"><div class="lbl">Volume Signal</div><div class="val" id="snapVolSig"></div></div>
+          <div class="metric"><div class="lbl">Max Drawdown</div><div class="val dn" id="snapDD"></div></div>
+          <div class="metric"><div class="lbl">Annualized Vol</div><div class="val" id="snapAnnVol"></div></div>
+        </div>
+      </div>
+
+      <!-- Performance Card -->
+      <div class="snap-card" style="grid-column:1/-1;">
+        <h3>&#128200; Performance</h3>
+        <div id="perfBars"></div>
+      </div>
+
+    </div>
+
+    <!-- AI Insights Section -->
+    <div class="ai-section" id="aiSection" style="display:none;">
+      <h3>&#129302; Claude AI Trading Intelligence</h3>
+      <div id="aiTrend" class="ai-text"></div>
+      <div id="aiHistory" class="ai-text" style="color:var(--text-muted);font-style:italic;"></div>
+      <ul class="ai-nuggets" id="aiNuggets"></ul>
+      <div class="levels-row" id="aiLevels" style="display:none;">
+        <div class="level-box support"><div class="lbl">Support</div><div class="val" id="aiSupport"></div></div>
+        <div class="level-box resistance"><div class="lbl">Resistance</div><div class="val" id="aiResistance"></div></div>
+      </div>
+      <div class="ai-takeaway" id="aiTakeaway"></div>
+    </div>
+
+  </div><!-- /snapshot -->
+</div><!-- /container -->
+
+<script>
+// =============================================================================
+// COMPANY INTELLIGENCE — Frontend Logic
+// =============================================================================
+
+const searchInput = document.getElementById('searchInput');
+const acDropdown = document.getElementById('acDropdown');
+const snapshot = document.getElementById('snapshot');
+const loading = document.getElementById('loading');
+const loadingText = document.getElementById('loading-text');
+
+let acResults = [];
+let acIndex = -1;
+let debounceTimer = null;
+let currentTVWidget = null;
+
+// ---------- AUTOCOMPLETE ----------
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.trim();
+  clearTimeout(debounceTimer);
+  if (q.length < 1) { hideAC(); return; }
+  debounceTimer = setTimeout(() => fetchAC(q), 250);
+});
+
+searchInput.addEventListener('keydown', function(e) {
+  if (!acDropdown.classList.contains('show')) {
+    if (e.key === 'Enter' && this.value.trim()) { doLookup(this.value.trim()); }
+    return;
+  }
+  if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex + 1, acResults.length - 1); highlightAC(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex - 1, 0); highlightAC(); }
+  else if (e.key === 'Enter') { e.preventDefault(); if (acIndex >= 0 && acResults[acIndex]) selectAC(acResults[acIndex]); else if (this.value.trim()) doLookup(this.value.trim()); }
+  else if (e.key === 'Escape') { hideAC(); }
+});
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.search-wrap')) hideAC();
+});
+
+async function fetchAC(q) {
+  try {
+    const resp = await fetch('/api/company-lookup?q=' + encodeURIComponent(q));
+    const data = await resp.json();
+    acResults = data.results || [];
+    acIndex = -1;
+    renderAC();
+  } catch (e) {
+    acResults = [];
+    renderAC();
+  }
+}
+
+function renderAC() {
+  if (acResults.length === 0) { hideAC(); return; }
+  acDropdown.innerHTML = acResults.map((r, i) =>
+    `<div class="ac-item${i === acIndex ? ' active' : ''}" data-idx="${i}" onmouseenter="acIndex=${i};highlightAC()" onclick="selectAC(acResults[${i}])">
+      <span class="ac-sym">${esc(r.symbol)}</span>
+      <span class="ac-name">${esc(r.name)}</span>
+      <span class="ac-type">${esc(r.type)}</span>
+    </div>`
+  ).join('');
+  acDropdown.classList.add('show');
+}
+
+function highlightAC() {
+  acDropdown.querySelectorAll('.ac-item').forEach((el, i) => {
+    el.classList.toggle('active', i === acIndex);
+  });
+}
+
+function hideAC() { acDropdown.classList.remove('show'); acResults = []; acIndex = -1; }
+
+function selectAC(item) {
+  searchInput.value = item.symbol;
+  hideAC();
+  doLookup(item.symbol);
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// ---------- SNAPSHOT LOOKUP ----------
+
+async function doLookup(query) {
+  hideAC();
+  searchInput.value = query.toUpperCase();
+  showLoading('Fetching live market data for ' + query.toUpperCase() + '...');
+
+  try {
+    const resp = await fetch('/api/company-snapshot?symbol=' + encodeURIComponent(query));
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      alert(err.error || 'Failed to fetch snapshot. Check the ticker and try again.');
+      hideLoading();
+      return;
+    }
+    const data = await resp.json();
+    renderSnapshot(data);
+  } catch (e) {
+    alert('Network error. Please try again.');
+  }
+  hideLoading();
+}
+
+function showLoading(msg) { loadingText.textContent = msg || 'Loading...'; loading.classList.add('show'); }
+function hideLoading() { loading.classList.remove('show'); }
+
+// ---------- RENDER SNAPSHOT ----------
+
+function renderSnapshot(d) {
+  snapshot.classList.add('show');
+
+  // Header
+  document.getElementById('snapTitle').innerHTML = `<span class="sym">${esc(d.symbol)}</span> — ${esc(d.companyName)}`;
+  document.getElementById('snapSub').textContent = [d.sector, d.industry, d.exchange].filter(Boolean).join(' · ');
+
+  // TradingView link
+  document.getElementById('tvLink').href = `/tradingview-charts.html?symbol=${encodeURIComponent(d.symbol)}`;
+
+  // Price
+  document.getElementById('snapPrice').textContent = '$' + d.currentPrice.toFixed(2);
+  const chg = d.currentPrice - d.previousClose;
+  const chgPct = d.previousClose > 0 ? (chg / d.previousClose * 100) : 0;
+  const chgEl = document.getElementById('snapChange');
+  chgEl.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + ' (' + chgPct.toFixed(2) + '%)';
+  chgEl.className = 'price-change ' + (chg >= 0 ? 'up' : 'dn');
+
+  // Meta
+  document.getElementById('snapMcap').textContent = fmtMcap(d.marketCap);
+  document.getElementById('snapAvgVol').textContent = fmtVol(d.avgVolume);
+  document.getElementById('snapCurVol').textContent = fmtVol(d.currentVolume);
+  document.getElementById('snapExchange').textContent = d.exchange || '—';
+
+  // Market Data
+  document.getElementById('snap52H').textContent = '$' + d.high52;
+  document.getElementById('snap52L').textContent = '$' + d.low52;
+  document.getElementById('snapR20H').textContent = '$' + d.recentHigh;
+  document.getElementById('snapR20L').textContent = '$' + d.recentLow;
+  document.getElementById('snapSMA20').textContent = '$' + d.sma20;
+  document.getElementById('snapSMA50').textContent = '$' + d.sma50;
+
+  // Classifications
+  const trendEl = document.getElementById('snapTrend');
+  trendEl.innerHTML = badge(d.trendClassification, d.trendClassification === 'Uptrend' ? 'green' : d.trendClassification === 'Downtrend' ? 'red' : 'yellow');
+
+  const rsiEl = document.getElementById('snapRSI');
+  rsiEl.textContent = d.rsi;
+  rsiEl.className = 'val ' + (d.rsi > 70 ? 'dn' : d.rsi < 30 ? 'up' : '');
+
+  const volEl = document.getElementById('snapVol');
+  volEl.innerHTML = badge(d.volatilityLevel, d.volatilityLevel === 'Low' ? 'green' : d.volatilityLevel === 'Medium' ? 'yellow' : 'red');
+
+  const volSigEl = document.getElementById('snapVolSig');
+  volSigEl.innerHTML = badge(d.volumeClassification, d.volumeClassification.includes('Unusual') ? 'blue' : d.volumeClassification === 'Strong' ? 'green' : 'red');
+
+  document.getElementById('snapDD').textContent = '-' + d.maxDrawdown + '%';
+  document.getElementById('snapAnnVol').textContent = d.annualizedVolatility + '%';
+
+  // Performance Bars
+  const perfContainer = document.getElementById('perfBars');
+  const perfLabels = { '5d': '5 Day', '20d': '1 Month', '60d': '3 Month', '120d': '6 Month', '250d': '1 Year' };
+  let perfHTML = '';
+  for (const [key, label] of Object.entries(perfLabels)) {
+    const val = d.performance?.[key];
+    if (val == null) continue;
+    const isUp = val >= 0;
+    const width = Math.min(Math.abs(val), 50); // cap at 50% for display
+    perfHTML += `<div class="perf-row">
+      <div class="perf-label">${label}</div>
+      <div class="perf-bar-wrap"><div class="perf-bar ${isUp ? 'up' : 'dn'}" style="width:${width * 2}%"></div></div>
+      <div class="perf-val" style="color:var(--${isUp ? 'emerald' : 'red'})">${isUp ? '+' : ''}${val}%</div>
+    </div>`;
+  }
+  perfContainer.innerHTML = perfHTML;
+
+  // TradingView Mini Chart
+  loadTVChart(d.symbol);
+
+  // AI Insights
+  const aiSec = document.getElementById('aiSection');
+  if (d.aiInsights) {
+    aiSec.style.display = 'block';
+    document.getElementById('aiTrend').textContent = d.aiInsights.trendSummary || '';
+    document.getElementById('aiHistory').textContent = d.aiInsights.historicalContext || '';
+
+    const nuggets = document.getElementById('aiNuggets');
+    nuggets.innerHTML = (d.aiInsights.tradingInsights || []).map(n => `<li>${esc(n)}</li>`).join('');
+
+    if (d.aiInsights.keyLevels) {
+      document.getElementById('aiLevels').style.display = 'flex';
+      document.getElementById('aiSupport').textContent = '$' + (d.aiInsights.keyLevels.support || '—');
+      document.getElementById('aiResistance').textContent = '$' + (d.aiInsights.keyLevels.resistance || '—');
+    }
+
+    document.getElementById('aiTakeaway').textContent = d.aiInsights.traderTakeaway || '';
+  } else {
+    aiSec.style.display = 'none';
+  }
+
+  // Scroll to top of snapshot
+  snapshot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ---------- TRADINGVIEW MINI CHART ----------
+
+function loadTVChart(symbol) {
+  const container = document.getElementById('tvChartWrap');
+  container.innerHTML = '';
+
+  if (currentTVWidget) { try { currentTVWidget.remove(); } catch(e) {} }
+
+  currentTVWidget = new TradingView.widget({
+    container_id: 'tvChartWrap',
+    symbol: symbol,
+    interval: 'D',
+    timezone: 'America/New_York',
+    theme: 'dark',
+    style: '1',
+    locale: 'en',
+    toolbar_bg: '#111B2E',
+    enable_publishing: false,
+    hide_side_toolbar: false,
+    allow_symbol_change: true,
+    watchlist: ['SPY', 'QQQ', 'AAPL', 'TSLA', 'NVDA', 'AMZN', 'MSFT', 'META', 'AMD', 'GOOGL'],
+    details: true,
+    hotlist: true,
+    calendar: true,
+    studies: ['RSI@tv-basicstudies', 'MASimple@tv-basicstudies'],
+    width: '100%',
+    height: 420,
+    save_image: false,
+    hide_volume: false,
+    support_host: 'https://www.tradingview.com',
+    overrides: {
+      'paneProperties.background': '#111B2E',
+      'paneProperties.vertGridProperties.color': '#1F2E4A',
+      'paneProperties.horzGridProperties.color': '#1F2E4A',
+      'scalesProperties.textColor': '#6B7394'
+    },
+    loading_screen: { backgroundColor: '#111B2E', foregroundColor: '#10B981' }
+  });
+}
+
+// ---------- HELPERS ----------
+
+function fmtMcap(n) {
+  if (!n || n === 0) return '—';
+  if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  return '$' + n.toLocaleString();
+}
+
+function fmtVol(n) {
+  if (!n) return '—';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
+  return n.toLocaleString();
+}
+
+function badge(text, color) {
+  return `<span class="badge badge-${color}">${esc(text)}</span>`;
+}
+
+function resetSearch() {
+  snapshot.classList.remove('show');
+  searchInput.value = '';
+  searchInput.focus();
+  if (currentTVWidget) { try { document.getElementById('tvChartWrap').innerHTML = ''; currentTVWidget = null; } catch(e) {} }
+}
+
+// Auto-focus on load
+searchInput.focus();
+
+// Handle URL params (e.g., ?symbol=AAPL from other pages)
+const urlParams = new URLSearchParams(window.location.search);
+const urlSymbol = urlParams.get('symbol');
+if (urlSymbol) { doLookup(urlSymbol); }
+</script>
+</body>
+</html>
