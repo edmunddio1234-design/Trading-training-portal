@@ -824,8 +824,13 @@ const MODULE_MEDIA = {
 
 let backendAvailable = false;
 
-async function tryFetch(url, options) {
+async function tryFetch(url, options = {}) {
   try {
+    // Inject auth token on all requests so protected endpoints work
+    const token = sessionStorage.getItem('ita_session_token');
+    if (token) {
+      options.headers = { ...options.headers, 'Authorization': 'Bearer ' + token };
+    }
     const res = await fetch(url, options);
     if (res.ok) { backendAvailable = true; return res.json(); }
     throw new Error('Not OK');
@@ -1609,6 +1614,10 @@ function App() {
             <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
             📓 Trade Journal
           </a>
+          <a href="/advanced-options-mastery.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
+            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
+            🎓 Advanced Options
+          </a>
           <a href="/sentiment-scanner.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
             <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
             💬 Sentiment Scanner
@@ -1724,9 +1733,10 @@ function WebullOnboarding({ onComplete }) {
     const newStatus = { ...status, [step]: !status[step] };
     setStatus(newStatus);
     try {
+      const onbToken = sessionStorage.getItem('ita_session_token');
       await fetch('/api/onboarding', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(onbToken ? { 'Authorization': 'Bearer ' + onbToken } : {}) },
         body: JSON.stringify(newStatus)
       });
     } catch (e) {}
