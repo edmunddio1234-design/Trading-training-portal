@@ -21,6 +21,121 @@
   --yellow: #F59E0B;
   --blue: #3B82F6;
 }
+
+/* ===== DARK THEME (Page-Level) ===== */
+[data-theme="dark"] {
+  --mint-bg: #0B1426;
+  --white: #111B2E;
+  --gray-100: #1A2540;
+  --gray-200: #1F2E4A;
+  --gray-500: #8B92AB;
+  --gray-700: #E2E8F0;
+}
+/* NOTE: --navy is NOT remapped — it stays #1B2A4A because it's used for
+   both dark backgrounds (header, tabs, th) and text colors. We override text separately. */
+
+[data-theme="dark"] body { background: #0B1426; color: #E2E8F0; }
+
+/* Header & Tabs — already dark, just deepen */
+[data-theme="dark"] .header { background: #0F1A2E; box-shadow: 0 2px 10px rgba(0,0,0,.5); }
+[data-theme="dark"] .tabs { background: #0F1A2E; border-top-color: #1F2E4A; }
+[data-theme="dark"] .tab-btn { color: #6B7394; }
+[data-theme="dark"] .tab-btn.active { color: #10B981; border-bottom-color: #10B981; }
+
+/* Panels, Cards, Containers — background:white → dark */
+[data-theme="dark"] .panel, [data-theme="dark"] .cpanel, [data-theme="dark"] .tlog,
+[data-theme="dark"] .acard, [data-theme="dark"] .scard, [data-theme="dark"] .mode-card,
+[data-theme="dark"] .ts, [data-theme="dark"] .qp, [data-theme="dark"] .tut-box,
+[data-theme="dark"] .chain-panel, [data-theme="dark"] .price-cycle-panel,
+[data-theme="dark"] .volume-surge-panel, [data-theme="dark"] .journal-form,
+[data-theme="dark"] .trade-history, [data-theme="dark"] .greeks-panel,
+[data-theme="dark"] .pillar-card, [data-theme="dark"] .set-input-group,
+[data-theme="dark"] .sm-card, [data-theme="dark"] .sim-edu,
+[data-theme="dark"] .sim-edu-popup, [data-theme="dark"] .sim-outcome,
+[data-theme="dark"] .rec-card, [data-theme="dark"] .scan-card {
+  background: #111B2E !important; color: #E2E8F0; border-color: #1F2E4A;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+[data-theme="dark"] .strat-card { background: #111B2E !important; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+
+/* Text that uses var(--navy) as foreground — flip to light */
+[data-theme="dark"] .panel-title, [data-theme="dark"] .ctitle,
+[data-theme="dark"] .scard-val, [data-theme="dark"] .acard h3,
+[data-theme="dark"] .strat-section h2, [data-theme="dark"] .strat-hdr h3,
+[data-theme="dark"] .strat-box h4, [data-theme="dark"] .train-dash h2,
+[data-theme="dark"] .mode-card h3, [data-theme="dark"] .ts .tv,
+[data-theme="dark"] .ta-head h3, [data-theme="dark"] .expl-top h3,
+[data-theme="dark"] .expl-section h4, [data-theme="dark"] .qp .qp-txt,
+[data-theme="dark"] .tut-hd h3, [data-theme="dark"] .tut-step-t,
+[data-theme="dark"] .tut-tip strong, [data-theme="dark"] .sr-txt strong,
+[data-theme="dark"] .regime-recs-title, [data-theme="dark"] .rec-card-info h4,
+[data-theme="dark"] .confidence-pct, [data-theme="dark"] .pcp-title,
+[data-theme="dark"] .cycle-phase .cp-name, [data-theme="dark"] .cycle-info .ci-value,
+[data-theme="dark"] .tp-txt, [data-theme="dark"] .sc-pct,
+[data-theme="dark"] .chain-tbl td:first-child,
+[data-theme="dark"] .greek-value, [data-theme="dark"] .score-circle {
+  color: #E2E8F0 !important;
+}
+[data-theme="dark"] .scard-val.pos { color: #10B981 !important; }
+[data-theme="dark"] .scard-val.neg { color: #EF4444 !important; }
+
+/* Inputs */
+[data-theme="dark"] .fg input, [data-theme="dark"] .fg select,
+[data-theme="dark"] .set-input-row input, [data-theme="dark"] .sim-search,
+[data-theme="dark"] .scanner-controls select, [data-theme="dark"] .scanner-controls input,
+[data-theme="dark"] .jf-input {
+  background: #1A2540; border-color: #1F2E4A; color: #E2E8F0;
+}
+[data-theme="dark"] .fg input:focus, [data-theme="dark"] .fg select:focus,
+[data-theme="dark"] .set-input-row input:focus, [data-theme="dark"] .sim-search:focus,
+[data-theme="dark"] .jf-input:focus {
+  background: #1A2540; border-color: #10B981;
+}
+
+/* Table */
+[data-theme="dark"] .tbl td { border-bottom-color: #1F2E4A; color: #CBD5E1; }
+[data-theme="dark"] .tbl tr:hover td { background: #1A2540; }
+[data-theme="dark"] .badge.win { background: rgba(16,185,129,0.15); color: #10B981; }
+[data-theme="dark"] .badge.loss { background: rgba(239,68,68,0.15); color: #EF4444; }
+
+/* Sim area */
+[data-theme="dark"] .sim-results { background: #111B2E; border-color: #1F2E4A; box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+[data-theme="dark"] .sim-results div:hover { background: #1A2540; }
+
+/* Interactive elements */
+[data-theme="dark"] .dpill, [data-theme="dark"] .strat-filter button,
+[data-theme="dark"] .scanner-filters .chip, [data-theme="dark"] .scanner-instance,
+[data-theme="dark"] .scan-actions button, [data-theme="dark"] .mc-learn {
+  background: #1A2540; border-color: #1F2E4A; color: #8B92AB;
+}
+[data-theme="dark"] .dpill.active, [data-theme="dark"] .strat-filter button.active,
+[data-theme="dark"] .scanner-filters .chip.active {
+  background: #10B981; color: #fff; border-color: #10B981;
+}
+
+/* Score / greek circles */
+[data-theme="dark"] .score-circle { background: #111B2E; border-color: #1F2E4A; }
+[data-theme="dark"] .greek-value { background: #111B2E; }
+
+/* Regime heroes — darken gradients */
+[data-theme="dark"] .regime-hero.bear { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.08)); }
+[data-theme="dark"] .regime-hero.bull { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.08)); }
+[data-theme="dark"] .regime-hero.neutral { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.08)); }
+[data-theme="dark"] .regime-metric-pill { background: rgba(255,255,255,0.05); }
+
+/* Misc */
+[data-theme="dark"] .sess-b { background: #111B2E; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+[data-theme="dark"] .master-guide-open { background: #1A2540; color: #10B981; }
+[data-theme="dark"] .sim-btn.reset { background: #1A2540; color: #E2E8F0; }
+[data-theme="dark"] .loading-overlay { background: rgba(11,20,38,0.92); }
+[data-theme="dark"] .rec-btn-secondary { background: #1A2540; color: #8B92AB; border-color: #1F2E4A; }
+[data-theme="dark"] .sess-btn.secondary { background: #1A2540; color: #E2E8F0; border-color: #1F2E4A; }
+[data-theme="dark"] .hdr-badge { background: rgba(16,185,129,0.15); }
+
+/* Page theme toggle button */
+.page-theme-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all .15s; font-family: inherit; display: flex; align-items: center; gap: 6px; }
+.page-theme-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
+
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--mint-bg); color:var(--gray-700); min-height:100vh; }
 
@@ -971,6 +1086,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
     </div>
   </div>
   <div class="hdr-badge">⚡ 17 Strategies Loaded</div>
+  <button class="page-theme-btn" id="pageThemeBtn" onclick="togglePageTheme()"><span id="pageThemeIcon">&#9790;</span> <span id="pageThemeLabel">Dark</span></button>
   <button class="guide-toggle" id="guide-toggle" onclick="GUIDE.toggle()">🔍 Guide Mode</button>
 </div>
 
@@ -7683,6 +7799,60 @@ function trainTVind(el, studyId) {
     }
   };
 })();
+
+
+// ===== PAGE-LEVEL THEME TOGGLE =====
+function togglePageTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    html.removeAttribute('data-theme');
+    document.getElementById('pageThemeIcon').innerHTML = '&#9790;';
+    document.getElementById('pageThemeLabel').textContent = 'Dark';
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    document.getElementById('pageThemeIcon').innerHTML = '&#9728;';
+    document.getElementById('pageThemeLabel').textContent = 'Light';
+  }
+  // Sync sim and train TV widgets to match page theme
+  if (typeof tvThemes !== 'undefined') {
+    ['sim', 'train'].forEach(function(target) {
+      tvThemes[target] = isDark ? 'light' : 'dark';
+      var wrapId = target === 'sim' ? 'sim-tv-wrap' : 'train-tv-wrap';
+      var wrap = document.getElementById(wrapId);
+      if (wrap) {
+        if (isDark) { wrap.classList.remove('light-theme'); } else { wrap.classList.add('light-theme'); }
+      }
+    });
+    // Update TV theme buttons
+    var btns = document.querySelectorAll('.tv-theme-btn');
+    btns.forEach(function(b) {
+      if (isDark) {
+        b.className = 'tv-theme-btn dark-mode';
+        b.innerHTML = '☀️ Light';
+      } else {
+        b.className = 'tv-theme-btn light-mode';
+        b.innerHTML = '🌙 Dark';
+      }
+    });
+    // Recreate widgets with new theme
+    try { var sym = SIM.state ? SIM.state.symbol : 'SPY'; if (typeof createSimTV === 'function') createSimTV(sym || 'SPY'); } catch(e) {}
+    try { if (typeof loadTrainTV === 'function') loadTrainTV(); } catch(e) {}
+  }
+  // Sync training chart theme
+  if (typeof ctThemeMode !== 'undefined') {
+    ctThemeMode = isDark ? 'light' : 'dark';
+    ctTheme = isDark ? CT_LIGHT : CT_DARK;
+    var ctBtn = document.getElementById('ct-theme-btn');
+    if (ctBtn) ctBtn.innerHTML = isDark ? '🌙 Dark' : '☀️ Light';
+    var trainTab = document.getElementById('tab-training');
+    if (trainTab) {
+      var inner = trainTab.querySelector('.container');
+      if (inner) { inner.classList.remove('train-dark', 'train-light'); inner.classList.add(isDark ? 'train-light' : 'train-dark'); }
+    }
+    try { if (typeof TM !== 'undefined' && TM.redraw) TM.redraw(); } catch(e) {}
+  }
+}
 
 </script>
 </body>
