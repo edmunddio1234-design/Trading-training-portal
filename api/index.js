@@ -1366,6 +1366,290 @@ app.get('/api/trading-ai/status', async (req, res) => {
 
 
 // =============================================================================
+// COMPANY LOOKUP — Ticker ↔ Company Name Resolution
+// Reusable across all backtesters, screeners, and search components
+// =============================================================================
+
+app.get('/api/company-lookup', async (req, res) => {
+  const { q } = req.query;
+  if (!q || q.trim().length < 1) return res.json({ results: [] });
+
+  const query = q.trim();
+  const cacheKey = `company_lookup_${query.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+
+  try {
+    // Check cache first (1-hour TTL)
+    const cached = await kvGet(cacheKey);
+    if (cached && cached.fetchedAt && Date.now() - cached.fetchedAt < 3600000) {
+      return res.json({ results: cached.results, cached: true });
+    }
+
+    // Yahoo Finance search for ticker ↔ name resolution
+    const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&quotesCount=10&newsCount=0&listsCount=0`;
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MissionMetrics/1.0)' }
+    });
+    if (!resp.ok) return res.json({ results: [] });
+    const data = await resp.json();
+
+    const results = (data.quotes || [])
+      .filter(r => r.quoteType === 'EQUITY' || r.quoteType === 'ETF' || r.quoteType === 'INDEX')
+      .map(r => ({
+        symbol: r.symbol,
+        name: r.longname || r.shortname || '',
+        shortName: r.shortname || '',
+        type: r.quoteType,
+        exchange: r.exchange || '',
+        sector: r.sector || '',
+        industry: r.industry || ''
+      }));
+
+    // Cache for 1 hour
+    await kvSet(cacheKey, { results, fetchedAt: Date.now() });
+    res.json({ results, cached: false });
+  } catch (error) {
+    console.error('Company lookup error:', error.message);
+    res.json({ results: [] });
+  }
+});
+
+// =============================================================================
+// COMPANY SNAPSHOT — Live Intelligence + Claude AI Analysis
+// Returns market data + AI-generated trading insights for any ticker
+// =============================================================================
+
+app.get('/api/company-snapshot', async (req, res) => {
+  const { symbol } = req.query;
+  if (!symbol) return res.status(400).json({ error: 'Symbol parameter is required' });
+
+  const sym = symbol.toUpperCase().trim();
+  const allowed = /^[A-Z0-9.\-]{1,10}$/;
+  if (!allowed.test(sym)) return res.status(400).json({ error: 'Invalid symbol format' });
+
+  const cacheKey = `snapshot_${sym}`;
+
+  try {
+    // Check cache (15-minute TTL for live data)
+    const cached = await kvGet(cacheKey);
+    if (cached && cached.fetchedAt && Date.now() - cached.fetchedAt < 900000) {
+      return res.json({ ...cached, cached: true });
+    }
+
+    // --- STEP 1: Fetch comprehensive Yahoo Finance data ---
+    const [chartResp, searchResp] = await Promise.all([
+      fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?range=1y&interval=1d&includePrePost=false`, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MissionMetrics/1.0)' }
+      }),
+      fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(sym)}&quotesCount=1&newsCount=0&listsCount=0`, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MissionMetrics/1.0)' }
+      })
+    ]);
+
+    if (!chartResp.ok) {
+      return res.status(chartResp.status).json({ error: `Yahoo Finance returned ${chartResp.status}` });
+    }
+
+    const chartRaw = await chartResp.json();
+    const result = chartRaw?.chart?.result?.[0];
+    if (!result) return res.status(404).json({ error: 'No data found for symbol' });
+
+    const meta = result.meta || {};
+    const ts = result.timestamp || [];
+    const quote = result.indicators?.quote?.[0] || {};
+
+    // Build candle array
+    const candles = [];
+    for (let i = 0; i < ts.length; i++) {
+      const o = quote.open?.[i], h = quote.high?.[i], l = quote.low?.[i], c = quote.close?.[i], v = quote.volume?.[i];
+      if (o != null && h != null && l != null && c != null) {
+        candles.push({ date: new Date(ts[i] * 1000).toISOString().slice(0, 10), o: +o.toFixed(2), h: +h.toFixed(2), l: +l.toFixed(2), c: +c.toFixed(2), v: v || 0 });
+      }
+    }
+
+    if (candles.length === 0) return res.status(404).json({ error: 'No price data available' });
+
+    // --- STEP 2: Compute market metrics ---
+    const current = candles[candles.length - 1];
+    const high52 = Math.max(...candles.map(c => c.h));
+    const low52 = Math.min(...candles.map(c => c.l));
+    const avgVolume = Math.round(candles.reduce((s, c) => s + c.v, 0) / candles.length);
+    const currentVolume = current.v;
+    const marketCap = meta.marketCap || 0;
+
+    // Volatility (20-day standard deviation of returns)
+    const returns20 = candles.slice(-21).map((c, i, a) => i === 0 ? 0 : (c.c - a[i - 1].c) / a[i - 1].c).slice(1);
+    const meanRet = returns20.reduce((s, r) => s + r, 0) / returns20.length;
+    const stdDev = Math.sqrt(returns20.reduce((s, r) => s + (r - meanRet) ** 2, 0) / returns20.length);
+    const annualizedVol = +(stdDev * Math.sqrt(252) * 100).toFixed(1);
+
+    // Recent 20-day range
+    const recent20 = candles.slice(-20);
+    const recentHigh = Math.max(...recent20.map(c => c.h));
+    const recentLow = Math.min(...recent20.map(c => c.l));
+
+    // Trend: 50-day SMA vs current price
+    const sma50 = candles.length >= 50 ? +(candles.slice(-50).reduce((s, c) => s + c.c, 0) / 50).toFixed(2) : current.c;
+    const sma20 = candles.length >= 20 ? +(candles.slice(-20).reduce((s, c) => s + c.c, 0) / 20).toFixed(2) : current.c;
+
+    // Momentum: RSI 14-day
+    const rsiPeriod = 14;
+    let gains = 0, losses = 0;
+    const rsiCandles = candles.slice(-(rsiPeriod + 1));
+    for (let i = 1; i < rsiCandles.length; i++) {
+      const diff = rsiCandles[i].c - rsiCandles[i - 1].c;
+      if (diff > 0) gains += diff; else losses += Math.abs(diff);
+    }
+    const avgGain = gains / rsiPeriod;
+    const avgLoss = losses / rsiPeriod;
+    const rsi = avgLoss === 0 ? 100 : +(100 - (100 / (1 + avgGain / avgLoss))).toFixed(1);
+
+    // Performance periods
+    const perfCalc = (days) => {
+      if (candles.length < days + 1) return null;
+      const old = candles[candles.length - days - 1].c;
+      return +((current.c - old) / old * 100).toFixed(2);
+    };
+
+    // Classifications
+    const volatilityLevel = annualizedVol < 20 ? 'Low' : annualizedVol < 40 ? 'Medium' : 'High';
+    const volumeClassification = currentVolume > avgVolume * 1.5 ? 'Unusual (High)' : currentVolume > avgVolume * 0.8 ? 'Strong' : 'Weak';
+    const trendClassification = current.c > sma50 && sma20 > sma50 ? 'Uptrend' : current.c < sma50 && sma20 < sma50 ? 'Downtrend' : 'Range-Bound';
+
+    // Max drawdown in the year
+    let peak = candles[0].h, maxDD = 0;
+    for (const c of candles) {
+      if (c.h > peak) peak = c.h;
+      const dd = (peak - c.l) / peak * 100;
+      if (dd > maxDD) maxDD = dd;
+    }
+
+    // Company identity from search
+    let companyName = meta.shortName || meta.longName || sym;
+    let sector = '', industry = '';
+    try {
+      if (searchResp.ok) {
+        const searchData = await searchResp.json();
+        const match = (searchData.quotes || [])[0];
+        if (match) {
+          companyName = match.longname || match.shortname || companyName;
+          sector = match.sector || '';
+          industry = match.industry || '';
+        }
+      }
+    } catch (e) { /* search enrichment is optional */ }
+
+    // Build market data object
+    const marketData = {
+      symbol: sym,
+      companyName,
+      sector,
+      industry,
+      currentPrice: current.c,
+      previousClose: meta.previousClose || (candles.length > 1 ? candles[candles.length - 2].c : current.c),
+      marketCap,
+      avgVolume,
+      currentVolume,
+      high52: +high52.toFixed(2),
+      low52: +low52.toFixed(2),
+      recentHigh: +recentHigh.toFixed(2),
+      recentLow: +recentLow.toFixed(2),
+      sma20,
+      sma50,
+      rsi,
+      annualizedVolatility: annualizedVol,
+      volatilityLevel,
+      volumeClassification,
+      trendClassification,
+      maxDrawdown: +maxDD.toFixed(1),
+      performance: {
+        '5d': perfCalc(5),
+        '20d': perfCalc(20),
+        '60d': perfCalc(60),
+        '120d': perfCalc(120),
+        '250d': perfCalc(250)
+      },
+      exchange: meta.exchangeName || ''
+    };
+
+    // --- STEP 3: Claude AI Analysis ---
+    let aiInsights = null;
+    try {
+      const settings = await kvGet('settings', {});
+      const apiKey = settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+
+      if (apiKey) {
+        const dataPrompt = `Analyze this stock for a trader using the Impact Trading Academy system. Be concise.
+
+TICKER: ${sym}
+COMPANY: ${companyName}
+SECTOR: ${sector} | INDUSTRY: ${industry}
+PRICE: $${current.c} | 52-WEEK: $${low52.toFixed(2)} - $${high52.toFixed(2)}
+SMA20: $${sma20} | SMA50: $${sma50} | RSI: ${rsi}
+VOLATILITY: ${annualizedVol}% (${volatilityLevel}) | VOLUME: ${volumeClassification}
+TREND: ${trendClassification} | MAX DRAWDOWN: ${maxDD.toFixed(1)}%
+PERFORMANCE: 5d=${perfCalc(5)}% | 20d=${perfCalc(20)}% | 60d=${perfCalc(60)}% | 120d=${perfCalc(120)}%
+
+Provide exactly this JSON structure (no markdown, just raw JSON):
+{
+  "trendSummary": "2-3 sentence trend analysis with momentum direction",
+  "tradingInsights": ["3-5 concise trading nuggets relevant to this stock right now"],
+  "historicalContext": "2-3 sentences on notable patterns, good/bad periods, and major drawdowns",
+  "keyLevels": { "support": <nearest support price>, "resistance": <nearest resistance price> },
+  "traderTakeaway": "One-sentence bottom line for a trader looking at this stock today"
+}`;
+
+        const aiResp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 512,
+            system: 'You are a trading analyst for the Impact Trading Academy. Return ONLY valid JSON, no markdown fences, no explanation text. Apply the Master Surge Strategy framework: institutional footprints, supply/demand zones, 1% risk rule, S.E.T. discipline.',
+            messages: [{ role: 'user', content: dataPrompt }]
+          })
+        });
+
+        if (aiResp.ok) {
+          const aiData = await aiResp.json();
+          const aiText = aiData.content?.filter(c => c.type === 'text')?.map(c => c.text)?.join('') || '';
+          try {
+            aiInsights = JSON.parse(aiText);
+          } catch (parseErr) {
+            // Try extracting JSON from response
+            const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              try { aiInsights = JSON.parse(jsonMatch[0]); } catch (e) { /* AI analysis optional */ }
+            }
+          }
+        }
+      }
+    } catch (aiError) {
+      console.warn('Company snapshot AI analysis failed:', aiError.message);
+      // AI enrichment is optional — market data still returns
+    }
+
+    // Build final response
+    const snapshot = {
+      ...marketData,
+      aiInsights,
+      fetchedAt: Date.now()
+    };
+
+    // Cache for 15 minutes
+    await kvSet(cacheKey, snapshot);
+    res.json({ ...snapshot, cached: false });
+
+  } catch (error) {
+    console.error('Company snapshot error:', error.message);
+    res.status(500).json({ error: 'Failed to fetch company snapshot. Try again.' });
+  }
+});
+
+// =============================================================================
 // HEALTH CHECK
 // =============================================================================
 
