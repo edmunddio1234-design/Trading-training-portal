@@ -22,6 +22,7 @@
     { "source": "/sentiment-scanner.html", "destination": "/public/sentiment-scanner.html" },
     { "source": "/ml-indicator.html", "destination": "/public/ml-indicator.html" },
     { "source": "/company-lookup.html", "destination": "/public/company-lookup.html" },
+    { "source": "/day-trade-dash.html", "destination": "/public/day-trade-dash.html" },
     { "source": "/(.*)", "destination": "/public/index.html" }
   ]
 }
