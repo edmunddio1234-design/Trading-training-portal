@@ -37,6 +37,16 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .chip:hover { border-color: var(--emerald); }
 .chip.active { background: var(--emerald); color: #fff; }
 
+/* Symbol Autocomplete */
+.ac-wrap { position: relative; }
+.ac-dropdown { position: absolute; top: 100%; left: 0; max-height: 260px; overflow-y: auto; background: var(--card); border: 1px solid var(--emerald); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; margin-top: 4px; min-width: 300px; }
+.ac-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background 0.1s; border-bottom: 1px solid var(--border); font-size: 13px; }
+.ac-item:last-child { border-bottom: none; }
+.ac-item:hover, .ac-item.ac-active { background: rgba(13,147,115,0.08); }
+.ac-ticker { font-weight: 700; color: var(--navy); min-width: 52px; }
+.ac-name { color: var(--muted); font-size: 12px; }
+.ac-hl { color: var(--emerald); font-weight: 700; }
+
 .chart-container { padding: 0; height: calc(100vh - 155px); }
 .chart-container > div { height: 100%; width: 100%; }
 #tradingview_chart { height: 100% !important; width: 100% !important; }
@@ -72,9 +82,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 </div>
 
 <div class="toolbar">
-  <div>
+  <div class="ac-wrap" id="acWrap">
     <label>Symbol</label>
-    <input type="text" id="symbolInput" value="AAPL" placeholder="AAPL, SPY, BTC..." onkeydown="if(event.key==='Enter')changeSymbol()">
+    <input type="text" id="symbolInput" value="AAPL" placeholder="Search by ticker or company name..." autocomplete="off"
+      oninput="onSymbolInput(this.value)" onfocus="onSymbolInput(this.value)" onkeydown="acKeyDown(event)">
+    <div class="ac-dropdown" id="acDropdown" style="display:none;"></div>
   </div>
   <div>
     <label>Timeframe</label>
@@ -248,6 +260,99 @@ function toggleStudy(el, studyId) {
   else activeStudies.push(studyId);
   createWidget();
 }
+
+// ===== SYMBOL AUTOCOMPLETE =====
+const TICKERS = {
+  AAPL:{name:'Apple Inc.'},MSFT:{name:'Microsoft Corp.'},GOOG:{name:'Alphabet (Google)'},GOOGL:{name:'Alphabet Class A'},
+  AMZN:{name:'Amazon.com'},NVDA:{name:'NVIDIA Corp.'},META:{name:'Meta Platforms'},TSLA:{name:'Tesla Inc.'},
+  AMD:{name:'Advanced Micro Devices'},NFLX:{name:'Netflix Inc.'},SPY:{name:'S&P 500 ETF'},QQQ:{name:'Nasdaq 100 ETF'},
+  IWM:{name:'Russell 2000 ETF'},DIA:{name:'Dow Jones ETF'},VOO:{name:'Vanguard S&P 500'},VTI:{name:'Vanguard Total Market'},
+  INTC:{name:'Intel Corp.'},CRM:{name:'Salesforce Inc.'},ORCL:{name:'Oracle Corp.'},ADBE:{name:'Adobe Inc.'},
+  PYPL:{name:'PayPal Holdings'},SQ:{name:'Block Inc.'},SHOP:{name:'Shopify Inc.'},ROKU:{name:'Roku Inc.'},
+  SNAP:{name:'Snap Inc.'},UBER:{name:'Uber Technologies'},LYFT:{name:'Lyft Inc.'},ABNB:{name:'Airbnb Inc.'},
+  COIN:{name:'Coinbase Global'},HOOD:{name:'Robinhood Markets'},SOFI:{name:'SoFi Technologies'},PLTR:{name:'Palantir Technologies'},
+  BA:{name:'Boeing Co.'},JPM:{name:'JPMorgan Chase'},GS:{name:'Goldman Sachs'},MS:{name:'Morgan Stanley'},
+  BAC:{name:'Bank of America'},WFC:{name:'Wells Fargo'},C:{name:'Citigroup'},V:{name:'Visa Inc.'},
+  MA:{name:'Mastercard Inc.'},AXP:{name:'American Express'},DIS:{name:'Walt Disney'},CMCSA:{name:'Comcast Corp.'},
+  T:{name:'AT&T Inc.'},VZ:{name:'Verizon Communications'},PFE:{name:'Pfizer Inc.'},JNJ:{name:'Johnson & Johnson'},
+  UNH:{name:'UnitedHealth Group'},MRK:{name:'Merck & Co.'},ABBV:{name:'AbbVie Inc.'},LLY:{name:'Eli Lilly'},
+  XOM:{name:'Exxon Mobil'},CVX:{name:'Chevron Corp.'},COP:{name:'ConocoPhillips'},WMT:{name:'Walmart Inc.'},
+  COST:{name:'Costco Wholesale'},TGT:{name:'Target Corp.'},HD:{name:'Home Depot'},LOW:{name:'Lowe\'s Companies'},
+  NKE:{name:'Nike Inc.'},SBUX:{name:'Starbucks Corp.'},MCD:{name:'McDonald\'s Corp.'},KO:{name:'Coca-Cola Co.'},
+  PEP:{name:'PepsiCo Inc.'},PG:{name:'Procter & Gamble'},AVGO:{name:'Broadcom Inc.'},TXN:{name:'Texas Instruments'},
+  QCOM:{name:'Qualcomm Inc.'},MU:{name:'Micron Technology'},MRVL:{name:'Marvell Technology'},ARM:{name:'Arm Holdings'},
+  SMCI:{name:'Super Micro Computer'},DELL:{name:'Dell Technologies'},PANW:{name:'Palo Alto Networks'},CRWD:{name:'CrowdStrike'},
+  ZS:{name:'Zscaler Inc.'},NET:{name:'Cloudflare Inc.'},DDOG:{name:'Datadog Inc.'},SNOW:{name:'Snowflake Inc.'},
+  BRK_B:{name:'Berkshire Hathaway B'},CAT:{name:'Caterpillar Inc.'},DE:{name:'Deere & Co.'},GE:{name:'GE Aerospace'},
+  RTX:{name:'RTX Corp.'},LMT:{name:'Lockheed Martin'},NOC:{name:'Northrop Grumman'},F:{name:'Ford Motor'},
+  GM:{name:'General Motors'},RIVN:{name:'Rivian Automotive'},LCID:{name:'Lucid Group'},
+  XLF:{name:'Financial Select Sector ETF'},XLE:{name:'Energy Select Sector ETF'},XLK:{name:'Technology Select Sector ETF'},
+  XLV:{name:'Health Care Select Sector ETF'},ARKK:{name:'ARK Innovation ETF'},GLD:{name:'SPDR Gold Shares'},
+  SLV:{name:'iShares Silver Trust'},TLT:{name:'iShares 20+ Year Treasury'},HYG:{name:'iShares High Yield Corp Bond'},
+  BTC:{name:'Bitcoin'},ETH:{name:'Ethereum'},SOL:{name:'Solana'}
+};
+const TICKER_LIST = Object.entries(TICKERS).map(([code, info]) => ({ code, name: info.name }));
+let acIndex = -1;
+let acMatches = [];
+
+function highlightText(text, query) {
+  if (!query) return text;
+  const idx = text.toUpperCase().indexOf(query.toUpperCase());
+  if (idx === -1) return text;
+  return text.slice(0, idx) + '<span class="ac-hl">' + text.slice(idx, idx + query.length) + '</span>' + text.slice(idx + query.length);
+}
+
+function onSymbolInput(val) {
+  val = val.trim().toUpperCase();
+  const dd = document.getElementById('acDropdown');
+  if (!val) { dd.style.display = 'none'; acMatches = []; return; }
+  acMatches = TICKER_LIST.filter(t =>
+    t.code.includes(val) || t.name.toUpperCase().includes(val)
+  ).slice(0, 15);
+  if (acMatches.length === 0) { dd.style.display = 'none'; return; }
+  acIndex = -1;
+  dd.innerHTML = acMatches.map((item, i) =>
+    `<div class="ac-item" onmousedown="selectAC('${item.code}')" onmouseenter="acIndex=${i}">` +
+    `<span class="ac-ticker">${highlightText(item.code, val)}</span>` +
+    `<span class="ac-name">${highlightText(item.name, val)}</span></div>`
+  ).join('');
+  dd.style.display = 'block';
+}
+
+function selectAC(code) {
+  document.getElementById('symbolInput').value = code;
+  document.getElementById('acDropdown').style.display = 'none';
+  acMatches = [];
+  acIndex = -1;
+  currentSymbol = code;
+  createWidget();
+}
+
+function acKeyDown(e) {
+  const dd = document.getElementById('acDropdown');
+  if (dd.style.display === 'none' || acMatches.length === 0) {
+    if (e.key === 'Enter') changeSymbol();
+    return;
+  }
+  if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex + 1, acMatches.length - 1); updateACHighlight(); return; }
+  if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex - 1, 0); updateACHighlight(); return; }
+  if (e.key === 'Enter' && acIndex >= 0) { e.preventDefault(); selectAC(acMatches[acIndex].code); return; }
+  if (e.key === 'Enter') { dd.style.display = 'none'; changeSymbol(); return; }
+  if (e.key === 'Escape') { dd.style.display = 'none'; return; }
+}
+
+function updateACHighlight() {
+  const items = document.querySelectorAll('#acDropdown .ac-item');
+  items.forEach((el, i) => el.classList.toggle('ac-active', i === acIndex));
+  if (items[acIndex]) items[acIndex].scrollIntoView({ block: 'nearest' });
+}
+
+// Close dropdown on outside click
+document.addEventListener('mousedown', function(e) {
+  if (!document.getElementById('acWrap').contains(e.target)) {
+    document.getElementById('acDropdown').style.display = 'none';
+  }
+});
 
 // Initialize
 createWidget();
