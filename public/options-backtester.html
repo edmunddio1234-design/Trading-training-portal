@@ -3917,7 +3917,7 @@ function buildModalChart() {
   if (!window.REGIME_ENGINE || !window.REGIME_ENGINE._data) return;
   const data = window.REGIME_ENGINE._data;
   const { regimes, prices } = data;
-  const dates = liveData.candles.map(c => c.date);
+  const dates = data.dates || [];
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   // Show ALL data points (no sampling) for full detail
   const N = Math.max(1, Math.floor(dates.length / 120));
@@ -4763,6 +4763,7 @@ const REGIME_ENGINE = (function(){
       renderMatrix(data);
       setTimeout(()=>renderRegimeChart(data),100);
       renderRecommendations(data);
+      data.dates=liveData.candles.map(c=>c.date);
       this._data=data;
     },
     toggleCard: function(idx){
