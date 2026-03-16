@@ -3914,8 +3914,8 @@ function closeRegimeTimeline() {
   if (regimeChartModalInst) { regimeChartModalInst.destroy(); regimeChartModalInst = null; }
 }
 function buildModalChart() {
-  if (!window.REGIME_ENGINE || !window.REGIME_ENGINE._data) return;
-  const data = window.REGIME_ENGINE._data;
+  if (typeof REGIME_ENGINE === 'undefined' || !REGIME_ENGINE._data) return;
+  const data = REGIME_ENGINE._data;
   const { regimes, prices } = data;
   const dates = data.dates || [];
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
