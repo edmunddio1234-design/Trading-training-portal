@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day Trade Dash — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+:root {
+  --navy: #1B2A4A; --navy-light: #243B60; --emerald: #0D9373; --emerald-light: #10B981; --emerald-dark: #0B7A60;
+  --bg: #F0F5F3; --card: #FFFFFF; --card-alt: #F7FAF9; --border: #E5E7EB; --border-light: #D1D5DB;
+  --text: #1B2A4A; --text-sec: #374151; --muted: #6B7280;
+  --red: #EF4444; --red-light: #FEE2E2; --green: #10B981; --green-light: #D1FAE5;
+  --amber: #F59E0B; --amber-light: #FEF3C7; --blue: #3B82F6; --purple: #8B5CF6;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+/* Header */
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo { width: 38px; height: 38px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; font-weight: 800; }
+.header h1 { font-size: 17px; color: #fff; font-weight: 700; letter-spacing: -0.3px; }
+.header h1 span { color: var(--emerald-light); }
+.header-sub { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 1px; }
+.header-nav { display: flex; gap: 3px; background: rgba(255,255,255,0.08); border-radius: 10px; padding: 3px; }
+.nav-btn { padding: 7px 16px; border-radius: 8px; border: none; background: transparent; color: rgba(255,255,255,0.65); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; gap: 5px; }
+.nav-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.nav-btn.active { background: var(--emerald); color: #fff; }
+.btn-outline { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.75); transition: all 0.2s; cursor: pointer; }
+.btn-outline:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+/* Live clock */
+.live-clock { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.7); }
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Layout */
+.dash-layout { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 12px 16px; max-width: 1600px; margin: 0 auto; }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.panel-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--card-alt); }
+.panel-title { font-size: 13px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+.panel-title .icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.panel-body { padding: 12px 16px; }
+
+/* Scanner Table */
+.scanner-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.scanner-table th { text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); background: var(--card-alt); position: sticky; top: 0; }
+.scanner-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.scanner-table tr:hover td { background: rgba(13,147,115,0.03); }
+.scanner-table tr { cursor: pointer; transition: background 0.1s; }
+.ticker-cell { font-weight: 700; color: var(--navy); }
+.price-cell { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+.pos { color: var(--green); }
+.neg { color: var(--red); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+.badge-bull { background: var(--green-light); color: #059669; }
+.badge-bear { background: var(--red-light); color: #DC2626; }
+.badge-halt { background: var(--amber-light); color: #D97706; }
+
+/* Level 2 */
+.l2-container { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.l2-side { font-size: 11px; }
+.l2-side-header { padding: 6px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+.l2-bid-header { background: rgba(16,185,129,0.1); color: #059669; }
+.l2-ask-header { background: rgba(239,68,68,0.1); color: #DC2626; }
+.l2-row { display: flex; justify-content: space-between; padding: 3px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; position: relative; }
+.l2-row-bid { border-right: 1px solid var(--border); }
+.l2-bar { position: absolute; top: 0; bottom: 0; opacity: 0.12; border-radius: 2px; }
+.l2-bar-bid { right: 0; background: var(--green); }
+.l2-bar-ask { left: 0; background: var(--red); }
+.l2-price { font-weight: 600; z-index: 1; position: relative; }
+.l2-size { color: var(--muted); z-index: 1; position: relative; }
+.spread-bar { text-align: center; padding: 6px; font-size: 11px; font-weight: 600; color: var(--muted); background: var(--card-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+/* Time & Sales */
+.ts-row { display: flex; justify-content: space-between; padding: 3px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-bottom: 1px solid rgba(229,231,235,0.5); }
+.ts-time { color: var(--muted); }
+.ts-price { font-weight: 600; }
+.ts-size { min-width: 50px; text-align: right; }
+
+/* Simulator */
+.sim-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.sim-btn { padding: 8px 16px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.sim-buy { background: var(--green); color: #fff; }
+.sim-buy:hover { background: #059669; }
+.sim-sell { background: var(--red); color: #fff; }
+.sim-sell:hover { background: #DC2626; }
+.sim-flat { background: var(--amber); color: #fff; }
+.sim-flat:hover { background: #D97706; }
+.sim-input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; width: 100px; background: var(--card-alt); }
+.sim-input:focus { outline: none; border-color: var(--emerald); }
+.sim-stat { display: inline-flex; flex-direction: column; align-items: center; background: var(--card-alt); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; min-width: 90px; }
+.sim-stat-label { font-size: 9px; font-weight: 600; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+.sim-stat-value { font-size: 16px; font-weight: 800; font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+
+/* Order Book Visualization */
+.ob-depth { height: 120px; display: flex; align-items: flex-end; gap: 1px; padding: 8px 0; }
+.ob-bar { flex: 1; border-radius: 2px 2px 0 0; transition: height 0.3s; min-width: 4px; }
+
+/* News */
+.news-item { padding: 10px 14px; border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+.news-item:hover { background: var(--card-alt); }
+.news-item:last-child { border-bottom: none; }
+.news-time { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.news-headline { font-size: 13px; font-weight: 600; color: var(--navy); margin-top: 2px; line-height: 1.4; }
+.news-source { font-size: 10px; color: var(--emerald); font-weight: 600; margin-top: 3px; }
+.news-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 600; margin-left: 6px; }
+
+/* Sector Heatmap */
+.heatmap { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 4px; }
+.hm-cell { padding: 10px 6px; border-radius: 6px; text-align: center; cursor: pointer; transition: transform 0.15s; }
+.hm-cell:hover { transform: scale(1.05); }
+.hm-name { font-size: 10px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.hm-pct { font-size: 13px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+/* Filter Builder */
+.filter-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.filter-select { padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: inherit; background: var(--card); }
+.filter-select:focus { outline: none; border-color: var(--emerald); }
+.filter-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: rgba(13,147,115,0.08); color: var(--emerald); border: 1px solid rgba(13,147,115,0.2); }
+.filter-chip button { background: none; border: none; color: var(--red); cursor: pointer; font-size: 14px; line-height: 1; }
+.quick-scan-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.qs-btn { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text-sec); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.qs-btn:hover { border-color: var(--emerald); color: var(--emerald); }
+.qs-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+
+/* Candle chart (simplified) */
+.candle-area { background: var(--card-alt); border-radius: 8px; height: 280px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+.candle-row { display: flex; align-items: center; justify-content: center; position: absolute; bottom: 0; left: 0; right: 0; top: 0; padding: 12px; gap: 2px; }
+.candle { display: flex; flex-direction: column; align-items: center; flex: 1; max-width: 12px; position: relative; }
+.candle-wick { width: 1px; position: absolute; }
+.candle-body { width: 6px; border-radius: 1px; position: absolute; min-height: 2px; }
+
+/* Positions panel */
+.pos-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.pos-table th { text-align: left; padding: 6px 8px; font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+.pos-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); }
+
+/* Footer */
+.footer { text-align: center; padding: 12px; font-size: 11px; color: var(--muted); }
+.footer span { color: var(--emerald); font-weight: 600; }
+
+@media (max-width: 768px) {
+  .header { padding: 8px 12px; flex-wrap: wrap; gap: 8px; }
+  .header-nav { order: 3; width: 100%; overflow-x: auto; }
+  .dash-layout { padding: 8px; gap: 8px; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useMemo, useCallback, useRef } = React;
+
+// ═══════════════════════════════════════════════════════════════
+// MOCK DATA ENGINE — Generates realistic market data
+// ═══════════════════════════════════════════════════════════════
+const TICKERS = [
+  { sym: "AAPL", name: "Apple Inc.", sector: "Technology", float: "15.2B", short: "0.7%", avgVol: "58M" },
+  { sym: "TSLA", name: "Tesla Inc.", sector: "Consumer", float: "2.8B", short: "3.1%", avgVol: "112M" },
+  { sym: "NVDA", name: "NVIDIA Corp.", sector: "Technology", float: "2.4B", short: "1.2%", avgVol: "45M" },
+  { sym: "AMZN", name: "Amazon.com", sector: "Consumer", float: "10.3B", short: "0.9%", avgVol: "52M" },
+  { sym: "META", name: "Meta Platforms", sector: "Technology", float: "2.5B", short: "0.8%", avgVol: "22M" },
+  { sym: "MSFT", name: "Microsoft Corp.", sector: "Technology", float: "7.4B", short: "0.5%", avgVol: "28M" },
+  { sym: "AMD", name: "Adv Micro Devices", sector: "Technology", float: "1.6B", short: "4.2%", avgVol: "68M" },
+  { sym: "GOOGL", name: "Alphabet Inc.", sector: "Technology", float: "5.8B", short: "0.6%", avgVol: "26M" },
+  { sym: "SPY", name: "S&P 500 ETF", sector: "ETF", float: "920M", short: "N/A", avgVol: "85M" },
+  { sym: "QQQ", name: "Nasdaq 100 ETF", sector: "ETF", float: "580M", short: "N/A", avgVol: "52M" },
+  { sym: "PLTR", name: "Palantir Tech", sector: "Technology", float: "2.1B", short: "3.8%", avgVol: "42M" },
+  { sym: "SOFI", name: "SoFi Tech", sector: "Finance", float: "890M", short: "8.5%", avgVol: "38M" },
+  { sym: "RIVN", name: "Rivian Auto", sector: "Consumer", float: "810M", short: "12.3%", avgVol: "28M" },
+  { sym: "COIN", name: "Coinbase Global", sector: "Finance", float: "185M", short: "6.1%", avgVol: "15M" },
+  { sym: "MARA", name: "Marathon Digital", sector: "Finance", float: "220M", short: "15.2%", avgVol: "32M" },
+  { sym: "NIO", name: "NIO Inc.", sector: "Consumer", float: "1.7B", short: "5.7%", avgVol: "55M" },
+  { sym: "BABA", name: "Alibaba Group", sector: "Consumer", float: "2.5B", short: "1.9%", avgVol: "18M" },
+  { sym: "JPM", name: "JP Morgan Chase", sector: "Finance", float: "2.8B", short: "0.8%", avgVol: "12M" },
+  { sym: "XOM", name: "Exxon Mobil", sector: "Energy", float: "4.1B", short: "0.6%", avgVol: "16M" },
+  { sym: "PFE", name: "Pfizer Inc.", sector: "Healthcare", float: "5.6B", short: "1.1%", avgVol: "32M" },
+];
+
+const SECTORS = [
+  { name: "Technology", pct: 1.24 }, { name: "Healthcare", pct: -0.38 }, { name: "Finance", pct: 0.87 },
+  { name: "Energy", pct: -1.12 }, { name: "Consumer", pct: 0.55 }, { name: "Industrial", pct: 0.32 },
+  { name: "Real Estate", pct: -0.67 }, { name: "Utilities", pct: 0.18 }, { name: "Materials", pct: -0.24 },
+  { name: "Comms", pct: 0.91 }, { name: "Staples", pct: -0.15 },
+];
+
+const NEWS_ITEMS = [
+  { time: "09:32", headline: "NVDA surges on new AI chip announcement, analysts raise targets", source: "Reuters", ticker: "NVDA", sentiment: "bull" },
+  { time: "09:28", headline: "Fed minutes reveal split on rate path, markets react", source: "CNBC", ticker: "SPY", sentiment: "bear" },
+  { time: "09:25", headline: "TSLA Cybertruck deliveries beat Q1 estimates by 22%", source: "Bloomberg", ticker: "TSLA", sentiment: "bull" },
+  { time: "09:20", headline: "AMD secures major data center contract with Microsoft Azure", source: "WSJ", ticker: "AMD", sentiment: "bull" },
+  { time: "09:15", headline: "AAPL Vision Pro sales disappoint in Q1, guidance lowered", source: "CNBC", ticker: "AAPL", sentiment: "bear" },
+  { time: "09:12", headline: "SOFI receives full banking charter upgrade, deposits surge", source: "Barrons", ticker: "SOFI", sentiment: "bull" },
+  { time: "09:08", headline: "Crude oil drops 3% on OPEC production increase fears", source: "Reuters", ticker: "XOM", sentiment: "bear" },
+  { time: "09:05", headline: "META launches new AR glasses, preorders exceed expectations", source: "TechCrunch", ticker: "META", sentiment: "bull" },
+  { time: "09:01", headline: "COIN reports record institutional trading volume in February", source: "CoinDesk", ticker: "COIN", sentiment: "bull" },
+  { time: "08:55", headline: "PLTR wins $580M defense contract for AI battlefield analytics", source: "DefenseOne", ticker: "PLTR", sentiment: "bull" },
+  { time: "08:50", headline: "PFE pipeline update: Two late-stage drugs show promise", source: "BioPharma", ticker: "PFE", sentiment: "bull" },
+  { time: "08:45", headline: "RIVN Q4 loss widens, production ramp slower than expected", source: "Bloomberg", ticker: "RIVN", sentiment: "bear" },
+  { time: "08:40", headline: "MARA halts mining expansion plans amid regulatory uncertainty", source: "CoinTelegraph", ticker: "MARA", sentiment: "bear" },
+  { time: "08:35", headline: "JPM CEO warns of 'stagflation-like' conditions ahead", source: "CNBC", ticker: "JPM", sentiment: "bear" },
+  { time: "08:30", headline: "Pre-market movers: NVDA +4.2%, TSLA +2.8%, XOM -2.1%", source: "MarketWatch", ticker: "SPY", sentiment: "neutral" },
+];
+
+// Generate random price
+const randPrice = (base, volatility = 0.02) => base * (1 + (Math.random() - 0.5) * volatility);
+const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+// Generate scanner data
+const genScannerData = () => TICKERS.map(t => {
+  const base = { AAPL: 185, TSLA: 242, NVDA: 895, AMZN: 184, META: 510, MSFT: 420, AMD: 170, GOOGL: 160, SPY: 508, QQQ: 435, PLTR: 24, SOFI: 9.5, RIVN: 12, COIN: 220, MARA: 22, NIO: 6.5, BABA: 88, JPM: 195, XOM: 108, PFE: 28 }[t.sym] || 100;
+  const price = randPrice(base, 0.01);
+  const change = (Math.random() - 0.4) * 6;
+  const vol = randInt(1, 200) + "M";
+  const relVol = (Math.random() * 4 + 0.3).toFixed(1);
+  const rsi = randInt(20, 85);
+  const vwap = randPrice(base, 0.005);
+  const gap = (Math.random() - 0.3) * 5;
+  return { ...t, price: price.toFixed(2), change: change.toFixed(2), changePct: (change / base * 100).toFixed(2), vol, relVol, rsi, vwap: vwap.toFixed(2), gap: gap.toFixed(2), signal: change > 1.5 ? "Bullish" : change < -1.5 ? "Bearish" : "Neutral" };
+});
+
+// Generate Level 2 data
+const genL2 = (midPrice) => {
+  const bids = [], asks = [];
+  for (let i = 0; i < 15; i++) {
+    const spread = 0.01 * (i + 1) + Math.random() * 0.02;
+    bids.push({ price: (midPrice - spread).toFixed(2), size: randInt(100, 5000), orders: randInt(1, 12) });
+    asks.push({ price: (midPrice + spread).toFixed(2), size: randInt(100, 5000), orders: randInt(1, 12) });
+  }
+  return { bids, asks };
+};
+
+// Generate time & sales
+const genTS = (midPrice, count = 30) => {
+  const entries = [];
+  for (let i = 0; i < count; i++) {
+    const secs = i * 2;
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    const price = randPrice(midPrice, 0.003);
+    const side = Math.random() > 0.5 ? "buy" : "sell";
+    entries.push({ time: `09:${(32 - m).toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`, price: price.toFixed(2), size: randInt(1, 500) * 100, side });
+  }
+  return entries;
+};
+
+// Generate candles
+const genCandles = (basePrice, count = 60) => {
+  const candles = [];
+  let p = basePrice * 0.97;
+  for (let i = 0; i < count; i++) {
+    const move = (Math.random() - 0.48) * basePrice * 0.008;
+    const o = p;
+    const c = o + move;
+    const h = Math.max(o, c) + Math.random() * basePrice * 0.003;
+    const l = Math.min(o, c) - Math.random() * basePrice * 0.003;
+    candles.push({ o, h, l, c, vol: randInt(10000, 500000) });
+    p = c;
+  }
+  return candles;
+};
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN APP COMPONENT
+// ═══════════════════════════════════════════════════════════════
+function DayTradeDash() {
+  const [tab, setTab] = useState("scanner");
+  const [scanData, setScanData] = useState(genScannerData());
+  const [selectedTicker, setSelectedTicker] = useState(null);
+  const [l2Data, setL2Data] = useState(null);
+  const [tsData, setTsData] = useState([]);
+  const [candles, setCandles] = useState([]);
+  const [clock, setClock] = useState("");
+  const [quickScan, setQuickScan] = useState("all");
+
+  // Scanner filters
+  const [filters, setFilters] = useState([]);
+  const [filterField, setFilterField] = useState("changePct");
+  const [filterOp, setFilterOp] = useState(">");
+  const [filterVal, setFilterVal] = useState("");
+
+  // Simulator state
+  const [simBalance, setSimBalance] = useState(100000);
+  const [simPositions, setSimPositions] = useState([]);
+  const [simHistory, setSimHistory] = useState([]);
+  const [simQty, setSimQty] = useState("100");
+  const [simOrderType, setSimOrderType] = useState("market");
+  const [simLimitPrice, setSimLimitPrice] = useState("");
+
+  // News filter
+  const [newsFilter, setNewsFilter] = useState("all");
+
+  // Clock
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      setClock(now.toLocaleTimeString("en-US", { hour12: true, hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+    };
+    tick();
+    const iv = setInterval(tick, 1000);
+    return () => clearInterval(iv);
+  }, []);
+
+  // Auto-refresh scanner data
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setScanData(genScannerData());
+    }, 5000);
+    return () => clearInterval(iv);
+  }, []);
+
+  // When ticker is selected, generate L2 + T&S + candles
+  useEffect(() => {
+    if (!selectedTicker) return;
+    const mid = parseFloat(scanData.find(s => s.sym === selectedTicker)?.price || 100);
+    setL2Data(genL2(mid));
+    setTsData(genTS(mid));
+    setCandles(genCandles(mid));
+    const iv = setInterval(() => {
+      setL2Data(genL2(mid));
+      setTsData(prev => {
+        const newEntry = { time: new Date().toLocaleTimeString("en-US", { hour12: false }), price: randPrice(mid, 0.002).toFixed(2), size: randInt(1, 500) * 100, side: Math.random() > 0.5 ? "buy" : "sell" };
+        return [newEntry, ...prev.slice(0, 29)];
+      });
+    }, 2000);
+    return () => clearInterval(iv);
+  }, [selectedTicker]);
+
+  // ─── SCANNER FILTERS ────────────────────────────────────
+  const addFilter = () => {
+    if (!filterVal) return;
+    setFilters(prev => [...prev, { field: filterField, op: filterOp, val: parseFloat(filterVal) }]);
+    setFilterVal("");
+  };
+  const removeFilter = (i) => setFilters(prev => prev.filter((_, idx) => idx !== i));
+
+  const filteredScan = useMemo(() => {
+    let data = [...scanData];
+    // Quick scans
+    if (quickScan === "gappers") data = data.filter(d => Math.abs(parseFloat(d.gap)) > 2);
+    if (quickScan === "volume") data = data.filter(d => parseFloat(d.relVol) > 2);
+    if (quickScan === "momentum") data = data.filter(d => parseFloat(d.changePct) > 1.5);
+    if (quickScan === "shorts") data = data.filter(d => parseFloat(d.short) > 5);
+    if (quickScan === "oversold") data = data.filter(d => d.rsi < 30);
+    if (quickScan === "overbought") data = data.filter(d => d.rsi > 70);
+    // Custom filters
+    filters.forEach(f => {
+      data = data.filter(d => {
+        const v = parseFloat(d[f.field]);
+        if (isNaN(v)) return true;
+        if (f.op === ">") return v > f.val;
+        if (f.op === "<") return v < f.val;
+        if (f.op === ">=") return v >= f.val;
+        if (f.op === "<=") return v <= f.val;
+        return true;
+      });
+    });
+    return data.sort((a, b) => Math.abs(parseFloat(b.changePct)) - Math.abs(parseFloat(a.changePct)));
+  }, [scanData, quickScan, filters]);
+
+  // ─── SIMULATOR ──────────────────────────────────────────
+  const handleSimBuy = () => {
+    if (!selectedTicker) return;
+    const ticker = scanData.find(s => s.sym === selectedTicker);
+    if (!ticker) return;
+    const price = parseFloat(ticker.price);
+    const qty = parseInt(simQty) || 100;
+    const cost = price * qty;
+    if (cost > simBalance) return;
+    setSimBalance(prev => prev - cost);
+    setSimPositions(prev => {
+      const existing = prev.find(p => p.sym === selectedTicker && p.side === "Long");
+      if (existing) {
+        const newQty = existing.qty + qty;
+        const newAvg = (existing.avg * existing.qty + price * qty) / newQty;
+        return prev.map(p => p === existing ? { ...p, qty: newQty, avg: newAvg } : p);
+      }
+      return [...prev, { sym: selectedTicker, side: "Long", qty, avg: price, current: price }];
+    });
+  };
+
+  const handleSimSell = () => {
+    if (!selectedTicker) return;
+    const ticker = scanData.find(s => s.sym === selectedTicker);
+    if (!ticker) return;
+    const price = parseFloat(ticker.price);
+    const qty = parseInt(simQty) || 100;
+    const cost = price * qty;
+    setSimBalance(prev => prev + cost);
+    setSimPositions(prev => {
+      const existing = prev.find(p => p.sym === selectedTicker && p.side === "Short");
+      if (existing) {
+        const newQty = existing.qty + qty;
+        const newAvg = (existing.avg * existing.qty + price * qty) / newQty;
+        return prev.map(p => p === existing ? { ...p, qty: newQty, avg: newAvg } : p);
+      }
+      return [...prev, { sym: selectedTicker, side: "Short", qty, avg: price, current: price }];
+    });
+  };
+
+  const handleFlatten = (pos) => {
+    const ticker = scanData.find(s => s.sym === pos.sym);
+    const exitPrice = ticker ? parseFloat(ticker.price) : pos.avg;
+    const pnl = pos.side === "Long" ? (exitPrice - pos.avg) * pos.qty : (pos.avg - exitPrice) * pos.qty;
+    setSimBalance(prev => prev + (pos.side === "Long" ? exitPrice * pos.qty : pos.avg * pos.qty + pnl));
+    setSimPositions(prev => prev.filter(p => p !== pos));
+    setSimHistory(prev => [{ sym: pos.sym, side: pos.side, qty: pos.qty, entry: pos.avg.toFixed(2), exit: exitPrice.toFixed(2), pnl: pnl.toFixed(2), time: new Date().toLocaleTimeString() }, ...prev]);
+  };
+
+  // Update position prices
+  useEffect(() => {
+    setSimPositions(prev => prev.map(p => {
+      const ticker = scanData.find(s => s.sym === p.sym);
+      return ticker ? { ...p, current: parseFloat(ticker.price) } : p;
+    }));
+  }, [scanData]);
+
+  const totalPnL = simPositions.reduce((sum, p) => {
+    const unrealized = p.side === "Long" ? (p.current - p.avg) * p.qty : (p.avg - p.current) * p.qty;
+    return sum + unrealized;
+  }, 0);
+  const realizedPnL = simHistory.reduce((sum, h) => sum + parseFloat(h.pnl), 0);
+
+  // ─── CANDLE RENDERER ───────────────────────────────────
+  const renderCandles = () => {
+    if (!candles.length) return null;
+    const prices = candles.flatMap(c => [c.h, c.l]);
+    const minP = Math.min(...prices);
+    const maxP = Math.max(...prices);
+    const range = maxP - minP || 1;
+    const h = 256;
+    const toY = (p) => h - ((p - minP) / range) * h;
+
+    return candles.map((c, i) => {
+      const isGreen = c.c >= c.o;
+      const bodyTop = toY(Math.max(c.o, c.c));
+      const bodyBot = toY(Math.min(c.o, c.c));
+      const bodyH = Math.max(bodyBot - bodyTop, 2);
+      const wickTop = toY(c.h);
+      const wickBot = toY(c.l);
+      const color = isGreen ? "var(--green)" : "var(--red)";
+      return (
+        <div key={i} className="candle" style={{ height: h }}>
+          <div className="candle-wick" style={{ top: wickTop, height: wickBot - wickTop, background: color }} />
+          <div className="candle-body" style={{ top: bodyTop, height: bodyH, background: color }} />
+        </div>
+      );
+    });
+  };
+
+  // ─── RENDER ─────────────────────────────────────────────
+  const tickerInfo = selectedTicker ? scanData.find(s => s.sym === selectedTicker) : null;
+
+  return (
+    <div>
+      {/* ═══ HEADER ═══ */}
+      <div className="header">
+        <div className="header-left">
+          <div className="header-logo">⚡</div>
+          <div>
+            <h1>DAY TRADE <span>DASH</span></h1>
+            <div className="header-sub">Scanner • Level 2 • Simulator • News — Impact Trading Academy</div>
+          </div>
+        </div>
+        <div className="header-nav">
+          {[
+            { id: "scanner", label: "🔍 Scanner", },
+            { id: "level2", label: "📊 Level 2", },
+            { id: "simulator", label: "🎮 Simulator", },
+            { id: "news", label: "📰 News Feed", },
+          ].map(t => (
+            <button key={t.id} className={`nav-btn ${tab === t.id ? "active" : ""}`} onClick={() => setTab(t.id)}>{t.label}</button>
+          ))}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div className="live-clock"><span className="live-dot"></span>{clock}</div>
+          <a href="https://trading-training-portal.vercel.app/" className="btn-outline">← Academy</a>
+        </div>
+      </div>
+
+      {/* ═══ SELECTED TICKER BAR ═══ */}
+      {selectedTicker && tickerInfo && (
+        <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "8px 24px", display: "flex", alignItems: "center", gap: 20, fontSize: 13 }}>
+          <span style={{ fontWeight: 800, fontSize: 16, color: "var(--navy)" }}>{tickerInfo.sym}</span>
+          <span style={{ color: "var(--muted)", fontSize: 12 }}>{tickerInfo.name}</span>
+          <span style={{ fontFamily: "'JetBrains Mono'", fontWeight: 700, fontSize: 18 }}>${tickerInfo.price}</span>
+          <span className={parseFloat(tickerInfo.changePct) >= 0 ? "pos" : "neg"} style={{ fontWeight: 700 }}>
+            {parseFloat(tickerInfo.changePct) >= 0 ? "▲" : "▼"} {tickerInfo.changePct}%
+          </span>
+          <span style={{ color: "var(--muted)", fontSize: 11 }}>Vol: {tickerInfo.vol}</span>
+          <span style={{ color: "var(--muted)", fontSize: 11 }}>RelVol: {tickerInfo.relVol}x</span>
+          <span style={{ color: "var(--muted)", fontSize: 11 }}>RSI: {tickerInfo.rsi}</span>
+          <span style={{ color: "var(--muted)", fontSize: 11 }}>VWAP: ${tickerInfo.vwap}</span>
+          <span style={{ color: "var(--muted)", fontSize: 11 }}>Float: {tickerInfo.float}</span>
+          <span style={{ color: "var(--muted)", fontSize: 11 }}>Short%: {tickerInfo.short}</span>
+        </div>
+      )}
+
+      <div className="dash-layout">
+        {/* ═══════════ SCANNER TAB ═══════════ */}
+        {tab === "scanner" && (
+          <>
+            {/* Sector Heatmap */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title"><div className="icon" style={{ background: "rgba(13,147,115,0.1)", color: "var(--emerald)" }}>🗺️</div> Sector Heatmap</div>
+              </div>
+              <div className="panel-body">
+                <div className="heatmap">
+                  {SECTORS.map(s => {
+                    const intensity = Math.min(Math.abs(s.pct) / 2, 1);
+                    const bg = s.pct >= 0
+                      ? `rgba(16,185,129,${0.3 + intensity * 0.7})`
+                      : `rgba(239,68,68,${0.3 + intensity * 0.7})`;
+                    return (
+                      <div key={s.name} className="hm-cell" style={{ background: bg }}>
+                        <div className="hm-name">{s.name}</div>
+                        <div className="hm-pct">{s.pct > 0 ? "+" : ""}{s.pct}%</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Scans + Custom Filter */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title"><div className="icon" style={{ background: "rgba(13,147,115,0.1)", color: "var(--emerald)" }}>🔍</div> Scanner Controls</div>
+                <div style={{ fontSize: 11, color: "var(--muted)" }}>Auto-refreshes every 5s • {filteredScan.length} results</div>
+              </div>
+              <div className="panel-body">
+                <div className="quick-scan-btns">
+                  {[
+                    { id: "all", label: "All Stocks" },
+                    { id: "gappers", label: "🚀 Gap Up/Down >2%" },
+                    { id: "volume", label: "📊 High Rel Volume" },
+                    { id: "momentum", label: "⚡ Momentum >1.5%" },
+                    { id: "shorts", label: "🩳 High Short Interest" },
+                    { id: "oversold", label: "📉 Oversold RSI<30" },
+                    { id: "overbought", label: "📈 Overbought RSI>70" },
+                  ].map(q => (
+                    <button key={q.id} className={`qs-btn ${quickScan === q.id ? "active" : ""}`} onClick={() => setQuickScan(q.id)}>{q.label}</button>
+                  ))}
+                </div>
+                <div className="filter-row">
+                  <select className="filter-select" value={filterField} onChange={e => setFilterField(e.target.value)}>
+                    <option value="changePct">Change %</option>
+                    <option value="price">Price</option>
+                    <option value="rsi">RSI</option>
+                    <option value="relVol">Rel Volume</option>
+                    <option value="gap">Gap %</option>
+                  </select>
+                  <select className="filter-select" value={filterOp} onChange={e => setFilterOp(e.target.value)}>
+                    <option value=">">{">"}</option>
+                    <option value="<">{"<"}</option>
+                    <option value=">=">{">="}</option>
+                    <option value="<=">{"<="}</option>
+                  </select>
+                  <input className="sim-input" style={{ width: 80 }} value={filterVal} onChange={e => setFilterVal(e.target.value)} placeholder="Value" onKeyDown={e => e.key === "Enter" && addFilter()} />
+                  <button className="qs-btn" onClick={addFilter} style={{ background: "var(--emerald)", color: "#fff", borderColor: "var(--emerald)" }}>+ Add Filter</button>
+                </div>
+                {filters.length > 0 && (
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+                    {filters.map((f, i) => (
+                      <div key={i} className="filter-chip">{f.field} {f.op} {f.val} <button onClick={() => removeFilter(i)}>×</button></div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Scanner Table */}
+            <div className="panel" style={{ overflowX: "auto" }}>
+              <table className="scanner-table">
+                <thead>
+                  <tr>
+                    <th>Ticker</th><th>Price</th><th>Chg %</th><th>Gap %</th><th>Volume</th><th>Rel Vol</th><th>RSI</th><th>VWAP</th><th>Float</th><th>Short %</th><th>Signal</th><th>Sector</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredScan.map(d => (
+                    <tr key={d.sym} onClick={() => setSelectedTicker(d.sym)} style={{ background: selectedTicker === d.sym ? "rgba(13,147,115,0.06)" : undefined }}>
+                      <td><span className="ticker-cell">{d.sym}</span><br/><span style={{ fontSize: 10, color: "var(--muted)" }}>{d.name}</span></td>
+                      <td className="price-cell">${d.price}</td>
+                      <td className={parseFloat(d.changePct) >= 0 ? "pos" : "neg"} style={{ fontWeight: 700 }}>{parseFloat(d.changePct) >= 0 ? "+" : ""}{d.changePct}%</td>
+                      <td className={parseFloat(d.gap) >= 0 ? "pos" : "neg"}>{parseFloat(d.gap) >= 0 ? "+" : ""}{d.gap}%</td>
+                      <td>{d.vol}</td>
+                      <td style={{ color: parseFloat(d.relVol) > 2 ? "var(--amber)" : "var(--muted)", fontWeight: parseFloat(d.relVol) > 2 ? 700 : 400 }}>{d.relVol}x</td>
+                      <td style={{ color: d.rsi > 70 ? "var(--red)" : d.rsi < 30 ? "var(--green)" : "var(--muted)", fontWeight: 600 }}>{d.rsi}</td>
+                      <td className="price-cell">${d.vwap}</td>
+                      <td style={{ fontSize: 11, color: "var(--muted)" }}>{d.float}</td>
+                      <td style={{ fontSize: 11, color: parseFloat(d.short) > 5 ? "var(--red)" : "var(--muted)", fontWeight: parseFloat(d.short) > 5 ? 700 : 400 }}>{d.short}</td>
+                      <td><span className={`badge ${d.signal === "Bullish" ? "badge-bull" : d.signal === "Bearish" ? "badge-bear" : "badge-halt"}`}>{d.signal}</span></td>
+                      <td style={{ fontSize: 11, color: "var(--muted)" }}>{d.sector}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+
+        {/* ═══════════ LEVEL 2 TAB ═══════════ */}
+        {tab === "level2" && (
+          <>
+            {!selectedTicker ? (
+              <div className="panel">
+                <div className="panel-body" style={{ textAlign: "center", padding: 60 }}>
+                  <div style={{ fontSize: 48, marginBottom: 12 }}>📊</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: "var(--navy)", marginBottom: 8 }}>Select a Ticker</div>
+                  <div style={{ color: "var(--muted)", fontSize: 14, marginBottom: 20 }}>Go to the Scanner tab and click any ticker to load its Level 2 data</div>
+                  <button className="qs-btn active" onClick={() => setTab("scanner")}>Go to Scanner</button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 300px", gap: 12 }}>
+                {/* Candle Chart */}
+                <div className="panel" style={{ gridColumn: "span 2" }}>
+                  <div className="panel-header">
+                    <div className="panel-title"><div className="icon" style={{ background: "rgba(13,147,115,0.1)", color: "var(--emerald)" }}>📈</div> {selectedTicker} — 1min Chart</div>
+                  </div>
+                  <div className="candle-area">
+                    <div className="candle-row">{renderCandles()}</div>
+                  </div>
+                </div>
+
+                {/* Time & Sales */}
+                <div className="panel">
+                  <div className="panel-header">
+                    <div className="panel-title"><div className="icon" style={{ background: "rgba(245,165,36,0.1)", color: "var(--amber)" }}>⏱️</div> Time & Sales</div>
+                  </div>
+                  <div style={{ maxHeight: 280, overflowY: "auto" }}>
+                    {tsData.map((ts, i) => (
+                      <div key={i} className="ts-row">
+                        <span className="ts-time">{ts.time}</span>
+                        <span className={`ts-price ${ts.side === "buy" ? "pos" : "neg"}`}>${ts.price}</span>
+                        <span className="ts-size" style={{ color: ts.side === "buy" ? "var(--green)" : "var(--red)" }}>{ts.size.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Level 2 Book */}
+                <div className="panel" style={{ gridColumn: "span 2" }}>
+                  <div className="panel-header">
+                    <div className="panel-title"><div className="icon" style={{ background: "rgba(59,130,246,0.1)", color: "var(--blue)" }}>📚</div> Level 2 Order Book</div>
+                    <div style={{ fontSize: 11, color: "var(--muted)" }}>Auto-refreshes every 2s</div>
+                  </div>
+                  {l2Data && (
+                    <div>
+                      {/* Depth Visualization */}
+                      <div style={{ display: "flex", height: 80, padding: "8px 16px", gap: 1, alignItems: "flex-end", background: "var(--card-alt)" }}>
+                        {[...l2Data.bids].reverse().map((b, i) => {
+                          const maxSize = Math.max(...l2Data.bids.map(x => x.size), ...l2Data.asks.map(x => x.size));
+                          return <div key={`b${i}`} className="ob-bar" style={{ height: `${(b.size / maxSize) * 100}%`, background: "var(--green)", opacity: 0.3 + (i / 15) * 0.7 }} />;
+                        })}
+                        <div style={{ width: 2, background: "var(--amber)", borderRadius: 1 }} />
+                        {l2Data.asks.map((a, i) => {
+                          const maxSize = Math.max(...l2Data.bids.map(x => x.size), ...l2Data.asks.map(x => x.size));
+                          return <div key={`a${i}`} className="ob-bar" style={{ height: `${(a.size / maxSize) * 100}%`, background: "var(--red)", opacity: 0.7 - (i / 15) * 0.4 }} />;
+                        })}
+                      </div>
+                      <div className="spread-bar">Spread: ${(parseFloat(l2Data.asks[0]?.price) - parseFloat(l2Data.bids[0]?.price)).toFixed(2)} ({((parseFloat(l2Data.asks[0]?.price) - parseFloat(l2Data.bids[0]?.price)) / parseFloat(l2Data.bids[0]?.price) * 100).toFixed(3)}%)</div>
+                      <div className="l2-container">
+                        <div className="l2-side">
+                          <div className="l2-side-header l2-bid-header">BID (Buyers)</div>
+                          {l2Data.bids.map((b, i) => {
+                            const maxSize = Math.max(...l2Data.bids.map(x => x.size));
+                            return (
+                              <div key={i} className="l2-row l2-row-bid">
+                                <div className="l2-bar l2-bar-bid" style={{ width: `${(b.size / maxSize) * 100}%` }} />
+                                <span className="l2-price pos">${b.price}</span>
+                                <span className="l2-size">{b.size.toLocaleString()} ({b.orders})</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="l2-side">
+                          <div className="l2-side-header l2-ask-header">ASK (Sellers)</div>
+                          {l2Data.asks.map((a, i) => {
+                            const maxSize = Math.max(...l2Data.asks.map(x => x.size));
+                            return (
+                              <div key={i} className="l2-row">
+                                <div className="l2-bar l2-bar-ask" style={{ width: `${(a.size / maxSize) * 100}%` }} />
+                                <span className="l2-price neg">${a.price}</span>
+                                <span className="l2-size">{a.size.toLocaleString()} ({a.orders})</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Order Summary */}
+                <div className="panel">
+                  <div className="panel-header">
+                    <div className="panel-title"><div className="icon" style={{ background: "rgba(139,92,246,0.1)", color: "var(--purple)" }}>📋</div> Book Summary</div>
+                  </div>
+                  <div className="panel-body">
+                    {l2Data && (() => {
+                      const totalBid = l2Data.bids.reduce((s, b) => s + b.size, 0);
+                      const totalAsk = l2Data.asks.reduce((s, a) => s + a.size, 0);
+                      const ratio = totalAsk > 0 ? (totalBid / totalAsk).toFixed(2) : "N/A";
+                      const pressure = totalBid > totalAsk ? "Buy Pressure" : "Sell Pressure";
+                      return (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ fontSize: 12, color: "var(--muted)" }}>Total Bid Size</span>
+                            <span className="pos" style={{ fontWeight: 700, fontFamily: "'JetBrains Mono'" }}>{totalBid.toLocaleString()}</span>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ fontSize: 12, color: "var(--muted)" }}>Total Ask Size</span>
+                            <span className="neg" style={{ fontWeight: 700, fontFamily: "'JetBrains Mono'" }}>{totalAsk.toLocaleString()}</span>
+                          </div>
+                          <div style={{ height: 8, borderRadius: 4, background: "var(--border)", overflow: "hidden" }}>
+                            <div style={{ height: "100%", width: `${(totalBid / (totalBid + totalAsk)) * 100}%`, background: "var(--green)", borderRadius: 4 }} />
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ fontSize: 12, color: "var(--muted)" }}>Bid/Ask Ratio</span>
+                            <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono'", color: totalBid > totalAsk ? "var(--green)" : "var(--red)" }}>{ratio}</span>
+                          </div>
+                          <div style={{ textAlign: "center", padding: 10, borderRadius: 8, background: totalBid > totalAsk ? "var(--green-light)" : "var(--red-light)", color: totalBid > totalAsk ? "#059669" : "#DC2626", fontWeight: 700, fontSize: 13 }}>
+                            {pressure}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ═══════════ SIMULATOR TAB ═══════════ */}
+        {tab === "simulator" && (
+          <>
+            {/* Sim Stats */}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <div className="sim-stat">
+                <span className="sim-stat-label">Balance</span>
+                <span className="sim-stat-value" style={{ color: "var(--navy)" }}>${simBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="sim-stat">
+                <span className="sim-stat-label">Unrealized P&L</span>
+                <span className="sim-stat-value" style={{ color: totalPnL >= 0 ? "var(--green)" : "var(--red)" }}>{totalPnL >= 0 ? "+" : ""}{totalPnL.toFixed(2)}</span>
+              </div>
+              <div className="sim-stat">
+                <span className="sim-stat-label">Realized P&L</span>
+                <span className="sim-stat-value" style={{ color: realizedPnL >= 0 ? "var(--green)" : "var(--red)" }}>{realizedPnL >= 0 ? "+" : ""}{realizedPnL.toFixed(2)}</span>
+              </div>
+              <div className="sim-stat">
+                <span className="sim-stat-label">Open Positions</span>
+                <span className="sim-stat-value" style={{ color: "var(--emerald)" }}>{simPositions.length}</span>
+              </div>
+              <div className="sim-stat">
+                <span className="sim-stat-label">Total Trades</span>
+                <span className="sim-stat-value" style={{ color: "var(--navy)" }}>{simHistory.length}</span>
+              </div>
+            </div>
+
+            {/* Order Entry */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title"><div className="icon" style={{ background: "rgba(13,147,115,0.1)", color: "var(--emerald)" }}>🎯</div> Order Entry {selectedTicker ? `— ${selectedTicker}` : ""}</div>
+              </div>
+              <div className="panel-body">
+                {!selectedTicker ? (
+                  <div style={{ textAlign: "center", padding: 20, color: "var(--muted)" }}>
+                    Select a ticker from the Scanner tab first
+                    <br/><button className="qs-btn active" style={{ marginTop: 12 }} onClick={() => setTab("scanner")}>Go to Scanner</button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="sim-controls">
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        <label style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)", textTransform: "uppercase" }}>Order Type</label>
+                        <select className="filter-select" value={simOrderType} onChange={e => setSimOrderType(e.target.value)}>
+                          <option value="market">Market</option>
+                          <option value="limit">Limit</option>
+                        </select>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        <label style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)", textTransform: "uppercase" }}>Quantity</label>
+                        <input className="sim-input" value={simQty} onChange={e => setSimQty(e.target.value)} />
+                      </div>
+                      {simOrderType === "limit" && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                          <label style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)", textTransform: "uppercase" }}>Limit Price</label>
+                          <input className="sim-input" value={simLimitPrice} onChange={e => setSimLimitPrice(e.target.value)} placeholder={tickerInfo?.price} />
+                        </div>
+                      )}
+                      <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+                        <button className="sim-btn sim-buy" onClick={handleSimBuy}>BUY {simQty} shares</button>
+                        <button className="sim-btn sim-sell" onClick={handleSimSell}>SHORT {simQty} shares</button>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                      Quick size: {[25, 50, 100, 200, 500].map(q => (
+                        <button key={q} className="qs-btn" style={{ marginRight: 4, padding: "3px 8px", fontSize: 11 }} onClick={() => setSimQty(String(q))}>{q}</button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Open Positions */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title"><div className="icon" style={{ background: "rgba(59,130,246,0.1)", color: "var(--blue)" }}>📋</div> Open Positions</div>
+              </div>
+              {simPositions.length === 0 ? (
+                <div className="panel-body" style={{ textAlign: "center", color: "var(--muted)", padding: 20 }}>No open positions</div>
+              ) : (
+                <table className="pos-table">
+                  <thead>
+                    <tr><th>Ticker</th><th>Side</th><th>Qty</th><th>Avg Entry</th><th>Current</th><th>P&L</th><th></th></tr>
+                  </thead>
+                  <tbody>
+                    {simPositions.map((p, i) => {
+                      const pnl = p.side === "Long" ? (p.current - p.avg) * p.qty : (p.avg - p.current) * p.qty;
+                      return (
+                        <tr key={i}>
+                          <td style={{ fontWeight: 700 }}>{p.sym}</td>
+                          <td><span className={`badge ${p.side === "Long" ? "badge-bull" : "badge-bear"}`}>{p.side}</span></td>
+                          <td>{p.qty}</td>
+                          <td className="price-cell">${p.avg.toFixed(2)}</td>
+                          <td className="price-cell">${p.current.toFixed(2)}</td>
+                          <td className={pnl >= 0 ? "pos" : "neg"} style={{ fontWeight: 700, fontFamily: "'JetBrains Mono'" }}>{pnl >= 0 ? "+" : ""}{pnl.toFixed(2)}</td>
+                          <td><button className="sim-btn sim-flat" style={{ padding: "4px 10px", fontSize: 11 }} onClick={() => handleFlatten(p)}>Flatten</button></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Trade History */}
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title"><div className="icon" style={{ background: "rgba(139,92,246,0.1)", color: "var(--purple)" }}>📜</div> Trade History</div>
+              </div>
+              {simHistory.length === 0 ? (
+                <div className="panel-body" style={{ textAlign: "center", color: "var(--muted)", padding: 20 }}>No completed trades yet</div>
+              ) : (
+                <table className="pos-table">
+                  <thead>
+                    <tr><th>Time</th><th>Ticker</th><th>Side</th><th>Qty</th><th>Entry</th><th>Exit</th><th>P&L</th></tr>
+                  </thead>
+                  <tbody>
+                    {simHistory.map((h, i) => (
+                      <tr key={i}>
+                        <td style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, color: "var(--muted)" }}>{h.time}</td>
+                        <td style={{ fontWeight: 700 }}>{h.sym}</td>
+                        <td><span className={`badge ${h.side === "Long" ? "badge-bull" : "badge-bear"}`}>{h.side}</span></td>
+                        <td>{h.qty}</td>
+                        <td className="price-cell">${h.entry}</td>
+                        <td className="price-cell">${h.exit}</td>
+                        <td className={parseFloat(h.pnl) >= 0 ? "pos" : "neg"} style={{ fontWeight: 700, fontFamily: "'JetBrains Mono'" }}>{parseFloat(h.pnl) >= 0 ? "+" : ""}${h.pnl}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ═══════════ NEWS TAB ═══════════ */}
+        {tab === "news" && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 12 }}>
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title"><div className="icon" style={{ background: "rgba(245,165,36,0.1)", color: "var(--amber)" }}>📰</div> Live News Feed</div>
+                <div style={{ display: "flex", gap: 4 }}>
+                  {["all", "bull", "bear"].map(f => (
+                    <button key={f} className={`qs-btn ${newsFilter === f ? "active" : ""}`} onClick={() => setNewsFilter(f)} style={{ padding: "4px 10px", fontSize: 11 }}>
+                      {f === "all" ? "All" : f === "bull" ? "🟢 Bullish" : "🔴 Bearish"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                {NEWS_ITEMS.filter(n => newsFilter === "all" || n.sentiment === newsFilter.replace("bull", "bull").replace("bear", "bear"))
+                  .map((n, i) => (
+                  <div key={i} className="news-item" onClick={() => { setSelectedTicker(n.ticker); }}>
+                    <div className="news-time">{n.time} ET</div>
+                    <div className="news-headline">{n.headline}</div>
+                    <div className="news-source">
+                      {n.source}
+                      <span className={`news-tag ${n.sentiment === "bull" ? "badge-bull" : n.sentiment === "bear" ? "badge-bear" : "badge-halt"}`}>
+                        {n.ticker}
+                      </span>
+                      <span className={`news-tag ${n.sentiment === "bull" ? "badge-bull" : n.sentiment === "bear" ? "badge-bear" : "badge-halt"}`}>
+                        {n.sentiment === "bull" ? "Bullish" : n.sentiment === "bear" ? "Bearish" : "Neutral"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Research Panel */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div className="panel">
+                <div className="panel-header">
+                  <div className="panel-title"><div className="icon" style={{ background: "rgba(139,92,246,0.1)", color: "var(--purple)" }}>🔬</div> Quick Research</div>
+                </div>
+                <div className="panel-body">
+                  {selectedTicker && tickerInfo ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      <div style={{ fontSize: 20, fontWeight: 800, color: "var(--navy)" }}>{tickerInfo.sym}</div>
+                      <div style={{ fontSize: 12, color: "var(--muted)" }}>{tickerInfo.name}</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 12 }}>
+                        <div><span style={{ color: "var(--muted)" }}>Sector:</span> <b>{tickerInfo.sector}</b></div>
+                        <div><span style={{ color: "var(--muted)" }}>Float:</span> <b>{tickerInfo.float}</b></div>
+                        <div><span style={{ color: "var(--muted)" }}>Short%:</span> <b style={{ color: parseFloat(tickerInfo.short) > 5 ? "var(--red)" : "inherit" }}>{tickerInfo.short}</b></div>
+                        <div><span style={{ color: "var(--muted)" }}>Avg Vol:</span> <b>{tickerInfo.avgVol}</b></div>
+                        <div><span style={{ color: "var(--muted)" }}>RSI:</span> <b style={{ color: tickerInfo.rsi > 70 ? "var(--red)" : tickerInfo.rsi < 30 ? "var(--green)" : "inherit" }}>{tickerInfo.rsi}</b></div>
+                        <div><span style={{ color: "var(--muted)" }}>VWAP:</span> <b>${tickerInfo.vwap}</b></div>
+                      </div>
+                      <div style={{ marginTop: 8 }}>
+                        <a href={`https://finviz.com/quote.ashx?t=${tickerInfo.sym}`} target="_blank" className="qs-btn" style={{ display: "block", textAlign: "center", textDecoration: "none", marginBottom: 6 }}>📊 Finviz Chart</a>
+                        <a href={`https://www.tradingview.com/symbols/${tickerInfo.sym}/`} target="_blank" className="qs-btn" style={{ display: "block", textAlign: "center", textDecoration: "none", marginBottom: 6 }}>📈 TradingView</a>
+                        <a href={`https://finance.yahoo.com/quote/${tickerInfo.sym}`} target="_blank" className="qs-btn" style={{ display: "block", textAlign: "center", textDecoration: "none", marginBottom: 6 }}>💹 Yahoo Finance</a>
+                        <a href={`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=${tickerInfo.sym}&type=&dateb=&owner=include&count=10`} target="_blank" className="qs-btn" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>📄 SEC Filings</a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ textAlign: "center", padding: 20, color: "var(--muted)", fontSize: 13 }}>Select a ticker to view research</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Market Indices */}
+              <div className="panel">
+                <div className="panel-header">
+                  <div className="panel-title"><div className="icon" style={{ background: "rgba(13,147,115,0.1)", color: "var(--emerald)" }}>🏛️</div> Market Indices</div>
+                </div>
+                <div className="panel-body">
+                  {[
+                    { name: "S&P 500", val: "5,089.21", chg: "+12.45", pct: "+0.25%" },
+                    { name: "NASDAQ", val: "16,142.68", chg: "+48.92", pct: "+0.30%" },
+                    { name: "DOW", val: "38,872.45", chg: "-28.34", pct: "-0.07%" },
+                    { name: "VIX", val: "14.28", chg: "-0.52", pct: "-3.52%" },
+                    { name: "10Y Yield", val: "4.285%", chg: "+0.02", pct: "+0.47%" },
+                  ].map((idx, i) => (
+                    <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: i < 4 ? "1px solid var(--border)" : "none", fontSize: 12 }}>
+                      <span style={{ fontWeight: 600, color: "var(--navy)" }}>{idx.name}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono'", fontWeight: 600 }}>{idx.val}</span>
+                      <span style={{ fontWeight: 700, color: idx.chg.startsWith("-") ? "var(--red)" : "var(--green)" }}>{idx.pct}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="footer">Powered by <span>Mission Metrics</span> • Day Trade Dash • Impact Trading Academy</div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<DayTradeDash />);
+</script>
+</body>
+</html>
