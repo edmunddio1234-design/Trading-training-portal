@@ -63,6 +63,8 @@
   .header-actions button:hover { background: var(--bg-hover); color: var(--text-primary); }
   .header-actions button.primary { background: var(--accent); border-color: var(--accent); color: #FFF; font-weight: 600; }
   .header-actions button.primary:hover { background: var(--accent-dark); }
+  .logout-btn { background: none !important; border: 1px solid #EF4444 !important; color: #EF4444 !important; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; font-weight: 600; transition: all 0.2s; }
+  .logout-btn:hover { background: #EF4444 !important; color: #FFF !important; }
   .content-body { padding: 40px; max-width: 920px; }
   .module-badge { display: inline-block; background: rgba(13,147,115,0.12); color: var(--accent); font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; }
   .module-title { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; letter-spacing: -0.5px; color: var(--navy); }
@@ -1451,7 +1453,7 @@ function InfographicGenerator({ module }) {
 // MAIN APP
 // =============================================================================
 
-function App() {
+function App({ onLogout }) {
   const [modules, setModules] = useState([]);
   const [currentView, setCurrentView] = useState('dashboard');
   const [currentModuleId, setCurrentModuleId] = useState(null);
@@ -1655,6 +1657,7 @@ function App() {
             <button onClick={goToDashboard}>◈ Dashboard</button>
             <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
             <button onClick={() => setShowSettings(true)}>⚙ Settings</button>
+            {onLogout && <button className="logout-btn" onClick={onLogout}>⏻ Logout</button>}
             <button className="primary" onClick={openAdminNew}>+ Add Module</button>
           </div>
         </div>
@@ -3095,6 +3098,11 @@ function AppWithLogin() {
     setIsAuthenticated(true);
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('ita_session_token');
+    setIsAuthenticated(false);
+  };
+
   if (checkingSession) {
     return (
       <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'linear-gradient(135deg, #1B2A4A 0%, #243B60 50%, #0D9373 100%)'}}>
@@ -3104,7 +3112,7 @@ function AppWithLogin() {
   }
 
   if (!isAuthenticated) return <LoginScreen onLogin={handleLogin} />;
-  return <App />;
+  return <App onLogout={handleLogout} />;
 }
 
 ReactDOM.render(<AppWithLogin />, document.getElementById('root'));
