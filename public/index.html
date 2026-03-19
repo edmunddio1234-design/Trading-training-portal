@@ -794,16 +794,14 @@ const MODULE_MEDIA = {
   },
   m4: {
     youtube: 'https://youtu.be/kmmfk8edWAE',
-    flipbook: 'https://heyzine.com/flip-book/e9b0419d8b.html',
+    flipbook: 'https://heyzine.com/flip-book/fb6bab0136.html',
     slideDeck: 'https://heyzine.com/flip-book/69fd47205c.html',
-    manual: 'https://heyzine.com/flip-book/fb6bab0136.html',
     audioUrl: null
   },
   m5: {
     youtube: 'https://youtu.be/7S1FfEAwA4Y',
-    flipbook: 'https://heyzine.com/flip-book/1fb074ad95.html',
+    flipbook: 'https://heyzine.com/flip-book/a56b13a039.html',
     slideDeck: 'https://heyzine.com/flip-book/b7dedbcd0f.html',
-    manual: 'https://heyzine.com/flip-book/a56b13a039.html',
     audioUrl: null
   },
   m6: {
@@ -1190,29 +1188,6 @@ function SlideDeckEmbed({ moduleId }) {
 }
 
 // =============================================================================
-// MODULE MANUAL EMBED COMPONENT (Heyzine training manuals per module)
-// =============================================================================
-
-function ManualEmbed({ moduleId }) {
-  const media = MODULE_MEDIA[moduleId];
-  const manualUrl = media?.manual;
-
-  if (!manualUrl) return null;
-
-  return (
-    <div className="media-section">
-      <div className="media-section-header">📘 Module Training Manual</div>
-      <div className="media-embed-container">
-        <iframe
-          src={manualUrl}
-          allow="fullscreen"
-          title={`Training Manual for ${moduleId}`}
-        />
-      </div>
-    </div>
-  );
-}
-
 // =============================================================================
 // YOUTUBE EMBED COMPONENT
 // =============================================================================
@@ -1607,7 +1582,9 @@ function App({ onLogout }) {
       window.scrollTo({ top: 0, behavior: 'instant' });
       document.querySelector('.main-content')?.scrollTo({ top: 0, behavior: 'instant' });
       document.querySelector('.content-body')?.scrollTo({ top: 0, behavior: 'instant' });
-    }, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 50);
   };
   const goToDashboard = () => { setCurrentView('dashboard'); setCurrentModuleId(null); };
   const completeModule = (id) => setCompletedModules(prev => ({...prev, [id]: true}));
@@ -2842,7 +2819,6 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
 
       <FlipbookEmbed moduleId={module.id} />
       <SlideDeckEmbed moduleId={module.id} />
-      <ManualEmbed moduleId={module.id} />
       <YouTubeEmbed moduleId={module.id} />
       <ModuleAudio audioUrl={MODULE_MEDIA[module.id]?.audioUrl} moduleTitle={module.title} />
       <InfographicGenerator module={module} />
