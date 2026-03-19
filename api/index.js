@@ -15,7 +15,7 @@ const app = express();
 // CONSTANTS
 // =============================================================================
 
-const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
 
 // Middleware
 app.use(cors());
@@ -1264,6 +1264,458 @@ Master Workflow for Module 2 Success:
 5. Enter: Quarter-Size Icebreaker at first candle to make new high, risk capped at pullback low.
 6. Scale: Full Size only after $1,000 profit cushion.
 7. Exit: Lock in the 18-cent base hit to build daily equity.`;
+
+// Module 3 source
+TUTOR_SOURCES['m3'] = `Module 3 Correlation Report: The Master Surge Strategy — Five Pillars of Institutional Timing
+
+The Master Surge Strategy is the primary timing mechanism to identify market turns and major moves in advance. It is the central framework of the Impact Trading Academy system and integrates all prior module concepts into a unified execution model.
+
+The Five Pillars of the Master Surge Strategy (All Five Required Together):
+
+Pillar 1 — Understand Price Cycles:
+Markets move in four repeating phases:
+1. Accumulation: Institutions quietly buying at low prices. Sideways range after downtrend.
+2. Markup: Price rising as demand overwhelms supply. Higher highs, higher lows staircase.
+3. Distribution: Institutions quietly selling into strength at high prices. Sideways range at highs.
+4. Markdown: Price falling as supply overwhelms demand. Lower highs, lower lows staircase.
+No single phase lasts forever — the cycle repeats continuously across all timeframes.
+
+Pillar 2 — Track Volume Surges:
+Institutions control 80-90% of all market volume. Unusual volume spikes (2x-5x above 20-day average) are direct evidence of big money entering or exiting. Volume surge + price move = confirmed institutional conviction. Without volume confirmation, price moves are unreliable.
+
+Pillar 3 — Watch Institutional Footprints:
+Identify unfilled orders (leftover institutional buying/selling pressure) that create predictable supply and demand zones. The strongest zones are created by explosive departures — rapid price moves away that leave unfilled orders behind.
+
+Pillar 4 — Confirm Trend Strength:
+Always ensure the overarching trend supports your trade direction. Trading with the trend = institutional momentum on your side. Trading against the trend = fighting the biggest players in the market. Use multiple timeframes for confirmation.
+
+Pillar 5 — Use Risk Management Every Time:
+1% max risk per trade, 3:1 reward-to-risk ratio, S.E.T. rule (Stop, Entry, Target) on every trade without exception. This is non-negotiable regardless of how confident you feel.
+
+Integration: No single pillar works alone. The power of the Master Surge Strategy comes from confirmation across ALL five pillars simultaneously. A trade that only meets 2-3 pillars is lower probability than one meeting all 5.
+
+Price Cycle Phase Transition Signals:
+A valid transition requires: (1) Volume surge of 2x-5x above 20-day average on the breakout/breakdown candle, (2) Price closes decisively outside the range, (3) First successful pullback retest — price returns to breakout level and holds.
+
+Common Mistakes:
+- Calling bottoms during markdown before accumulation range forms
+- Chasing markup entries without waiting for pullbacks to demand zones
+- Confusing distribution for consolidation
+- Ignoring volume confirmation
+- Trading against the dominant phase`;
+
+// Module 4 source
+TUTOR_SOURCES['m4'] = `Module 4 Correlation Report: Risk Management and the S.E.T. Rule
+
+The 1% Rule — The Foundation of Survival:
+Never risk more than 1% of total trading portfolio per trade. Formula: Total Account Balance × 1% = Maximum Dollar Risk Per Trade.
+Example: $10,000 account × 1% = $100 max risk per trade. $50,000 account × 1% = $500 max risk.
+This rule is NON-NEGOTIABLE. It is the mathematical foundation that makes the Chasm of Fear crossable — when you know your downside is capped at 1%, fear loses its grip.
+
+The 3:1 Reward-to-Risk Ratio:
+For every $1 risked, aim to earn $3. Risk = 1% per trade. Reward target = 3% per trade.
+Profitability at different win rates with 3:1 ratio:
+- 25% win rate = Break Even
+- 30% win rate = +$20 Profit per 100 trades
+- 40% win rate = +$60 Profit per 100 trades
+- 50% win rate = +$100 Profit per 100 trades
+Even a 30% win rate is profitable with disciplined 3:1 execution. This is the mathematical edge.
+
+The S.E.T. Rule (Stop, Entry, Target):
+Every trade MUST have all three defined BEFORE execution:
+S — Stop: Protective floor (for longs) or ceiling (for shorts). Caps downside at 1% of account.
+E — Entry: Exact buy/sell trigger price. Prepared before the move happens, not reactive.
+T — Target: 3% profit objective (minimum 3:1 ratio). Set at the next opposing supply/demand zone.
+
+Position Sizing Formula:
+Position Size = Account Risk ÷ Trade Risk
+Account Risk = 1% of total account value
+Trade Risk = Distance between Entry and Stop in dollars per share
+Example: $50,000 account, Entry $100, Stop $98
+- Account Risk = $500 (1% of $50,000)
+- Trade Risk = $2/share ($100 - $98)
+- Position Size = 250 shares ($500 ÷ $2)
+
+Contingency Orders vs. Standard Stop Losses:
+Standard stops on options fail because option prices are "Noise" — they fluctuate based on time decay, implied volatility, and other factors beyond just price movement. Use Contingency Orders instead — exit the option position only when the UNDERLYING stock price hits your technical stop level. This prevents being stopped out by option premium noise.
+
+Win/Loss Psychology:
+A 70% losing percentage seems terrible but is irrelevant if you maintain 3:1 reward-to-risk. The goal is never perfection — it is profitability through disciplined risk control. Focus on the math, not the feelings.`;
+
+// Module 5 source
+TUTOR_SOURCES['m5'] = `Module 5 Correlation Report: Leverage Strategy and Asset Vehicles
+
+Good Leverage vs. Bad Leverage:
+Good Leverage: Used on non-depreciating assets, backed by strategy + risk management, calculated and intentional.
+Bad Leverage: Emotional, speculative, depreciating assets, no risk control, reactive and impulsive.
+The difference is never the amount of leverage — it is whether you have a plan and the discipline to follow it.
+
+Leverage by Vehicle:
+- Stocks: No leverage (1x). Require full capital outlay.
+- Options: 10x-20x leverage. 1 contract controls 100 shares for a fraction of the cost.
+- Futures: 20x-200x leverage. MES contracts accessible with ~$2,000 account.
+- Forex/Crypto: 50x-100x leverage. Highest volatility, mandatory discipline required.
+
+Mutual Funds vs ETFs:
+Mutual Funds: Trade once/day at close, higher fees, no leverage, no stop-losses, bull-only, NOT compatible with options.
+ETFs: Trade throughout the day, lower fees, leverage available, short selling, bull AND bear, stop-losses permitted, options compatible.
+ETFs are superior for active traders. Recommended account for ETFs/Bonds: $50,000.
+
+Options & LEAPS (10x-20x Leverage):
+- 1 contract = 100 shares controlled for a fraction of the cost (the premium)
+- Maximum loss = premium paid (perfect for 1% rule — defined risk)
+- Strike Price = price at which you can buy/sell the stock
+- Expiration Date = when the option expires (1 day to 3 years)
+- LEAPS = Long-Term Equity Anticipation Securities expiring 2-3 years out
+- Options quoted per share but control 100 shares (e.g., $5.00 quote = $500 total cost)
+Example: Stock $100, Strike $90, Premium $500. You control $9,000 of stock for $500. If stock rises above $90 → option gains value. If stock drops → max loss is $500 only.
+
+Futures (20x-200x Leverage):
+- MES = Micro E-mini S&P 500 (1/10th of standard ES contract)
+- 23-hour daily electronic trading access
+- No $25,000 pattern day-trading requirement (only ~$2,000 needed)
+- 60/40 tax rule: 60% long-term rate, 40% short-term rate regardless of holding period
+- CRITICAL: Futures losses can exceed initial investment (unlike options). Must use protective stop orders.
+
+Income Strategy by Timeframe:
+- Daily: Futures ($2,000 min) — 1-2 hours of trading
+- Weekly: Options & Futures ($5,000 min)
+- Monthly: Options & Forex/Crypto ($25,000 min)
+- Quarterly: Options & Forex/Crypto ($50,000 min)
+- Yearly/Wealth: Stocks ($250,000 min)
+
+Financial Purpose Categories:
+Income: Bills, Fun, Kingdom Impact, General income
+Wealth: Retirement, Legacy, Security, Freedom, Kingdom Impact`;
+
+// Module 6 source
+TUTOR_SOURCES['m6'] = `Module 6 Correlation Report: Options Deep Dive
+
+Options Mechanics — Core Concepts:
+- 1 contract = 100 shares
+- Quoted per share (multiply by 100 for total cost)
+- Maximum loss = premium paid (defined risk — perfect for 1% rule)
+- Strike Price + Expiration Date = the two defining characteristics of any option
+- Calls give the RIGHT to BUY at the strike price
+- Puts give the RIGHT to SELL at the strike price
+
+100 Shares vs. 1 Call Option (Stock at $100):
+Buy 100 shares: Controls 100 shares, Cost $10,000, Max Loss $10,000 (entire investment)
+Buy 1 call option: Controls right to 100 shares, Cost ~$500, Max Loss $500 (premium only)
+This is Notional Control — controlling large amounts of stock for a fraction of the cost.
+
+Leverage Ratio = (Stock Price × 100) / Option Premium Paid
+Example: Stock at $100, Premium $5.00 → Leverage = ($100 × 100) / $500 = 20:1
+
+LEAPS (Long-Term Equity Anticipation Securities):
+- Options expiring up to 2-3 years out
+- More time for the stock to move in your direction
+- Less time decay pressure than short-term options
+- Ideal for swing/position trading strategies
+- Allow you to capture large moves with defined risk
+
+Call Options — When to Use:
+- Bullish on the underlying stock
+- Want leveraged exposure with defined risk
+- The S.E.T. rule applies: Stop (close the option if underlying hits stop), Entry (buy the call when setup triggers), Target (sell the option when target is reached or time-decay risk increases)
+
+Put Options — When to Use:
+- Bearish on the underlying stock
+- Want to profit from a decline with defined risk
+- Alternative to short selling (no unlimited risk)
+
+Contingency Orders for Options:
+Standard stop-losses on options fail because option premium moves with volatility and time decay, not just the stock price. Use Contingency Orders — set your exit based on the UNDERLYING STOCK price hitting your technical stop level. This prevents being stopped out by option premium noise while the stock is still in your zone.
+
+The Greeks (Awareness Level):
+- Delta: How much the option moves per $1 move in the stock
+- Theta: How much value the option loses per day (time decay)
+- Vega: How much the option moves per 1% change in implied volatility
+- Understanding delta and theta helps with strike selection and timing`;
+
+// Module 7 source
+TUTOR_SOURCES['m7'] = `Module 7 Correlation Report: Futures Trading — The 23-Hour Advantage
+
+Key Advantages of Futures:
+1. 23-hour electronic trading access (trade almost around the clock)
+2. No $25,000 pattern day-trading requirement (only ~$2,000 needed for MES)
+3. High leverage: 20x-200x depending on the contract
+4. 60/40 tax treatment (Section 1256 of the Internal Revenue Code)
+5. Low commissions and exchange fees
+6. Reduced overnight gap risk (market trades nearly continuously)
+7. Suitable for daily income generation (1-2 hours of trading)
+
+60/40 Tax Rule (Section 1256):
+- 60% of ALL futures gains → taxed at the lower long-term capital gains rate
+- 40% of ALL futures gains → taxed at the higher short-term capital gains rate
+- Applies REGARDLESS of holding period — even a 5-minute futures day trade gets 60/40 treatment
+Comparison: Stock day trader pays 100% short-term rate. Futures day trader pays blended rate. Result: Futures traders keep significantly more profit.
+
+S&P 500 Micro E-mini (MES):
+- MES = Micro E-mini S&P 500 futures contract
+- Size: 1/10th of the standard ES (E-mini S&P 500) contract
+- Makes futures accessible to smaller accounts (~$2,000 minimum)
+- Same market exposure as standard contract at fraction of the size
+- Best starting point for learning futures with real money
+
+Major Futures Markets:
+- Equity Index: S&P 500, Nasdaq, Dow, Russell, DAX, Nikkei, Hang Seng
+- Interest Rates: 10-Year Treasury, 30-Year Bond, 2-Year Note
+- Energy & Metals: Crude Oil, Natural Gas, Gold, Silver, Copper
+- Currencies: Euro, Yen, Swiss Franc, GBP, AUD, CAD, USD Index
+- Agriculture/Softs: Corn, Soybeans, Wheat, Coffee, Cocoa, Cotton, Sugar
+
+CRITICAL Risk Warning:
+Futures losses CAN EXCEED your initial investment (unlike options where max loss = premium). You MUST use protective stop orders. NEVER risk more than 1%. Apply S.E.T. without exception. Futures without discipline will destroy accounts faster than any other vehicle.
+
+Futures vs. Options Risk Comparison:
+- Options: Max loss = premium paid (defined, capped)
+- Futures: Max loss = unlimited without stops (undefined, uncapped)
+- Both require S.E.T. and 1% rule, but futures require even stricter discipline because the risk is not naturally capped`;
+
+// Module 8 source
+TUTOR_SOURCES['m8'] = `Module 8 Correlation Report: Trade Execution — The 4-Step Institutional Workflow
+
+This module teaches the exact step-by-step process to execute trades like an institutional trader, removing emotion and ensuring preparation on every trade.
+
+The 4-Step Execution Workflow:
+Step 1 — Identify the Setup: Scan the chart for clear supply and demand zones created by previous institutional activity. The strongest setups occur at fresh zones that have not been revisited. Use multiple timeframes: higher timeframe (daily/weekly) for trend direction, lower timeframe (1-hour/15-min) for precise entry.
+
+Step 2 — Spot Institutional Footprints: Confirm institutional presence at the zone. Key footprints: large-volume candles that created the zone, rapid price departure (shows urgency), minimal time spent in the zone (institutions filled quickly). Stronger footprints = higher probability.
+
+Step 3 — Anticipate and Plan Before Price Arrives: Set your S.E.T. (Stop, Entry, Target) BEFORE price reaches your zone. Entry at edge of zone. Stop just beyond zone (max 1% risk). Target at least 3x risk (next opposing zone). If you wait until price arrives, emotions will cloud judgment.
+
+Step 4 — Execute with S.E.T. Already Defined: When price reaches your zone and a confirmation pattern appears (basing candle, engulfing, rejection wick), execute the trade. Your S.E.T. is already set. No hesitation, no second-guessing.
+
+Price Action Over Indicators:
+Retail traders rely on lagging indicators (MACD, RSI, moving averages) that tell what ALREADY happened. Institutional traders focus on price action — raw movement revealing what is happening RIGHT NOW. By the time an indicator signals, the institutional move has already started. Read the chart, not the indicator.
+
+Confirming Trend Direction:
+Before executing, confirm dominant trend using supply/demand analysis. Uptrend: demand zones hold, price makes higher highs. Downtrend: supply zones hold, price makes lower lows. Never trade against the dominant trend without extreme confluence from multiple pillars.`;
+
+// Module 9 source
+TUTOR_SOURCES['m9'] = `Module 9 Correlation Report: Volume Analysis — Reading Institutional Activity
+
+Volume is the fuel behind price movement. Without volume, price moves lack conviction and are likely to reverse. Volume is a lie detector for price — if price moves but volume does not confirm, the move is suspicious.
+
+What Volume Bars Represent:
+Volume bars show the total number of shares or contracts traded during a specific time period. Each bar corresponds to a price bar on your chart.
+
+Normal Volume vs. Institutional Surges:
+Normal volume = typical daily trading (mostly retail + algorithms maintaining liquidity).
+Institutional surges = dramatic spikes (2x-5x normal) signaling big money entering or exiting.
+Volume surge at a supply/demand zone = CONFIRMED institutional participation. One of the strongest confirmation signals in the Master Surge Strategy.
+
+Volume Divergence Warning Signs:
+Bearish divergence: Price makes new highs but volume DECREASES — institutions may be distributing (selling into strength). This is a warning to tighten stops or avoid new longs.
+Bullish divergence: Price makes new lows but volume DECREASES — selling pressure is exhausting. Institutional accumulation may be beginning.
+
+Practical Volume Checklist (Before Every Trade):
+1. Is current volume above or below the 20-period average?
+2. Did the setup zone form on high volume (institutional)?
+3. Is volume increasing as price approaches your zone?
+4. Is there volume divergence warning against your trade direction?
+5. Does the volume pattern confirm or contradict the trend?
+If volume does NOT confirm your setup → reduce position size or skip entirely.
+
+Volume Quick Reference:
+- High volume + price up = Strong bullish (institutional buying)
+- High volume + price down = Strong bearish (institutional selling)
+- Low volume + price up = Weak rally, likely to reverse
+- Low volume + price down = Weak decline, may find support
+- Volume spike at support = Demand zone activation
+- Volume spike at resistance = Supply zone activation`;
+
+// Module 10 source
+TUTOR_SOURCES['m10'] = `Module 10 Correlation Report: Visual Guide — Recognizing Price Cycle Phases on Your Chart
+
+This module bridges the gap between knowing the four-phase theory (Accumulation, Markup, Distribution, Markdown) and recognizing these phases in real time on a live chart.
+
+Phase 1 — Accumulation (What It Looks Like):
+Visual signatures: Sideways range after a prior downtrend. Volume low and declining (retail has given up). Range tightens over time as institutions absorb supply. Flat or slightly rising moving averages. Volume dries up on drops with occasional small spikes on up-moves (institutional accumulation). May last weeks or months.
+Action: Wait for breakout confirmation. Do NOT buy inside the range without confirmation.
+
+Phase 2 — Markup (What It Looks Like):
+Visual signatures: Breakout above accumulation range with 2x-5x volume surge. Staircase pattern of higher highs and higher lows. Strong bullish candles with minimal upper wicks. Pullbacks hold above previous swing lows. Volume increases on up-moves, decreases on pullbacks. Moving averages fan out and slope upward.
+Action: Buy pullbacks to demand zones formed during accumulation. Trail stops.
+
+Phase 3 — Distribution (What It Looks Like):
+Visual signatures: Sideways range at highs (similar to accumulation but at the top). Upper wicks appearing frequently (sellers absorbing buyers). Volume spikes on down-moves. False breakouts above resistance that quickly fail. Narrowing range. Moving averages flatten.
+Action: Tighten stops on existing longs. Prepare for potential short setups.
+
+Phase 4 — Markdown (What It Looks Like):
+Visual signatures: Breakdown below distribution range with heavy volume. Staircase of lower highs and lower lows. Strong bearish candles with minimal lower wicks. Rallies fail at previous swing highs. Volume increases on drops, decreases on bounces. Moving averages slope downward as resistance.
+Action: Sell rallies to supply zones or stay cash. Wait for next accumulation.
+
+Phase Transition Confirmation (ALL required):
+1. Volume surge: 2x-5x above 20-day average on breakout/breakdown candle
+2. Price closes decisively outside the range (not just a wick)
+3. First successful pullback retest holds
+
+Common Mistakes:
+- Calling bottom during markdown before accumulation range forms
+- Chasing markup without waiting for pullback
+- Confusing distribution for consolidation
+- Ignoring volume confirmation
+- Trading against the current phase`;
+
+// Module 11 source
+TUTOR_SOURCES['m11'] = `Module 11 Correlation Report: Visual Guide — Chart Patterns at Supply & Demand Zones
+
+This module teaches the specific candlestick formations and price patterns that confirm institutional activity when price arrives at your supply/demand zones.
+
+Pattern 1 — The Explosive Departure:
+Strongest evidence of institutional activity. Price enters zone and immediately rockets away with large-bodied candles and high volume. 2-3 consecutive large candles with minimal wicks moving rapidly from zone. The faster and more violent the departure, the stronger the zone.
+
+Pattern 2 — The Basing Candle:
+Small-bodied candle (doji or spinning top) at a zone just before the move begins. Represents the brief moment where institutional orders are being filled. Your precision entry signal — stop goes just beyond the basing candle for tight risk. Without a basing candle, the zone may not be ready for entry.
+
+Pattern 3 — The Engulfing Candle at a Zone:
+Completely covers the previous candle body. Bullish engulfing at demand = buyers overwhelming sellers. Bearish engulfing at supply = sellers overwhelming buyers. One of the most reliable zone-confirmation patterns. Body should be significantly larger than prior candle, volume must confirm.
+
+Pattern 4 — Rejection Wicks (Pin Bars) at Zones:
+Long wicks with small bodies. At demand: long lower wick = sellers pushed down but buyers rejected aggressively. At supply: long upper wick = buyer rejection. The longer the wick relative to body, the stronger the rejection.
+
+Pattern 5 — The Gap at a Zone (Imbalance Windows / Fair Value Gaps):
+Price opens significantly above/below previous close. Gaps at zones represent extreme institutional urgency — orders so large price could not trade through gradually. Gap-ups from demand = bullish. Gap-downs from supply = bearish. The Fair Value Gap (FVG) is a three-candle pattern identifying these imbalance windows.
+
+Pattern 6 — The Squeeze Before the Move:
+Extremely low volatility (tight range, small candles) just before a major move. Narrowing Bollinger Bands, decreasing ATR, multiple small candles in a row. Wait for the breakout from the squeeze confirmed by volume. Do NOT trade inside the squeeze.
+
+The Confirmation Stack (High-Probability Entries):
+1. Price at confirmed supply or demand zone
+2. At least one pattern appears (engulfing, rejection wick, basing, etc.)
+3. Volume confirms institutional participation (above average)
+4. Trade direction aligns with dominant trend/phase
+5. S.E.T. defined with 1% max risk and 3:1 minimum reward
+With 3+ confirmations stacked = high probability. Fewer than 2 = skip the trade.`;
+
+// Module 12 source
+TUTOR_SOURCES['m12'] = `Module 12 Correlation Report: Market Psychology & Historical Performance Analysis
+
+This module explores the psychological traps that destroy traders and uses historical market data to build conviction in the system.
+
+Dunning-Kruger Effect in Trading:
+The Dunning-Kruger effect creates a dangerous progression for traders:
+1. Mount Stupid (Peak of Confidence): New traders learn a few patterns and believe they have mastered the market. This is where the most reckless trades occur.
+2. Valley of Despair: Reality hits — losses pile up and confidence collapses. Most traders quit here.
+3. Slope of Enlightenment: Survivors begin to understand that trading is about probability, not prediction. They embrace risk management.
+4. Plateau of Sustainability: Disciplined traders reach consistent profitability through rules, not feelings.
+
+The Shiller PE Ratio (CAPE):
+The Cyclically Adjusted Price-to-Earnings ratio smooths earnings over 10 years to identify whether the overall market is overvalued or undervalued. High CAPE = market is expensive relative to historical norms. Low CAPE = potential buying opportunity. This metric helps with phase identification at the macro level.
+
+2022 Market Performance — Case Study:
+The 2022 decline demonstrated every concept in the curriculum. Distribution phase visible at 2021 highs, followed by markdown through 2022. Traders who recognized the phase transition and managed risk survived. Those who bought the dip without volume confirmation got crushed.
+
+Three Pillars of Trading Mastery (Meta-Framework):
+1. Knowledge: Understanding the mechanics (modules 1-11)
+2. Discipline: Following rules without deviation (S.E.T., 1% rule)
+3. Patience: Waiting for setups that meet ALL five pillars of the Master Surge Strategy
+
+Win/Loss Psychology:
+A 70% loss rate is irrelevant with 3:1 reward-to-risk. Focus on the MATH of profitability, not the FEELING of individual trades.`;
+
+// Module 13 source
+TUTOR_SOURCES['m13'] = `Module 13 Correlation Report: Wealth-Building Frameworks & Long-Term Strategy
+
+This module shifts from active trading mechanics to long-term wealth-building strategy, integrating trading income with investment compounding.
+
+Compounding Power:
+$10,000 at 10% for 30 years = ~$174,000 (S&P 500 average)
+$10,000 at 20% for 30 years = ~$2,370,000 (Berkshire-level compounding)
+Small increases in annual return create exponential differences over decades. The goal of active trading is to generate INCOME that feeds WEALTH accounts compounding at higher rates.
+
+Income vs. Wealth Accounts:
+Income Account: Active trading (futures daily, options weekly/monthly). Used for bills, lifestyle, giving.
+Wealth Account: Long-term compounding (stocks, ETFs, LEAPS). Used for retirement, legacy, security, freedom.
+The two accounts serve different purposes. Never confuse them. Trading income FUNDS wealth building.
+
+Kingdom Impact:
+The curriculum incorporates a faith-based approach where financial success enables giving and community impact. Both income and wealth have a "Kingdom Impact" allocation — the idea that building wealth creates capacity to serve others.
+
+Structural Advantage of Small Accounts:
+"It is a huge structural advantage to not have a lot of money." Small accounts can pursue high-growth opportunities that large funds cannot access due to position size and liquidity constraints. Use this advantage while you have it.
+
+The Complete Trader's Lifecycle:
+Phase 1: Education (Modules 1-11) — Learn the system
+Phase 2: Paper Trading — Practice without risk
+Phase 3: Small Account ($2,000-$5,000) — Daily futures income
+Phase 4: Growing Account ($5,000-$25,000) — Weekly options + futures
+Phase 5: Full Portfolio ($25,000+) — Monthly income + wealth building
+Phase 6: Financial Freedom — Income exceeds expenses, wealth compounds`;
+
+// Module 14 source
+TUTOR_SOURCES['m14'] = `Module 14 Correlation Report: Options Strategies for Active Income
+
+This module covers practical options strategies for generating regular income using the leveraged strategies taught throughout the curriculum.
+
+Options for Weekly Income:
+Use short-term options (1-2 weeks to expiration) on liquid stocks and ETFs. The goal is to capture quick directional moves using the supply/demand zones and Master Surge Strategy timing.
+
+Call Options for Bullish Setups:
+- Identify demand zone on a stock in markup phase
+- Buy call option with strike at or near the demand zone
+- Set contingency exit based on underlying stock's technical stop level
+- Target: 3:1 reward-to-risk on the option premium
+
+Put Options for Bearish Setups:
+- Identify supply zone on a stock in distribution/markdown phase
+- Buy put option with strike at or near the supply zone
+- Same contingency order approach — exit based on underlying stock price, not option premium
+
+LEAPS for Swing Trades:
+- Use LEAPS (2-3 year expiration) for longer-term positions
+- Less time decay pressure allows holding through pullbacks
+- Ideal for capturing full markup phase moves
+- Maximum loss still limited to premium paid
+
+Strike Selection Principles:
+- In-the-Money (ITM): Higher delta, moves more with stock, higher premium (lower leverage)
+- At-the-Money (ATM): Balanced delta/premium, good for directional bets
+- Out-of-the-Money (OTM): Lower premium (higher leverage), needs bigger move to profit, higher risk of total loss
+For the Master Surge Strategy, ATM to slightly ITM options provide the best balance of leverage and probability.
+
+Contingency Orders (Reinforced):
+NEVER use standard stop-losses on options. Option premium fluctuates due to time decay and volatility changes. Use contingency orders that trigger option exit when the UNDERLYING STOCK hits your technical stop level.`;
+
+// Module 15 source
+TUTOR_SOURCES['m15'] = `Module 15 Correlation Report: Advanced Options — Leverage, Crisis Strategy & Capital Deployment
+
+This is the capstone module covering advanced options deployment, crisis-based opportunity plays, and complete capital management.
+
+Advanced Options — Leverage and Time Decay:
+Understanding time decay (Theta) is critical for advanced options trading. Options lose value every day just from the passage of time. This decay accelerates as expiration approaches. Strategies to manage time decay: buy longer-dated options (LEAPS), avoid holding options through the last 30 days of rapid decay unless the trade is already deep in profit.
+
+Never Waste a Good Crisis:
+"If you have been sidelined, believe this is a good opportunity to scale into high conviction tokens. Do not capitulate." — This principle from Module 1's Chasm of Fear applies directly here. Crisis events (geopolitical shocks, market crashes, earnings disasters) create extreme supply/demand imbalances. While the 99% panic-sell, institutional traders accumulate at discount prices.
+
+The crisis strategy:
+1. Maintain cash reserves specifically for crisis opportunities
+2. Have a pre-made watchlist of high-conviction names
+3. When crisis hits, identify which demand zones are being tested
+4. Scale in with quarter-size positions (Icebreaker approach)
+5. Use LEAPS for maximum leverage with defined risk
+6. Be patient — the Chasm of Fear separates winners from losers
+
+Leverage Comparison — $20,000 Capital:
+Stocks: Control $20,000 of stock (no leverage)
+Options: Control $200,000-$400,000 of stock (10-20x leverage)
+Futures: Control $400,000-$4,000,000 (20-200x leverage)
+Same $20,000, vastly different control and profit potential — but also different risk profiles.
+
+Why You Need a Trading Plan:
+A written trading plan removes emotion from every decision. It should include: your account size, max risk per trade (1%), target vehicles, timeframe for income/wealth, the specific setups you trade (Master Surge Strategy zones), your S.E.T. for each position category, and rules for when NOT to trade.
+
+Time Decay Deep Dive:
+Theta decay is not linear — it accelerates. An option losing $5/day at 60 days to expiration might lose $20/day at 10 days to expiration. This non-linear decay is why LEAPS (2-3 year expiration) are preferred for swing positions. Short-term options (1-4 weeks) are best for trades where you expect quick movement within 1-5 days.
+
+Capital Deployment Strategy:
+Never deploy all capital at once. Use the Icebreaker approach:
+1. Quarter-size starter position
+2. Stay at quarter-size until $1,000 profit cushion realized
+3. Only scale to full size after trade is validated
+This prevents emotional hijacking during choppy periods and protects capital for the best setups.`;
 
 app.post('/api/trading-ai/ask', async (req, res) => {
   try {
