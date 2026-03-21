@@ -1078,7 +1078,7 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
     setLoading(false);
   };
 
-  if (loading) {
+  if (loading && !imageUrl) {
     return (
       <div className="ai-visual-container">
         <div className="ai-visual-loading">
@@ -1091,12 +1091,18 @@ function AIVisual({ moduleId, moduleTitle, sectionIndex, sectionTitle, sectionCo
 
   if (imageUrl) {
     return (
-      <div className="ai-visual-container">
-        <img className="ai-visual-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} onClick={() => setShowLightbox(true)} title="Click to expand" />
+      <div className="ai-visual-container" style={{position:'relative'}}>
+        {loading && (
+          <div style={{position:'absolute',inset:0,background:'rgba(255,255,255,0.85)',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:8,zIndex:10,borderRadius:12}}>
+            <div className="spinner" />
+            <p style={{fontSize:13,color:'var(--text-muted)',margin:0}}>Regenerating...</p>
+          </div>
+        )}
+        <img className="ai-visual-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} onClick={() => !loading && setShowLightbox(true)} title="Click to expand" style={loading ? {filter:'blur(2px)'} : {}} />
         <div className="ai-visual-actions">
-          <button className="ai-visual-btn regenerate" onClick={() => generate(true)}>↻ Regenerate</button>
+          <button className="ai-visual-btn regenerate" onClick={() => generate(true)} disabled={loading}>↻ Regenerate</button>
           <a href={imageUrl} download={`ai-visual-${sectionTitle.replace(/\s+/g,'-').toLowerCase()}.png`} className="ai-visual-btn" style={{textDecoration:'none',background:'var(--accent)',fontSize:12,padding:'8px 16px'}}>⬇ Download</a>
-          <button className="ai-visual-btn" onClick={() => setShowLightbox(true)} style={{background:'var(--navy)',fontSize:12,padding:'8px 16px'}}>⤢ Expand</button>
+          <button className="ai-visual-btn" onClick={() => setShowLightbox(true)} disabled={loading} style={{background:'var(--navy)',fontSize:12,padding:'8px 16px'}}>⤢ Expand</button>
         </div>
         {showLightbox && <ImageLightbox imageUrl={imageUrl} sectionTitle={sectionTitle} onClose={() => setShowLightbox(false)} />}
       </div>
@@ -1548,7 +1554,7 @@ function InfographicGenerator({ module }) {
         Generate a professional landscape infographic for this module using AI (Gemini 2.5 Flash). The infographic includes key concepts, statistics, and visual diagrams tailored to this module's content.
       </p>
 
-      {loading && (
+      {loading && !imageUrl && (
         <div className="ai-visual-loading" style={{borderRadius: 12}}>
           <div className="spinner" />
           <p>Generating AI infographic for "{module.title}"... This may take a moment.</p>
@@ -1564,20 +1570,26 @@ function InfographicGenerator({ module }) {
         </div>
       )}
 
-      {!loading && imageUrl && (
+      {imageUrl && (
         <div>
-          <div className="infographic-preview">
-            <img src={imageUrl} alt={`AI infographic for ${module.title}`} style={{width: '100%', display: 'block'}} />
+          <div className="infographic-preview" style={{position:'relative'}}>
+            {loading && (
+              <div style={{position:'absolute',inset:0,background:'rgba(255,255,255,0.85)',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:8,zIndex:10}}>
+                <div className="spinner" />
+                <p style={{fontSize:13,color:'var(--text-muted)',margin:0}}>Regenerating infographic...</p>
+              </div>
+            )}
+            <img src={imageUrl} alt={`AI infographic for ${module.title}`} style={{width: '100%', display: 'block', ...(loading ? {filter:'blur(2px)'} : {})}} />
           </div>
           <div className="infographic-download-btns">
-            <button className="infographic-download-btn png" onClick={downloadPNG}>
+            <button className="infographic-download-btn png" onClick={downloadPNG} disabled={loading}>
               📥 Download PNG
             </button>
-            <button className="infographic-download-btn pdf" onClick={downloadPDF}>
+            <button className="infographic-download-btn pdf" onClick={downloadPDF} disabled={loading}>
               📥 Download PDF
             </button>
-            <button className="ai-visual-btn regenerate" onClick={() => generateInfographic(true)} style={{marginLeft: 8}}>
-              ↻ Regenerate
+            <button className="ai-visual-btn regenerate" onClick={() => generateInfographic(true)} disabled={loading} style={{marginLeft: 8}}>
+              {loading ? '⟳ Regenerating...' : '↻ Regenerate'}
             </button>
             {staticUrl && (
               <button className="infographic-download-btn static" onClick={() => setShowStatic(!showStatic)} style={{marginLeft: 8}}>
