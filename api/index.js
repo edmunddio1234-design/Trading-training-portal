@@ -825,10 +825,92 @@ async function searchYouTubeVideos(query, maxResults = 6) {
   }
 }
 
+// ===== MENTOR VIDEO SEARCH QUERIES — Ross's videos mapped to modules =====
+const MENTOR_VIDEO_QUERIES = {
+  ross: {
+    channelQuery: 'Warrior Trading Ross Cameron',
+    m1: [
+      'Ross Cameron Chasm of Fear day trading mindset',
+      'Ross Cameron 5 reasons traders lose money',
+      'Ross Cameron how to start day trading 2026 full training',
+      'Ross Cameron survive till you thrive'
+    ],
+    m2: [
+      'Ross Cameron supply demand day trading micro pullback',
+      'Ross Cameron Level 2 hidden buyers day trading',
+      'Ross Cameron how I find stocks retail trader',
+      'Ross Cameron candlestick patterns actually using every day'
+    ],
+    m3: [
+      'Ross Cameron MACD strategy spot big winners early',
+      'Ross Cameron micro pullback strategy $175k',
+      'Ross Cameron 7 candlestick patterns actually using',
+      'Ross Cameron simple MACD strategy 5712%'
+    ],
+    m4: [
+      'Ross Cameron how much risk should I take',
+      'Ross Cameron max loss red day',
+      'Ross Cameron 3 steps winning day trading',
+      'Ross Cameron I kept losing money until I did this'
+    ],
+    m5: [
+      'Ross Cameron 3 small accounts 3 brokers what I learned',
+      'Ross Cameron $120k remote $240k office',
+      'Ross Cameron how retire 9 to 5 job 3 years starting zero',
+      'Ross Cameron grow small account zero experience full training'
+    ],
+    m6: [
+      'Ross Cameron options day trading strategy',
+      'Ross Cameron playing defense made me $25000',
+      'Ross Cameron quality vs quantity trading less 3x income'
+    ],
+    m7: [
+      'Ross Cameron does timing the market work',
+      'Ross Cameron bear market strategy',
+      'Ross Cameron hot cold cycle small cap'
+    ],
+    m8: [
+      'Ross Cameron $500k 7 days day trading full training',
+      'Ross Cameron $175k 3 hours day trading full training',
+      'Ross Cameron 5 day trading tools actually use every day'
+    ],
+    m9: [
+      'Ross Cameron Level 2 $65k hidden buyers',
+      'Ross Cameron reading candlestick shapes charts zero experience',
+      'Ross Cameron technical indicators candlestick charts'
+    ],
+    m10: [
+      'Ross Cameron 1 month vs 1 year vs 1 decade day trading',
+      'Ross Cameron 4 market types you need to understand',
+      'Ross Cameron stop overtrading doing less made 3x'
+    ]
+  }
+};
+
+async function searchMentorVideos(moduleId, maxResults = 3) {
+  const mentorVideos = [];
+  for (const [mentorId, mentorConfig] of Object.entries(MENTOR_VIDEO_QUERIES)) {
+    const queries = mentorConfig[moduleId];
+    if (!queries || queries.length === 0) continue;
+
+    // Search using the first query (most specific)
+    const results = await searchYouTubeVideos(queries[0], maxResults);
+    if (results.length > 0) {
+      mentorVideos.push(...results.map(v => ({ ...v, mentor: mentorId, mentorName: MENTOR_SOURCES[mentorId]?.name || mentorId })));
+    } else if (queries.length > 1) {
+      // Fallback to second query
+      const fallback = await searchYouTubeVideos(queries[1], maxResults);
+      mentorVideos.push(...fallback.map(v => ({ ...v, mentor: mentorId, mentorName: MENTOR_SOURCES[mentorId]?.name || mentorId })));
+    }
+  }
+  return mentorVideos;
+}
+
 app.get('/api/youtube/:moduleId', async (req, res) => {
   const moduleId = req.params.moduleId;
   const curatedKey = `youtube_${moduleId}`;
   const apiCacheKey = `youtube_api_${moduleId}`;
+  const mentorCacheKey = `youtube_mentor_${moduleId}`;
 
   // 1. Load curated (Mission Metrics) videos — these are permanent
   let curatedVideos = [];
@@ -837,10 +919,29 @@ app.get('/api/youtube/:moduleId', async (req, res) => {
     curatedVideos = curatedData.videos;
   }
 
-  // 2. Load YouTube API search results (cached separately, expire after 24h)
+  // 2. Load mentor videos (Ross etc.) — cached separately, expire after 24h
+  let mentorVideos = [];
+  const mentorCached = await kvGet(mentorCacheKey);
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+
+  if (mentorCached && mentorCached.videos && mentorCached.videos.length > 0 && mentorCached.fetchedAt) {
+    const cacheAge = Date.now() - new Date(mentorCached.fetchedAt).getTime();
+    if (cacheAge < ONE_DAY) {
+      mentorVideos = mentorCached.videos;
+    }
+  }
+
+  // Fetch fresh mentor videos if cache expired
+  if (mentorVideos.length === 0 && MENTOR_VIDEO_QUERIES.ross && MENTOR_VIDEO_QUERIES.ross[moduleId]) {
+    mentorVideos = await searchMentorVideos(moduleId, 3);
+    if (mentorVideos.length > 0) {
+      await kvSet(mentorCacheKey, { moduleId, videos: mentorVideos, fetchedAt: new Date().toISOString() });
+    }
+  }
+
+  // 3. Load YouTube API search results (cached separately, expire after 24h)
   let apiVideos = [];
   const apiCached = await kvGet(apiCacheKey);
-  const ONE_DAY = 24 * 60 * 60 * 1000;
 
   if (apiCached && apiCached.videos && apiCached.videos.length > 0 && apiCached.fetchedAt) {
     const cacheAge = Date.now() - new Date(apiCached.fetchedAt).getTime();
@@ -849,7 +950,7 @@ app.get('/api/youtube/:moduleId', async (req, res) => {
     }
   }
 
-  // 3. If no fresh API results, fetch from YouTube API
+  // 4. If no fresh API results, fetch from YouTube API
   if (apiVideos.length === 0) {
     const mod = DEFAULT_MODULES.find(m => m.id === moduleId);
     if (mod) {
@@ -867,15 +968,30 @@ app.get('/api/youtube/:moduleId', async (req, res) => {
     }
   }
 
-  // 4. Combine: curated videos FIRST, then API results (deduplicate by URL)
-  const curatedUrls = new Set(curatedVideos.map(v => v.url));
-  const uniqueApiVideos = apiVideos.filter(v => !curatedUrls.has(v.url));
-  const combined = [...curatedVideos, ...uniqueApiVideos];
+  // 5. Combine: mentor videos FIRST, then curated, then API results (deduplicate by URL)
+  const allUrls = new Set();
+  const combined = [];
+
+  // Mentor videos at top (tagged with mentor info)
+  for (const v of mentorVideos) {
+    if (!allUrls.has(v.url)) { allUrls.add(v.url); combined.push(v); }
+  }
+  // Curated next
+  for (const v of curatedVideos) {
+    if (!allUrls.has(v.url)) { allUrls.add(v.url); combined.push(v); }
+  }
+  // API results last
+  for (const v of apiVideos) {
+    if (!allUrls.has(v.url)) { allUrls.add(v.url); combined.push(v); }
+  }
 
   if (combined.length > 0) {
-    const source = curatedVideos.length > 0 && uniqueApiVideos.length > 0 ? 'curated+api' :
-                   curatedVideos.length > 0 ? 'curated' : 'youtube_api';
-    return res.json({ success: true, moduleId, videos: combined, curated: curatedVideos.length > 0, source });
+    const source = mentorVideos.length > 0 ? 'mentor+api' :
+                   curatedVideos.length > 0 ? 'curated+api' : 'youtube_api';
+    return res.json({
+      success: true, moduleId, videos: combined,
+      curated: curatedVideos.length > 0, mentorVideos: mentorVideos.length, source
+    });
   }
 
   if (!DEFAULT_MODULES.find(m => m.id === moduleId)) {
