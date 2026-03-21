@@ -43,6 +43,14 @@
   .sidebar-header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
   .nav-section { padding: 12px 0; flex: 1; overflow-y: auto; }
   .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); padding: 8px 20px; font-weight: 600; }
+  .nav-tools-toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; cursor: pointer; transition: all 0.2s; border: none; background: none; width: 100%; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 600; border-top: 1px solid var(--border); }
+  .nav-tools-toggle:hover { background: var(--bg-hover); color: var(--accent); }
+  .nav-tools-toggle .toggle-arrow { font-size: 10px; transition: transform 0.3s ease; }
+  .nav-tools-toggle .toggle-arrow.open { transform: rotate(180deg); }
+  .nav-tools-list { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .nav-tools-list.open { max-height: 600px; }
+  .nav-tool { display: flex; align-items: center; gap: 12px; padding: 8px 20px; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; font-size: 13px; color: var(--accent); text-decoration: none; font-weight: 600; }
+  .nav-tool:hover { background: var(--bg-hover); border-left-color: var(--accent); }
   .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; font-size: 13px; color: var(--text-secondary); }
   .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
   .nav-item.active { background: rgba(13,147,115,0.08); border-left-color: var(--accent); color: var(--accent); }
@@ -1684,6 +1692,7 @@ function App({ onLogout }) {
   const [showSettings, setShowSettings] = useState(false);
   const [editingModule, setEditingModule] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toasts, setToasts] = useState([]);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
@@ -1817,56 +1826,24 @@ function App({ onLogout }) {
               </div>
           ))}
         </div>
-        <div style={{padding:'12px 20px',borderTop:'1px solid var(--border)'}}>
-          <div className="nav-label">Tools</div>
-          <a href="/options-backtester.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            📊 Options Backtester
-          </a>
-          <a href="/tradingview-charts.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            📈 Live Charts
-          </a>
-          <a href="/market-scanner.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            🔍 Market Scanner
-          </a>
-          <a href="/halt-tracker.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            ⏸ Halt Tracker
-          </a>
-          <a href="/trade-journal.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            📓 Trade Journal
-          </a>
-          <a href="/advanced-options-mastery.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            🎓 Advanced Options
-          </a>
-          <a href="/sentiment-scanner.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            💬 Sentiment Scanner
-          </a>
-          <a href="/ml-indicator.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            🤖 ML Indicator
-          </a>
-          <a href="/company-lookup.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            🏢 Company Intel
-          </a>
-          <a href="/day-trade-dash.html" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            ⚡ Day Trade Dash
-          </a>
-          <a href="https://mission-metrics-lead-generator.vercel.app/" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            🎯 Lead Generator
-          </a>
-          <a href="https://podcast-audio-validator.onrender.com/" target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',gap:'12px',padding:'10px 20px',cursor:'pointer',transition:'all 0.2s',borderLeft:'3px solid transparent',fontSize:'13px',color:'var(--accent)',textDecoration:'none',fontWeight:600}}>
-            <span style={{width:'8px',height:'8px',borderRadius:'50%',background:'var(--accent)',flexShrink:0}} />
-            🎙 Podcast Validator
-          </a>
+        <div>
+          <button className="nav-tools-toggle" onClick={() => setToolsOpen(!toolsOpen)}>
+            <span>Tools</span>
+            <span className={`toggle-arrow ${toolsOpen ? 'open' : ''}`}>▼</span>
+          </button>
+          <div className={`nav-tools-list ${toolsOpen ? 'open' : ''}`}>
+            <a href="/options-backtester.html" target="_blank" rel="noopener" className="nav-tool">📊 Options Backtester</a>
+            <a href="/tradingview-charts.html" target="_blank" rel="noopener" className="nav-tool">📈 Live Charts</a>
+            <a href="/market-scanner.html" target="_blank" rel="noopener" className="nav-tool">🔍 Market Scanner</a>
+            <a href="/halt-tracker.html" target="_blank" rel="noopener" className="nav-tool">⏸ Halt Tracker</a>
+            <a href="/trade-journal.html" target="_blank" rel="noopener" className="nav-tool">📓 Trade Journal</a>
+            <a href="/sentiment-scanner.html" target="_blank" rel="noopener" className="nav-tool">💬 Sentiment Scanner</a>
+            <a href="/ml-indicator.html" target="_blank" rel="noopener" className="nav-tool">🤖 ML Indicator</a>
+            <a href="/company-lookup.html" target="_blank" rel="noopener" className="nav-tool">🏢 Company Intel</a>
+            <a href="/day-trade-dash.html" target="_blank" rel="noopener" className="nav-tool">⚡ Day Trade Dash</a>
+            <a href="https://mission-metrics-lead-generator.vercel.app/" target="_blank" rel="noopener" className="nav-tool">🎯 Lead Generator</a>
+            <a href="https://podcast-audio-validator.onrender.com/" target="_blank" rel="noopener" className="nav-tool">🎙 Podcast Validator</a>
+          </div>
         </div>
         <div className="progress-bar-container">
           <div className="progress-label"><span>Overall Progress</span><span>{progress}%</span></div>
