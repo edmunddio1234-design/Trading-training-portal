@@ -1694,12 +1694,15 @@ function App({ onLogout }) {
   const [editingModule, setEditingModule] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showPinModal, setShowPinModal] = useState(false);
   const adminClickRef = React.useRef({ count: 0, timer: null });
   const handleAdminAccess = () => {
+    if (isAdmin) { setShowSettings(true); return; }
     const ref = adminClickRef.current;
     ref.count++;
     clearTimeout(ref.timer);
-    if (ref.count >= 3) { ref.count = 0; setShowSettings(true); }
+    if (ref.count >= 3) { ref.count = 0; setShowPinModal(true); }
     else { ref.timer = setTimeout(() => { ref.count = 0; }, 800); }
   };
   const [loading, setLoading] = useState(true);
@@ -1866,16 +1869,17 @@ function App({ onLogout }) {
             <button onClick={goToDashboard}>◈ Dashboard</button>
             <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
             {onLogout && <button className="logout-btn" onClick={onLogout}>⏻ Logout</button>}
-            <button className="primary" onClick={openAdminNew}>+ Add Module</button>
+            {isAdmin && <button className="primary" onClick={openAdminNew}>+ Add Module</button>}
           </div>
         </div>
         <div className="content-body">
           {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} onboardingComplete={onboardingComplete} isModuleUnlocked={isModuleUnlocked} />}
-          {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={() => openAdminEdit(currentModule)} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
+          {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={isAdmin ? () => openAdminEdit(currentModule) : null} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
         </div>
       </div>
       {showAdmin && editingModule && <AdminModal module={editingModule} onSave={saveModule} onDelete={deleteModule} onClose={() => { setShowAdmin(false); setEditingModule(null); }} isNew={!modules.find(m => m.id === editingModule.id)} />}
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} addToast={addToast} />}
+      {showPinModal && <PinModal onSuccess={() => { setShowPinModal(false); setIsAdmin(true); setShowSettings(true); addToast('Admin mode activated', 'success'); }} onClose={() => setShowPinModal(false)} />}
       <ToastContainer toasts={toasts} />
     </div>
   );
@@ -2919,7 +2923,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
           <h2 className="module-title">{module.title}</h2>
           <p className="module-subtitle">{module.subtitle}</p>
         </div>
-        <button onClick={onEdit} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'6px 14px',borderRadius:6,cursor:'pointer',fontSize:12,whiteSpace:'nowrap',marginTop:8}}>✎ Edit</button>
+        {onEdit && <button onClick={onEdit} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'6px 14px',borderRadius:6,cursor:'pointer',fontSize:12,whiteSpace:'nowrap',marginTop:8}}>✎ Edit</button>}
       </div>
 
       <button className="generate-all-btn" onClick={generateAllVisuals} disabled={generatingAll}>
@@ -3174,6 +3178,44 @@ function AnthropicKeyManager({ addToast }) {
       <div className="settings-info">
         Get your key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" style={{color:'var(--accent)'}}>console.anthropic.com</a>.
         Approx. cost: ~$0.01 per question.
+      </div>
+    </div>
+  );
+}
+
+function PinModal({ onSuccess, onClose }) {
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+  const inputRef = React.useRef(null);
+  useEffect(() => { setTimeout(() => inputRef.current?.focus(), 100); }, []);
+  const ADMIN_PIN_HASH = '7771';
+  const handleSubmit = () => {
+    if (pin === ADMIN_PIN_HASH) { onSuccess(); }
+    else { setError('Incorrect PIN'); setPin(''); }
+  };
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()} style={{maxWidth:360,textAlign:'center'}}>
+        <div className="modal-header"><h2>🔐 Admin Access</h2><button className="modal-close" onClick={onClose}>×</button></div>
+        <div className="modal-body" style={{padding:'24px 32px'}}>
+          <p style={{fontSize:14,color:'var(--text-muted)',marginBottom:20}}>Enter your 4-digit PIN to continue</p>
+          <input
+            ref={inputRef}
+            type="password"
+            inputMode="numeric"
+            maxLength={4}
+            value={pin}
+            onChange={e => { setPin(e.target.value.replace(/\D/g,'')); setError(''); }}
+            onKeyPress={e => { if (e.key === 'Enter') handleSubmit(); }}
+            placeholder="••••"
+            style={{width:'120px',textAlign:'center',fontSize:28,letterSpacing:12,padding:'12px 16px',border:'2px solid ' + (error ? 'var(--red)' : 'var(--border)'),borderRadius:10,outline:'none',fontFamily:'monospace'}}
+          />
+          {error && <p style={{color:'var(--red)',fontSize:13,marginTop:10}}>{error}</p>}
+        </div>
+        <div className="modal-footer" style={{justifyContent:'center',gap:12}}>
+          <button className="btn-cancel" onClick={onClose}>Cancel</button>
+          <button className="primary" onClick={handleSubmit} disabled={pin.length < 4}>Unlock</button>
+        </div>
       </div>
     </div>
   );
