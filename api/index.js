@@ -883,6 +883,11 @@ const MENTOR_VIDEO_QUERIES = {
       'Ross Cameron 1 month vs 1 year vs 1 decade day trading',
       'Ross Cameron 4 market types you need to understand',
       'Ross Cameron stop overtrading doing less made 3x'
+    ],
+    m11: [
+      'Ross Cameron Icebreaker strategy starter position sizing',
+      'Ross Cameron Five Pillars stock selection momentum trading',
+      'Ross Cameron hot vs cold market cycles day trading'
     ]
   }
 };
@@ -2391,7 +2396,57 @@ Momentum trading is a high-performance sport and a game of statistics. Success i
 10. What the Sources Collectively Teach: Three Categorical Truths
 1) Identify the Cycle: The market moves in waves (Biotech, Crypto, etc.). Your primary job is recognizing the current theme and applying the corresponding risk profile.
 2) Discipline Over Strategy: Even a perfect strategy fails without emotional fortitude to stop trading on red days or "no-trade" days.
-3) Data-Driven Accountability: Rigorous tracking via TradeView or Excel is the only path to identifying psychological leaks and refining technical accuracy. Success is not about the home run; it is about base hits and absolute avoidance of the "strikeout" that ends a career.`
+3) Data-Driven Accountability: Rigorous tracking via TradeView or Excel is the only path to identifying psychological leaks and refining technical accuracy. Success is not about the home run; it is about base hits and absolute avoidance of the "strikeout" that ends a career.`,
+    m11: `The Momentum Framework: A Correlated Analysis of High-Volatility Day Trading Strategies
+
+1. Overview
+In the contemporary small-cap equity market, the delta between sustainable professional performance and catastrophic capital erosion is defined by the transition from impulsive participation to a structured momentum framework. Operating within high-volatility environments requires a strategic synthesis of aggressive execution and clinical risk mitigation. This report codifies the methodologies required to navigate "hot" and "cold" market cycles, ensuring capital is deployed only when the statistical probability of success is maximized through rigorous technical and fundamental filters.
+
+The scope of this analysis provides a high-level synthesis of professional trading methodologies, specifically the "Icebreaker" position management technique, the "Five Pillars" of technical stock selection, and the psychological architecture necessary to sustain long-term profitability in a $15.8 million audited environment. By examining the interplay between technical indicators—such as the 10-second chart, VWAP, and MACD—and fundamental catalysts, we establish a comprehensive workflow for the disciplined investor.
+
+2. Cross-Source Themes: The Foundations of Momentum Trading
+Consistency across varied market cycles is not a product of chance, but of a "universal blueprint" that remains invariant even as specific tickers fluctuate.
+
+Risk Management as the Primary Profit Driver: Statistical analysis confirms that risk management, rather than profit-taking, is the primary driver of the equity curve. The Icebreaker technique serves as a strategic governor; traders initiate positions with "starter size" (typically 1/4 of a full position) to test market liquidity and momentum. By scaling to full size only after a profit cushion is established, the trader prevents "emotional hijacking." The imposition of a daily "max loss" limit acts as a definitive circuit breaker.
+
+Market Sentiment and Thematic Cycles: Profitability is inextricably linked to the prevailing market "theme." A Biotech clinical trial catalyst often provides superior follow-through compared to overplayed themes. When a theme becomes saturated, even "A-Quality" setups may fail, necessitating a shift from aggressive to defensive positioning.
+
+The Technical Language of the Market: Universal signals including Micro Pullbacks, ABCD setups, VWAP, and MACD serve as essential filters for assessing whether a trend is robust or if momentum is succumbing to exhaustion.
+
+3. Corroborated Professional Standards
+The Five Pillars of Stock Selection — an "A-Quality" trade must satisfy: Price ($2.00-$20.00, or $1.50-$6.00 for small accounts), Relative Volume (5x+ the 60-day average), Catalyst (verifiable breaking news), Low Float (under 10 million shares), Daily Gain (minimum 10%).
+
+Setup Quality Tiering: Mathematical distinction between "A-Quality" and "B/C-Quality" setups. Trading inferior setups in "cold" markets is the leading cause of account drawdowns.
+
+Regulatory Constraints: PDT Rule requires $25,000 for margin; cash accounts need "one shot, one kill" discipline. Proposed reduction to $2,000 would increase retail liquidity.
+
+4. Differences and Strategic Conflicts
+Trading Environment: Divergence between office and "Mobile Command Center" (Starlink/5G). Bid/Ask Spread risk in tickers like FOD can result in immediate ~5% unrealized loss upon entry.
+
+Profit Variance: High-resonance catalyst sessions can produce $85,000; slow sessions might yield $9,000. Accuracy reaches 75-80% in "Hot" markets but drops to 30-40% during "Cold" cycles.
+
+Account Divergence: Small Cash Account ($2,000) = high selectivity, limited bullets. Main Audited Account ($15.8M) = high-frequency scaling, 20,000-share positions.
+
+5. Unique Insights
+The "Jack Knife" Candle Warning: Violent rejection where stock drops multiple points in seconds (APVO $11.50 to $9, SPB $38 to $12). Driven by HFT algorithms designed to trigger stops.
+
+The "Price Improvement" Factor: Commission-free brokers utilize order flow resulting in sub-penny fills significant over thousands of trades.
+
+Secondary Offering Red Flags: S3 filings, shelf registrations, and underwriter price target adjustments as precursors to dilutive offerings.
+
+6. The Unified Momentum Workflow
+Phase I — Scanning (6:30-8:00 AM): Filter for "Leading Gainer" using Five Pillars with high relative volume and fresh catalyst.
+Phase II — Evaluation (8:00-9:30 AM): Monitor 10-second chart for "Micro Pullbacks" before visible on longer timeframes.
+Phase III — Execution (The Icebreaker): 1) Starter Entry at 1/4 size on MACD turn. 2) Add remaining 3/4 at HOD breakout. 3) If red, exit immediately; if green, profit becomes "cushion."
+Phase IV — Exit (9:30-10:00 AM): Once stock "stairssteps down," pump the brakes. Peak profitability window closes by 10:00 AM.
+
+7. Three Golden Rules
+1) Never Scale into a Loser — averaging down is the hallmark of the amateur.
+2) Respect the "Jack Knife" — violent algorithm-driven rejection means reduce size or walk away.
+3) The 50% Rule — if 50% of peak daily gain is relinquished, cease trading. Preserving capital and psychological health is the only path to longevity.
+
+8. Final Summary
+The Momentum Framework ensures traders remain "right more often than wrong" while losses stay mathematically insignificant compared to winners. The path to turning any account into a high-value asset is paved with discipline and a "Survive till you Thrive" mentality — relentless base hits and rigorous capital preservation during cold cycles. Simulator practice is the non-negotiable prerequisite for live execution.`
   }
 };
 
