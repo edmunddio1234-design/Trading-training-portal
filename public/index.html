@@ -1693,6 +1693,14 @@ function App({ onLogout }) {
   const [editingModule, setEditingModule] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const adminClickRef = React.useRef({ count: 0, timer: null });
+  const handleAdminAccess = () => {
+    const ref = adminClickRef.current;
+    ref.count++;
+    clearTimeout(ref.timer);
+    if (ref.count >= 3) { ref.count = 0; setShowSettings(true); }
+    else { ref.timer = setTimeout(() => { ref.count = 0; }, 800); }
+  };
   const [loading, setLoading] = useState(true);
   const [toasts, setToasts] = useState([]);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
@@ -1815,7 +1823,7 @@ function App({ onLogout }) {
       <div className={`sidebar ${!sidebarOpen ? 'collapsed' : ''}`}>
         <div className="sidebar-header" onClick={goToDashboard} style={{cursor:'pointer'}}>
           <h1>IMPACT <span>TRADING</span> ACADEMY</h1>
-          <p>Powered by Mission Metrics</p>
+          <p onClick={(e) => { e.stopPropagation(); handleAdminAccess(); }} style={{cursor:'pointer'}}>Powered by Mission Metrics</p>
         </div>
         <div className="nav-section">
           <div className="nav-label">Training Modules</div>
@@ -1856,7 +1864,6 @@ function App({ onLogout }) {
           <div className="header-actions">
             <button onClick={goToDashboard}>◈ Dashboard</button>
             <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
-            <button onClick={() => setShowSettings(true)}>⚙ Settings</button>
             {onLogout && <button className="logout-btn" onClick={onLogout}>⏻ Logout</button>}
             <button className="primary" onClick={openAdminNew}>+ Add Module</button>
           </div>
