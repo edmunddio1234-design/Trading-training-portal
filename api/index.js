@@ -903,6 +903,11 @@ const MENTOR_VIDEO_QUERIES = {
       'Ross Cameron 10 second chart micro pullback entry strategy',
       'Ross Cameron Level 2 wall of sellers chipping away',
       'Ross Cameron Icebreaker quarter size position management'
+    ],
+    m15: [
+      'Ross Cameron small account challenge $583 to millions',
+      'Ross Cameron survive till you thrive base hit mentality',
+      'Ross Cameron ABCD pattern cup and handle momentum setup'
     ]
   }
 };
@@ -2615,7 +2620,58 @@ External stress/compromise → 50% size reduction or stop.
 Golden Rules: Accept "No-Trade Days" as discipline victories. Respect Daily Max Loss as unbreakable law. Mental Reset for "Ticker Emotional Residue" — never revenge-trade the same ticker. Never trade sleep-deprived.
 
 8. Final Summary
-Success is a "Houston, we have a problem" analytical mindset — relentless data pursuit and radical acceptance of market conditions. Evolution from $600 to $15.8M+ achieved through unwavering A-quality pursuit with 2:1 or 4:1 P/L ratio and 75-80% accuracy. Competence forged through exhaustive simulator practice. Master the 10-second micro pullback, respect the risk matrix, treat every trade as a statistical entry in a lifelong career.`
+Success is a "Houston, we have a problem" analytical mindset — relentless data pursuit and radical acceptance of market conditions. Evolution from $600 to $15.8M+ achieved through unwavering A-quality pursuit with 2:1 or 4:1 P/L ratio and 75-80% accuracy. Competence forged through exhaustive simulator practice. Master the 10-second micro pullback, respect the risk matrix, treat every trade as a statistical entry in a lifelong career.`,
+    m15: `Comprehensive Analysis of Small-Cap Momentum Trading: Strategies, Risk Management, and Market Microstructure
+
+1. Executive Overview
+In small-cap day trading, the delta between institutional-grade performance and catastrophic failure is defined by the trader's ability to align internal execution with external market sentiment. Success is the systematic application of technical frameworks for long-term capital preservation. The "Warrior Trading" methodology treats trading as a high-performance sport, prioritizing "surviving till you thrive" — shifting focus from 400% "home runs" to disciplined capture of high-probability, high-volatility catalysts.
+
+The core mission: strategic utilization of supply/demand imbalances in small-cap equities to scale accounts while maintaining rigorous risk mitigation. This analysis covers the mechanics and psychological frameworks necessary for audited multi-million dollar milestones.
+
+2. The "Warrior" Framework
+The Five Pillars of Stock Selection: Price ($2-$20, small accounts $1.50-$6.00), Percentage Gain (+10-25% minimum proving momentum), Relative Volume (5x+ average, peak days 10x-100x), Low Float (under 10M shares, ideally under 5M for parabolic squeezes), News Catalyst (fundamental reason like "frontline AML 75% remission rate" or "crypto treasury strategies").
+
+Market Sentiment Cycles: "Hot" markets — FOMO allows B-quality setups to resolve profitably ("pedal to the metal" sizing). "Cold" markets — even A-quality setups may fail, requiring reduced sizing or sitting on hands.
+
+Technical Setup Hierarchy: 1) Micro Pullback — primary entry tool, anticipatory buying as candle makes new high while still forming. 2) ABCD Pattern — 15-minute pivot break identifying surge (A-B), consolidation (B-C), breakout (D). 3) Cup and Handle — rounded consolidation with shallow handle building pressure, effective when MACD positive.
+
+3. The Non-Negotiables of Risk
+The Icebreaker Strategy: Mandatory protocol testing market "heat" before full capital. First trades at quarter-size (5,000 shares vs. 20,000 full). Locked at quarter-size until crossing profit threshold. Only after being up for the day does scaling to full aggressive sizing occur.
+
+Stopping Rules: 50% Profit Give-back (walk away to preserve remaining gains), Three Consecutive Frustrated Losses (signals misalignment with market timing), Daily Max Loss Limit (hard cap, e.g., 10% of account mandating immediate termination).
+
+The 10% Rule: For small accounts — symmetrical 10% daily risk limit coupled with 10% daily reward target. Paired with high accuracy, facilitates exponential equity curve growth.
+
+4. Operational Differences
+Cash vs. Margin Accounts: Cash accounts — not PDT restricted but limited by T+1 settlement ("one bullet per day," all-in/all-out risk, high FOMO psychology). Margin accounts — require $25K minimum but provide instant settlement, multi-trade scaling capability.
+
+Broker Constraints: Mobile platforms (Robinhood/Webull) have execution lag and limited pre-market (7:00 AM). Professional desktop platforms access pre-market at 4:00 AM — critical window for primary momentum moves. Mobile Command Centers (Sprinter vans with Starlink) maintain 120mbps connectivity regardless of geography.
+
+Catalyst Efficacy: Biotech Clinical Results remain gold standard. Crypto Treasury Strategies become overplayed ("pop and drop"). Chinese/Hong Kong IPOs move on zero news with extreme jack-knife risk and lack transparent audit trails.
+
+5. Unique Insights and Case Studies
+The APVO "Jack-Knife": Ripped $6.00 to $9.00, jack-knifed to $7.50. Second rip to $11.50, violent drop to $9.00. HFT algorithms "take money right out of your pocket." Once exhibited, stock deemed "unsafe" for significant size.
+
+The "Blue Sky" Setup (MCTR): Stock breaking all-time high ($12.00 level) — no historical resistance or "overhead supply" from previous sellers. Allows unrestricted upward expansion, though initial "double top" resistance common.
+
+Internal State Management: The "Dramamine/Ferry" lesson — being jolted awake or medicated disrupts Alpha/Beta states for high-frequency decisions. If not emotionally grounded or physically optimal, unfit for market participation.
+
+6. The Unified Trading Strategy
+The "Lawn Mower" Analogy: Break-even trader = engine running "rough" at 60% accuracy. Fine-tuning = narrowing to A-quality setups, improving P/L ratio until reaching 75-80% accuracy in hot streaks.
+
+The Positive Feedback Loop: 1) Accuracy on high-quality setups → 2) Confidence builds "flow state" → 3) Larger sizing deployed → 4) Exponential profit growth.
+
+The "Base Hit" Mentality: Average winners of 18 cents per share. Consistent 18-cent gains statistically superior to "swinging for the fences." Audited results: $583 to $15.8M+ (path to $20M) built on small, predictable daily winners.
+
+7. Actionable Takeaways
+Pre-Trading 9-Point Scan: Internal checks (sleep 7+ hours, emotional groundedness, recent performance streak). External checks (market sentiment, yesterday's performance, strong stocks holding/reversing, S&P 500 big picture, scanner activity 20%+ gainers, FOMO/sentiment levels).
+
+Sim-to-Live Transition: Alpha Phase (simulator experience, pay dues risk-free), Beta Phase (live cash account, one trade/day for "proof of concept"), Scaling Phase (increase size only after 10 consecutive profitable days).
+
+Mandate Data Tracking: TraderVue or similar tools are non-negotiable. Identify "Sweet Spot" (stocks under $10, trades 7:00-10:00 AM, floats under 5M) to eliminate losing variables.
+
+8. Final Summary
+"Survive till you Thrive." Longevity is not luck or hitting 400% squeezes — it's radical acceptance of market conditions and Icebreaker discipline. Success built on financial literacy and relentless performance metric tracking. Focus on the 18-cent "base hit," maintain high accuracy, ruthlessly cut losses to stabilize the equity curve. This disciplined approach is the only sustainable path to the $20 million audited milestone and beyond.`
   }
 };
 
