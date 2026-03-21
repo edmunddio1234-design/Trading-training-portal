@@ -1665,6 +1665,9 @@ function InfographicGenerator({ module }) {
             style={{cursor: 'zoom-in'}}
             onClick={() => setMindMapLightbox(true)}
           />
+          <a href={`/interactive-mindmap.html?module=${module.id.replace('m','')}`} target="_blank" rel="noopener" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'12px 20px',background:'linear-gradient(135deg, #7C3AED, #6D28D9)',color:'white',textDecoration:'none',fontWeight:700,fontSize:14,cursor:'pointer',borderBottomLeftRadius:12,borderBottomRightRadius:12}}>
+            🧠 Explore Interactive Mind Map →
+          </a>
         </div>
       )}
 

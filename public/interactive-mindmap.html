@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Mind Map - Impact Trading Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F5F3;
+            color: #1B2A4A;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: #1B2A4A;
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .header-left a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .module-selector {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: white;
+            color: #1B2A4A;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .module-selector:hover {
+            background-color: #0D9373;
+            color: white;
+        }
+
+        .toggle-original {
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background-color: transparent;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .toggle-original:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Summary Section */
+        .summary-section {
+            background-color: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #E5E7EB;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .summary-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0D9373;
+            margin-bottom: 8px;
+        }
+
+        .summary-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4B5563;
+        }
+
+        /* Main Content Area */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Mind Map Container */
+        .mindmap-container {
+            flex: 1;
+            overflow: auto;
+            background-color: #F0F5F3;
+            position: relative;
+        }
+
+        svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+        }
+
+        /* Node Styling */
+        .node-group {
+            cursor: pointer;
+        }
+
+        .node-group:hover rect {
+            filter: brightness(1.1);
+        }
+
+        .node-group rect {
+            transition: all 0.3s ease;
+        }
+
+        .node-text {
+            pointer-events: none;
+            font-size: 12px;
+            font-weight: 500;
+            dominant-baseline: middle;
+            text-anchor: middle;
+            fill: white;
+        }
+
+        .node-text.large {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Link styling */
+        .link {
+            fill: none;
+            stroke: #CBD5E1;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        /* Explainer Panel */
+        .explainer-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .explainer-panel.active {
+            right: 0;
+        }
+
+        .explainer-header {
+            background: linear-gradient(135deg, #7C3AED 0%, #9F5FE0 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .explainer-title {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s;
+        }
+
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+
+        .explainer-content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .explainer-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #4B5563;
+        }
+
+        .explainer-text strong {
+            color: #1B2A4A;
+            font-weight: 600;
+        }
+
+        /* Original Mind Map Toggle */
+        .original-mindmap {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            max-width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            z-index: 500;
+            display: none;
+            flex-direction: column;
+        }
+
+        .original-mindmap.active {
+            display: flex;
+        }
+
+        .original-mindmap img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .original-mindmap-label {
+            background-color: #F0F5F3;
+            padding: 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0D9373;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-controls {
+                width: 100%;
+            }
+
+            .module-selector,
+            .toggle-original {
+                flex: 1;
+            }
+
+            .explainer-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .summary-section {
+                max-height: 120px;
+            }
+        }
+
+        /* Loading state */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 16px;
+            color: #0D9373;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <a href="/">← Back to Academy</a>
+                <div class="header-title">IMPACT TRADING ACADEMY</div>
+            </div>
+            <div class="header-controls">
+                <select id="moduleSelect" class="module-selector">
+                    <option value="1">Module 1: Mindset & Financial Reality</option>
+                    <option value="2">Module 2: Market Mechanics & Supply/Demand</option>
+                    <option value="3">Module 3: Master Surge Strategy</option>
+                    <option value="4">Module 4: Risk Management</option>
+                    <option value="5">Module 5: Leverage & Asset Vehicles</option>
+                    <option value="6">Module 6: Options Deep Dive</option>
+                    <option value="7">Module 7: Futures Trading</option>
+                    <option value="8">Module 8: Trade Execution Workflow</option>
+                    <option value="9">Module 9: Volume Analysis</option>
+                    <option value="10">Module 10: Price Cycle Phases</option>
+                </select>
+                <button id="toggleOriginal" class="toggle-original">📋 Original Mind Map</button>
+            </div>
+        </header>
+
+        <div class="summary-section">
+            <div class="summary-title" id="summaryTitle">Module Summary</div>
+            <div class="summary-text" id="summaryText"></div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="mindmap-container" id="mindmapContainer"></div>
+            <div class="original-mindmap" id="originalMindmap">
+                <img id="originalImage" src="" alt="Original Mind Map">
+                <div class="original-mindmap-label">Original Mind Map</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="explainer-panel" id="explainerPanel">
+        <div class="explainer-header">
+            <div class="explainer-title" id="explainerTitle">Node Title</div>
+            <button class="close-btn" id="closeExplainer">&times;</button>
+        </div>
+        <div class="explainer-content">
+            <div class="explainer-text" id="explainerText">Explanation text will appear here.</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script>
+        // Mind Map Data Structure
+        const mindmapData = {
+            1: {
+                title: "Mindset & Financial Reality",
+                summary: "Success in trading starts with the right mindset and understanding financial reality. Learn how to conquer the fear that holds most traders back and build a foundation on the five pillars of success.",
+                data: {
+                    name: "Mindset & Financial Reality",
+                    children: [
+                        {
+                            name: "The Chasm of Fear",
+                            children: [
+                                { name: "Faith", explanation: "Faith means believing in your system and yourself despite market volatility. Without faith in your strategy, emotional decisions will override your plan." },
+                                { name: "No Fear", explanation: "Fear is conquered through strict risk management, specifically the 1% rule. When you know you can only lose 1% per trade, fear transforms into confidence." },
+                                { name: "Courage", explanation: "Courage is the ability to take bold action despite uncertainty. It's earned through following your system consistently and seeing results compound over time." }
+                            ]
+                        },
+                        {
+                            name: "The Five Pillars of Success",
+                            children: [
+                                { name: "Stack the Odds", explanation: "Using data-backed strategies tilts probability in your favor. Every edge you can find—supply/demand zones, volume surges, institutional footprints—increases your win rate." },
+                                { name: "Follow Rules", explanation: "Rules protect you from emotional trading mistakes. Your S.E.T. rule, 1% rule, and position sizing rules are guardrails that keep you profitable." },
+                                { name: "Be Disciplined", explanation: "Consistency beats intensity in trading. Disciplined execution of small, repeatable trades compounds into wealth faster than emotional, aggressive swings." },
+                                { name: "Be Coachable", explanation: "Learn from proven results and mentors who've already succeeded. Coachability means staying humble and adjusting your approach based on evidence, not ego." },
+                                { name: "Be Decisive", explanation: "Analysis paralysis kills opportunity. When your setup confirms, you need the decisiveness to execute immediately without second-guessing." }
+                            ]
+                        },
+                        {
+                            name: "Financial Reality",
+                            children: [
+                                { name: "Fidelity Benchmarks", explanation: "Fidelity retirement savings targets (age-based) show how most people save over 30+ years. Your goal is to drastically exceed these benchmarks through strategic trading." },
+                                { name: "Power of Compounding", explanation: "10% annual returns become $1.74M on $10K in 30 years, but 20% becomes $13.5M. Small differences in returns compound into massive wealth differences." },
+                                { name: "Small Account Advantage", explanation: "A $5K or $10K account can move 10-20% monthly because it's nimble. Large institutional accounts move slowly—your agility is your edge." }
+                            ]
+                        },
+                        {
+                            name: "Action = Results",
+                            children: [
+                                { name: "Massive Action", explanation: "Execution beats perfection. You learn trading by taking trades, not by studying more. Taking action is how you gain the experience that leads to profits." },
+                                { name: "95% Fail", explanation: "The 95% of traders who fail do so because they trade emotionally without systems. They lack the mindset and discipline to follow rules consistently." },
+                                { name: "Top 5%", explanation: "The top 5% succeed because they follow a system with discipline. They know that following the process—not chasing profits—is what creates consistent results." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            2: {
+                title: "Market Mechanics & Supply/Demand",
+                summary: "Markets move based on supply and demand, driven primarily by institutional traders. Master how to identify supply and demand zones, understand OHLC bars, and recognize where institutions are accumulating and distributing.",
+                data: {
+                    name: "Market Mechanics & Supply/Demand",
+                    children: [
+                        {
+                            name: "Who Moves the Market",
+                            children: [
+                                { name: "Institutions", explanation: "Institutions control 80-90% of trading volume. They move markets with their massive orders, creating the supply and demand zones that drive price movement." },
+                                { name: "Retail Traders", explanation: "Retail traders make up only 10-20% of volume. Most retail traders lose because they fight against institutional flow instead of following it." },
+                                { name: "Peter Lynch", explanation: "Peter Lynch famously said to follow the footprints of institutional buyers and sellers. Reading institutional activity through volume and price is your edge." }
+                            ]
+                        },
+                        {
+                            name: "Supply & Demand Law",
+                            children: [
+                                { name: "Low Supply → Price Up", explanation: "When supply is scarce and demand is high, price must rise to equilibrate. Institutions buying in a supply zone create this scarcity." },
+                                { name: "High Supply → Price Down", explanation: "When supply is abundant and demand is weak, price falls to clear the excess. Institutions selling into strength creates this supply glut." },
+                                { name: "Balance → Imbalance → Movement", explanation: "Markets are always seeking equilibrium. When imbalance appears (unfilled orders, zones), price moves aggressively to restore balance." }
+                            ]
+                        },
+                        {
+                            name: "OHLC Price Bars",
+                            children: [
+                                { name: "Open", explanation: "The open price is where the session starts. Institutions often drive price away from the open as they begin their daily agenda." },
+                                { name: "High", explanation: "The high shows the maximum institutional buying pressure within the session. Highs often sit at supply zones where institutions sold." },
+                                { name: "Low", explanation: "The low shows the maximum institutional selling pressure. Lows often sit at demand zones where institutions previously bought." },
+                                { name: "Close", explanation: "The close price matters more than intraday extremes because it's where institutions chose to end the session. It signals their directional bias." }
+                            ]
+                        },
+                        {
+                            name: "Trading Zones",
+                            children: [
+                                { name: "Demand Zones", explanation: "Demand zones are areas where unfilled institutional buy orders sit below the current price. When price returns to demand, institutions buy, causing price to rise." },
+                                { name: "Supply Zones", explanation: "Supply zones are areas where unfilled institutional sell orders sit above the current price. When price returns to supply, institutions sell, pushing price down." },
+                                { name: "Zone Identification", explanation: "Scan charts for areas of past imbalance—large volume candles that moved price sharply. These zones are likely to stop, reverse, or bounce price in future visits." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            3: {
+                title: "Master Surge Strategy",
+                summary: "The Master Surge Strategy combines price cycles, volume surges, and institutional footprints to identify high-probability trades. Learn the five pillars that make this system work consistently.",
+                data: {
+                    name: "Master Surge Strategy",
+                    children: [
+                        {
+                            name: "Pillar 1: Price Cycles",
+                            children: [
+                                { name: "Accumulation", explanation: "Institutions quietly buy at low prices while price moves sideways. Volume increases on up moves, signaling smart money loading positions." },
+                                { name: "Markup", explanation: "After accumulation, demand overwhelms supply and price rises sharply with higher highs and lows. This is your primary profit zone where trends are strongest." },
+                                { name: "Distribution", explanation: "At highs, institutions quietly sell into strength while price moves sideways. This is where smart money unloads—a warning sign to exit profitable longs." },
+                                { name: "Markdown", explanation: "Supply overwhelms demand and price falls with lower highs and lows. This phase typically has the least trading opportunity for longs." }
+                            ]
+                        },
+                        {
+                            name: "Pillar 2: Volume Surges",
+                            children: [
+                                { name: "Volume = Institutional Activity", explanation: "80-90% of volume comes from institutions. Spikes 2-5x normal volume indicate significant institutional activity and commitment." },
+                                { name: "Surge + Price Move", explanation: "When volume surges while price moves, institutional conviction is confirmed. A strong move on low volume is suspect and likely to reverse." },
+                                { name: "No Volume = Suspicious Move", explanation: "Price moves without volume lack institutional backing. These moves often retrace quickly as retail traders get shaken out." }
+                            ]
+                        },
+                        {
+                            name: "Pillar 3: Institutional Footprints",
+                            children: [
+                                { name: "Unfilled Orders", explanation: "Large volume candles create unfilled buying or selling pressure above and below that level. This leftover pressure becomes your supply/demand zones." },
+                                { name: "Supply/Demand Zones", explanation: "Zones are predictable areas where price reacts. Institutions revisit these zones repeatedly, making them reliable trading areas." },
+                                { name: "Chart Scanning", explanation: "Before price arrives at a zone, identify it on your chart and plan your trade. This preparation is what separates profitable traders from reactive ones." }
+                            ]
+                        },
+                        {
+                            name: "Pillar 4: Trend Confirmation",
+                            children: [
+                                { name: "Trade With the Trend", explanation: "Trends reflect institutional momentum on your side. Trading with the trend gives you the full force of big money capital behind your position." },
+                                { name: "Never Fight Big Money", explanation: "Fighting institutional trends is how traders lose. Respect the trend, trade only in its direction, and let big money carry you to profits." }
+                            ]
+                        },
+                        {
+                            name: "Pillar 5: Risk Management",
+                            children: [
+                                { name: "1% Max Risk Per Trade", explanation: "Capping risk at 1% ensures no single losing trade significantly damages your account. This lets you take many trades without emotional fear." },
+                                { name: "3:1 Reward-to-Risk Ratio", explanation: "For every $1 risked, you target $3 profit. This asymmetry means you only need a 33% win rate to be profitable." },
+                                { name: "S.E.T. Rule On Every Trade", explanation: "Stop (1% max loss), Entry (precise trigger), and Target (3:1 profit) must be set BEFORE price moves. This prevents emotional decision-making." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            4: {
+                title: "Risk Management",
+                summary: "Risk management is the foundation of sustainable trading profits. Master the 1% rule, the 3:1 reward-to-risk ratio, and the S.E.T. rule to create a system that protects your capital while maximizing opportunities.",
+                data: {
+                    name: "Risk Management",
+                    children: [
+                        {
+                            name: "The 1% Rule",
+                            children: [
+                                { name: "Non-Negotiable", explanation: "The 1% rule is non-negotiable—never risk more than 1% of your account per trade. This single rule is what separates traders who survive from those who blow up." },
+                                { name: "Formula", explanation: "Account Balance × 1% = Max Risk. On a $10,000 account, you never risk more than $100 per trade, regardless of how confident you feel." },
+                                { name: "Example", explanation: "A $10K account allows $100 max risk. If your stop is $0.50 away, you can buy 200 shares. If your stop is $2 away, you can buy only 50 shares." }
+                            ]
+                        },
+                        {
+                            name: "The 3:1 Ratio",
+                            children: [
+                                { name: "For Every $1 Risked", explanation: "You must target at least $3 profit. If you risk $100, your profit target must be at least $300. This asymmetry creates profitable edge." },
+                                { name: "25% Win Rate = Break Even", explanation: "With a 3:1 ratio, you only need a 25% win rate to break even: (0.25 × 3) - (0.75 × 1) = 0. Anything above 25% is profit." },
+                                { name: "40% Win Rate = Highly Profitable", explanation: "A 40% win rate with 3:1 ratio produces: (0.40 × 3) - (0.60 × 1) = +0.6 per trade. Over 100 trades, that's +60 units of profit." }
+                            ]
+                        },
+                        {
+                            name: "The S.E.T. Rule",
+                            children: [
+                                { name: "S — Stop", explanation: "Your stop loss is your protective floor or ceiling. It caps your downside at exactly 1% and must be placed before you enter." },
+                                { name: "E — Entry", explanation: "Your entry must be an exact, pre-planned trigger point. This prevents you from entering on emotion. Enter only when your setup confirms." },
+                                { name: "T — Target", explanation: "Your profit target is pre-calculated to achieve the 3:1 ratio. With entry and stop defined, your target automatically follows." }
+                            ]
+                        },
+                        {
+                            name: "Position Sizing",
+                            children: [
+                                { name: "Formula", explanation: "Position Size = Account Risk ÷ Trade Risk. Account Risk is 1% of your total account. Trade Risk is the dollar distance from entry to stop." },
+                                { name: "Account Risk", explanation: "On a $10K account, Account Risk = $100. This never changes regardless of trade setup—it's your maximum per-trade loss." },
+                                { name: "Trade Risk", explanation: "Trade Risk is how far away your stop is from entry, measured in dollars per share/contract. A wider stop requires fewer shares to maintain the 1% rule." },
+                                { name: "Example", explanation: "On $10K account: $40 entry, $39 stop = $1 per share trade risk. $100 account risk ÷ $1 trade risk = 100 shares position size." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            5: {
+                title: "Leverage & Asset Vehicles",
+                summary: "Leverage amplifies returns by allowing you to control more assets with less capital. Learn which vehicles offer good leverage (with proper risk control) and which timeframes work best for each asset class.",
+                data: {
+                    name: "Leverage & Asset Vehicles",
+                    children: [
+                        {
+                            name: "Good vs Bad Leverage",
+                            children: [
+                                { name: "Good", explanation: "Good leverage uses non-depreciating assets with a tested strategy and strict risk control. You use the 1% rule and have a clear edge." },
+                                { name: "Bad", explanation: "Bad leverage is emotional and speculative with no risk control. You're gambling with borrowed money hoping to get rich quick—this always ends in losses." }
+                            ]
+                        },
+                        {
+                            name: "ETFs vs Mutual Funds",
+                            children: [
+                                { name: "ETFs", explanation: "ETFs trade all day like stocks, offer lower fees than mutual funds, and allow leverage through margin. You can set stop-losses and sell short." },
+                                { name: "Mutual Funds", explanation: "Mutual funds execute only once per day, charge higher fees, and don't allow leverage or short selling. They're designed for long-term buy-and-hold investing." },
+                                { name: "Key Advantage", explanation: "ETFs allow real-time trading with stop-loss protection and short selling. This flexibility is essential for the Master Surge Strategy." }
+                            ]
+                        },
+                        {
+                            name: "Options & LEAPS",
+                            children: [
+                                { name: "10x-20x Leverage", explanation: "One options contract controls 100 shares. Buying a call for $200 controls $4,000 worth of stock—that's 20x leverage with defined risk." },
+                                { name: "Max Loss = Premium Paid", explanation: "Your maximum loss on a long option is the premium you paid. This defined risk fits perfectly with your 1% rule." },
+                                { name: "LEAPS", explanation: "LEAPS are long-term options (2-3 year expiration) that decay slowly. They give your thesis time to play out without fighting time decay." },
+                                { name: "Weekly/Monthly Income", explanation: "Selling premium from weekly and monthly options creates consistent income. This strategy requires larger accounts ($10K+) and careful risk management." }
+                            ]
+                        },
+                        {
+                            name: "Futures (MES)",
+                            children: [
+                                { name: "20x-200x Leverage", explanation: "Futures offer extreme leverage. MES (S&P 500 Micro E-mini) gives you 20x leverage to trade the whole market with minimal capital." },
+                                { name: "23-Hour Trading", explanation: "Futures trade nearly around the clock electronically. You're not subject to PDT rules and can day trade with only ~$2,000 minimum." },
+                                { name: "60/40 Tax Rule", explanation: "Futures receive favorable Section 1256 tax treatment: 60% taxed as long-term gains (lower rate) and 40% as short-term (higher rate)." },
+                                { name: "Daily Income", explanation: "With 1-2 hours of focused trading daily, futures can generate consistent daily income. The key is strict adherence to the 1% rule." }
+                            ]
+                        },
+                        {
+                            name: "Income Strategy Timeframes",
+                            children: [
+                                { name: "Daily: Futures", explanation: "Futures ($2K min account) allow daily income generation with 23-hour access and no PDT rules. MES trades the S&P 500 with manageable risk." },
+                                { name: "Weekly: Options + Futures", explanation: "Weekly options and futures require $5K+ accounts. You capture larger moves over 7-day periods with time decay working more favorably." },
+                                { name: "Monthly: Options + Forex/Crypto", explanation: "Monthly options and cryptocurrency positions require $10K+ minimum. Longer timeframes allow bigger targets and more consistent monthly income." },
+                                { name: "Yearly/Wealth: Stocks", explanation: "Long-term stock positions require $25K+ to avoid PDT rules. Buy quality companies and hold for compounding wealth over years." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            6: {
+                title: "Options Deep Dive",
+                summary: "Options provide leverage and defined risk when understood correctly. Learn how calls and puts work, why LEAPS are powerful for position trading, and how options fit perfectly with the 1% risk rule.",
+                data: {
+                    name: "Options Deep Dive",
+                    children: [
+                        {
+                            name: "Core Mechanics",
+                            children: [
+                                { name: "1 Contract = 100 Shares", explanation: "All options contracts represent 100 shares of the underlying. When you buy 1 call, you control 100 shares of stock." },
+                                { name: "Quoted Per Share", explanation: "Options are quoted per share, so multiply by 100 to get your actual cost. A $2 call costs $200 total ($2 × 100 shares)." },
+                                { name: "Max Loss = Premium Paid", explanation: "For long options (calls and puts), your maximum loss is limited to the premium paid. You cannot lose more than your initial investment." },
+                                { name: "Strike Price + Expiration", explanation: "Two variables define an option: strike price (the execution price) and expiration date (when the right expires). Both dramatically affect pricing." }
+                            ]
+                        },
+                        {
+                            name: "Calls vs Puts",
+                            children: [
+                                { name: "Calls", explanation: "A call is the right to buy. Buy calls when you expect price to rise. You profit when the stock rises above your strike + premium paid." },
+                                { name: "Puts", explanation: "A put is the right to sell. Buy puts when you expect price to fall. You profit when the stock falls below your strike minus the premium paid." },
+                                { name: "Long Options", explanation: "Buying options (calls or puts) is your directional bet. You have defined risk and unlimited upside potential depending on stock movement." }
+                            ]
+                        },
+                        {
+                            name: "LEAPS Strategy",
+                            children: [
+                                { name: "2-3 Year Expiration", explanation: "LEAPS give your trading thesis 2-3 years to play out. This long timeframe reduces pressure to be right immediately." },
+                                { name: "Less Time Decay", explanation: "Time decay (theta) erodes option value slowly on LEAPS compared to short-term options. You have more time before theta becomes a problem." },
+                                { name: "Swing/Position Trading", explanation: "LEAPS are ideal for swing trades and position trades lasting weeks or months. The long expiration removes the constant pressure of daily decay." }
+                            ]
+                        },
+                        {
+                            name: "Cost Comparison",
+                            children: [
+                                { name: "100 Shares at $40", explanation: "Buying 100 shares of a $40 stock requires $4,000 capital. This is locked up and limits your portfolio flexibility." },
+                                { name: "1 Call Option", explanation: "A call option controlling the same 100 shares might cost $200. You control the same asset with 95% less capital." },
+                                { name: "Risk Reduction", explanation: "The capital efficiency of options is massive. $4,000 can buy 20 different options positions instead of just 1 stock position." }
+                            ]
+                        },
+                        {
+                            name: "Options + Risk Management",
+                            children: [
+                                { name: "Premium = Your 1% Risk", explanation: "Your premium paid becomes your 1% account risk. A $200 premium on a $10K account is exactly 2% risk (you can use smaller premium amounts)." },
+                                { name: "S.E.T. Still Applies", explanation: "Define your Stop (at which price you exit), Entry (premium paid), and Target (3:1 profit) before buying. Emotional exits are options killers." },
+                                { name: "Never Risk More Than 1%", explanation: "Even with options' defined risk, never spend more than 1% on premium. This discipline keeps your portfolio safe while allowing leverage." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            7: {
+                title: "Futures Trading",
+                summary: "Futures offer extreme leverage, nearly 24/5 trading hours, and favorable tax treatment. Master the advantages of futures, the 60/40 tax rule, and how MES provides accessible S&P 500 exposure for daily income.",
+                data: {
+                    name: "Futures Trading",
+                    children: [
+                        {
+                            name: "Key Advantages",
+                            children: [
+                                { name: "23-Hour Access", explanation: "Futures trade electronically nearly 24/5 globally. You're not limited to market hours and can trade overnight market movements." },
+                                { name: "No PDT Rule", explanation: "You can day trade with only ~$2,000 account minimum. Futures bypass the $25K PDT requirement that stocks impose on day traders." },
+                                { name: "High Leverage", explanation: "Futures offer 20x-200x leverage depending on the contract. MES offers 20x leverage, enough to generate significant income with small accounts." },
+                                { name: "Low Commissions", explanation: "Futures commissions are remarkably low—often $1-2 per contract. This reduces your cost per trade compared to stock commissions." }
+                            ]
+                        },
+                        {
+                            name: "The 60/40 Tax Rule",
+                            children: [
+                                { name: "Section 1256 Contracts", explanation: "Futures fall under Section 1256 of the tax code, receiving special treatment. This tax advantage is exclusive to futures and options." },
+                                { name: "60% Long-Term Rate", explanation: "60% of your futures gains are taxed at long-term capital gains rates (15-20%). This is much lower than your ordinary income rate." },
+                                { name: "40% Short-Term Rate", explanation: "40% of your gains are taxed at short-term rates (your ordinary income tax rate). This blended rate is still better than pure short-term treatment." },
+                                { name: "Applies Regardless of Holding Period", explanation: "Even if you hold for 1 second, you still get 60/40 treatment. There's no time requirement—this tax advantage applies automatically." }
+                            ]
+                        },
+                        {
+                            name: "Major Markets",
+                            children: [
+                                { name: "Equity Index", explanation: "Trade the S&P 500 (ES), Nasdaq (NQ), Dow (YM), or Russell 2000 (RTY). Index futures move in sync with major market themes." },
+                                { name: "Energy", explanation: "Crude oil (CL) and natural gas (NG) futures track energy markets. These commodities are sensitive to geopolitics and supply disruptions." },
+                                { name: "Metals", explanation: "Gold (GC), silver (SI), and copper (HG) futures track precious metals. These often move opposite to the dollar and reflect risk sentiment." },
+                                { name: "Agriculture", explanation: "Corn (ZC), soybeans (ZS), wheat (ZWH), and coffee (KC) futures track commodity crops. Weather and global supply drive these." }
+                            ]
+                        },
+                        {
+                            name: "Micro E-mini (MES)",
+                            children: [
+                                { name: "1/10th Size of Standard ES", explanation: "MES is the micro version of ES (S&P 500 E-mini), with 1/10th the contract size. This makes it accessible to smaller accounts." },
+                                { name: "Accessible Entry Point", explanation: "You need only ~$2,000 to trade MES with comfortable leverage. This opens up futures trading to retail traders with small accounts." },
+                                { name: "S&P 500 Exposure", explanation: "MES tracks the S&P 500, giving you broad market exposure. You're trading the most liquid market with institutional volume." },
+                                { name: "Daily Income Vehicle", explanation: "Many traders generate $200-500 daily income from MES with 1-2 hours of focused trading. The 1% rule on MES is highly practical." }
+                            ]
+                        },
+                        {
+                            name: "Critical Risk Warning",
+                            children: [
+                                { name: "Losses Can Exceed Investment", explanation: "Unlike options, futures losses are unlimited. A $2,000 account can lose $5,000 if your stop is ignored. Strict stops are mandatory." },
+                                { name: "Strict Stop Orders Required", explanation: "You must have a stop order on every futures trade before price moves. Gap risks and market halts can cause slippage—prepare for it." },
+                                { name: "1% Rule + S.E.T. Essential", explanation: "Apply the 1% rule and S.E.T. rule religiously with futures. The high leverage makes discipline 10x more important than with stocks." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            8: {
+                title: "Trade Execution Workflow",
+                summary: "Executing like an institution means following a four-step workflow: identify setups, spot institutional footprints, anticipate reactions, and execute with discipline. This systematic approach removes emotion from trading.",
+                data: {
+                    name: "Trade Execution Workflow",
+                    children: [
+                        {
+                            name: "Price Action Over Indicators",
+                            children: [
+                                { name: "Indicators Lag", explanation: "Technical indicators are lagging measures that tell you what already happened. By the time an indicator signals, the move is partly done." },
+                                { name: "Price Action", explanation: "Price action shows real-time supply and demand unfolding. Candles, wicks, and zones reveal where institutions are buying and selling right now." },
+                                { name: "Read the Chart", explanation: "Learn to read price action directly without indicators. The chart tells a story of supply and demand battles that unfolded historically." }
+                            ]
+                        },
+                        {
+                            name: "Step 1: Identify the Setup",
+                            children: [
+                                { name: "Scan for Supply/Demand Zones", explanation: "Scan multiple timeframes looking for unfilled institutional orders. These zones are predictable areas where price reacts again." },
+                                { name: "Look for Fresh Zones", explanation: "The best zones are fresh ones that haven't been revisited yet. Old zones that have been tested many times are less reliable." },
+                                { name: "Multiple Timeframes", explanation: "Use daily/weekly charts to identify the macro trend and zones. Use 1-hour and 15-minute charts to find precise entries." }
+                            ]
+                        },
+                        {
+                            name: "Step 2: Spot Institutional Footprints",
+                            children: [
+                                { name: "Large-Volume Candles", explanation: "Large volume candles created your supply/demand zones. These zones often sit at areas where institutions made large block trades." },
+                                { name: "Rapid Price Departure", explanation: "When price rapidly leaves a zone after a high-volume candle, institutional urgency is confirmed. Slow departures suggest less conviction." },
+                                { name: "Minimal Time in Zone", explanation: "Institutions filling orders quickly (price leaving the zone fast) shows they had clear intention. Lengthy time in a zone suggests indecision." }
+                            ]
+                        },
+                        {
+                            name: "Step 3: Anticipate & Plan",
+                            children: [
+                                { name: "Set S.E.T. Before Price Arrives", explanation: "Before price approaches your zone, plan your entry, stop, and target. This discipline prevents emotional changes when price gets close." },
+                                { name: "Entry at Zone Edge", explanation: "Enter at the zone edge (the extreme high or low of the zone candle). This is where institutions filled and where they're likely to fill again." },
+                                { name: "Stop Beyond Zone", explanation: "Place your stop just beyond the zone to allow price to consolidate. Your stop represents the zone failing—which invalidates your setup." },
+                                { name: "Target at Opposing Zone", explanation: "Target the next supply/demand zone in your direction. A 3:1 target usually reaches an institutional zone where profit-taking occurs." }
+                            ]
+                        },
+                        {
+                            name: "Step 4: Execute With Discipline",
+                            children: [
+                                { name: "Follow Your Plan", explanation: "When your entry trigger confirms, execute immediately. No second-guessing, no waiting for \"better price\"—the plan was researched when emotions were calm." },
+                                { name: "Confirm Trend Direction", explanation: "Before entering, confirm supply/demand alignment with the trend. A demand zone entry makes sense only if the trend is UP." },
+                                { name: "Manage the Trade", explanation: "Once entered, monitor price action and volume. If volume divergence appears or price structure breaks, exit early—your thesis is broken." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            9: {
+                title: "Volume Analysis",
+                summary: "Volume is the fuel behind price movements. Learn to read institutional activity through volume bars, identify surges at critical levels, and use volume divergence to confirm or deny your trading setup.",
+                data: {
+                    name: "Volume Analysis",
+                    children: [
+                        {
+                            name: "What Volume Bars Show",
+                            children: [
+                                { name: "Total Shares/Contracts Traded", explanation: "Each volume bar shows total trading activity for that time period. Higher bars mean more participation; lower bars mean less interest." },
+                                { name: "Fuel Behind Price", explanation: "Price moves without volume lack fuel and conviction. Volume confirms that the price move reflects real institutional participation, not just retail trading." },
+                                { name: "Lie Detector for Price", explanation: "Volume is the truth-teller for price moves. A price spike without volume is suspicious—it usually reverses. Volume confirms legitimate institutional moves." }
+                            ]
+                        },
+                        {
+                            name: "Normal vs Institutional Volume",
+                            children: [
+                                { name: "Normal", explanation: "Normal volume is baseline daily retail and algorithmic activity. This is what you see on average, stable days with no catalysts." },
+                                { name: "Institutional Surges", explanation: "Institutional surges are 2-5x normal volume. These spikes indicate large block orders from institutions accumulating or distributing positions." },
+                                { name: "Surge at Zone = Confirmation", explanation: "When volume surges exactly at a supply/demand zone, institutional interest is confirmed. This is the strongest signal your zone is relevant." }
+                            ]
+                        },
+                        {
+                            name: "Volume Divergence Warnings",
+                            children: [
+                                { name: "Bearish", explanation: "New highs on decreasing volume is bearish divergence—price is rising but volume is falling, suggesting weak conviction from institutions." },
+                                { name: "Bullish", explanation: "New lows on decreasing volume is bullish divergence—price is falling but volume is falling, suggesting selling exhaustion and potential reversal." },
+                                { name: "Always Check", explanation: "Before entering any trade, check volume divergence against your direction. Divergence is often an early warning that your setup is about to fail." }
+                            ]
+                        },
+                        {
+                            name: "Volume Checklist",
+                            children: [
+                                { name: "Above/Below 20-Period Average?", explanation: "Calculate the 20-period volume average. Spikes above this average suggest institutional involvement; below average is weak." },
+                                { name: "Was Zone Formed on High Volume?", explanation: "The zone that created your supply/demand should have been formed on high volume. Low-volume zones are unreliable and often fail." },
+                                { name: "Is Volume Increasing Toward Zone?", explanation: "As price approaches your zone, volume should increase. Increasing volume suggests institutions are stepping in as promised." },
+                                { name: "Any Divergence Against Your Direction?", explanation: "Check if rising price has falling volume, or falling price has falling volume. Divergence means your thesis is weakening." },
+                                { name: "Does Volume Confirm the Trend?", explanation: "In an uptrend, volume should increase on up days and decrease on down days. This pattern confirms the trend is institutional." }
+                            ]
+                        },
+                        {
+                            name: "Quick Reference Signals",
+                            children: [
+                                { name: "High Vol + Up = Strong Bullish", explanation: "High volume on an up day is strong institutional buying. The trend is confirmed and you should be bullish-biased." },
+                                { name: "High Vol + Down = Strong Bearish", explanation: "High volume on a down day is strong institutional selling. The downtrend is confirmed and you should avoid longs." },
+                                { name: "Low Vol + Up = Weak Rally", explanation: "Up moves on low volume lack institutional support. These rallies typically fail and reverse—be cautious with long entries." },
+                                { name: "Low Vol + Down = Weak Decline", explanation: "Down moves on low volume lack institutional selling conviction. These declines are often bounces, not trend reversals." }
+                            ]
+                        }
+                    ]
+                }
+            },
+            10: {
+                title: "Price Cycle Phases",
+                summary: "Markets move in repeating price cycles: accumulation (sideways, low), markup (uptrend), distribution (sideways, high), and markdown (downtrend). Recognize these phases visually to trade with institutional money.",
+                data: {
+                    name: "Price Cycle Phases",
+                    children: [
+                        {
+                            name: "Phase 1: Accumulation",
+                            children: [
+                                { name: "Institutions Quietly Buying", explanation: "During accumulation, institutions buy at low prices while retail stays uninterested. These quiet purchases create the foundation for the next big move." },
+                                { name: "Sideways Price Action", explanation: "Price trades range-bound and boring during accumulation. Most traders ignore it, but big money is quietly accumulating—this is opportunity." },
+                                { name: "Volume Pattern", explanation: "Volume increases on up moves and decreases on down moves during accumulation. This asymmetry reveals institutional buying pressure." },
+                                { name: "Signal", explanation: "When you see boring sideways action after a significant decline, smart money is likely loading. The boring phase often precedes explosive moves." }
+                            ]
+                        },
+                        {
+                            name: "Phase 2: Markup",
+                            children: [
+                                { name: "Price Rising Sharply", explanation: "After accumulation ends, demand overwhelms supply and price rises aggressively. This is the most profitable phase where institutions push price higher." },
+                                { name: "Higher Highs & Higher Lows", explanation: "The trademark of markup is higher highs and higher lows—a clear uptrend. Every pullback holds above previous support, showing institutional support." },
+                                { name: "Increasing Volume", explanation: "Volume increases as price rises during markup, confirming institutional buying conviction. Retail traders finally notice and FOMO in." },
+                                { name: "Signal", explanation: "Markup is your primary profit zone. Trade long, hold through pullbacks, and let the uptrend carry you to 3:1 targets." }
+                            ]
+                        },
+                        {
+                            name: "Phase 3: Distribution",
+                            children: [
+                                { name: "Institutions Quietly Selling", explanation: "At the top after the markup, institutions quietly sell into strength. Retail traders are finally excited—perfect time for smart money to unload." },
+                                { name: "Sideways at Highs", explanation: "Distribution looks similar to accumulation but at higher prices. Price moves range-bound while institutions dump inventory." },
+                                { name: "Volume Pattern", explanation: "Volume increases on down moves during distribution, indicating institutional selling pressure. Down volume surges show them exiting." },
+                                { name: "Signal", explanation: "Distribution is where to exit longs. Boring sideways action after a big rally is a major warning—you're holding what smart money is selling." }
+                            ]
+                        },
+                        {
+                            name: "Phase 4: Markdown",
+                            children: [
+                                { name: "Price Falling Sharply", explanation: "After distribution, supply overwhelms demand and price falls aggressively. This is when most retail traders finally panic-sell at the worst time." },
+                                { name: "Lower Highs & Lower Lows", explanation: "Markdown is marked by lower highs and lower lows—a clear downtrend. Every bounce fails below previous resistance." },
+                                { name: "Increasing Volume on Drops", explanation: "Volume surges on down days during markdown, confirming institutional selling. The trend is strong and downside moves are committed." },
+                                { name: "Signal", explanation: "Markdown is your avoid zone. Stay on the sidelines or short, but don't fight it. The institutional selling pressure is too strong." }
+                            ]
+                        },
+                        {
+                            name: "Phase Transitions",
+                            children: [
+                                { name: "Accumulation → Markup", explanation: "The transition happens on a breakout above the accumulation range on high volume. This breakout confirms institutions are done buying and ready to push higher." },
+                                { name: "Markup → Distribution", explanation: "The transition shows price momentum stalling at highs. Volume increases on down moves while price stops making new highs—distribution is starting." },
+                                { name: "Distribution → Markdown", explanation: "The breakdown below the distribution range on high volume signals the beginning of markdown. Institutions have exited and selling pressure takes over." },
+                                { name: "Markdown → Accumulation", explanation: "The transition occurs when selling finally exhausts and a bottom forms. Price stops making lower lows and begins consolidating—the next accumulation phase." }
+                            ]
+                        }
+                    ]
+                }
+            }
+        };
+
+        // Summary texts for each module
+        const moduleSummaries = {
+            1: "Success in trading starts with the right mindset and understanding financial reality. Learn how to conquer the fear that holds most traders back and build a foundation on the five pillars of success.",
+            2: "Markets move based on supply and demand, driven primarily by institutional traders. Master how to identify supply and demand zones, understand OHLC bars, and recognize where institutions are accumulating and distributing.",
+            3: "The Master Surge Strategy combines price cycles, volume surges, and institutional footprints to identify high-probability trades. Learn the five pillars that make this system work consistently.",
+            4: "Risk management is the foundation of sustainable trading profits. Master the 1% rule, the 3:1 reward-to-risk ratio, and the S.E.T. rule to create a system that protects your capital while maximizing opportunities.",
+            5: "Leverage amplifies returns by allowing you to control more assets with less capital. Learn which vehicles offer good leverage (with proper risk control) and which timeframes work best for each asset class.",
+            6: "Options provide leverage and defined risk when understood correctly. Learn how calls and puts work, why LEAPS are powerful for position trading, and how options fit perfectly with the 1% risk rule.",
+            7: "Futures offer extreme leverage, nearly 24/5 trading hours, and favorable tax treatment. Master the advantages of futures, the 60/40 tax rule, and how MES provides accessible S&P 500 exposure for daily income.",
+            8: "Executing like an institution means following a four-step workflow: identify setups, spot institutional footprints, anticipate reactions, and execute with discipline. This systematic approach removes emotion from trading.",
+            9: "Volume is the fuel behind price movements. Learn to read institutional activity through volume bars, identify surges at critical levels, and use volume divergence to confirm or deny your trading setup.",
+            10: "Markets move in repeating price cycles: accumulation (sideways, low), markup (uptrend), distribution (sideways, high), and markdown (downtrend). Recognize these phases visually to trade with institutional money."
+        };
+
+        // Color scheme
+        const colors = {
+            navy: '#1B2A4A',
+            emerald: '#0D9373',
+            emeraldLight: '#10B981',
+            purple: '#7C3AED',
+            purpleDark: '#6D28D9',
+            red: '#EF4444',
+            amber: '#F59E0B',
+            background: '#F0F5F3',
+            text: '#4B5563',
+            linkColor: '#CBD5E1'
+        };
+
+        let currentModule = 1;
+        let currentTree = null;
+        let svg = null;
+        let g = null;
+
+        // Initialize the page
+        function init() {
+            const params = new URLSearchParams(window.location.search);
+            const module = params.get('module');
+            if (module && module >= 1 && module <= 10) {
+                currentModule = parseInt(module);
+            }
+
+            document.getElementById('moduleSelect').value = currentModule;
+            renderMindMap(currentModule);
+
+            document.getElementById('moduleSelect').addEventListener('change', (e) => {
+                currentModule = parseInt(e.target.value);
+                window.history.replaceState({}, '', `?module=${currentModule}`);
+                renderMindMap(currentModule);
+            });
+
+            document.getElementById('toggleOriginal').addEventListener('click', () => {
+                const panel = document.getElementById('originalMindmap');
+                panel.classList.toggle('active');
+            });
+
+            document.getElementById('closeExplainer').addEventListener('click', () => {
+                document.getElementById('explainerPanel').classList.remove('active');
+            });
+        }
+
+        function renderMindMap(module) {
+            const data = mindmapData[module];
+
+            // Update summary
+            document.getElementById('summaryTitle').textContent = `Module ${module} Summary`;
+            document.getElementById('summaryText').textContent = moduleSummaries[module];
+
+            // Update original image
+            document.getElementById('originalImage').src = `/infographics/Module%20${module}%20Mind%20Map.png`;
+
+            // Clear previous visualization
+            document.getElementById('mindmapContainer').innerHTML = '';
+
+            // Create SVG
+            const container = document.getElementById('mindmapContainer');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            svg = d3.select('#mindmapContainer')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            g = svg.append('g')
+                .attr('transform', `translate(50, ${height / 2})`);
+
+            // Create tree layout
+            const treeLayout = d3.tree().size([height - 100, width - 200]);
+
+            // Create root node
+            const root = d3.hierarchy(data.data);
+            treeLayout(root);
+
+            // Expand first level only
+            root.children.forEach(child => {
+                child._children = child.children;
+                child.children = null;
+            });
+            expandNode(root);
+
+            // Draw links and nodes
+            updateVisualization(root);
+
+            // Add zoom/pan
+            const zoom = d3.zoom().on('zoom', (event) => {
+                g.attr('transform', event.transform);
+            });
+            svg.call(zoom);
+        }
+
+        function updateVisualization(root) {
+            const treeLayout = d3.tree().size([
+                document.getElementById('mindmapContainer').clientHeight - 100,
+                document.getElementById('mindmapContainer').clientWidth - 200
+            ]);
+            treeLayout(root);
+
+            // Draw links
+            const links = g.selectAll('.link').data(root.links(), d => d.target.data.name);
+
+            links.exit().remove();
+
+            links.enter()
+                .append('path')
+                .attr('class', 'link')
+                .attr('d', d3.linkHorizontal()
+                    .x(d => d.y)
+                    .y(d => d.x))
+                .merge(links)
+                .attr('d', d3.linkHorizontal()
+                    .x(d => d.y)
+                    .y(d => d.x));
+
+            // Draw nodes
+            const nodes = g.selectAll('.node-group').data(root.descendants(), d => d.data.name);
+
+            nodes.exit().remove();
+
+            const nodeEnter = nodes.enter()
+                .append('g')
+                .attr('class', 'node-group')
+                .attr('transform', d => `translate(${d.y},${d.x})`)
+                .on('click', (event, d) => {
+                    event.stopPropagation();
+                    toggleNode(d);
+                    updateVisualization(root);
+                });
+
+            // Add rectangles for nodes
+            nodeEnter.append('rect')
+                .attr('x', d => {
+                    const width = getNodeWidth(d);
+                    return -width / 2;
+                })
+                .attr('y', -20)
+                .attr('width', d => getNodeWidth(d))
+                .attr('height', 40)
+                .attr('rx', 6)
+                .attr('fill', d => getNodeColor(d))
+                .attr('stroke', 'none')
+                .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))');
+
+            // Add text to nodes
+            nodeEnter.append('text')
+                .attr('class', d => d.children || d._children ? 'node-text large' : 'node-text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.3em')
+                .text(d => truncateText(d.data.name, 20))
+                .style('cursor', 'pointer');
+
+            // Add expand/collapse indicators
+            nodeEnter.filter(d => d._children)
+                .append('circle')
+                .attr('cx', d => getNodeWidth(d) / 2 + 10)
+                .attr('cy', -20)
+                .attr('r', 4)
+                .attr('fill', '#0D9373');
+
+            // Show explainer on click
+            nodeEnter.on('click', (event, d) => {
+                if (d.data.explanation) {
+                    showExplainer(d.data.name, d.data.explanation);
+                }
+            });
+        }
+
+        function toggleNode(d) {
+            if (d._children) {
+                d.children = d._children;
+                d._children = null;
+            } else if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            }
+        }
+
+        function expandNode(d) {
+            if (d.children) {
+                d.children.forEach(child => {
+                    child._children = child.children;
+                    child.children = null;
+                });
+            }
+        }
+
+        function getNodeColor(d) {
+            const depth = d.depth;
+            if (depth === 0) return colors.navy;
+            if (depth === 1) return colors.purple;
+            if (depth === 2) return colors.emerald;
+            return colors.emeraldLight;
+        }
+
+        function getNodeWidth(d) {
+            const text = truncateText(d.data.name, 20);
+            return Math.max(100, text.length * 6 + 30);
+        }
+
+        function truncateText(text, maxLength) {
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+
+        function showExplainer(title, text) {
+            document.getElementById('explainerTitle').textContent = title;
+            document.getElementById('explainerText').textContent = text;
+            document.getElementById('explainerPanel').classList.add('active');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
