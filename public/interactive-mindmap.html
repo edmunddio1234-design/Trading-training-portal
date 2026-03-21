@@ -896,7 +896,7 @@
         };
 
         let currentModule = 1;
-        let currentTree = null;
+        let currentRoot = null;
         let svg = null;
         let g = null;
 
@@ -957,100 +957,156 @@
             const treeLayout = d3.tree().size([height - 100, width - 200]);
 
             // Create root node
-            const root = d3.hierarchy(data.data);
-            treeLayout(root);
+            currentRoot = d3.hierarchy(data.data);
 
-            // Expand first level only
-            root.children.forEach(child => {
-                child._children = child.children;
-                child.children = null;
-            });
-            expandNode(root);
+            // Collapse all children under level 1 (show root + level 1 only)
+            if (currentRoot.children) {
+                currentRoot.children.forEach(collapse);
+            }
 
-            // Draw links and nodes
-            updateVisualization(root);
+            // Assign initial positions
+            const treeL = d3.tree().nodeSize([50, 220]);
+            treeL(currentRoot);
+
+            // Draw
+            updateVisualization(currentRoot);
 
             // Add zoom/pan
-            const zoom = d3.zoom().on('zoom', (event) => {
-                g.attr('transform', event.transform);
-            });
+            const zoom = d3.zoom()
+                .scaleExtent([0.3, 3])
+                .on('zoom', (event) => {
+                    g.attr('transform', event.transform);
+                });
             svg.call(zoom);
+
+            // Center on root
+            const t = d3.zoomIdentity.translate(80, height / 2);
+            svg.call(zoom.transform, t);
         }
 
-        function updateVisualization(root) {
-            const treeLayout = d3.tree().size([
-                document.getElementById('mindmapContainer').clientHeight - 100,
-                document.getElementById('mindmapContainer').clientWidth - 200
-            ]);
-            treeLayout(root);
+        function collapse(d) {
+            if (d.children) {
+                d._children = d.children;
+                d._children.forEach(collapse);
+                d.children = null;
+            }
+        }
 
-            // Draw links
-            const links = g.selectAll('.link').data(root.links(), d => d.target.data.name);
+        function updateVisualization(source) {
+            const container = document.getElementById('mindmapContainer');
+            const treeL = d3.tree().nodeSize([50, 220]);
+            treeL(currentRoot);
 
-            links.exit().remove();
+            const duration = 400;
 
-            links.enter()
+            // ---- LINKS ----
+            const linkData = currentRoot.links();
+            const links = g.selectAll('.link')
+                .data(linkData, d => d.target.data.name + d.target.depth);
+
+            const linkEnter = links.enter()
                 .append('path')
                 .attr('class', 'link')
-                .attr('d', d3.linkHorizontal()
-                    .x(d => d.y)
-                    .y(d => d.x))
-                .merge(links)
-                .attr('d', d3.linkHorizontal()
-                    .x(d => d.y)
-                    .y(d => d.x));
+                .attr('d', () => {
+                    const o = { x: source.x0 || source.x, y: source.y0 || source.y };
+                    return d3.linkHorizontal().x(d => d.y).y(d => d.x)({ source: o, target: o });
+                });
 
-            // Draw nodes
-            const nodes = g.selectAll('.node-group').data(root.descendants(), d => d.data.name);
+            linkEnter.merge(links)
+                .transition().duration(duration)
+                .attr('d', d3.linkHorizontal().x(d => d.y).y(d => d.x));
 
-            nodes.exit().remove();
+            links.exit()
+                .transition().duration(duration)
+                .attr('d', () => {
+                    const o = { x: source.x, y: source.y };
+                    return d3.linkHorizontal().x(d => d.y).y(d => d.x)({ source: o, target: o });
+                })
+                .remove();
 
+            // ---- NODES ----
+            const nodeData = currentRoot.descendants();
+            const nodes = g.selectAll('.node-group')
+                .data(nodeData, d => d.data.name + d.depth);
+
+            // Enter
             const nodeEnter = nodes.enter()
                 .append('g')
                 .attr('class', 'node-group')
-                .attr('transform', d => `translate(${d.y},${d.x})`)
+                .attr('transform', `translate(${source.y0 || source.y},${source.x0 || source.x})`)
+                .style('cursor', 'pointer')
                 .on('click', (event, d) => {
                     event.stopPropagation();
-                    toggleNode(d);
-                    updateVisualization(root);
+                    // If leaf with explanation, show explainer
+                    if (d.data.explanation) {
+                        showExplainer(d.data.name, d.data.explanation);
+                    }
+                    // If has children (expanded or collapsed), toggle
+                    if (d.children || d._children) {
+                        toggleNode(d);
+                        updateVisualization(d);
+                    }
                 });
 
-            // Add rectangles for nodes
+            // Rectangles
             nodeEnter.append('rect')
-                .attr('x', d => {
-                    const width = getNodeWidth(d);
-                    return -width / 2;
-                })
+                .attr('x', d => -getNodeWidth(d) / 2)
                 .attr('y', -20)
                 .attr('width', d => getNodeWidth(d))
                 .attr('height', 40)
-                .attr('rx', 6)
+                .attr('rx', 8)
                 .attr('fill', d => getNodeColor(d))
-                .attr('stroke', 'none')
-                .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))');
+                .attr('stroke', d => (d._children) ? '#0D9373' : 'none')
+                .attr('stroke-width', 2)
+                .style('filter', 'drop-shadow(0 2px 6px rgba(0,0,0,0.15))');
 
-            // Add text to nodes
+            // Text labels
             nodeEnter.append('text')
-                .attr('class', d => d.children || d._children ? 'node-text large' : 'node-text')
                 .attr('text-anchor', 'middle')
-                .attr('dy', '0.3em')
-                .text(d => truncateText(d.data.name, 20))
-                .style('cursor', 'pointer');
+                .attr('dy', '0.35em')
+                .attr('fill', 'white')
+                .attr('font-size', d => d.depth === 0 ? '14px' : d.depth === 1 ? '12px' : '11px')
+                .attr('font-weight', d => d.depth <= 1 ? '700' : '600')
+                .text(d => truncateText(d.data.name, 22));
 
-            // Add expand/collapse indicators
-            nodeEnter.filter(d => d._children)
-                .append('circle')
-                .attr('cx', d => getNodeWidth(d) / 2 + 10)
-                .attr('cy', -20)
-                .attr('r', 4)
-                .attr('fill', '#0D9373');
+            // Expand/collapse indicator (+ or -)
+            nodeEnter.append('text')
+                .attr('class', 'expand-indicator')
+                .attr('x', d => getNodeWidth(d) / 2 - 16)
+                .attr('y', 0)
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('fill', 'rgba(255,255,255,0.8)')
+                .attr('font-size', '14px')
+                .attr('font-weight', '700')
+                .text(d => d._children ? '+' : d.children ? '−' : '');
 
-            // Show explainer on click
-            nodeEnter.on('click', (event, d) => {
-                if (d.data.explanation) {
-                    showExplainer(d.data.name, d.data.explanation);
-                }
-            });
+            // Transition enter to proper positions
+            nodeEnter.transition().duration(duration)
+                .attr('transform', d => `translate(${d.y},${d.x})`);
+
+            // Update existing nodes
+            const nodeUpdate = nodes.merge(nodeEnter);
+
+            nodeUpdate.transition().duration(duration)
+                .attr('transform', d => `translate(${d.y},${d.x})`);
+
+            nodeUpdate.select('rect')
+                .attr('fill', d => getNodeColor(d))
+                .attr('stroke', d => (d._children) ? '#0D9373' : 'none');
+
+            nodeUpdate.select('.expand-indicator')
+                .text(d => d._children ? '+' : d.children ? '−' : '');
+
+            // Exit nodes
+            nodes.exit()
+                .transition().duration(duration)
+                .attr('transform', `translate(${source.y},${source.x})`)
+                .style('opacity', 0)
+                .remove();
+
+            // Store positions for next transition
+            nodeData.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
         }
 
         function toggleNode(d) {
@@ -1060,15 +1116,6 @@
             } else if (d.children) {
                 d._children = d.children;
                 d.children = null;
-            }
-        }
-
-        function expandNode(d) {
-            if (d.children) {
-                d.children.forEach(child => {
-                    child._children = child.children;
-                    child.children = null;
-                });
             }
         }
 
