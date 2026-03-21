@@ -281,6 +281,11 @@
   .static-infographic-preview { margin-top: 16px; border-radius: 12px; overflow: hidden; border: 2px solid #F59E0B; box-shadow: 0 2px 12px rgba(245,158,11,0.15); }
   .static-infographic-preview img { width: 100%; display: block; }
   .static-infographic-label { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.08)); font-size: 13px; font-weight: 600; color: #92400E; }
+  .infographic-download-btn.mindmap { background: linear-gradient(135deg, #7C3AED, #6D28D9); color: white; }
+  .infographic-download-btn.mindmap:hover { background: linear-gradient(135deg, #6D28D9, #5B21B6); }
+  .static-mindmap-preview { margin-top: 16px; border-radius: 12px; overflow: hidden; border: 2px solid #7C3AED; box-shadow: 0 2px 12px rgba(124,58,237,0.15); }
+  .static-mindmap-preview img { width: 100%; display: block; }
+  .static-mindmap-label { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(109,40,217,0.08)); font-size: 13px; font-weight: 600; color: #5B21B6; }
 
   /* Gating System Styles */
   .gating-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 999; display: flex; align-items: center; justify-content: center; }
@@ -784,105 +789,120 @@ const MODULE_MEDIA = {
     flipbook: 'https://heyzine.com/flip-book/6eedbdd39c.html',
     slideDeck: 'https://heyzine.com/flip-book/b594bf7fc7.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729?i=1000753791017',
-    staticInfographic: '/infographics/Module%201%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%201%20Infographic.jpg',
+    staticMindMap: null
   },
   m2: {
     youtube: 'https://youtu.be/UEDXefl88WI',
     flipbook: 'https://heyzine.com/flip-book/b4fb4bc178.html',
     slideDeck: 'https://heyzine.com/flip-book/7cb1f45c92.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729?i=1000755305168',
-    staticInfographic: '/infographics/Module%202%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%202%20Infographic.jpg',
+    staticMindMap: null
   },
   m3: {
     youtube: 'https://youtu.be/wa7qzaJeKs8',
     flipbook: 'https://heyzine.com/flip-book/7660ee5c0d.html',
     slideDeck: 'https://heyzine.com/flip-book/56ca56caae.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729?i=1000756415530',
-    staticInfographic: '/infographics/Module%203%20Infograhic.jpg'
+    staticInfographic: '/infographics/Module%203%20Infograhic.jpg',
+    staticMindMap: null
   },
   m4: {
     youtube: 'https://youtu.be/kmmfk8edWAE',
     flipbook: 'https://heyzine.com/flip-book/e9b0419d8b.html',
     slideDeck: 'https://heyzine.com/flip-book/fb6bab0136.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-4-risk-management-and-s-e-t/id1883365729?i=1000756416045',
-    staticInfographic: '/infographics/Module%204%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%204%20Infographic.jpg',
+    staticMindMap: null
   },
   m5: {
     youtube: 'https://youtu.be/7S1FfEAwA4Y',
     flipbook: 'https://heyzine.com/flip-book/1fb074ad95.html',
     slideDeck: 'https://heyzine.com/flip-book/a56b13a039.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-5-leverage-strategy/id1883365729?i=1000756416756',
-    staticInfographic: '/infographics/Module%205%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%205%20Infographic.jpg',
+    staticMindMap: null
   },
   m6: {
     youtube: 'https://youtu.be/xO1izk4B8V4',
     flipbook: 'https://heyzine.com/flip-book/80a8903e68.html',
     slideDeck: 'https://heyzine.com/flip-book/ebe71fb196.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-6-options-deep-dive/id1883365729?i=1000756418273',
-    staticInfographic: '/infographics/Module%206%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%206%20Infographic.jpg',
+    staticMindMap: null
   },
   m7: {
     youtube: 'https://youtu.be/ah5YvTY51e0',
     flipbook: 'https://heyzine.com/flip-book/c88aed78a6.html',
     slideDeck: 'https://heyzine.com/flip-book/a2cd469fce.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-7-futures-trading/id1883365729?i=1000756419388',
-    staticInfographic: '/infographics/Module%207%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%207%20Infographic.jpg',
+    staticMindMap: null
   },
   m8: {
     youtube: 'https://youtu.be/3uKJ5kqOTDk',
     flipbook: 'https://heyzine.com/flip-book/e41ec0238f.html',
     slideDeck: 'https://heyzine.com/flip-book/262e6fc3b2.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-8-backtesting/id1883365729?i=1000756420121',
-    staticInfographic: '/infographics/Module%208%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%208%20Infographic.jpg',
+    staticMindMap: null
   },
   m9: {
     youtube: 'https://youtu.be/WHWD75diNQI',
     flipbook: 'https://heyzine.com/flip-book/594bf16903.html',
     slideDeck: 'https://heyzine.com/flip-book/af7b8bf8ca.html',
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-9-visual-guide-to-reading-volume/id1883365729?i=1000756420881',
-    staticInfographic: '/infographics/Module%209%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%209%20Infographic.jpg',
+    staticMindMap: null
   },
   m10: {
     youtube: 'https://youtu.be/JdPfJ1JWHoY',
     flipbook: 'https://heyzine.com/flip-book/9bdf3068d2.html',
     slideDeck: 'https://heyzine.com/flip-book/6011f14e21.html',
     audioUrl: null,
-    staticInfographic: '/infographics/Module%2010%20Infographic.jpg'
+    staticInfographic: '/infographics/Module%2010%20Infographic.jpg',
+    staticMindMap: null
   },
   m11: {
     youtube: 'https://youtu.be/xPE7K26GhWQ',
     flipbook: 'https://heyzine.com/flip-book/dc2d1feb17.html',
     slideDeck: 'https://heyzine.com/flip-book/eeca42c650.html',
     audioUrl: null,
-    staticInfographic: null
+    staticInfographic: null,
+    staticMindMap: null
   },
   m12: {
     youtube: 'https://youtu.be/_QNiPHaSD8g',
     flipbook: 'https://heyzine.com/flip-book/6bf4f8e10e.html',
     slideDeck: 'https://heyzine.com/flip-book/0242255e2a.html',
     audioUrl: null,
-    staticInfographic: null
+    staticInfographic: null,
+    staticMindMap: null
   },
   m13: {
     youtube: 'https://youtu.be/YtSlg7mjdfM',
     flipbook: 'https://heyzine.com/flip-book/02005127c4.html',
     slideDeck: 'https://heyzine.com/flip-book/eab48e2edf.html',
     audioUrl: null,
-    staticInfographic: null
+    staticInfographic: null,
+    staticMindMap: null
   },
   m14: {
     youtube: null,
     flipbook: 'https://heyzine.com/flip-book/6d6342ea71.html',
     slideDeck: 'https://heyzine.com/flip-book/901f9ecb7d.html',
     audioUrl: null,
-    staticInfographic: null
+    staticInfographic: null,
+    staticMindMap: null
   },
   m15: {
     youtube: null,
     flipbook: 'https://heyzine.com/flip-book/537da95fab.html',
     slideDeck: 'https://heyzine.com/flip-book/6794b3023f.html',
     audioUrl: null,
-    staticInfographic: null
+    staticInfographic: null,
+    staticMindMap: null
   }
 };
 
@@ -1396,7 +1416,10 @@ function InfographicGenerator({ module }) {
   const [checked, setChecked] = useState(false);
   const [showStatic, setShowStatic] = useState(false);
   const [staticLightbox, setStaticLightbox] = useState(false);
+  const [showMindMap, setShowMindMap] = useState(false);
+  const [mindMapLightbox, setMindMapLightbox] = useState(false);
   const staticUrl = MODULE_MEDIA[module.id]?.staticInfographic;
+  const mindMapUrl = MODULE_MEDIA[module.id]?.staticMindMap;
 
   // Check for cached infographic on mount
   useEffect(() => {
@@ -1517,15 +1540,27 @@ function InfographicGenerator({ module }) {
                 🖼️ {showStatic ? 'Hide' : 'View'} Static Infographic
               </button>
             )}
+            {mindMapUrl && (
+              <button className="infographic-download-btn mindmap" onClick={() => setShowMindMap(!showMindMap)} style={{marginLeft: 8}}>
+                🧠 {showMindMap ? 'Hide' : 'View'} Mind Map
+              </button>
+            )}
           </div>
         </div>
       )}
 
-      {!loading && !imageUrl && staticUrl && (
-        <div>
-          <button className="infographic-download-btn static" onClick={() => setShowStatic(!showStatic)}>
-            🖼️ {showStatic ? 'Hide' : 'View'} Static Infographic
-          </button>
+      {!loading && !imageUrl && (staticUrl || mindMapUrl) && (
+        <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+          {staticUrl && (
+            <button className="infographic-download-btn static" onClick={() => setShowStatic(!showStatic)}>
+              🖼️ {showStatic ? 'Hide' : 'View'} Static Infographic
+            </button>
+          )}
+          {mindMapUrl && (
+            <button className="infographic-download-btn mindmap" onClick={() => setShowMindMap(!showMindMap)}>
+              🧠 {showMindMap ? 'Hide' : 'View'} Mind Map
+            </button>
+          )}
         </div>
       )}
 
@@ -1549,6 +1584,29 @@ function InfographicGenerator({ module }) {
           imageUrl={staticUrl}
           sectionTitle={`${module.title} — Static Infographic`}
           onClose={() => setStaticLightbox(false)}
+        />
+      )}
+
+      {showMindMap && mindMapUrl && (
+        <div className="static-mindmap-preview">
+          <div className="static-mindmap-label">
+            <span>🧠</span> Module Mind Map
+            <span style={{marginLeft: 'auto', fontSize: '12px', color: '#5B21B6', opacity: 0.7}}>Click image to expand</span>
+          </div>
+          <img
+            src={mindMapUrl}
+            alt={`Mind map for ${module.title}`}
+            style={{cursor: 'zoom-in'}}
+            onClick={() => setMindMapLightbox(true)}
+          />
+        </div>
+      )}
+
+      {mindMapLightbox && mindMapUrl && (
+        <ImageLightbox
+          imageUrl={mindMapUrl}
+          sectionTitle={`${module.title} — Mind Map`}
+          onClose={() => setMindMapLightbox(false)}
         />
       )}
     </div>
