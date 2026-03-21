@@ -2156,7 +2156,242 @@ Execution: Break the Ice with 1/4 size to start. Scale: Add only when the trade 
 Post-Market: Data Tracking: Log every trade to identify your specific profit windows. Accuracy Review: If accuracy drops below 60%, return to "A-Quality" only.
 
 10. Final Integrated Summary: The Marathon Mindset
-Success in day trading is the result of statistical consistency, radical acceptance of market conditions, and the courage to walk away. Profitability is not about the "home run"; it is a marathon where "Less is More." By adhering to the Five Pillars, the Icebreaker Strategy, and a rigorous internal checklist, a trader transforms market volatility into a structured path toward financial independence. Accuracy is the foundation; the rest is simply a matter of scale. Your career depends not on how much you make on your best day, but on how little you lose on your worst. Keep the engine running—survive till you thrive.`
+Success in day trading is the result of statistical consistency, radical acceptance of market conditions, and the courage to walk away. Profitability is not about the "home run"; it is a marathon where "Less is More." By adhering to the Five Pillars, the Icebreaker Strategy, and a rigorous internal checklist, a trader transforms market volatility into a structured path toward financial independence. Accuracy is the foundation; the rest is simply a matter of scale. Your career depends not on how much you make on your best day, but on how little you lose on your worst. Keep the engine running—survive till you thrive.`,
+
+    m6: `Comprehensive Synthesis of Momentum Trading Methodologies and Risk Management Frameworks
+
+1. Overview of Momentum Trading and Market Dynamics
+Professionalism in the proprietary trading arena is defined by the transition from speculative gambling to the systematic exploitation of market inefficiencies. Momentum trading is not a search for "value"; it is the strategic identification of environments where volatility—the primary engine for profit—is surging. As demonstrated by Ross Cameron's audited performance of turning $600 into over $12.5 million, success is predicated on a structured approach to speculative small-cap equities.
+
+In this framework, market participation is a function of "hot" and "cold" cycles. "Hot" market cycles, characterized by high liquidity and intense FOMO, provide the scalability required to generate six-figure daily profits. Scalability is the institutional reward for surviving "cold" cycles through capital preservation. The "sweet spot" for execution is identified at the intersection of a leading gainer, a powerful news catalyst, and a clean technical micro-pullback.
+
+2. Source Correlation and Methodology Summary
+Developing a universal trading edge necessitates reconciling various market sessions and account constraints. Whether operating under the "One Bullet" mentality of a restricted small account or the aggressive scaling of a large-scale Roth IRA, the underlying mechanics of supply and demand remain constant.
+
+Focus Areas: Small Account Challenges (Cash settlement, PDT rule constraints, "One Shot" hunting — Conservative posture), Large Account Scaling (High-volume rotation, aggressive sizing, fiscal efficiency via Roth IRA — Aggressive posture), Technical Analysis (Micro-pullbacks, ABCD setups, VWAP/MACD alignment — Disciplined posture), Psychological Discipline (Managing the "Short Fuse," emotional centering, Alpha/Beta phases — Resilient posture).
+
+The synergy is best illustrated by the "Icebreaker" strategy. This tactical maneuver serves as the bridge for small accounts to enter high-volatility environments without incurring catastrophic slippage or emotional compromise.
+
+3. Key Themes: The Architecture of a High-Probability Trade
+We do not trade stocks; we trade imbalances. High-probability trades occur when a news catalyst triggers a surge in demand that the finite supply (float) cannot absorb, forcing a parabolic "squeeze."
+
+The Five Pillars of Stock Selection: Price Range 2-20, Relative Volume 5x+ above 60-day average, Catalyst/News (clinical trials, earnings beats, sector themes), Float preference <10M-20M shares (lower is always better), Percentage Gain 10%+ minimum.
+
+4. Important Agreements: Consensus on Risk and Execution
+The Icebreaker Strategy: Utilizing 1/4 size (starter position) to "test the water." Data-Driven Decisions: 222 green days vs. only 8 red days (including a 76-day hot streak) achieved through accuracy-first trading. Technical Precision: Universal reliance on VWAP, MACD, and Level 2. A professional trader identifies the "Wall"—such as a 20,000-share seller at $5.80—and uses its breakage as a high-conviction entry signal.
+
+5. Important Differences or Gaps
+The "Aggressive Scaling" producing a $138,866.11 day in a tax-free Roth IRA is only possible during high-liquidity "hot" markets. In contrast, "cold" or "choppy" environments necessitate a "No Trade" defensive posture. The "Cash Account" is burdened by the PDT rule and T+1 settlement, forcing a "One Shot" hunting mentality.
+
+6. Unique Insights by Source
+- Jack Knife Candles: HFT traps where a candle instantly rejects a breakout ($9.00 to $7.50), designed by algorithms to liquidate market orders.
+- The 3 Core Components: Profitability is a three-legged stool: Accuracy, P/L Ratio, and Consistency.
+- The Short Fuse: External stressors shorten a trader's fuse. When short, a trader becomes stubborn, refuses to cut losses, and enters a downward spiral.
+- The Macro-Overlay: Awareness of institutional traps (HC Wainwright "Buy" ratings to facilitate secondary offerings). Track Jerome Powell's interest rate comments and seasonal "August/October" lulls.
+
+7. The Combined Best Explanation: The Momentum Master-System
+Execution Workflow: 1) Verification: Confirm the stock meets the Five Pillars. 2) The Entry: Execute an "Icebreaker" position on the "first candle to make a new high." 3) Confirmation: Monitor Level 2 for breakage of "hidden sellers" or "walls." 4) Scaling: Add full size only after a micro-pullback confirms support. 5) The Exit: Sell into strength at whole-dollar resistance or upon a negative MACD crossover.
+
+The "So What?": Wait for the micro-pullback to ensure the risk-to-reward ratio allows for doubling the potential gain relative to the risk.
+
+8. Practical Takeaways: Trader's Daily Protocol
+Pre-Market: Set scanners for Price (2-20), Relative Volume (5x+), Float (<20M). Verify catalyst. Check Macro-Overlay (FOMC/Powell, secondary offering risks). Internal Check (sleep, emotional centering).
+Execution: Icebreaker Entry 25% size. Technical Alignment (VWAP holding, MACD opening). Level 2 Watch. Hard Stop at low of previous pullback.
+Post-Market: Import trades into TraderView. Analyze "Average Winner vs. Average Loser." Identify Alpha and Beta metrics.
+
+9. Final Integrated Summary
+Trading is a "performance sport of numbers." Profitability is not luck; it is the result of minimizing drawdowns in cold cycles and maximizing "hot" cycles. Discipline—not genius—is the barrier to entry.
+
+10. The Big Picture Lesson
+The market is a constant ebb and flow of sentiment where the only controllable variables are your risk per trade, your position size, and your emotional centeredness. Survive until you Thrive. Success is often like an old lawn mower: the engine might be smoking and running rough (the "Beta" phase), but if it's running, you are in the game. Stay disciplined, stay liquid, and remain in the market until the next 300% squeeze arrives.`,
+
+    m7: `Comprehensive Synthesis of Momentum Trading Methodologies and Risk Management Frameworks
+
+1. Overview of Momentum Day Trading Strategy
+Momentum day trading, when executed within a rigorous analytical framework, is a volatility-based pursuit of "base hits"—consistent, high-probability gains—rather than a speculative gamble. Strategic imperatives mandate that a trader focus exclusively on the "front side" of a move, where an extreme imbalance between supply and demand drives rapid price appreciation. This methodology is not merely a theory but a proven system for capital appreciation, as evidenced by the transition of a $583 initial stake into over $15.8 million in total trading profits.
+
+The core objective of the professional strategist is to wait for the market to provide "A-Quality" opportunities. By treating trading as a game of statistics, the practitioner eliminates the need for luck. This document synthesizes the data-driven framework governing stock selection, the "Icebreaker" risk management protocol, and the technical execution required to sustain long-term profitability.
+
+2. Source Correlation Summary: Themes and Reliability
+Risk Management: Shared across all sources. The "Icebreaker" technique and "Rules of Disengagement" are foundational constants. Essential for capital preservation during "cold" market cycles.
+Stock Selection: Shared across all sources. The "5 Pillars" act as the primary noise filter. Verified consistency across 2021-2025 data sets.
+Account Constraints: Unique context. Robinhood/Webull $2,000 challenge constraints shift focus to "one trade per day" mandate due to T+1 settlement.
+Technical Execution: Unique context. High-resolution precision — identification on the 1-minute chart; execution on the 10-second chart.
+Market Evolution: 2025 data shows a shift toward higher efficiency: similar profits with half the trades of 2024.
+
+Strategic refinement involves adapting the framework to specific constraints. While the standard price range is 2-20, capital-constrained accounts must tighten to 1.50-6 to maintain sufficient buying power.
+
+3. The Five Pillars of Stock Selection
+Price Action: 2-20 range (1.50-6 for small accounts). Relative Volume: Minimum 5x average. The Catalyst: Biotech clinical trials are "tried-and-true" compared to overplayed themes. Percentage Gain: Minimum 10-25% "gappers." Float/Supply: Ideally <10M shares. The 10x Supply/Demand Ratio: A 1M share float paired with 10M shares of volume creates a massive imbalance triggering 1,000% moves.
+
+4. Technical Execution and Pattern Recognition
+The Micro Pullback: Cornerstone of momentum. Entry is the "first candle to make a new high" on a 10-second or 1-minute chart (engine behind APVO move from $6 to $9). The ABCD Pattern: Pivot-break mechanics. Trend Reversals (Cup and Handle / Inverted Head and Shoulders). Warning Signals: "Jackknife" candles and "Topping Tails" indicate HFT algorithms "taking money out of your pocket."
+
+5. Strategic Risk Management: The Icebreaker Technique
+Position Sizing: Begin with 1/4 size. The Profit Cushion Rule: Scale to full size only after $1,000 profit cushion. The "Daily Max Loss" Rule: Hard stop, walk away. The "50% Give-Back" Rule: Stop if you forfeit half of daily gains. The "3 Consecutive Losses" Rule: If three A-Quality setups fail in a row, the market is "Cold" — shut down.
+
+6. Important Gaps: Market Sentiment and Seasonality
+Catalyst Fatigue: The "Crypto Treasury" catalyst became overplayed, leading to "broken trust" and failed breakouts. "Tried-and-True" Biotech clinical results remain a durable edge. Seasonality: August often sees a disconnect between S&P 500 and small caps. This is the time for the "Lawn Mower" Mindset: the engine might be smoking, but as long as it's turning over (breaking even), you are surviving until the market heats up.
+
+7. Small Account Architecture: Cash Accounts and the PDT Rule
+Cash vs. Margin: Cash accounts avoid PDT but limited by settlement times. FINRA has proposed reducing PDT requirement to $2,000. Price Improvement: In commission-free brokers, "Price Improvement" (getting filled at $3.695 on a $3.70 ask) is a hidden edge. Over 3,000 trades a year, these half-cents aggregate significantly. Discipline: "One Trade a Day" philosophy is the best transition from simulator to real money.
+
+8. Psychological Resilience and Performance Centering
+Emotional Centering: A "short fuse" can destroy a month of work. External stressors linger and cause stubbornness 24 hours later. Rituals vs. Statistics: While traders may wear "Double Elephant" or "Lucky Cactus" shirts, the professional knows real luck is found in TraderVue data showing you make more money before 11:00 AM.
+
+9. Practical Takeaways
+Pre-Market: Internal Health Check. Scanner Filter: Leading gainers >10% with a fresh "Why." Identify the "Sweet Spot."
+Execution: Break the Ice with 1/4 size. Scale only when working and moving toward high of day. Avoid the Backside.
+Post-Market: Log every trade. If accuracy drops below 60%, return to "A-Quality" only.
+
+10. Final Integrated Summary: The Marathon Mindset
+Profitability is not about the "home run"; it is a marathon where "Less is More." Accuracy is the foundation; the rest is simply a matter of scale. Your career depends not on how much you make on your best day, but on how little you lose on your worst.`,
+
+    m8: `Unified Professional Trading Framework: Integrating Momentum Execution with Quantitative Strategy Validation
+
+1. Overview of the Trading Methodology
+Professional trading is a high-stakes discipline requiring the synchronization of discretionary momentum with structured quantitative validation. Success is not found in a "silver bullet" indicator but in the calculated balance of "Pillar-based" stock selection and regime-aware execution. This methodology posits that the market is a series of repeatable environments where risk must be modeled before profit is pursued.
+
+The scope of this framework synthesizes the live momentum techniques of Ross Cameron—specifically his focus on low-float catalysts—with the systematic options backtesting architecture of the Module 8 framework. This report serves as a blueprint for the "Master Operating Procedure," merging real-time tape reading with the probabilistic modeling of Markov Regimes and Black-Scholes pricing.
+
+2. Source Correlation Summary
+The "5 Pillars of Stock Selection" (Price, Relative Volume, News Catalyst, Percentage Gain, and Low Float) function as the momentum engine, identifying the "fuel" for the market. "Markov Regime Detection" provides the "current," categorizing the environment as Bull, Neutral, or Bear. For the quantitative trader, the pillars provide the specific instrument, while the regime determines the strategy's expectancy.
+
+Methodological Alignment: Market Assessment (Pre-market checklist vs. Markov Regime Detection +/- 5% Momentum). Strategy Validation (Icebreaker quarter-size starters vs. Strategy Backtester simulated price series). Risk Control (1% Account Risk & Max Daily Loss vs. Max Drawdown & S.E.T. Rule Framework). Trade Execution (Micro Pullbacks & ABCD Patterns via tape reading vs. Black-Scholes Greeks: Delta, Theta, Vega).
+
+The "Icebreaker Strategy" serves as a real-time validation tool, much like the "Strategy Backtester" — both prioritize capital preservation over aggressive gains.
+
+3. Key Themes Found Across Sources
+The Primacy of Risk Management: Never risk more than 1% of total equity on a single trade, aligning with the S.E.T. Rule (Strike, Entry, Target/Stop). Data-Driven Decision Making: $12.5 million in audited profits and a 76-day hot streak result from meticulous tracking — mirroring Black-Scholes pricing and Markov Chain probabilities. Psychological Resilience: A "No Trade Day" mirrors the backtester's identification of sub-optimal regimes. Volatility as Catalyst: Whether via High Relative Volume in stocks or Implied Volatility (IV) in options, the professional seeks environments where movement justifies risk.
+
+4. Important Agreements and Synergy
+Ross Cameron's benchmark of 75% accuracy with a 2:1 reward-to-risk ratio aligns with the "Expectancy Per Trade" formula. High win rates are mathematically irrelevant without positive expectancy and managed drawdowns. A profound synergy exists between the "Wheel" strategy and "Day 2 Continuation" trades — both rely on catalyst persistence.
+
+5. Important Differences and Strategy Gaps
+The Execution Window: Momentum is a "sprint" (7:00 AM - 10:00 AM EST). Options trading is a "marathon" focused on Days to Expiration. Instrument Specifics: "Jack Knife" candles are the antithesis of "smooth" Black-Scholes pricing. The Liquidity Paradox: The Backtester uses "synthetic price series" that smooth over live reality (e.g., FORD: 11.89 bid by 12.49 ask = 5% loss on entry).
+
+6. Unique Insights
+Ross Cameron's Psychological Frameworks: The Downward Spiral, Indifferent Trading (outcome of any single trade doesn't disturb center), Lucky Elephant/Bumblebee Mindset.
+Module 8's Technical Frameworks: Markov Regime Thresholds (>+5% Bull, <-5% Bear), Transition Probability (75% stay in current regime vs. 25% transition).
+
+7. Combined Best Explanation: Professional Trading Workflow
+1) Regime Assessment: Markov-style momentum checks. >+5% Aggressive, +/-5% Neutral, <-5% Defensive.
+2) Stock Selection: Apply Five Pillars with breaking news catalysts.
+3) Strategy Validation: Run Backtest for historical expectancy or Icebreaker to confirm live tape temperature.
+4) S.E.T. Execution: Define Strike (entry price), Entry timing (micro-pullback), Target/Stop (Delta/Gamma or Pivot levels).
+5) Post-Trade Audit: Import to dashboard, monitor 2:1 winner-to-loser ratio.
+
+8. Practical Takeaways
+The 1% Rule: Prohibited from risking more than 1% of total account equity per trade. The Quarter-Size Start: Icebreaker on first two trades to validate current volatility. The Simulation Mandate: Complete 50% of Module 8 simulation exercises before committing real capital to a new strategy. The Exit Rule: Identify the "Backside of the Move" or "50% Profit Give-back" point and walk away immediately.
+
+9. Final Integrated Summary
+The convergence of momentum and math teaches that trading is not a game of prediction, but a game of disciplined probability management. Whether navigating Jack Knife candles of a low-float squeeze or managing Theta decay of an Iron Condor, adopt a "Risk-First" architecture. Profitability is the statistical outcome of waiting for A-Quality opportunities with extreme patience and protecting capital with clinical precision. By integrating real-time intuition with quantitative modeling, you become a strategist — the only sustainable path to becoming a "Green Trader."`,
+
+    m9: `Strategic Synthesis of Momentum Day Trading: Low-Float Volatility and Risk Systems
+
+1. Overview of Momentum Trading Dynamics
+Momentum trading is a professional discipline requiring the strategic exploitation of market imbalances. This is a shift from "buy and hold" to a "buy and move" mandate. The goal is to capture high-velocity price expansion fueled by sudden influxes of market participants. This system is grounded in two non-negotiable pillars: volatility and liquidity. Volatility provides the range necessary for institutional-grade returns, while liquidity ensures entry and exit without catastrophic slippage.
+
+The "Sweet Spot" exists at the intersection of the market's leading percentage gainers and high-volume technical pullbacks. We do not gamble on potential; we execute on proven strength. This synthesis has been validated by an audited track record reaching $15.5M-$15.8M in career profits, proving that momentum is a repeatable business process.
+
+2. Source Correlation Summary
+Predictive Phase: Watch List analytics serve as intelligence gathering — scanning for catalysts, analyzing float structures, establishing strategic mandate before the opening bell.
+Execution and Auditing Phase: Recap and Challenge data represent "boots on the ground" reality, auditing theoretical strategy against live market constraints.
+
+This framework scales across diverse environments, from high-leverage offshore margin accounts to US-based cash accounts restricted by the PDT rule. Whether trading in a $15M professional account or a $2,000 Robinhood challenge, the mechanics of momentum remain constant.
+
+3. Key Themes: The Five Pillars and Strategy Frameworks
+Price (2-20): Optimal range for retail participation. Relative Volume (5x+): Critical indicator of supply/demand shift. Catalyst (News): The fundamental engine (e.g., APVO's 75% remission rate news). Percentage Gain (10%+ to 25%+): Validates the move is real. Low Float (<10M-20M shares): Essential for "supply crunch."
+
+Reverse Split mechanics further tighten supply. By reducing shares outstanding to increase price (Market Cap = Shares x Price), a company creates a low-float, high-price environment that traps short sellers during a news-driven demand surge.
+
+Execution Frameworks: Micro Pullbacks (10-Second Entry on the "front side"), ABCD/Cup and Handle (trend continuation), Icebreaker Strategy (1/4 size starter, scale only after $1,000 profit cushion).
+
+4. Important Agreements: Core Axioms
+The Catalyst Mandate: News is the only sustainable driver of demand. The "Base Hit" Philosophy: Target 18-cent average gain per share — compounded over thousands of trades, small wins mitigate catastrophic loss. The Max Loss Rule: Stop after daily loss threshold, 50% peak gains give-back, or three consecutive losses.
+
+5. Important Differences and Contextual Gaps
+Hot Market: Aggressive strategy, trade A & B Quality, full size/max leverage, 70-80%+ accuracy. Cold Market: Defensive strategy, A-Quality only, Icebreaker/quarter size, 30-50% accuracy.
+
+Sector and Brokerage Nuance: Distinguish between high-reliability US Biotech (APVO's 300% squeeze) and volatile Chinese/Hong Kong runners (LGHL, LSE) — international names have a "shorter fuse" with 90% drops following parabolic moves. "Commission-free" brokers use Payment for Order Flow (PFOF) — "Price Improvement" in half-cent increments is a profit-sharing mechanic on your order flow.
+
+6. Unique Insights
+The "Jack Knife" Algorithm Trap: Not a simple reversal — an HFT algorithm trap designed to hunt stop-orders and liquidate retail positions.
+Infrastructure Redundancy: "Mobile Command Center" with Starlink and 5G redundancy — losing connectivity during a trade is unacceptable risk.
+Market Sentiment Themes: Catalysts like "Crypto Treasury" eventually become "overplayed" — once the theme loses trust, even strong headlines fail to move price.
+
+7. The Unified Trading Workflow
+1) Intelligence (6:30 AM): Identify top gainers, validate against Five Pillars.
+2) Validation: Confirm the "Front Side" move.
+3) Entry (10-Second Chart): Execute Icebreaker on first candle to make new high.
+4) Scaling: Add only if trade moves into immediate profit.
+5) Exit: Liquidate into the "peak" before transition to "back side."
+
+8. Practical Takeaways
+Daily Pre-Trading Checklist: Internal (Sleep, emotional centering — even "Dramamine ferry incident" illustrates trading while compromised is a capital risk). External (Yesterday's leaders, S&P 500 sentiment, sector themes). Psychological (Lucky Elephant or Bumblebee sweaters as psychological anchors for "flow state").
+
+The "One Bullet" Protocol: Under $25,000, adopt "surgical strike" mindset — one trade per day to bypass PDT, requiring extreme patience.
+
+9. Final Integrated Summary
+This framework transforms market volatility into a structured, audited business process. By prioritizing the Five Pillars and executing with 10-second chart precision, we move from speculation to statistical performance.
+
+10. What the Sources Collectively Teach
+Trading is a "Performance Sport" of statistics. Success is defined not by the stocks you trade, but by your discipline in following a repeatable system. Survival is the path to thriving. By managing the emotional "fuse" and adhering to strict risk thresholds, a trader ensures they remain capitalized to exploit the next hot cycle.`,
+
+    m10: `The Architecture of Momentum: A Synthesized Framework for Small-Cap Day Trading
+
+1. Overview of the Momentum Trading Ecosystem
+Momentum trading in small-cap equities is the disciplined pursuit of volatility triggered by acute supply-demand imbalances. The system exploits extreme price extensions—often 100% gainers—through rigorous risk management and the harvesting of transient liquidity. This framework focuses on low-float securities (typically under 10 million shares) priced between $2.00 and $20.00 with exceptional relative volume. By targeting the "front side" of a move, the strategist captures parabolic growth driven by institutional-grade catalysts.
+
+This introductory synthesis serves as the foundation for a cohesive master strategy, where individual trading sessions are distilled into a singular, repeatable architecture.
+
+2. Source Correlation Summary
+A robust framework requires correlating multiple trading sessions, watch lists, and educational deep-dives. Whether observing a $105,000 profit session or a disciplined "No-Trade Day," the underlying mechanics remain identical.
+
+The "Master Workflow": 1) Scan: Real-time identification of top percentage gainers. 2) Identify Catalyst: Confirming a fundamental driver (FDA approvals, mergers, sector themes). 3) Apply "Five Pillars": Filtering through rigid selection criteria. 4) Execute via "Icebreaker": 1/4 position size to probe market receptivity. 5) Post-Trade Analysis: Mandatory auditing of performance metrics.
+
+This workflow bridges the gap between high-frequency execution and retail account constraints, providing a scalable blueprint for professional-grade consistency.
+
+3. Key Themes Found Across Sources
+The Power of Volatility: Strategy relies on extreme price extensions — APVO's 361% surge, SPB's massive short squeeze. Without 100%+ gainers, the momentum edge evaporates.
+Market Sentiment Cycles: Capital rotates through "flavors" — Biotech clinical results to "Crypto Treasuries" to Chinese IPOs/Singapore-based names (MCVT, LGCL).
+The "Retail Reality": PDT rule requires $25,000 minimum for margin. Cash accounts need "one-shot-per-day" discipline.
+Liquidity and "The Spread": Thin liquidity in low-float stocks where bid-ask spreads can induce immediate 5-10% drawdown upon entry.
+
+4. Important Agreements: The "Non-Negotiables"
+The Five Pillars of Stock Selection: Price 2.00-20.00, Relative Volume 5x+ (ideally 100x), Fresh breaking news catalyst, Float <10 million shares, Percentage Gain minimum 10% (25% mandated for high-probability).
+
+The "Icebreaker Strategy" universally applied: In one session, Ross began the day 4/4 red using Icebreaker positions. Because size was throttled, he avoided emotional downward spiral and recovered to finish with $105,000 in profit.
+
+5. Important Differences, Gaps, and Contextual Shifts
+Hot vs. Cold Markets: "Hot" allows aggressive sizing into B-quality setups. "Cold or Holiday" requires "No-Trade Days" or extreme quality threshold to avoid "grinder" stocks.
+Account Size Disciplines: Large accounts focus on scaling. Small accounts restricted by PDT must maintain "one-bullet" mentality.
+Data Gaps: Exact entry prices often best understood via 10-second chart rather than 1-minute — a detail missing in broader recaps but essential for replicating entries.
+
+6. Unique Insights by Source
+The Jack-knife Candle: Violent, vertical rejection caused by market orders, stop-losses, and HFT algorithms designed to "take money out of your pocket." Avoid buying the "top of the spike."
+Technical Redundancy: Mobile Command Center requires redundant internet (Starlink with 5G backup) for zero disruption.
+Psychological Grounding: Minor physical annoyances can trigger emotional hijacking. If not centered, step away.
+Regulatory Shifts: FINRA has proposed reducing PDT requirement from $25,000 to $2,000, which would radically expand retail trader participation.
+
+7. The Combined Best Explanation: The Unified Trading Workflow
+Multi-Timeframe Logic: Core setups (Micro Pullback, ABCD Pattern) may look "messy" on 1-minute chart but reveal clear "A-Quality" pivots on 15-minute timeframe or 10-second chart.
+Momentum Resumption: Buy the first candle to make a new high following brief consolidation — entering at moment of momentum resumption, not chasing extended moves.
+Risk Management — The 18/18 Score: Profitability governed by three core components: Accuracy, P/L Ratio, and Consistency. Professional score of 18/18 (6 points per category). The 50% Rule (walk away if giving back half of peak gains), The 3-Loss Rule (three consecutive losses means market is cold), The Cushion (Icebreaker builds profit cushion before full-size positions).
+
+8. Practical Takeaways and Action Steps
+1) Pre-Flight Checklist: Audit internal state and external market sentiment.
+2) Strict Selection: Screen exclusively for Five Pillars. Reject "grinders" lacking fresh catalyst.
+3) Probing Execution: Icebreaker for first 1-3 trades. Scale only when market validates "Hot" status.
+4) Operational Discipline: Walk away when "window of profitability" (7:00 AM to 10:30 AM EST) closes or risk rule breached.
+
+9. Final Integrated Summary: The Momentum Mindset
+Momentum trading is a high-performance sport and a game of statistics. Success is defined not by predicting the future, but by managing losses when the market fails to behave as predicted. "Survive till you Thrive" — protecting capital during "Cold" cycles is the only way to ensure liquidity for "Hot" cycles.
+
+10. What the Sources Collectively Teach: Three Categorical Truths
+1) Identify the Cycle: The market moves in waves (Biotech, Crypto, etc.). Your primary job is recognizing the current theme and applying the corresponding risk profile.
+2) Discipline Over Strategy: Even a perfect strategy fails without emotional fortitude to stop trading on red days or "no-trade" days.
+3) Data-Driven Accountability: Rigorous tracking via TradeView or Excel is the only path to identifying psychological leaks and refining technical accuracy. Success is not about the home run; it is about base hits and absolute avoidance of the "strikeout" that ends a career.`
   }
 };
 
@@ -2282,6 +2517,18 @@ RULES FOR RESPONDING AS ${mentor.name.toUpperCase()}:
       console.error('Mentor video fetch error (non-blocking):', vErr.message);
     }
 
+    // Fallback: if YouTube API returned nothing, generate YouTube search links
+    // from MENTOR_VIDEO_QUERIES so students ALWAYS get clickable video links
+    if (mentorVideos.length === 0 && MENTOR_VIDEO_QUERIES[mentorId] && MENTOR_VIDEO_QUERIES[mentorId][moduleId]) {
+      const queries = MENTOR_VIDEO_QUERIES[mentorId][moduleId];
+      mentorVideos = queries.slice(0, 3).map(q => ({
+        title: q.replace(/Ross Cameron /i, '').trim(),
+        url: `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,
+        thumbnail: null,
+        fallback: true
+      }));
+    }
+
     res.json({
       success: true,
       answer,
@@ -2290,7 +2537,12 @@ RULES FOR RESPONDING AS ${mentor.name.toUpperCase()}:
       moduleId,
       model: data.model,
       usage: data.usage,
-      videos: mentorVideos.slice(0, 3).map(v => ({ title: v.title, url: v.url, thumbnail: v.thumbnail }))
+      videos: mentorVideos.slice(0, 3).map(v => ({
+        title: v.title,
+        url: v.url,
+        thumbnail: v.thumbnail || null,
+        fallback: v.fallback || false
+      }))
     });
 
   } catch (error) {

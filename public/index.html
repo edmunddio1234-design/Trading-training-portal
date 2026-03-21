@@ -2999,20 +2999,32 @@ function MentorChat({ moduleId, moduleTitle, mentor }) {
               {msg.content}
             </div>
             {msg.videos && msg.videos.length > 0 && (
-              <div style={{padding:'8px 16px 12px',background:'rgba(124,58,237,0.03)',borderLeft:'3px solid #7C3AED',marginLeft:12,marginBottom:8,borderRadius:'0 8px 8px 0'}}>
-                <div style={{fontSize:11,fontWeight:700,color:'#7C3AED',marginBottom:8,display:'flex',alignItems:'center',gap:4}}>🎥 {mentor.name}'s Related Videos:</div>
+              <div style={{padding:'10px 16px 12px',background:'linear-gradient(135deg, rgba(124,58,237,0.04), rgba(124,58,237,0.08))',borderLeft:'3px solid #7C3AED',marginLeft:12,marginBottom:8,borderRadius:'0 10px 10px 0'}}>
+                <div style={{fontSize:12,fontWeight:700,color:'#7C3AED',marginBottom:10,display:'flex',alignItems:'center',gap:6}}>
+                  <span style={{fontSize:16}}>🎥</span> {mentor.name}'s Videos on This Topic:
+                </div>
                 {msg.videos.map((vid, vi) => (
                   <a key={vi} href={vid.url} target="_blank" rel="noopener noreferrer" style={{
-                    display:'flex',alignItems:'center',gap:10,padding:'8px',marginBottom:4,
-                    background:'#fff',borderRadius:8,textDecoration:'none',color:'inherit',
-                    border:'1px solid rgba(124,58,237,0.15)',transition:'all 0.2s'
+                    display:'flex',alignItems:'center',gap:10,padding:'10px 12px',marginBottom:6,
+                    background:'#fff',borderRadius:10,textDecoration:'none',color:'inherit',
+                    border:'1px solid rgba(124,58,237,0.18)',transition:'all 0.2s',
+                    boxShadow:'0 1px 4px rgba(124,58,237,0.08)'
                   }}>
-                    {vid.thumbnail && <img src={vid.thumbnail} alt="" style={{width:80,height:45,borderRadius:4,objectFit:'cover',flexShrink:0}} />}
+                    {vid.thumbnail ? (
+                      <img src={vid.thumbnail} alt="" style={{width:88,height:50,borderRadius:6,objectFit:'cover',flexShrink:0}} />
+                    ) : (
+                      <div style={{width:88,height:50,borderRadius:6,flexShrink:0,
+                        background:'linear-gradient(135deg, #7C3AED, #6D28D9)',
+                        display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:20
+                      }}>▶</div>
+                    )}
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:12,fontWeight:600,color:'var(--text-primary)',lineHeight:1.3,
+                      <div style={{fontSize:13,fontWeight:600,color:'var(--text-primary)',lineHeight:1.3,
                         display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'
                       }}>{vid.title}</div>
-                      <div style={{fontSize:10,color:'#7C3AED',fontWeight:600,marginTop:2}}>▶ Watch on YouTube</div>
+                      <div style={{fontSize:10,color:'#7C3AED',fontWeight:600,marginTop:3}}>
+                        ▶ {vid.fallback ? 'Search on YouTube' : 'Watch on YouTube'}
+                      </div>
                     </div>
                   </a>
                 ))}
