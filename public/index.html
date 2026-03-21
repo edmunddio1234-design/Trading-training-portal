@@ -427,6 +427,25 @@
 .ai-tutor-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 20px; border-top: 1px solid var(--border); }
 .ai-tutor-suggestions button { background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
 .ai-tutor-suggestions button:hover { border-color: var(--accent); color: var(--accent); background: rgba(13,147,115,0.06); }
+/* AI Tutor + Mentor Tab System */
+.ai-tab-bar { display: flex; border-bottom: 2px solid var(--border); background: var(--bg-secondary); }
+.ai-tab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; border: none; background: none; font-family: inherit; transition: all 0.2s; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.ai-tab:hover { color: var(--text-primary); background: var(--bg-hover); }
+.ai-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(13,147,115,0.04); }
+.ai-tab.mentor-tab.active { color: #7C3AED; border-bottom-color: #7C3AED; background: rgba(124,58,237,0.04); }
+.ai-tab .tab-icon { font-size: 16px; }
+.ai-tab .tab-badge { font-size: 9px; padding: 2px 6px; border-radius: 8px; font-weight: 700; letter-spacing: 0.3px; }
+.ai-tab .tab-badge.tutor { background: rgba(13,147,115,0.15); color: var(--accent); }
+.ai-tab .tab-badge.mentor { background: rgba(124,58,237,0.15); color: #7C3AED; }
+.mentor-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: linear-gradient(135deg, #5B21B6, #7C3AED); color: #fff; }
+.mentor-header-title { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+.mentor-header-badge { font-size: 10px; background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.9); padding: 3px 8px; border-radius: 10px; font-weight: 600; }
+.mentor-msg.assistant { border-left: 3px solid #7C3AED; }
+.mentor-send { background: linear-gradient(135deg, #7C3AED, #6D28D9) !important; }
+.mentor-send:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(124,58,237,0.3) !important; }
+.mentor-unavailable { padding: 24px 20px; text-align: center; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
+.mentor-unavailable .mentor-icon { font-size: 32px; margin-bottom: 12px; }
+.mentor-unavailable .mentor-name { font-weight: 700; color: #7C3AED; font-size: 15px; }
 </style>
 </head>
 <body>
@@ -2880,6 +2899,190 @@ function AITutor({ moduleId, moduleTitle }) {
   );
 }
 
+// ===== MENTOR CHAT COMPONENT =====
+function MentorChat({ moduleId, moduleTitle, mentor }) {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [messages]);
+
+  useEffect(() => {
+    setMessages([]);
+    setInput('');
+  }, [moduleId]);
+
+  const sendMessage = async (overrideQuestion) => {
+    const question = (overrideQuestion || input).trim();
+    if (!question || loading) return;
+
+    setMessages(prev => [...prev, { role: 'user', content: question }]);
+    setInput('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/trading-ai/mentor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question,
+          moduleId,
+          mentorId: mentor.id,
+          history: messages.slice(-8)
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setMessages(prev => [...prev, { role: 'assistant', content: data.answer }]);
+      } else if (data.rateLimited) {
+        setMessages(prev => [...prev, { role: 'assistant', content: data.answer }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'error', content: data.error || 'Something went wrong.' }]);
+      }
+    } catch (err) {
+      setMessages(prev => [...prev, { role: 'error', content: 'Network error. Please try again.' }]);
+    }
+    setLoading(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  };
+
+  const clearChat = () => { setMessages([]); setInput(''); };
+
+  const suggestions = [
+    `What is the Cameron Method?`,
+    `Explain the Icebreaker Strategy`,
+    `What is a Jack-Knife candle?`,
+    `How do I manage risk as a beginner?`
+  ];
+
+  return (
+    <div className="ai-tutor-container">
+      <div className="mentor-header">
+        <div className="mentor-header-title">
+          <span>{mentor.avatar}</span> Ask {mentor.name}
+          <span className="mentor-header-badge">{mentor.title.toUpperCase()}</span>
+        </div>
+        {messages.length > 0 && (
+          <button className="ai-tutor-clear" onClick={clearChat}>Clear Chat</button>
+        )}
+      </div>
+
+      <div className="ai-tutor-messages">
+        {messages.length === 0 && (
+          <div style={{textAlign:'center',padding:'20px',color:'var(--text-muted)',fontSize:13,lineHeight:1.6}}>
+            <div style={{fontSize:28,marginBottom:8}}>{mentor.avatar}</div>
+            <div style={{fontWeight:700,color:'#7C3AED',fontSize:15,marginBottom:4}}>Ask {mentor.name}</div>
+            Ask questions and get answers drawn directly from {mentor.name}'s teachings on this module.
+          </div>
+        )}
+        {messages.map((msg, i) => (
+          <div key={i} className={`ai-tutor-msg ${msg.role} ${msg.role === 'assistant' ? 'mentor-msg' : ''}`}>
+            {msg.role === 'assistant' && <div style={{fontSize:11,fontWeight:700,color:'#7C3AED',marginBottom:4}}>{mentor.avatar} {mentor.name} says:</div>}
+            {msg.content}
+          </div>
+        ))}
+        {loading && (
+          <div className="ai-tutor-typing">
+            <span style={{background:'#7C3AED'}} /><span style={{background:'#7C3AED'}} /><span style={{background:'#7C3AED'}} />
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {messages.length === 0 && (
+        <div className="ai-tutor-suggestions">
+          {suggestions.map((q, i) => (
+            <button key={i} onClick={() => sendMessage(q)} style={{borderColor:'rgba(124,58,237,0.2)'}}>{q}</button>
+          ))}
+        </div>
+      )}
+
+      <div className="ai-tutor-input-row">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={`Ask ${mentor.name} about ${moduleTitle || 'this module'}...`}
+          disabled={loading}
+          maxLength={500}
+        />
+        <button
+          className="ai-tutor-send mentor-send"
+          onClick={() => sendMessage()}
+          disabled={loading || !input.trim()}
+        >
+          {loading ? '...' : `Ask ${mentor.name} →`}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ===== AI TUTOR + MENTORS TAB WRAPPER =====
+function AITutorWithMentors({ moduleId, moduleTitle }) {
+  const [activeTab, setActiveTab] = useState('tutor');
+  const [mentors, setMentors] = useState({});
+  const [mentorAvailable, setMentorAvailable] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/trading-ai/mentor-status')
+      .then(r => r.json())
+      .then(data => {
+        setMentorAvailable(data.available);
+        setMentors(data.mentors || {});
+      })
+      .catch(() => {});
+  }, []);
+
+  // Check if any mentor has content for this module
+  const availableMentors = Object.entries(mentors)
+    .filter(([id, m]) => m.modules.includes(moduleId))
+    .map(([id, m]) => ({ id, ...m }));
+
+  return (
+    <div>
+      <div className="ai-tab-bar">
+        <button className={`ai-tab ${activeTab === 'tutor' ? 'active' : ''}`} onClick={() => setActiveTab('tutor')}>
+          <span className="tab-icon">🤖</span>
+          <span>AI Tutor</span>
+          <span className="tab-badge tutor">CLAUDE</span>
+        </button>
+        {availableMentors.map(m => (
+          <button key={m.id} className={`ai-tab mentor-tab ${activeTab === m.id ? 'active' : ''}`} onClick={() => setActiveTab(m.id)}>
+            <span className="tab-icon">{m.avatar}</span>
+            <span>Ask {m.name}</span>
+            <span className="tab-badge mentor">MENTOR</span>
+          </button>
+        ))}
+        {availableMentors.length === 0 && (
+          <button className="ai-tab mentor-tab" style={{opacity:0.4,cursor:'default'}}>
+            <span className="tab-icon">🎓</span>
+            <span>Mentors</span>
+            <span className="tab-badge mentor">COMING SOON</span>
+          </button>
+        )}
+      </div>
+
+      {activeTab === 'tutor' && (
+        <AITutor moduleId={moduleId} moduleTitle={moduleTitle} />
+      )}
+
+      {availableMentors.map(m => (
+        activeTab === m.id && (
+          <MentorChat key={m.id} moduleId={moduleId} moduleTitle={moduleTitle} mentor={m} />
+        )
+      ))}
+    </div>
+  );
+}
+
 
 function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCompleted, onEdit, onNext, hasNext, addToast }) {
   const moduleIndex = modules.findIndex(m => m.id === module.id);
@@ -3051,8 +3254,8 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
         />
       </CollapsibleSection>
 
-      <CollapsibleSection title="🤖 AI Tutor — Ask About This Module">
-        <AITutor moduleId={module.id} moduleTitle={module.title} />
+      <CollapsibleSection title="🤖 AI Tutor & Mentors — Ask About This Module">
+        <AITutorWithMentors moduleId={module.id} moduleTitle={module.title} />
       </CollapsibleSection>
 
 

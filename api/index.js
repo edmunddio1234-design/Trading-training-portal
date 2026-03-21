@@ -1717,6 +1717,243 @@ Never deploy all capital at once. Use the Icebreaker approach:
 3. Only scale to full size after trade is validated
 This prevents emotional hijacking during choppy periods and protects capital for the best setups.`;
 
+// ===== MENTOR SOURCES — Curated mentor teachings per module =====
+const MENTOR_SOURCES = {
+  ross: {
+    name: 'Ross',
+    avatar: '🎓',
+    title: 'Momentum Trading Mentor',
+    m1: `The Momentum Synthesis: A Master Framework for High-Volatility Small-Cap Trading
+
+1. Overview of the Topic
+In the high-stakes arena of small-cap equities, momentum trading is the ultimate performance sport of numbers. The ability to capitalize on rapid price expansions—often 100% to 500% intraday—is not a matter of luck, but of professional execution and the management of statistical probabilities. This framework synthesizes elite execution tactics, rigorous risk mitigation, and the psychological fortitude required to bridge the "Chasm of Fear."
+
+The "Cameron Method" is defined by the symbiotic relationship between technical chart patterns and high-impact news catalysts. It focuses on the fundamental imbalance of supply and demand, specifically identifying low-float stocks experiencing massive surges in Relative Volume (RVOL). By reconciling historical audits, real-time trading logs (Tradervue), and pedagogical manuals, we have developed a scalable, rule-based system that converts raw market data into consistent profitability.
+
+2. Source Correlation Summary
+Validation of a trading system requires the reconciliation of three distinct data points: instructional theory, historical audits, and real-time application. Without this "operational ground truth," a strategy is merely anecdotal.
+
+The pedagogical focus of the Impact Trading Academy manual provides the "mindset foundation" necessary to avoid "emotional hijacking." This is evidenced in real-time recaps where technical patterns, such as the "Jack-Knife" candle, trigger primitive fear responses. Successful execution requires "emotional centering"—a state where a trader can process a sudden 10% rejection without succumbing to revenge trading or "shorter fuses" caused by external stressors.
+
+3. Key Themes Found Across Sources
+Elite trading is a multi-dimensional discipline requiring total alignment between market sentiment, technical setups, and personal state.
+
+The Anatomy of a Catalyst: The quality of the news dictates the longevity of the price expansion. High-quality news like clinical trial results or defense contracts creates sustained demand, whereas speculative headlines often lead to "pop and drop" scenarios.
+
+The Physics of Supply and Demand: The "Five Pillars of Stock Selection" (Price, Volume, News, Price Range, Float) represent the quantitative filter for a squeeze. A stock with a 10M share float trading 10M shares of volume is a 1:1 ratio. However, a 1M share float trading 10M shares of volume creates a 10:1 imbalance—the physical engine behind 1,000% moves.
+
+The Temporal Window: Liquidity and "fresh news" are concentrated in the 7:00 AM – 10:00 AM EST window.
+
+4. Important Agreements Between Sources
+Professional standards built on universal mandates:
+- The Primacy of Accuracy: Maintaining a 60-90% win rate on "A-Quality" setups provides financial and emotional capital for larger risks.
+- Risk Mitigation (The Icebreaker Strategy): Start with quarter-sized "starter" positions. Full-size positions only after the trade proves validity.
+- The "Front Side" Mandate: Aggressively trade the "front side" (higher highs, higher lows). Trading the "back side" is strictly prohibited.
+
+5. Important Differences or Gaps
+Account Constraints: Margin accounts allow high leverage and multiple intraday trades. Cash accounts are restricted by T+1 settlement, creating "One-Bullet Syndrome"—forcing traders to seek "home runs," leading to over-holding and catastrophic losses.
+
+Data Gaps: International headlines (Singaporean/Chinese firms) are treated with technical skepticism—often move on vague news and prone to violent rejections.
+
+6. Unique Insights
+- The "Jack-Knife" Candle: A violent rejection caused by market orders, stop-loss triggers, and HFT algorithms. A "warning shot" that the ticker is no longer safe for retail.
+- Psychology of Superstition as Confidence Proxy: Superstition serves as a psychological anchor, preventing the "short fuse" that leads to revenge trading.
+- Verified Financial Reality: The audited figure of $15.8M (12.5M audited through December plus $3.3M YTD) anchors the strategy's validity.
+
+7. The Execution Framework
+Phase I - Pre-Trading Checklist: 9-point internal/external audit (sleep quality, emotional centering, market temperature, SPY sentiment).
+Phase II - Selection & Scanning: Filter via Five Pillars. Identify leading percentage gainer. Check RVOL (ideally 100x to 13,000x above average).
+Phase III - Entry & Patterns: Execute only on A-Quality logic: Micro-Pullback, ABCD Pattern, Cup and Handle.
+Phase IV - Position Management: Start with Icebreaker. Scale to full size only after securing profit cushion (e.g., $1,000). Exit immediately on "back side" or "Jack-Knife."
+
+8. Practical Takeaways
+1. The 3-Loss Rule: Terminate trading after three consecutive large losses.
+2. The 50% Give-Back Rule: If you surrender 50% of gains, walk away.
+3. Broker-Level Restrictions: Implement Max Share Size Restriction in your platform.
+4. The Pedagogical Path: Alpha Phase (simulator), Beta Phase (one trade per day with real money).
+5. The Daily Audit: Log every trade in Tradervue. Track accuracy and P/L ratios.
+
+9. Mastery Summary
+Mastery is realizing trading is a Performance Sport of Numbers. 2025 data proves: Less is More—higher profits achieved with half the trades of 2024. Profitability is 20% strategy and 80% the discipline to execute when the "Chasm of Fear" opens.`,
+
+    m2: `The Unified Theory of Momentum: A Synthesis of Market Mechanics and Tactical Execution
+
+1. Overview: The Reconciliation of Institutional Physics and Tactical Execution
+Professional trading is the calculated reconciliation of institutional physics and retail execution. Success is predicated on dual mastery: understanding the "why" of market movement—governed by supply and demand mechanics—and the "how" of tactical profitability—dictated by momentum strategies and extreme psychological discipline.
+
+Two core pillars: Market Microstructure (institutional order flow moving the $50 trillion global equity market) and Momentum Trading (methodology to capitalize on resulting imbalances). To navigate the chasm between macro theory and the micro-reality of a $2,000 account, triangulate data from academic foundations and live execution transcripts.
+
+2. Key Themes
+- Institutional Dominance as Prime Mover: Institutions control 80-90% of volume. Professional momentum trading hunts for "100x relative volume" and "breaking news"—the literal footprints of these giants.
+- The Geometry of Price Action: The OHLC bar is the fundamental market language. The Close represents consensus, while High/Low indicate conviction vs. disagreement. A high close relative to range signals buyer dominance.
+- The Asymmetry of Risk: The Balance → Imbalance → Movement cycle. Enter during transition to "Imbalance" via the Icebreaker Strategy with quarter-size starters.
+
+3. Important Agreements
+1. Law of Supply and Demand: Price moves from order imbalance. When demand overwhelms supply (triggered by catalyst), price must rise to find equilibrium.
+2. Value of Footprints: Large players cannot hide. Significant moves must be backed by heavy volume to be valid.
+3. Systematic Methodology: Pre-trading Checklist and Step-by-Step Workflows eliminate gambling instinct. Success built on A-Quality setups.
+
+4. Important Differences
+- Zones vs. Pivots: "Demand/Supply Zones" represent physical reality of unfilled institutional orders. Simple "Pivots" or "Support/Resistance" are often psychological levels easily manipulated by HFT algorithms. Zones are more robust.
+- Timeframe Focus: Manual analyzes daily/weekly OHLC for structure; tactical execution requires 10-second and 1-minute charts to identify the exact "Moment of Truth."
+- Small Account Variable: Navigate PDT Rule and Cash Account limitations. Tightened filters: Price 1.50-6, Float <5M (vs. standard Price 2-20, Float <10M).
+
+5. Unique Insights
+- The Three-Stage Sequence: Balance (consolidation) → Imbalance (institutional entry) → Movement (directional surge).
+- The Jack-Knife Candle: A mechanical predatory event where HFT algorithms and stop-loss cascades extract money from retail. A "rejection" warning the Momentum Phase is compromised.
+- The Icebreaker Strategy: First trades use 1/4 size to build profit cushion. Only get aggressive once "in the green."
+
+6. The Master Workflow
+1. Scanning (Demand Detection): Small Account 5 Pillars (Price 1.50-6, Float <5M). Look for Institutional Footprint (volume 5x-100x above average).
+2. Verification (Imbalance Confirmation): Confirm driven by fresh catalyst (Breaking News).
+3. Execution (Zone Entry): Switch to 10-second/1-minute timeframe. Wait for Micro Pullback into Demand Zone. Buy the "Moment of Truth"—the second the first candle makes a new high.
+4. Management (Scaling): Icebreaker technique. Size up only if green and breaking high of day. Exit on Jack-Knife or Supply Zone.
+5. Decision to Abstain: If market is "Cold" or "Grinding" or trader not grounded, stay flat.
+
+7. Practical Takeaways
+Pre-Market: Assess sleep quality, identify market cycle (Hot vs. Cold), define max share size and daily max loss.
+Execution: Verify A-Quality (all 5 Pillars + news catalyst), break the ice with 1/4 size, avoid the backside.
+Risk: Maintain 2:1 Profit-Loss Ratio, Rule of Three (stop after 3 large losses or 50% give-back).
+
+8. Final Summary
+Trading is a game of statistics governed by supply and demand. Follow institutional footprints while maintaining extreme emotional discipline. Master the Balance → Imbalance → Movement cycle. Protect capital with the Icebreaker, wait for A-Quality setups, respect the Jack-Knife warning. Survive till you Thrive.`
+  }
+};
+
+// Mentor chat endpoint
+app.post('/api/trading-ai/mentor', async (req, res) => {
+  try {
+    const { question, moduleId, mentorId, history } = req.body;
+
+    if (!question || !question.trim()) {
+      return res.status(400).json({ error: 'Question is required' });
+    }
+    if (!mentorId || !MENTOR_SOURCES[mentorId]) {
+      return res.status(400).json({ error: 'Unknown mentor' });
+    }
+
+    // Rate limiting (shared with tutor)
+    const allowed = await checkTutorRateLimit();
+    if (!allowed) {
+      return res.status(429).json({
+        success: false,
+        answer: "You've reached the question limit (30/hour). Take a break and come back shortly!",
+        rateLimited: true
+      });
+    }
+
+    // Get Anthropic API key
+    const settings = await kvGet('settings', {});
+    const apiKey = settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({ error: 'No Anthropic API key configured. An admin needs to set this up in Settings.' });
+    }
+
+    const mentor = MENTOR_SOURCES[mentorId];
+    const mentorContent = mentor[moduleId] || '';
+
+    if (!mentorContent) {
+      return res.json({
+        success: true,
+        answer: `${mentor.name} hasn't shared specific teachings for this module yet. Check back soon — more content is being added!`
+      });
+    }
+
+    // Get module title
+    const modules = await getModules();
+    const mod = modules.find(m => m.id === moduleId);
+    const moduleTitle = mod ? mod.title : 'this module';
+
+    const systemPrompt = `You are ${mentor.name}, a seasoned trading mentor at the Impact Trading Academy. You are speaking directly to a student who is studying Module: "${moduleTitle}".
+
+YOUR TEACHING MATERIAL (answer ONLY from this):
+---
+${mentorContent}
+---
+
+RULES FOR RESPONDING AS ${mentor.name.toUpperCase()}:
+1. Speak in first person as ${mentor.name}. Use phrases like "In my experience...", "What I've found is...", "The way I teach this is..."
+2. Answer ONLY using the teaching material above. If the question goes beyond your material, say "That's a great question, but it goes beyond what I cover in this module. Stick to the core concepts here first."
+3. Be direct, confident, and motivating — like a mentor who genuinely wants the student to succeed.
+4. Use ${mentor.name}'s specific terminology and frameworks (e.g., "Cameron Method", "Jack-Knife candle", "Icebreaker Strategy", "Front Side Mandate").
+5. When explaining concepts, ground them in real examples from the material.
+6. Keep answers focused and practical — 2-4 paragraphs. Students need clarity, not lectures.
+7. If the student asks about risk, ALWAYS reinforce the rules: 1% Rule, 3-Loss Rule, 50% Give-Back Rule.
+8. End with a specific actionable step the student can take right now.
+9. Never give specific financial advice or recommend specific trades. You are a mentor and educator.`;
+
+    // Build messages array
+    const messages = [];
+    if (Array.isArray(history)) {
+      for (const h of history.slice(-4)) {
+        if (h.role === 'user' || h.role === 'assistant') {
+          messages.push({ role: h.role, content: h.content });
+        }
+      }
+    }
+    messages.push({ role: 'user', content: question });
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: messages
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      console.error('Mentor API error:', response.status, errData);
+      return res.status(response.status).json({
+        error: errData.error?.message || `API returned ${response.status}`
+      });
+    }
+
+    const data = await response.json();
+    const answer = data.content
+      ?.filter(c => c.type === 'text')
+      ?.map(c => c.text)
+      ?.join('\n') || 'I was unable to generate a response. Please try again.';
+
+    res.json({
+      success: true,
+      answer,
+      mentorId,
+      mentorName: mentor.name,
+      moduleId,
+      model: data.model,
+      usage: data.usage
+    });
+
+  } catch (error) {
+    console.error('Mentor chat error:', error);
+    res.status(500).json({ error: error.message || 'Failed to get mentor response' });
+  }
+});
+
+// Mentor status endpoint
+app.get('/api/trading-ai/mentor-status', async (req, res) => {
+  const settings = await kvGet('settings', {});
+  const hasKey = !!(settings.anthropicApiKey || process.env.ANTHROPIC_API_KEY);
+  const mentors = {};
+  for (const [id, mentor] of Object.entries(MENTOR_SOURCES)) {
+    mentors[id] = {
+      name: mentor.name,
+      avatar: mentor.avatar,
+      title: mentor.title,
+      modules: Object.keys(mentor).filter(k => k.startsWith('m') && /^m\d+$/.test(k))
+    };
+  }
+  res.json({ available: hasKey, mentors });
+});
+
 app.post('/api/trading-ai/ask', async (req, res) => {
   try {
     const { question, moduleId, history } = req.body;
