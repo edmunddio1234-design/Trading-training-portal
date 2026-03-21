@@ -893,6 +893,11 @@ const MENTOR_VIDEO_QUERIES = {
       'Ross Cameron market psychology Dunning Kruger trading',
       'Ross Cameron Jack Knife candle HFT algorithms stop loss',
       'Ross Cameron Houston protocol analyzing losing trades'
+    ],
+    m13: [
+      'Ross Cameron small cap momentum front side back side trading',
+      'Ross Cameron downward spiral revenge trading psychology',
+      'Ross Cameron micro pullback ABCD pattern execution'
     ]
   }
 };
@@ -2503,7 +2508,55 @@ Broker-Level Enforcement: Hard-code "Max Position Size" at broker level as physi
 Statistical Verification: Execute minimum 100 trades in simulator to verify positive P/L ratio before committing capital.
 
 8. Final Summary
-Profitability in momentum trading is a function of accuracy, and accuracy is a function of discipline. The market rewards patient execution of A-quality setups meeting the five pillars. By utilizing the Icebreaker strategy and focusing on the front-side of moves, traders mitigate HFT jack-knife candles and emotional volatility. The objective: survive until you thrive — preserving capital during the grind so the trader is fully funded when the next 300% biotech short squeeze arrives.`
+Profitability in momentum trading is a function of accuracy, and accuracy is a function of discipline. The market rewards patient execution of A-quality setups meeting the five pillars. By utilizing the Icebreaker strategy and focusing on the front-side of moves, traders mitigate HFT jack-knife candles and emotional volatility. The objective: survive until you thrive — preserving capital during the grind so the trader is fully funded when the next 300% biotech short squeeze arrives.`,
+    m13: `Comprehensive Analysis of Small-Cap Momentum Trading Strategies: A Multi-Source Correlation Report
+
+1. Document Overview and Strategic Context
+In the high-stakes environment of small-cap equity markets, momentum trading serves as a primary vehicle for rapid capital appreciation. This report synthesizes quantitative metrics, instructional modules, and live execution recaps to provide a unified strategic framework. By correlating data from seasoned professionals — including audited results showing over $12.5 million in career profits — we establish a clear path from theoretical market mechanics to high-probability execution and essential risk mitigation.
+
+The scope focuses on the transition from static strategy to dynamic execution, analyzing how market sentiment serves as the ultimate filter for performance. This synthesis identifies recurrent themes across thousands of trades, providing foundational knowledge to navigate the "front side" of a move while avoiding the capital-destructive "back side."
+
+2. Cross-Source Thematic Analysis
+The Primacy of the Catalyst: High-velocity momentum requires a fundamental imbalance. Breaking news (Biotech clinical trials, structural "Crypto Treasury" shifts) provides the "Why." The "So What?" layer is crucial — for companies like LGHL, a crypto-focused headline transforms the entity into a holding company for digital assets, making the stock explosive but hyper-sensitive to Bitcoin price fluctuations.
+
+Dynamic Risk Management: The Icebreaker Strategy serves as the defensive gatekeeper — 1/4 size "test" position to gauge market synchronization. Only after validation does the trader move to "Scaling" — offensive expansion into strength. In "cold" cycles, losses are throttled at the gate.
+
+Data-Driven Discipline: Professional framework operates on 67-76% accuracy rate with targeted average gain of 18 cents per share. Quantitative rigor replaces intuition, allowing audit by price range, float, and time of day to identify the specific "sweet spot."
+
+3. Strategic Agreements and Core Pillars
+The Five Pillars: Price ($2.00-$20.00), Relative Volume (5x+ average), News Catalyst (the "Why"), Percentage Gain (10-25%+), Float (ideally <10M shares).
+
+Rules for Walking Away: The 50% Profit Give-Back Rule (terminate session if 50% of realized gains lost), The Three-Loss Frustration Rule (three consecutive losses signal lack of synchronization), Hard Daily Max Loss Limit (pre-set dollar figure requiring immediate exit).
+
+4. Strategic Differences and Situational Adaptations
+Account Types: Large Margin Accounts use 20,000+ share sizes with aggressive scaling. Small Cash Accounts (Robinhood/Webull) restricted by "one-bullet" mentality due to T+1 settlement — a break-even trade wastes the day's only opportunity.
+
+Market Sentiment: Hot Markets driven by FOMO where B/C quality setups succeed. Cold Markets characterized by "rejection" where even A+ setups fail. The Icebreaker prevents revenge trading in non-conducive environments.
+
+Setup Performance: Front-Side Momentum (Micro Pullback, ABCD Pattern — higher highs). Back-Side/Recovery (Inverted Head & Shoulders, Cup & Handle, VWAP Reclaims — lower probability than pure front-side).
+
+5. Unique Insights
+The "Jack-Knife" Phenomenon: HFT algorithm rejections — APVO exhibited violent drops from $9.00 to $7.50 and $11.50 to $9.00 in seconds. Once displayed, stock is deemed unsafe for standard size.
+
+Institutional Indicators: Analyst "price target hikes" (e.g., HC Wainwright adjusting BTAI from $8 to $10) often precede S3/Shelf Registration or secondary offerings. Review 8-K filings to detect impending dilution.
+
+Psychology of the "Downward Spiral": Small loss → sadness → anger → "Hail Mary" mentality → taking C-quality setups with A-quality size → account liquidation.
+
+6. The Unified Momentum Framework: Daily Lifecycle
+Phase 1 — Pre-Market Analysis (4:00-7:00 AM): Scanners identify leading gappers. Find the single "best" stock, not a basket of mediocre ones.
+Phase 2 — The Icebreaker: Build $1,000 profit cushion using 1/4 size. This entry is the gatekeeper confirming "Safe-to-Trade."
+Phase 3 — Scaling into Strength: Full size (20,000 shares) only on proven front-side patterns like Micro Pullback.
+Phase 4 — Profit Extraction: Sell into "Front Side" (higher highs/lows). Cease on "Back Side" — first candle to break the low of previous pullback.
+
+7. Actionable Takeaways
+1) Quantitative Audit: If average winner isn't approaching 18 cents/share, you're overtrading B-quality setups.
+2) Enforce Icebreaker Cap: No full-size position until realized profit cushion established.
+3) Validate Institutional Filings: Verify S3/Shelf Registration before entering biotech runners. Be wary of HC Wainwright "suspect" news.
+4) Master the Technical Exit: Stop buying when stock produces candle breaking the low of previous pullback. This single rule prevents majority of profit give-back.
+5) "One-Bullet" Discipline: Trade as if you have one opportunity per day — forces waiting for A+ setups.
+
+8. Final Summary
+The ultimate philosophy: "Less is More." Professionalism defined by quality of trades, not quantity. Market sentiment is the final and most powerful filter. Prioritize "Survive till you Thrive" — preserve capital during slow cycles for firepower when the market heats up. Consistent simulator profitability is a non-negotiable prerequisite before live capital deployment.`
   }
 };
 
