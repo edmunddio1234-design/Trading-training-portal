@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charts Tutorial — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1B2A4A; --emerald: #0D9373; --emerald-light: #10B981;
+  --bg: #F0F5F3; --card: #FFFFFF; --border: #E5E7EB; --text: #1B2A4A; --muted: #6B7280;
+  --red: #EF4444; --green: #10B981; --amber: #F59E0B; --purple: #7C3AED; --blue: #3B82F6;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+/* Header */
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; }
+.header h1 { font-size: 18px; color: #fff; font-weight: 700; }
+.header h1 span { color: var(--emerald-light); }
+.header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.header-actions { display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
+.btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.btn-emerald { background: var(--emerald); color: #fff; border: none; }
+
+/* Progress Bar */
+.progress-bar { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; gap: 16px; }
+.progress-track { flex: 1; height: 8px; background: #E5E7EB; border-radius: 8px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--emerald), var(--emerald-light)); border-radius: 8px; transition: width 0.5s ease; }
+.progress-text { font-size: 12px; font-weight: 700; color: var(--emerald); white-space: nowrap; }
+
+/* Nav Tabs */
+.tutorial-nav { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; gap: 0; overflow-x: auto; }
+.nav-tab { padding: 14px 20px; font-size: 13px; font-weight: 600; color: var(--muted); background: none; border: none; cursor: pointer; position: relative; transition: color 0.2s; font-family: inherit; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active { color: var(--emerald); }
+.nav-tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--emerald); border-radius: 3px 3px 0 0; }
+.nav-tab.completed { color: var(--green); }
+.nav-tab .check { display: none; }
+.nav-tab.completed .check { display: inline; }
+
+/* Content */
+.content { max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
+
+/* Lesson Card */
+.lesson { display: none; }
+.lesson.active { display: block; }
+
+.lesson-header { margin-bottom: 28px; }
+.lesson-header h2 { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+.lesson-header p { font-size: 15px; color: var(--muted); line-height: 1.6; }
+.lesson-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 12px; }
+
+/* Tutorial Step */
+.tut-step { background: var(--card); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: all 0.3s; }
+.tut-step:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.tut-step-header { padding: 20px 24px; display: flex; align-items: flex-start; gap: 16px; cursor: pointer; }
+.tut-step-num { width: 36px; height: 36px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.tut-step-num.blue { background: linear-gradient(135deg, var(--blue), #2563EB); }
+.tut-step-num.purple { background: linear-gradient(135deg, var(--purple), #6D28D9); }
+.tut-step-num.amber { background: linear-gradient(135deg, var(--amber), #D97706); }
+.tut-step-num.red { background: linear-gradient(135deg, var(--red), #DC2626); }
+.tut-step-info h4 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.tut-step-info p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.tut-step-body { padding: 0 24px 24px; display: none; }
+.tut-step.open .tut-step-body { display: block; }
+
+/* Visual Walkthrough */
+.walkthrough { background: linear-gradient(135deg, rgba(13,147,115,0.04), rgba(16,185,129,0.02)); border: 1px solid rgba(13,147,115,0.12); border-radius: 12px; padding: 20px; margin: 12px 0; }
+.walkthrough h5 { font-size: 13px; font-weight: 700; color: var(--emerald); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.walkthrough ol { padding-left: 20px; }
+.walkthrough li { font-size: 13px; color: var(--text); line-height: 1.8; margin-bottom: 8px; }
+.walkthrough li strong { color: var(--navy); }
+.walkthrough li code { background: rgba(13,147,115,0.08); padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--emerald); }
+
+/* Keyboard Shortcut */
+.kbd { display: inline-flex; align-items: center; padding: 2px 8px; background: #F3F4F6; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 11px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--navy); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
+/* Tips */
+.tip { background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.12); border-radius: 10px; padding: 14px 18px; margin: 12px 0; font-size: 13px; color: var(--muted); line-height: 1.6; }
+.tip strong { color: var(--blue); }
+
+.warning { background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.12); border-radius: 10px; padding: 14px 18px; margin: 12px 0; font-size: 13px; color: var(--muted); line-height: 1.6; }
+.warning strong { color: var(--red); }
+
+.success { background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.12); border-radius: 10px; padding: 14px 18px; margin: 12px 0; font-size: 13px; color: var(--muted); line-height: 1.6; }
+.success strong { color: var(--green); }
+
+/* Practice Exercise */
+.exercise { background: linear-gradient(135deg, #1B2A4A, #243B60); border-radius: 14px; padding: 24px; margin: 16px 0; color: #fff; }
+.exercise h5 { font-size: 14px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.exercise ol { padding-left: 20px; }
+.exercise li { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.7; margin-bottom: 4px; }
+.exercise li strong { color: #fff; }
+.exercise-check { margin-top: 14px; display: flex; align-items: center; gap: 10px; }
+.exercise-check input { width: 20px; height: 20px; accent-color: var(--emerald); cursor: pointer; }
+.exercise-check label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9); cursor: pointer; }
+
+/* Visual Diagram */
+.diagram { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+.diagram-card { text-align: center; padding: 16px; border-radius: 12px; }
+.diagram-card .icon { font-size: 28px; margin-bottom: 6px; }
+.diagram-card .label { font-size: 13px; font-weight: 700; }
+.diagram-card .desc { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+.diagram-card.stop { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15); }
+.diagram-card.stop .label { color: var(--red); }
+.diagram-card.entry { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.15); }
+.diagram-card.entry .label { color: var(--amber); }
+.diagram-card.target { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.15); }
+.diagram-card.target .label { color: var(--green); }
+
+/* Nav Buttons */
+.nav-buttons { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+.nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: all 0.2s; }
+.nav-btn.prev { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+.nav-btn.prev:hover { border-color: var(--emerald); color: var(--emerald); }
+.nav-btn.next { background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); color: #fff; box-shadow: 0 2px 12px rgba(13,147,115,0.2); }
+.nav-btn.next:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(13,147,115,0.3); }
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+/* Completion */
+.completion { text-align: center; padding: 48px 24px; }
+.completion-icon { font-size: 64px; margin-bottom: 16px; }
+.completion h2 { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+.completion p { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 500px; margin: 0 auto 24px; }
+.completion-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 768px) {
+  .header { padding: 12px 16px; }
+  .content { padding: 20px 16px 40px; }
+  .diagram { grid-template-columns: 1fr; }
+  .tutorial-nav { padding: 0 12px; }
+  .nav-tab { padding: 12px 14px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">🎓</div>
+    <div>
+      <h1>CHARTS <span>TUTORIAL</span></h1>
+      <p>Learn All Three Charting Tools • Impact Trading Academy</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="/tradingview-charts.html" class="btn btn-outline">📊 Live Charts</a>
+    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Academy</a>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="progress-bar">
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-text" id="progressText">0 / 6 Complete</div>
+</div>
+
+<!-- Nav Tabs -->
+<div class="tutorial-nav" id="tutorialNav">
+  <button class="nav-tab active" onclick="goToLesson(0)"><span class="check">✅</span> 1. Overview</button>
+  <button class="nav-tab" onclick="goToLesson(1)"><span class="check">✅</span> 2. TradingView</button>
+  <button class="nav-tab" onclick="goToLesson(2)"><span class="check">✅</span> 3. Webull</button>
+  <button class="nav-tab" onclick="goToLesson(3)"><span class="check">✅</span> 4. Academy Charts</button>
+  <button class="nav-tab" onclick="goToLesson(4)"><span class="check">✅</span> 5. S.E.T. Practice</button>
+  <button class="nav-tab" onclick="goToLesson(5)"><span class="check">✅</span> 6. Simulations</button>
+</div>
+
+<div class="content">
+
+<!-- ═══ LESSON 1: OVERVIEW ═══ -->
+<div class="lesson active" id="lesson-0">
+  <div class="lesson-header">
+    <div class="lesson-badge" style="background: rgba(13,147,115,0.1); color: var(--emerald);">LESSON 1 OF 6</div>
+    <h2>Welcome to Live Charts</h2>
+    <p>Your Live Charts page has three powerful tools in one place. Each serves a different purpose in your trading journey. Let's learn what each one does and when to use it.</p>
+  </div>
+
+  <div class="tut-step open">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num">1</div>
+      <div class="tut-step-info">
+        <h4>Where to Find Live Charts</h4>
+        <p>How to access the charting tools from the Academy dashboard</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>Go to <a href="https://trading-training-portal.vercel.app/" target="_blank" style="color:var(--emerald);font-weight:600;">trading-training-portal.vercel.app</a></li>
+          <li>Log in to the Academy dashboard</li>
+          <li>Open any module → scroll to the bottom tools section</li>
+          <li>Click <strong>"Live Charts"</strong> in the navigation — or go directly to <a href="/tradingview-charts.html" style="color:var(--emerald);font-weight:600;">/tradingview-charts.html</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num">2</div>
+      <div class="tut-step-info">
+        <h4>The Three Tabs Explained</h4>
+        <p>Understanding what each tab does and when to use it</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 12px 0;">
+        <div style="background: rgba(13,147,115,0.04); border: 1px solid rgba(13,147,115,0.15); border-radius: 12px; padding: 20px; text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+          <div style="font-weight: 700; font-size: 15px; color: var(--emerald); margin-bottom: 6px;">TradingView</div>
+          <div style="font-size: 12px; color: var(--muted); line-height: 1.6;"><strong>Best for:</strong> Professional charting with 100+ indicators, drawing tools, multi-timeframe analysis</div>
+          <div style="margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--emerald);">Tab 1 (Default)</div>
+        </div>
+        <div style="background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; padding: 20px; text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">📱</div>
+          <div style="font-weight: 700; font-size: 15px; color: var(--blue); margin-bottom: 6px;">Webull</div>
+          <div style="font-size: 12px; color: var(--muted); line-height: 1.6;"><strong>Best for:</strong> Paper trading, placing real orders, OCO stops, options chains, broker practice</div>
+          <div style="margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--blue);">Tab 2</div>
+        </div>
+        <div style="background: rgba(124,58,237,0.04); border: 1px solid rgba(124,58,237,0.15); border-radius: 12px; padding: 20px; text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">🎯</div>
+          <div style="font-weight: 700; font-size: 15px; color: var(--purple); margin-bottom: 6px;">Academy Charts</div>
+          <div style="font-size: 12px; color: var(--muted); line-height: 1.6;"><strong>Best for:</strong> S.E.T. drawing tools, position sizing, supply/demand zones, R:R calculation</div>
+          <div style="margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--purple);">Tab 3</div>
+        </div>
+      </div>
+      <div class="tip"><strong>💡 Pro Tip:</strong> Use TradingView for analysis, Academy Charts for S.E.T. planning, and Webull for executing paper trades. They work together as a complete system.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num">3</div>
+      <div class="tut-step-info">
+        <h4>How to Switch Between Tabs</h4>
+        <p>Navigating between TradingView, Webull, and Academy Charts</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>At the top of the Live Charts page, you'll see <strong>three tab buttons</strong>: "📊 TradingView", "📱 Webull", and "🎯 Academy Charts"</li>
+          <li><strong>Click any tab</strong> to instantly switch views. The active tab shows a green underline.</li>
+          <li>Each tab remembers its own state — your TradingView chart stays loaded when you switch to Webull and back.</li>
+          <li>The <strong>Dark Mode</strong> button (🌙) works across all three tabs.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn prev" disabled>← Previous</button>
+    <button class="nav-btn next" onclick="completeAndNext(0)">Next: TradingView →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 2: TRADINGVIEW ═══ -->
+<div class="lesson" id="lesson-1">
+  <div class="lesson-header">
+    <div class="lesson-badge" style="background: rgba(13,147,115,0.1); color: var(--emerald);">LESSON 2 OF 6</div>
+    <h2>📊 TradingView Tab</h2>
+    <p>TradingView is an industry-standard charting platform used by professional traders worldwide. It's your primary tool for technical analysis, chart pattern recognition, and indicator-based research.</p>
+  </div>
+
+  <div class="tut-step open">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num">1</div>
+      <div class="tut-step-info">
+        <h4>Search for a Stock Symbol</h4>
+        <p>How to look up any stock, ETF, or crypto</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>Look at the <strong>toolbar</strong> below the tabs — find the <strong>"Symbol"</strong> field on the left</li>
+          <li>Click the input field (it shows "AAPL" by default)</li>
+          <li>Type any ticker: <code>SPY</code>, <code>TSLA</code>, <code>NVDA</code>, <code>QQQ</code>, etc.</li>
+          <li>A <strong>dropdown</strong> will appear with matching symbols. Click one to load it.</li>
+          <li>Or type the full ticker and press <span class="kbd">Enter</span></li>
+        </ol>
+      </div>
+      <div class="tip"><strong>💡 Tip:</strong> You can also search by company name — type "Apple" and you'll see AAPL in the dropdown.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num">2</div>
+      <div class="tut-step-info">
+        <h4>Change the Timeframe</h4>
+        <p>Switch between 1-minute, 5-minute, hourly, daily, and weekly views</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>Find the <strong>"Timeframe"</strong> buttons in the toolbar: 1m, 5m, 15m, 1H, 1D, 1W, 1M</li>
+          <li>Click any button — the chart reloads with that timeframe</li>
+          <li><strong>1D (Daily)</strong> is the default and best for swing trading analysis</li>
+          <li><strong>5m or 15m</strong> is best for day trading and intraday S.E.T. setups</li>
+          <li><strong>1W (Weekly)</strong> is best for seeing the big picture trend</li>
+        </ol>
+      </div>
+      <div class="tip"><strong>💡 Academy Tip:</strong> Module 3 (Master Surge Strategy) works best on the <strong>Daily</strong> timeframe. Module 7 (Futures) works best on <strong>5m–15m</strong> for intraday trading.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num">3</div>
+      <div class="tut-step-info">
+        <h4>Add Indicators (RSI, MACD, EMA, Volume)</h4>
+        <p>Overlay technical indicators on your chart</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>Find the <strong>"Indicators"</strong> chips in the toolbar: RSI, MACD, EMA, SMA, VWAP, Bollinger, Volume, ATR</li>
+          <li><strong>Click any chip</strong> to toggle it on (turns green when active)</li>
+          <li>Click again to remove it</li>
+          <li><strong>For the Academy curriculum,</strong> the most important indicators are:
+            <ul style="margin-top:4px;">
+              <li><code>Volume</code> — confirms institutional activity (Master Surge Pillar #2)</li>
+              <li><code>SMA</code> or <code>EMA</code> — confirms trend direction (Pillar #4)</li>
+              <li><code>RSI</code> — identifies overbought/oversold conditions</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num">4</div>
+      <div class="tut-step-info">
+        <h4>Use Drawing Tools (Built-in)</h4>
+        <p>Draw support/resistance lines, trend lines, and rectangles directly on the chart</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>Look at the <strong>left sidebar</strong> of the TradingView chart — it has drawing tool icons</li>
+          <li>Click the <strong>line tool</strong> (diagonal line icon) to draw trend lines</li>
+          <li>Click the <strong>horizontal line tool</strong> to mark price levels (perfect for S.E.T.)</li>
+          <li>Click the <strong>rectangle tool</strong> to shade supply and demand zones</li>
+          <li>Right-click any drawing to change its color (red for stop, yellow for entry, green for target)</li>
+          <li>The <strong>top toolbar</strong> has undo/redo buttons if you make a mistake</li>
+        </ol>
+      </div>
+      <div class="tip"><strong>💡 Pro Tip:</strong> TradingView auto-saves your drawings. When you come back later, all your lines and zones are still there.</div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h5>🏋️ Practice Exercise: TradingView Basics</h5>
+    <ol>
+      <li>Open the Live Charts page → click the <strong>TradingView</strong> tab</li>
+      <li>Search for <strong>SPY</strong> and load its daily chart</li>
+      <li>Add <strong>Volume</strong> and <strong>SMA</strong> indicators</li>
+      <li>Use the <strong>horizontal line tool</strong> to mark today's high and low</li>
+      <li>Switch to the <strong>5-minute</strong> timeframe and observe intraday price action</li>
+    </ol>
+    <div class="exercise-check">
+      <input type="checkbox" id="ex1" onchange="updateExercises()">
+      <label for="ex1">I completed this exercise</label>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn prev" onclick="goToLesson(0)">← Overview</button>
+    <button class="nav-btn next" onclick="completeAndNext(1)">Next: Webull →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 3: WEBULL ═══ -->
+<div class="lesson" id="lesson-2">
+  <div class="lesson-header">
+    <div class="lesson-badge" style="background: rgba(59,130,246,0.1); color: var(--blue);">LESSON 3 OF 6</div>
+    <h2>📱 Webull Tab</h2>
+    <p>Webull is your broker — where you actually place trades. The Webull tab connects you to their web trading platform so you can practice paper trading without leaving the Academy.</p>
+  </div>
+
+  <div class="tut-step open">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num blue">1</div>
+      <div class="tut-step-info">
+        <h4>Open Webull from the Portal</h4>
+        <p>Access Webull's full web trader in one click</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>On the Live Charts page, click the <strong>"📱 Webull"</strong> tab</li>
+          <li>You'll see the <strong>"Open Webull Web Trader"</strong> button</li>
+          <li>Click it — Webull opens in a <strong>new browser tab</strong></li>
+          <li>Log in with your Webull account credentials</li>
+          <li>You're now in Webull's full trading interface with charts, orders, portfolio, and options</li>
+        </ol>
+      </div>
+      <div class="tip"><strong>💡 Why a new tab?</strong> Webull's security prevents embedding inside other sites (for your protection). The new tab gives you Webull's complete interface with zero limitations.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num blue">2</div>
+      <div class="tut-step-info">
+        <h4>Enable Paper Trading</h4>
+        <p>Switch to $1,000,000 virtual money mode</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>On Webull Web (app.webull.com)</h5>
+        <ol>
+          <li>Click the <strong>menu icon</strong> (☰) in the top-left corner</li>
+          <li>Find <strong>"Paper Trading"</strong> in the menu</li>
+          <li>Toggle it <strong>ON</strong></li>
+          <li>Your balance changes to <strong>$1,000,000.00</strong> — this is virtual money</li>
+          <li>A <strong>"Paper"</strong> badge appears in the header confirming you're in simulation mode</li>
+        </ol>
+      </div>
+      <div class="warning"><strong>⚠️ Critical:</strong> ALWAYS verify "Paper Trading" is active before placing any order. If you accidentally trade in live mode, you'll use real money.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num blue">3</div>
+      <div class="tut-step-info">
+        <h4>Place Your First Paper Trade</h4>
+        <p>Buy a stock with virtual money using a limit order</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>Search for <strong>AAPL</strong> in Webull's search bar</li>
+          <li>Click <strong>"Trade"</strong> on the stock page</li>
+          <li>Set order type to <strong>"Limit"</strong> (NOT Market — we want our exact entry price)</li>
+          <li>Set the <strong>limit price</strong> to your planned Entry price</li>
+          <li>Set <strong>quantity</strong> to 10 shares (for your first practice trade)</li>
+          <li>Click <strong>"Buy"</strong></li>
+          <li>The order will fill when the stock reaches your limit price</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num blue">4</div>
+      <div class="tut-step-info">
+        <h4>Set Stop Loss and Take Profit</h4>
+        <p>Protect your trade with automatic exit orders</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Setting a Stop Loss</h5>
+        <ol>
+          <li>After your order fills, go to <strong>Positions</strong></li>
+          <li>Click your AAPL position</li>
+          <li>Click <strong>"Close"</strong> or <strong>"Sell"</strong></li>
+          <li>Change order type to <strong>"Stop"</strong></li>
+          <li>Set the stop price to your planned <strong>Stop Loss</strong> level (1% below entry)</li>
+          <li>Submit the order — it will trigger automatically if price drops to your stop</li>
+        </ol>
+      </div>
+      <div class="walkthrough">
+        <h5>Setting a Take Profit</h5>
+        <ol>
+          <li>Place another sell order on the same position</li>
+          <li>Set order type to <strong>"Limit"</strong></li>
+          <li>Set the limit price to your <strong>Target</strong> (3× your risk above entry)</li>
+          <li>Submit — it will trigger automatically when price reaches your target</li>
+        </ol>
+      </div>
+      <div class="success"><strong>✅ OCO Orders:</strong> Webull supports <strong>OCO (One-Cancels-Other)</strong> orders. Look for "OCO" in the order type dropdown — this sets both your stop loss AND take profit simultaneously. When one fills, the other auto-cancels. This is the most efficient way to manage your S.E.T.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num blue">5</div>
+      <div class="tut-step-info">
+        <h4>Paper Trade Options</h4>
+        <p>Practice buying call and put options with virtual money</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>In Webull, go to <strong>Options</strong> (or search a stock → click "Options")</li>
+          <li>You'll see the <strong>options chain</strong>: calls on the left, puts on the right</li>
+          <li>Pick an expiration date <strong>at least 30 days out</strong> (less time decay pressure)</li>
+          <li>Click a <strong>Call option</strong> near the current stock price (this is "at the money")</li>
+          <li>Click <strong>"Trade"</strong> → set quantity to <strong>1 contract</strong> (controls 100 shares)</li>
+          <li>Note the <strong>premium</strong> — this is your max risk (perfect for the 1% rule)</li>
+          <li>Click <strong>"Buy"</strong></li>
+          <li>Monitor: if the stock rises past your strike price, the option gains value</li>
+        </ol>
+      </div>
+      <div class="tip"><strong>💡 Module 6 Connection:</strong> This is exactly what you learned in Module 6 (Options Deep Dive). 1 contract = 100 shares. Your max loss = the premium you paid. LEAPS are options expiring 1-3 years out.</div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h5>🏋️ Practice Exercise: Webull Paper Trade</h5>
+    <ol>
+      <li>Open the Webull tab → click <strong>"Open Webull Web Trader"</strong></li>
+      <li>Enable <strong>Paper Trading</strong> (verify the Paper badge)</li>
+      <li>Search for <strong>SPY</strong></li>
+      <li>Place a <strong>Limit Buy</strong> order for 10 shares at the current price</li>
+      <li>After it fills, set a <strong>Stop Loss</strong> 1% below your entry</li>
+      <li>Set a <strong>Take Profit</strong> at 3% above your entry</li>
+    </ol>
+    <div class="exercise-check">
+      <input type="checkbox" id="ex2" onchange="updateExercises()">
+      <label for="ex2">I completed this exercise</label>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn prev" onclick="goToLesson(1)">← TradingView</button>
+    <button class="nav-btn next" onclick="completeAndNext(2)">Next: Academy Charts →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 4: ACADEMY CHARTS ═══ -->
+<div class="lesson" id="lesson-3">
+  <div class="lesson-header">
+    <div class="lesson-badge" style="background: rgba(124,58,237,0.1); color: var(--purple);">LESSON 4 OF 6</div>
+    <h2>🎯 Academy Charts Tab</h2>
+    <p>Academy Charts is built specifically for the Impact Trading Academy. It has S.E.T. drawing tools, supply/demand zone marking, and an automatic position sizing calculator — features designed around your curriculum.</p>
+  </div>
+
+  <div class="tut-step open">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num purple">1</div>
+      <div class="tut-step-info">
+        <h4>Load a Chart</h4>
+        <p>Search for a symbol and select a timeframe</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>Click the <strong>"🎯 Academy Charts"</strong> tab on the Live Charts page</li>
+          <li>In the <strong>Symbol</strong> field, type a ticker (e.g., <code>AAPL</code>)</li>
+          <li>Select a <strong>timeframe</strong>: 1m, 5m, 15m, 1H, 1D, 1W</li>
+          <li>The chart loads with real market data from the Academy API</li>
+          <li>The <strong>price overlay</strong> (top-left) shows the current price, change, and percentage</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num purple">2</div>
+      <div class="tut-step-info">
+        <h4>Place S.E.T. Lines (Stop, Entry, Target)</h4>
+        <p>Draw your S.E.T. setup directly on the chart with color-coded lines</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="diagram">
+        <div class="diagram-card stop"><div class="icon">🛑</div><div class="label">STOP</div><div class="desc">Red dashed line. Click the Stop button, then click on the chart where you want your stop loss.</div></div>
+        <div class="diagram-card entry"><div class="icon">🎯</div><div class="label">ENTRY</div><div class="desc">Yellow solid line. Click the Entry button, then click on the chart at your planned entry price.</div></div>
+        <div class="diagram-card target"><div class="icon">💰</div><div class="label">TARGET</div><div class="desc">Green dashed line. Click the Target button, then click on the chart at your 3:1 target price.</div></div>
+      </div>
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>In the toolbar, find the <strong>"S.E.T. Tools"</strong> section</li>
+          <li>Click <strong>"🛑 Stop"</strong> — the button turns red</li>
+          <li><strong>Click anywhere on the chart</strong> at the price level for your stop loss</li>
+          <li>A <strong>red dashed line</strong> appears with "STOP" label on the price axis</li>
+          <li>Repeat for <strong>"🎯 Entry"</strong> (yellow solid line) and <strong>"💰 Target"</strong> (green dashed line)</li>
+          <li>Once all three are placed, the <strong>S.E.T. Analysis Panel</strong> appears on the right!</li>
+        </ol>
+      </div>
+      <div class="success"><strong>✅ Automatic Calculations:</strong> When all three S.E.T. lines are placed, the panel automatically calculates: Risk per share, Reward per share, R:R Ratio (color-coded: green if 3:1+, yellow if 2:1+, red if below), and Position Size for a $10,000 account at 1% risk.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num purple">3</div>
+      <div class="tut-step-info">
+        <h4>Mark Supply & Demand Zones</h4>
+        <p>Draw institutional footprint zones with two clicks</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Step-by-Step</h5>
+        <ol>
+          <li>In the toolbar, find the <strong>"Zones"</strong> section</li>
+          <li>Click <strong>"📈 Demand"</strong> (for buy zones) or <strong>"📉 Supply"</strong> (for sell zones)</li>
+          <li><strong>First click</strong> on the chart sets the <strong>top boundary</strong> of the zone</li>
+          <li><strong>Second click</strong> sets the <strong>bottom boundary</strong></li>
+          <li>The zone appears as two labeled price lines (blue for demand, purple for supply)</li>
+          <li>A <strong>legend</strong> appears in the bottom-left showing zone colors</li>
+        </ol>
+      </div>
+      <div class="tip"><strong>💡 Module 2 Connection:</strong> Demand zones are where institutional buy orders are clustered (price bounced up from here before). Supply zones are where institutional sell orders are clustered. Look for areas of sharp price movement — that's the institutional footprint.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num purple">4</div>
+      <div class="tut-step-info">
+        <h4>Add Indicators and Clear Drawings</h4>
+        <p>Toggle SMA, EMA, Volume, and reset the chart</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Indicators</h5>
+        <ol>
+          <li>Find the <strong>"Indicators"</strong> section in the toolbar</li>
+          <li>Click <strong>SMA</strong> — adds a blue 20-period Simple Moving Average line</li>
+          <li>Click <strong>EMA</strong> — adds a yellow 9-period Exponential Moving Average line</li>
+          <li>Click <strong>Vol</strong> — adds volume bars at the bottom (green = up candle, red = down candle)</li>
+          <li>Click any active indicator again to remove it</li>
+        </ol>
+      </div>
+      <div class="walkthrough">
+        <h5>Clearing</h5>
+        <ol>
+          <li>Click <strong>"✕ Clear"</strong> to remove ALL drawings (S.E.T. lines + zones)</li>
+          <li>The S.E.T. panel and zone legend will disappear</li>
+          <li>Indicators stay — they're separate from drawings</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h5>🏋️ Practice Exercise: Academy Charts S.E.T.</h5>
+    <ol>
+      <li>Open the Academy Charts tab → load <strong>AAPL daily</strong> chart</li>
+      <li>Add <strong>Volume</strong> and <strong>SMA</strong> indicators</li>
+      <li>Find a recent area where price bounced up → mark it as a <strong>Demand Zone</strong></li>
+      <li>Click <strong>"🛑 Stop"</strong> and place it just below the demand zone</li>
+      <li>Click <strong>"🎯 Entry"</strong> and place it at the top of the demand zone</li>
+      <li>Click <strong>"💰 Target"</strong> and place it at 3× the distance above entry</li>
+      <li>Check the <strong>S.E.T. panel</strong> — is your R:R ratio 3:1 or better?</li>
+    </ol>
+    <div class="exercise-check">
+      <input type="checkbox" id="ex3" onchange="updateExercises()">
+      <label for="ex3">I completed this exercise</label>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn prev" onclick="goToLesson(2)">← Webull</button>
+    <button class="nav-btn next" onclick="completeAndNext(3)">Next: S.E.T. Deep Dive →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 5: S.E.T. PRACTICE ═══ -->
+<div class="lesson" id="lesson-4">
+  <div class="lesson-header">
+    <div class="lesson-badge" style="background: rgba(245,158,11,0.1); color: var(--amber);">LESSON 5 OF 6</div>
+    <h2>🎯 S.E.T. Practice Workflow</h2>
+    <p>Now that you know all three tools, here's the complete workflow for analyzing a trade, planning your S.E.T., and executing it. This is how you use all three tabs together.</p>
+  </div>
+
+  <div class="tut-step open">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num amber">1</div>
+      <div class="tut-step-info">
+        <h4>Step 1: Analyze on TradingView</h4>
+        <p>Use TradingView's advanced tools to find your setup</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>The Analysis Phase</h5>
+        <ol>
+          <li>Open the <strong>TradingView</strong> tab</li>
+          <li>Load the stock you're interested in on the <strong>Daily</strong> timeframe</li>
+          <li>Apply the <strong>5 Pillars</strong>: Check the price cycle stage, look for volume surges, identify institutional footprints, confirm trend direction, plan risk management</li>
+          <li>Use TradingView's drawing tools to mark potential supply/demand zones</li>
+          <li>Switch to <strong>15m or 1H</strong> to find your precise entry zone</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num amber">2</div>
+      <div class="tut-step-info">
+        <h4>Step 2: Plan S.E.T. on Academy Charts</h4>
+        <p>Use the S.E.T. tools to calculate exact prices and position size</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>The Planning Phase</h5>
+        <ol>
+          <li>Switch to the <strong>Academy Charts</strong> tab</li>
+          <li>Load the same stock and timeframe</li>
+          <li>Place your <strong>Stop</strong> (below demand zone / above supply zone)</li>
+          <li>Place your <strong>Entry</strong> (at the zone boundary)</li>
+          <li>Place your <strong>Target</strong> (3:1 reward-to-risk)</li>
+          <li>Check the <strong>S.E.T. panel</strong>:
+            <ul style="margin-top:4px;">
+              <li>R:R should be <strong>3:1 or better</strong> (green)</li>
+              <li>Note the <strong>position size</strong> (how many shares to trade)</li>
+              <li>Note the exact <strong>dollar amounts</strong> for risk and reward</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num amber">3</div>
+      <div class="tut-step-info">
+        <h4>Step 3: Execute on Webull</h4>
+        <p>Place the actual paper trade with your calculated values</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>The Execution Phase</h5>
+        <ol>
+          <li>Switch to the <strong>Webull</strong> tab → click "Open Webull Web Trader"</li>
+          <li>Search for the same stock</li>
+          <li>Place a <strong>Limit Buy</strong> at your Entry price</li>
+          <li>Set quantity to the <strong>position size from the S.E.T. panel</strong></li>
+          <li>After fill → immediately set <strong>Stop Loss</strong> at your Stop price</li>
+          <li>Set <strong>Take Profit</strong> at your Target price (or use OCO order for both at once)</li>
+          <li>Let the trade manage itself — don't move your stop!</li>
+        </ol>
+      </div>
+      <div class="warning"><strong>⚠️ Never move your stop.</strong> Once set, your stop loss stays where it is. Moving it wider means you're increasing risk beyond 1%. This is the #1 mistake that kills trader accounts.</div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num amber">4</div>
+      <div class="tut-step-info">
+        <h4>Step 4: Review in Trade Journal</h4>
+        <p>Log your results and learn from every trade</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>After the Trade</h5>
+        <ol>
+          <li>Go to the Academy <strong><a href="/trade-journal.html" style="color:var(--emerald);">Trade Journal</a></strong></li>
+          <li>Log: symbol, entry, stop, target, position size, result (win/loss), P&L</li>
+          <li>Note what the 5 Pillars told you vs. what actually happened</li>
+          <li>After 10+ trades, review your <strong>win rate</strong> and <strong>average R:R</strong></li>
+          <li>Goal: 30%+ win rate with 3:1 R:R = consistent profitability</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h5>🏋️ Practice Exercise: Full S.E.T. Workflow</h5>
+    <ol>
+      <li><strong>TradingView:</strong> Find a stock with a volume surge on the daily chart</li>
+      <li><strong>Academy Charts:</strong> Mark a demand zone, then place S.E.T. lines — verify 3:1 R:R</li>
+      <li><strong>Webull:</strong> Execute the paper trade with your calculated position size</li>
+      <li><strong>Trade Journal:</strong> Log the trade details</li>
+      <li>Wait for the trade to hit target or stop — then record the result</li>
+    </ol>
+    <div class="exercise-check">
+      <input type="checkbox" id="ex4" onchange="updateExercises()">
+      <label for="ex4">I completed this exercise</label>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn prev" onclick="goToLesson(3)">← Academy Charts</button>
+    <button class="nav-btn next" onclick="completeAndNext(4)">Next: Simulations →</button>
+  </div>
+</div>
+
+<!-- ═══ LESSON 6: SIMULATION EXERCISES ═══ -->
+<div class="lesson" id="lesson-5">
+  <div class="lesson-header">
+    <div class="lesson-badge" style="background: rgba(239,68,68,0.1); color: var(--red);">LESSON 6 OF 6</div>
+    <h2>🎮 Module Simulation Exercises</h2>
+    <p>Each Academy module has simulation exercises. Here's how to complete them using the charting tools you just learned. Go through each one in Webull's Paper Trading mode.</p>
+  </div>
+
+  <div class="tut-step open">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num red">M2</div>
+      <div class="tut-step-info">
+        <h4>Module 2: Supply & Demand Zone Hunt</h4>
+        <p>Identify 3 demand zones on SPY and paper trade one</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Simulation Steps</h5>
+        <ol>
+          <li><strong>TradingView:</strong> Open SPY daily chart. Add Volume indicator.</li>
+          <li><strong>Look for 3 demand zones</strong> — areas where price dropped sharply then bounced back up with high volume. These are institutional buy zones.</li>
+          <li><strong>Academy Charts:</strong> Load SPY. Mark all 3 demand zones using the Demand tool.</li>
+          <li><strong>Pick the strongest zone</strong> (closest to current price, highest volume bounce).</li>
+          <li>Place your S.E.T.: Stop below zone, Entry at zone top, Target at 3:1.</li>
+          <li><strong>Webull:</strong> Execute the paper trade with your calculated position size.</li>
+        </ol>
+      </div>
+      <div class="exercise-check">
+        <input type="checkbox" id="sim2" onchange="updateExercises()">
+        <label for="sim2">I completed Module 2 simulation</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num red">M3</div>
+      <div class="tut-step-info">
+        <h4>Module 3: Master Surge Strategy</h4>
+        <p>Apply all 5 Pillars to find and trade a surge setup</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Simulation Steps</h5>
+        <ol>
+          <li><strong>TradingView:</strong> Scan for a stock with a <strong>volume surge</strong> (2× or higher than 20-day average)</li>
+          <li>Check all <strong>5 Pillars</strong>: Price cycle stage? Volume confirms? Institutional footprint? Trend direction? Risk management planned?</li>
+          <li>If all 5 confirm → <strong>Academy Charts:</strong> Set your S.E.T. lines. Verify 3:1 R:R.</li>
+          <li><strong>Webull:</strong> Execute the paper trade.</li>
+          <li><strong>Trade Journal:</strong> Log which pillars confirmed and what the result was.</li>
+        </ol>
+      </div>
+      <div class="exercise-check">
+        <input type="checkbox" id="sim3" onchange="updateExercises()">
+        <label for="sim3">I completed Module 3 simulation</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num red">M4</div>
+      <div class="tut-step-info">
+        <h4>Module 4: Position Sizing Drill</h4>
+        <p>Calculate exact position sizes using the 1% rule</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Simulation Steps</h5>
+        <ol>
+          <li><strong>Academy Charts:</strong> Load any stock. Place Stop and Entry.</li>
+          <li>The S.E.T. panel automatically calculates: <strong>$10,000 × 1% = $100 max risk</strong></li>
+          <li>It divides $100 by the distance between Entry and Stop → <strong>exact share count</strong></li>
+          <li><strong>Webull:</strong> Place the paper trade with that <strong>exact quantity</strong></li>
+          <li>After fill, verify: your dollar risk on the position matches 1% of $10,000 ($100)</li>
+          <li>Repeat with 3 different stocks at different price levels</li>
+        </ol>
+      </div>
+      <div class="exercise-check">
+        <input type="checkbox" id="sim4" onchange="updateExercises()">
+        <label for="sim4">I completed Module 4 simulation</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num red">M6</div>
+      <div class="tut-step-info">
+        <h4>Module 6: Options Paper Trade</h4>
+        <p>Buy a call option and manage it with the S.E.T. rule</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Simulation Steps</h5>
+        <ol>
+          <li><strong>TradingView:</strong> Analyze AAPL on the daily chart. Find a bullish setup.</li>
+          <li><strong>Webull:</strong> Go to Options → AAPL → Options Chain</li>
+          <li>Pick a Call with <strong>30+ days to expiration</strong></li>
+          <li>Choose a strike price <strong>at or slightly above</strong> current stock price</li>
+          <li>Buy <strong>1 contract</strong> — note the premium (this is your max risk)</li>
+          <li>Set a sell target at <strong>2-3× your premium</strong></li>
+          <li>Monitor daily. If the stock moves past your strike, the option gains value.</li>
+        </ol>
+      </div>
+      <div class="tip"><strong>💡 Remember:</strong> 1 contract = 100 shares. A $3.00 premium costs $300 total. Your max loss is $300 — which may already satisfy the 1% rule on a $30,000 account.</div>
+      <div class="exercise-check">
+        <input type="checkbox" id="sim6" onchange="updateExercises()">
+        <label for="sim6">I completed Module 6 simulation</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="tut-step">
+    <div class="tut-step-header" onclick="toggleStep(this)">
+      <div class="tut-step-num red">W</div>
+      <div class="tut-step-info">
+        <h4>Weekly S.E.T. Challenge</h4>
+        <p>Place 5 paper trades per week following the full workflow</p>
+      </div>
+    </div>
+    <div class="tut-step-body">
+      <div class="walkthrough">
+        <h5>Weekly Routine</h5>
+        <ol>
+          <li>Place <strong>5 paper trades per week</strong> in Webull</li>
+          <li>Every trade MUST have S.E.T. defined BEFORE entry</li>
+          <li>Log each trade in the <strong><a href="/trade-journal.html" style="color:var(--emerald);">Trade Journal</a></strong></li>
+          <li>At week's end: calculate your <strong>win rate</strong> and <strong>average R:R ratio</strong></li>
+          <li>Goal: <strong>30%+ win rate</strong> with <strong>3:1 R:R</strong> = consistent profitability</li>
+          <li>After 4 weeks (20 trades), review your journal for patterns</li>
+        </ol>
+      </div>
+      <div class="exercise-check">
+        <input type="checkbox" id="simW" onchange="updateExercises()">
+        <label for="simW">I completed my first weekly challenge</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn prev" onclick="goToLesson(4)">← S.E.T. Practice</button>
+    <button class="nav-btn next" onclick="completeAndNext(5)">Complete Tutorial 🎉</button>
+  </div>
+</div>
+
+<!-- ═══ COMPLETION ═══ -->
+<div class="lesson" id="lesson-6">
+  <div class="completion">
+    <div class="completion-icon">🏆</div>
+    <h2>Tutorial Complete!</h2>
+    <p>You now know how to use all three charting tools in the Impact Trading Academy. Remember: TradingView for analysis, Academy Charts for S.E.T. planning, Webull for execution.</p>
+    <div class="completion-links">
+      <a href="/tradingview-charts.html" class="btn btn-emerald" style="padding:14px 28px;font-size:15px;">📊 Open Live Charts</a>
+      <a href="https://app.webull.com/trade" target="_blank" class="btn" style="padding:14px 28px;font-size:15px;background:var(--blue);color:#fff;">📱 Open Webull</a>
+      <a href="https://trading-training-portal.vercel.app/" class="btn" style="padding:14px 28px;font-size:15px;background:var(--navy);color:#fff;">📚 Back to Academy</a>
+    </div>
+    <div style="margin-top: 20px;">
+      <a href="/charts-tutorial-guide.pdf" download style="color: var(--emerald); font-weight: 600; font-size: 14px;">📥 Download PDF Guide for Offline Reference</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+let currentLesson = 0;
+let completedLessons = new Set();
+let totalLessons = 6;
+
+function goToLesson(n) {
+  currentLesson = n;
+  document.querySelectorAll('.lesson').forEach((l, i) => l.classList.toggle('active', i === n));
+  document.querySelectorAll('.nav-tab').forEach((t, i) => t.classList.toggle('active', i === n));
+  window.scrollTo(0, 0);
+}
+
+function completeAndNext(n) {
+  completedLessons.add(n);
+  const tabs = document.querySelectorAll('.nav-tab');
+  if (tabs[n]) tabs[n].classList.add('completed');
+  updateProgress();
+  goToLesson(n + 1);
+}
+
+function updateProgress() {
+  const pct = Math.round((completedLessons.size / totalLessons) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = completedLessons.size + ' / ' + totalLessons + ' Complete';
+}
+
+function toggleStep(header) {
+  const step = header.parentElement;
+  step.classList.toggle('open');
+}
+
+function updateExercises() {
+  // Visual feedback only — checkboxes are local state
+}
+</script>
+
+</body>
+</html>

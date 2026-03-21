@@ -25,6 +25,8 @@
     { "source": "/day-trade-dash.html", "destination": "/public/day-trade-dash.html" },
     { "source": "/webull-charts.html", "destination": "/public/webull-charts.html" },
     { "source": "/webull-guide.html", "destination": "/public/webull-guide.html" },
+    { "source": "/charts-tutorial.html", "destination": "/public/charts-tutorial.html" },
+    { "source": "/charts-tutorial-guide.pdf", "destination": "/public/charts-tutorial-guide.pdf" },
     { "source": "/infographics/:path*", "destination": "/public/infographics/:path*" },
     { "source": "/(.*)", "destination": "/public/index.html" }
   ]
