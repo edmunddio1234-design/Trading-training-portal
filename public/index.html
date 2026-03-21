@@ -251,12 +251,12 @@
 
   /* Image Lightbox */
   .image-lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-  .image-lightbox-container { max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; background: var(--bg-secondary); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .image-lightbox-container { max-width: 95vw; max-height: 95vh; display: flex; flex-direction: column; background: var(--bg-secondary); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
   .image-lightbox-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
   .image-lightbox-header h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin: 0; }
   .image-lightbox-close { background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; padding: 4px; }
   .image-lightbox-close:hover { color: var(--text-primary); }
-  .image-lightbox-img { max-width: 100%; max-height: 70vh; display: block; margin: 0 auto; }
+  .image-lightbox-img { max-width: 100%; max-height: 80vh; display: block; margin: 0 auto; overflow-y: auto; }
   .image-lightbox-actions { display: flex; gap: 8px; padding: 16px 20px; border-top: 1px solid var(--border); justify-content: center; }
 
   /* AI Visual clickable image */
@@ -1395,6 +1395,7 @@ function InfographicGenerator({ module }) {
   const [error, setError] = useState(null);
   const [checked, setChecked] = useState(false);
   const [showStatic, setShowStatic] = useState(false);
+  const [staticLightbox, setStaticLightbox] = useState(false);
   const staticUrl = MODULE_MEDIA[module.id]?.staticInfographic;
 
   // Check for cached infographic on mount
@@ -1532,9 +1533,23 @@ function InfographicGenerator({ module }) {
         <div className="static-infographic-preview">
           <div className="static-infographic-label">
             <span>🖼️</span> Static Module Infographic
+            <span style={{marginLeft: 'auto', fontSize: '12px', color: '#92400E', opacity: 0.7}}>Click image to expand</span>
           </div>
-          <img src={staticUrl} alt={`Static infographic for ${module.title}`} />
+          <img
+            src={staticUrl}
+            alt={`Static infographic for ${module.title}`}
+            style={{cursor: 'zoom-in'}}
+            onClick={() => setStaticLightbox(true)}
+          />
         </div>
+      )}
+
+      {staticLightbox && staticUrl && (
+        <ImageLightbox
+          imageUrl={staticUrl}
+          sectionTitle={`${module.title} — Static Infographic`}
+          onClose={() => setStaticLightbox(false)}
+        />
       )}
     </div>
   );
