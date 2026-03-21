@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webull Setup Guide — Impact Trading Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1B2A4A; --emerald: #0D9373; --emerald-light: #10B981; --emerald-dark: #0B7A60;
+  --bg: #F0F5F3; --card: #FFFFFF; --border: #E5E7EB; --text: #1B2A4A; --muted: #6B7280;
+  --red: #EF4444; --green: #10B981; --amber: #F59E0B; --purple: #7C3AED; --blue: #3B82F6;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--blue), #2563EB); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 800; }
+.header h1 { font-size: 18px; color: #fff; font-weight: 700; }
+.header h1 span { color: #60A5FA; }
+.header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.header-actions { display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
+.btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.btn-blue { background: linear-gradient(135deg, #3B82F6, #2563EB); color: #fff; border: none; box-shadow: 0 2px 12px rgba(59,130,246,0.3); }
+.btn-blue:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.4); }
+
+.content { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
+
+/* Hero */
+.hero { text-align: center; margin-bottom: 40px; }
+.hero h2 { font-size: 32px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+.hero p { font-size: 16px; color: var(--muted); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+.hero-badges { display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+.hero-badge { padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+
+/* Sections */
+.section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.section-num { width: 36px; height: 36px; background: linear-gradient(135deg, var(--blue), #2563EB); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.section h3 { font-size: 20px; font-weight: 800; color: var(--navy); }
+.section-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+.step { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.step:last-child { border-bottom: none; }
+.step-icon { width: 32px; height: 32px; background: rgba(59,130,246,0.08); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.step-content h4 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.step-content p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.step-content code { background: rgba(59,130,246,0.08); padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--blue); }
+
+.highlight-box { background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(37,99,235,0.03)); border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; padding: 20px; margin: 16px 0; }
+.highlight-box h4 { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.highlight-box p, .highlight-box li { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.highlight-box ul { padding-left: 20px; margin-top: 6px; }
+
+.warning-box { background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.15); border-radius: 12px; padding: 16px 20px; margin: 16px 0; }
+.warning-box h4 { font-size: 14px; font-weight: 700; color: var(--red); margin-bottom: 6px; }
+.warning-box p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+.set-box { background: linear-gradient(135deg, rgba(13,147,115,0.06), rgba(16,185,129,0.03)); border: 1px solid rgba(13,147,115,0.15); border-radius: 12px; padding: 20px; margin: 16px 0; }
+.set-box h4 { font-size: 15px; font-weight: 700; color: var(--emerald); margin-bottom: 12px; }
+.set-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.set-card { text-align: center; padding: 16px; border-radius: 10px; }
+.set-card.stop { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15); }
+.set-card.entry { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.15); }
+.set-card.target { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.15); }
+.set-card .icon { font-size: 24px; margin-bottom: 6px; }
+.set-card .label { font-size: 13px; font-weight: 700; }
+.set-card .desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.set-card.stop .label { color: var(--red); }
+.set-card.entry .label { color: var(--amber); }
+.set-card.target .label { color: var(--green); }
+
+/* Simulation Exercises Bridge */
+.sim-bridge { background: linear-gradient(135deg, #1B2A4A, #243B60); border-radius: 16px; padding: 32px; margin-bottom: 24px; color: #fff; }
+.sim-bridge h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+.sim-bridge > p { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 24px; line-height: 1.6; }
+.sim-exercise { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+.sim-exercise:last-child { margin-bottom: 0; }
+.sim-exercise h4 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.sim-exercise h4 .badge { font-size: 10px; padding: 3px 8px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
+.sim-exercise h4 .badge.stocks { background: rgba(16,185,129,0.2); color: #10B981; }
+.sim-exercise h4 .badge.options { background: rgba(245,158,11,0.2); color: #F59E0B; }
+.sim-exercise h4 .badge.futures { background: rgba(124,58,237,0.2); color: #A78BFA; }
+.sim-exercise ol { padding-left: 20px; margin-top: 8px; }
+.sim-exercise li { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.7; margin-bottom: 4px; }
+.sim-exercise li strong { color: #fff; }
+
+.cta-section { text-align: center; margin-top: 40px; }
+.cta-section h3 { font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+.cta-section p { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+.cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.footer { text-align: center; padding: 20px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 40px; }
+.footer a { color: var(--emerald); text-decoration: none; }
+
+@media (max-width: 768px) {
+  .header { padding: 12px 16px; }
+  .content { padding: 20px 16px 40px; }
+  .section { padding: 20px; }
+  .set-grid { grid-template-columns: 1fr; }
+  .hero h2 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">📱</div>
+    <div>
+      <h1>WEBULL <span>SETUP GUIDE</span></h1>
+      <p>Paper Trading & S.E.T. Practice • Impact Trading Academy</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="https://app.webull.com/trade" target="_blank" class="btn btn-blue">🚀 Open Webull</a>
+    <a href="/tradingview-charts.html" class="btn btn-outline">📊 Live Charts</a>
+    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Academy</a>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h2>Master Trading with Webull</h2>
+    <p>Your complete guide to setting up Webull as your companion practice platform for the Impact Trading Academy. Paper trade with $1M virtual money, practice your S.E.T. setups, and execute simulation exercises — all without risking a single dollar.</p>
+    <div class="hero-badges">
+      <span class="hero-badge" style="background: rgba(16,185,129,0.1); color: var(--green);">$0 Commissions</span>
+      <span class="hero-badge" style="background: rgba(59,130,246,0.1); color: var(--blue);">$1M Paper Money</span>
+      <span class="hero-badge" style="background: rgba(245,158,11,0.1); color: var(--amber);">Real-Time Data</span>
+      <span class="hero-badge" style="background: rgba(124,58,237,0.1); color: var(--purple);">Options & Stocks</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1: ACCOUNT SETUP -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div>
+        <h3>Create Your Webull Account</h3>
+        <div class="section-subtitle">One-time setup — takes about 5 minutes</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">🌐</div>
+      <div class="step-content">
+        <h4>Go to Webull</h4>
+        <p>Visit <a href="https://www.webull.com" target="_blank" style="color:var(--blue);font-weight:600;">webull.com</a> or download the Webull app on your phone. Click <strong>"Sign Up"</strong> and create an account with your email.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📧</div>
+      <div class="step-content">
+        <h4>Verify Your Email</h4>
+        <p>Check your inbox for a verification email from Webull. Click the link to activate your account.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📱</div>
+      <div class="step-content">
+        <h4>Choose Your Platform</h4>
+        <p>You can use Webull on <strong>web</strong> (app.webull.com), <strong>desktop</strong>, or <strong>mobile</strong>. For the best Academy integration, use the <strong>web version</strong> — it opens right inside our Live Charts page.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>💡 No Funding Required</h4>
+      <p>You do NOT need to deposit any real money to use Paper Trading. Webull gives you $1,000,000 in virtual money the moment you enable it. Your real bank account stays untouched.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 2: ENABLE PAPER TRADING -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div>
+        <h3>Enable Paper Trading Mode</h3>
+        <div class="section-subtitle">Switch to virtual money — zero risk</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">⚙️</div>
+      <div class="step-content">
+        <h4>On Web (app.webull.com)</h4>
+        <p>Click the menu icon (three lines) in the top-left corner. Look for <code>Paper Trading</code> in the menu. Toggle it <strong>ON</strong>. You'll see your balance change to $1,000,000.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📱</div>
+      <div class="step-content">
+        <h4>On Mobile App</h4>
+        <p>Tap the <strong>Webull logo</strong> at the bottom center. Tap <code>Paper Trading</code> at the top of the menu. Toggle it ON. The app will switch to simulated mode.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">💰</div>
+      <div class="step-content">
+        <h4>Confirm Paper Mode Is Active</h4>
+        <p>Look for a <strong>"Paper"</strong> badge or banner in the header. Your account balance should show <strong>$1,000,000.00</strong>. All trades in this mode use virtual money.</p>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Always Check Before Trading</h4>
+      <p>Before placing any trade, make sure you see "Paper Trading" in the header. If you accidentally switch to your real account and trade, you'll use real money. Always verify the mode first.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: CHART SETUP FOR S.E.T. -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div>
+        <h3>Set Up Charts for S.E.T. Practice</h3>
+        <div class="section-subtitle">Configure Webull's charts to mark your Stop, Entry, and Target</div>
+      </div>
+    </div>
+
+    <div class="set-box">
+      <h4>🎯 The S.E.T. Rule — Every Trade, Every Time</h4>
+      <div class="set-grid">
+        <div class="set-card stop">
+          <div class="icon">🛑</div>
+          <div class="label">STOP</div>
+          <div class="desc">Max 1% risk per trade. Your protective floor.</div>
+        </div>
+        <div class="set-card entry">
+          <div class="icon">🎯</div>
+          <div class="label">ENTRY</div>
+          <div class="desc">Your exact buy/sell trigger point.</div>
+        </div>
+        <div class="set-card target">
+          <div class="icon">💰</div>
+          <div class="label">TARGET</div>
+          <div class="desc">3:1 reward-to-risk. Your profit exit.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📊</div>
+      <div class="step-content">
+        <h4>Open Any Stock Chart</h4>
+        <p>Search for a ticker (e.g., <code>AAPL</code>, <code>SPY</code>, <code>TSLA</code>). Click on it to open the full chart view. Switch to <strong>candlestick</strong> chart type if not already set.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📏</div>
+      <div class="step-content">
+        <h4>Use Drawing Tools for S.E.T. Lines</h4>
+        <p>Click the <strong>drawing tools</strong> icon (pencil or line icon) on the chart toolbar. Select <strong>"Horizontal Line"</strong>. Place three lines at your planned prices:</p>
+        <p style="margin-top:6px;"><span style="color:var(--red);font-weight:700;">Red line</span> = Stop Loss &nbsp;|&nbsp; <span style="color:var(--amber);font-weight:700;">Yellow line</span> = Entry &nbsp;|&nbsp; <span style="color:var(--green);font-weight:700;">Green line</span> = Target</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">🔲</div>
+      <div class="step-content">
+        <h4>Mark Supply & Demand Zones</h4>
+        <p>Use the <strong>"Rectangle"</strong> drawing tool to shade supply zones (above current price) and demand zones (below current price). These are the institutional footprint areas from Module 2 and Module 3.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📈</div>
+      <div class="step-content">
+        <h4>Add Key Indicators</h4>
+        <p>Click <strong>"Indicators"</strong> on the chart toolbar and add: <code>SMA (20)</code> for trend direction, <code>Volume</code> for institutional activity, and <code>RSI</code> for overbought/oversold signals. These align with the Master Surge Strategy pillars.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: PLACING YOUR FIRST PAPER TRADE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div>
+        <h3>Place Your First Paper Trade</h3>
+        <div class="section-subtitle">Execute a trade using the S.E.T. rule with virtual money</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">🔍</div>
+      <div class="step-content">
+        <h4>Step 1: Identify Your Setup</h4>
+        <p>Use the chart you configured in Section 3. Find a demand zone (for longs) or supply zone (for shorts). Mark your S.E.T. levels with drawing tools. Verify the 3:1 reward-to-risk ratio.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">🧮</div>
+      <div class="step-content">
+        <h4>Step 2: Calculate Position Size</h4>
+        <p><strong>Formula:</strong> Position Size = Account Risk / Trade Risk</p>
+        <p style="margin-top:4px;">Account Risk = $1,000,000 × 1% = <strong>$10,000</strong></p>
+        <p>Trade Risk = Entry Price - Stop Price</p>
+        <p>Position Size = $10,000 / Trade Risk per share</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">🛒</div>
+      <div class="step-content">
+        <h4>Step 3: Place the Order</h4>
+        <p>Click <strong>"Trade"</strong> on the stock. Select <strong>Limit Order</strong> (NOT market order — we want our exact entry). Set the limit price to your <strong>Entry</strong> price. Set the quantity to your calculated position size. Click <strong>Buy</strong> (for longs) or <strong>Sell</strong> (for shorts).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">🛑</div>
+      <div class="step-content">
+        <h4>Step 4: Set Your Stop Loss</h4>
+        <p>After your order fills, immediately place a <strong>Stop Loss order</strong> at your <strong>Stop</strong> price. In Webull: go to your position → click "Close" → select <strong>"Stop Order"</strong> → enter your stop price. This protects you at 1% max risk.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">💰</div>
+      <div class="step-content">
+        <h4>Step 5: Set Your Take Profit</h4>
+        <p>Place a <strong>Limit Sell order</strong> at your <strong>Target</strong> price. In Webull: go to your position → place a sell limit order at your target. Now your trade is fully managed: stop protects you, target locks in profit.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>🎯 Pro Tip: OCO Orders</h4>
+      <p>Webull supports <strong>OCO (One-Cancels-Other)</strong> orders. This lets you set both your Stop Loss AND Take Profit simultaneously. When one triggers, the other automatically cancels. Look for "OCO" in the order type dropdown — this is the most efficient way to manage your S.E.T.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5: SIMULATION EXERCISES IN WEBULL -->
+  <div class="sim-bridge">
+    <h3>🎮 Academy Simulation Exercises → Webull</h3>
+    <p>Each Academy module includes simulation exercises. Here's how to execute them in Webull's Paper Trading mode for real hands-on practice. Complete these in Webull, then mark them complete in the Academy portal.</p>
+
+    <div class="sim-exercise">
+      <h4>Module 2: Supply & Demand Zone Identification <span class="badge stocks">STOCKS</span></h4>
+      <ol>
+        <li>Open <strong>SPY</strong> daily chart in Webull</li>
+        <li>Identify <strong>3 demand zones</strong> (recent areas where price bounced up sharply)</li>
+        <li>Mark them with rectangle drawing tools</li>
+        <li>Wait for price to approach one zone, then set your <strong>S.E.T.</strong> and paper trade a long entry</li>
+        <li>Hold until target or stop hits — screenshot your result</li>
+      </ol>
+    </div>
+
+    <div class="sim-exercise">
+      <h4>Module 3: Master Surge Strategy Execution <span class="badge stocks">STOCKS</span></h4>
+      <ol>
+        <li>Apply the <strong>5 Pillars</strong>: check price cycle stage, volume surge, institutional footprint, trend direction, risk management</li>
+        <li>Find a stock with a <strong>volume surge</strong> (2× or higher than average volume) on Webull's scanner or Volume indicator</li>
+        <li>If all 5 pillars confirm → set your <strong>S.E.T.</strong> and paper trade it</li>
+        <li>Log your entry, stop, target, and result in the <strong>Trade Journal</strong> tool</li>
+      </ol>
+    </div>
+
+    <div class="sim-exercise">
+      <h4>Module 4: Position Sizing Practice <span class="badge stocks">STOCKS</span></h4>
+      <ol>
+        <li>Pick any stock on your Webull watchlist</li>
+        <li>Set a <strong>Stop</strong> and <strong>Entry</strong> using horizontal lines</li>
+        <li>Calculate: <strong>$1,000,000 × 1% = $10,000 max risk</strong></li>
+        <li>Divide $10,000 by the distance between Entry and Stop to get your <strong>exact share count</strong></li>
+        <li>Place the paper trade with that exact quantity — verify your risk matches 1%</li>
+      </ol>
+    </div>
+
+    <div class="sim-exercise">
+      <h4>Module 5: Leveraged ETF Trade <span class="badge stocks">STOCKS</span></h4>
+      <ol>
+        <li>Search Webull for a leveraged ETF: <strong>TQQQ</strong> (3× Nasdaq Bull), <strong>SQQQ</strong> (3× Nasdaq Bear), or <strong>SPXL</strong> (3× S&P Bull)</li>
+        <li>Apply the S.E.T. rule with <strong>tighter stops</strong> (leveraged ETFs move faster)</li>
+        <li>Paper trade a position and observe how leverage amplifies both gains and losses</li>
+        <li>Compare your P&L to the underlying index move</li>
+      </ol>
+    </div>
+
+    <div class="sim-exercise">
+      <h4>Module 6: Options Paper Trade <span class="badge options">OPTIONS</span></h4>
+      <ol>
+        <li>Go to <strong>Options</strong> in Webull (app.webull.com/options or the Options tab)</li>
+        <li>Pick a stock you've analyzed (e.g., AAPL) → click "Options Chain"</li>
+        <li>Select a <strong>Call option</strong> with at least 30 days until expiration</li>
+        <li>Choose a strike price <strong>near or slightly above</strong> the current stock price</li>
+        <li>Buy <strong>1 contract</strong> (controls 100 shares). Your max risk = the premium paid</li>
+        <li>Monitor: if the stock rises past your strike, the option gains value. Set a <strong>target to sell at 2-3× your premium</strong></li>
+      </ol>
+    </div>
+
+    <div class="sim-exercise">
+      <h4>Module 7: Futures Simulation <span class="badge futures">FUTURES</span></h4>
+      <ol>
+        <li>Note: Webull has <strong>limited futures access</strong>. For full futures practice, use <strong>ThinkorSwim by Schwab</strong> (free paper trading)</li>
+        <li>In Webull, simulate futures exposure by trading <strong>SPY</strong> (S&P 500 ETF) as a proxy for MES (Micro E-mini S&P 500)</li>
+        <li>Practice the same S.E.T. mechanics: 1% risk, 3:1 ratio, stop + entry + target</li>
+        <li>Apply the <strong>60/40 tax rule awareness</strong>: note which trades would qualify (futures only — not available in paper mode, but understand the concept)</li>
+      </ol>
+    </div>
+
+    <div class="sim-exercise">
+      <h4>Weekly S.E.T. Challenge <span class="badge stocks">ALL MODULES</span></h4>
+      <ol>
+        <li>Place <strong>5 paper trades per week</strong> in Webull using Academy principles</li>
+        <li>Every trade MUST have S.E.T. defined <strong>before</strong> entry</li>
+        <li>Log each trade in the Academy <strong>Trade Journal</strong> tool</li>
+        <li>At week's end: calculate your <strong>win rate</strong> and <strong>average R:R ratio</strong></li>
+        <li>Goal: 30%+ win rate with 3:1 R:R = <strong>consistent profitability</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- SECTION 5: WEBULL vs TRADINGVIEW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div>
+        <h3>When to Use Webull vs TradingView vs Academy Charts</h3>
+        <div class="section-subtitle">Each tool has its strength</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 12px;">
+      <div style="background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; padding: 20px;">
+        <div style="font-size: 24px; margin-bottom: 8px;">📱</div>
+        <div style="font-weight: 700; font-size: 14px; color: var(--blue); margin-bottom: 8px;">Webull</div>
+        <div style="font-size: 12px; color: var(--muted); line-height: 1.6;">
+          <strong>Best for:</strong> Paper trading, placing real orders, OCO stops, options chains, real broker experience<br><br>
+          <strong>Use when:</strong> Executing simulation exercises, practicing order types, building broker familiarity
+        </div>
+      </div>
+      <div style="background: rgba(13,147,115,0.04); border: 1px solid rgba(13,147,115,0.15); border-radius: 12px; padding: 20px;">
+        <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+        <div style="font-weight: 700; font-size: 14px; color: var(--emerald); margin-bottom: 8px;">TradingView</div>
+        <div style="font-size: 12px; color: var(--muted); line-height: 1.6;">
+          <strong>Best for:</strong> Advanced charting, 400+ indicators, community ideas, multi-timeframe analysis<br><br>
+          <strong>Use when:</strong> Deep technical analysis, comparing indicators, researching chart patterns
+        </div>
+      </div>
+      <div style="background: rgba(124,58,237,0.04); border: 1px solid rgba(124,58,237,0.15); border-radius: 12px; padding: 20px;">
+        <div style="font-size: 24px; margin-bottom: 8px;">🎯</div>
+        <div style="font-weight: 700; font-size: 14px; color: var(--purple); margin-bottom: 8px;">Academy Charts</div>
+        <div style="font-size: 12px; color: var(--muted); line-height: 1.6;">
+          <strong>Best for:</strong> S.E.T. practice, position sizing calculator, supply/demand zone marking, R:R analysis<br><br>
+          <strong>Use when:</strong> Learning the system, practicing S.E.T. placement, calculating risk/reward
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>Ready to Start Practicing?</h3>
+    <p>Open Webull, enable Paper Trading, and start executing your Academy simulation exercises today.</p>
+    <div class="cta-buttons">
+      <a href="https://app.webull.com/trade" target="_blank" class="btn btn-blue" style="padding: 14px 32px; font-size: 15px;">🚀 Open Webull Paper Trading</a>
+      <a href="/tradingview-charts.html" class="btn" style="padding: 14px 32px; font-size: 15px; background: var(--navy); color: #fff;">📊 Go to Live Charts</a>
+      <a href="https://trading-training-portal.vercel.app/" class="btn" style="padding: 14px 32px; font-size: 15px; background: var(--emerald); color: #fff;">📚 Back to Academy</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    Impact Trading Academy • Webull Setup Guide • <a href="https://trading-training-portal.vercel.app/">Return to Dashboard</a>
+  </div>
+
+</div>
+
+</body>
+</html>

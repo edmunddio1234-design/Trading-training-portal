@@ -23,6 +23,8 @@
     { "source": "/ml-indicator.html", "destination": "/public/ml-indicator.html" },
     { "source": "/company-lookup.html", "destination": "/public/company-lookup.html" },
     { "source": "/day-trade-dash.html", "destination": "/public/day-trade-dash.html" },
+    { "source": "/webull-charts.html", "destination": "/public/webull-charts.html" },
+    { "source": "/webull-guide.html", "destination": "/public/webull-guide.html" },
     { "source": "/infographics/:path*", "destination": "/public/infographics/:path*" },
     { "source": "/(.*)", "destination": "/public/index.html" }
   ]

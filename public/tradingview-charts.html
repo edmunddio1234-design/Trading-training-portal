@@ -5,15 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Charts — Impact Trading Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root {
   --navy: #1B2A4A; --emerald: #0D9373; --emerald-light: #10B981; --emerald-dark: #0B7A60;
   --bg: #F0F5F3; --card: #FFFFFF; --border: #E5E7EB; --text: #1B2A4A; --muted: #6B7280;
+  --red: #EF4444; --green: #10B981; --amber: #F59E0B; --purple: #7C3AED;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; --muted: #6B7394; }
 
-.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 8px 28px; display: flex; align-items: center; justify-content: space-between; }
+/* ===== HEADER ===== */
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 8px 28px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .header-left { display: flex; align-items: center; gap: 14px; }
 .header-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 800; }
 .header h1 { font-size: 18px; color: #fff; font-weight: 700; letter-spacing: -0.3px; }
@@ -24,22 +28,42 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
 .btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-.toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 6px 28px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.toolbar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.toolbar input, .toolbar select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: #F7FAF9; color: var(--text); }
-.toolbar input:focus, .toolbar select:focus { outline: none; border-color: var(--emerald); }
-.toolbar input[type="text"] { width: 180px; }
-.tf-btn { padding: 7px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; }
+/* ===== TAB BAR ===== */
+.tab-bar { background: var(--card); border-bottom: 2px solid var(--border); padding: 0 28px; display: flex; align-items: stretch; gap: 0; flex-shrink: 0; }
+.tab-btn { padding: 12px 24px; font-size: 14px; font-weight: 700; color: var(--muted); background: none; border: none; cursor: pointer; position: relative; transition: color 0.2s; font-family: inherit; display: flex; align-items: center; gap: 8px; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--emerald); }
+.tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: var(--emerald); border-radius: 3px 3px 0 0; }
+.tab-badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.tab-badge.tv { background: rgba(13,147,115,0.1); color: var(--emerald); }
+.tab-badge.wb { background: rgba(59,130,246,0.1); color: #3B82F6; }
+.tab-badge.ac { background: rgba(124,58,237,0.1); color: var(--purple); }
+
+/* ===== TAB PANELS ===== */
+.tab-panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+.tab-panel.active { display: flex; }
+
+/* ===== TRADINGVIEW TAB ===== */
+.tv-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 6px 28px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+.tv-toolbar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.tv-toolbar input, .tv-toolbar select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: var(--card); color: var(--text); }
+.tv-toolbar input:focus { outline: none; border-color: var(--emerald); }
+.tv-toolbar input[type="text"] { width: 180px; }
+.tf-btn { padding: 7px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; font-family: inherit; }
 .tf-btn:hover { border-color: var(--emerald); color: var(--emerald); }
 .tf-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
-.indicator-chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: rgba(13,147,115,0.08); color: var(--emerald); cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
 .chip:hover { border-color: var(--emerald); }
 .chip.active { background: var(--emerald); color: #fff; }
+.indicator-chips { display: flex; gap: 6px; flex-wrap: wrap; }
 
-/* Symbol Autocomplete */
+.tv-chart { flex: 1; padding: 0; }
+.tv-chart > div { height: 100%; width: 100%; }
+#tradingview_chart { height: 100% !important; width: 100% !important; }
+
+/* Autocomplete */
 .ac-wrap { position: relative; }
-.ac-dropdown { position: absolute; top: 100%; left: 0; max-height: 260px; overflow-y: auto; background: var(--card); border: 1px solid var(--emerald); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; margin-top: 4px; min-width: 300px; }
+.ac-dropdown { position: absolute; top: 100%; left: 0; max-height: 260px; overflow-y: auto; background: var(--card); border: 1px solid var(--emerald); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; margin-top: 4px; min-width: 300px; display: none; }
 .ac-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background 0.1s; border-bottom: 1px solid var(--border); font-size: 13px; }
 .ac-item:last-child { border-bottom: none; }
 .ac-item:hover, .ac-item.ac-active { background: rgba(13,147,115,0.08); }
@@ -47,112 +71,420 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 .ac-name { color: var(--muted); font-size: 12px; }
 .ac-hl { color: var(--emerald); font-weight: 700; }
 
-.chart-container { padding: 0; height: calc(100vh - 155px); }
-.chart-container > div { height: 100%; width: 100%; }
-#tradingview_chart { height: 100% !important; width: 100% !important; }
+/* ===== WEBULL TAB ===== */
+.webull-container { flex: 1; display: flex; flex-direction: column; }
+.webull-iframe { flex: 1; border: none; width: 100%; }
+.webull-fallback { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 40px; text-align: center; }
+.webull-fallback-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #3B82F6, #2563EB); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; box-shadow: 0 8px 32px rgba(59,130,246,0.3); }
+.webull-fallback h2 { font-size: 24px; font-weight: 800; color: var(--navy); }
+.webull-fallback p { font-size: 15px; color: var(--muted); max-width: 500px; line-height: 1.7; }
+.webull-open-btn { display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.3s; box-shadow: 0 4px 20px rgba(59,130,246,0.3); }
+.webull-open-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59,130,246,0.4); }
+.webull-links { display: flex; gap: 20px; margin-top: 8px; }
+.webull-links a { color: #3B82F6; text-decoration: none; font-size: 13px; font-weight: 600; }
+.webull-links a:hover { text-decoration: underline; }
+.webull-tip { background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; padding: 16px 24px; max-width: 560px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+.webull-tip strong { color: #3B82F6; }
 
-.info-bar { background: var(--card); border-top: 1px solid var(--border); padding: 6px 28px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); }
+/* ===== ACADEMY CHARTS TAB ===== */
+.ac-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 6px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+.ac-toolbar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.ac-toolbar input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: var(--card); color: var(--text); width: 140px; }
+.ac-toolbar input:focus { outline: none; border-color: var(--emerald); }
+
+.draw-tools { display: flex; gap: 4px; align-items: center; }
+.draw-btn { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.draw-btn:hover { border-color: var(--emerald); color: var(--emerald); }
+.draw-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+.draw-btn.set-stop { border-color: var(--red); color: var(--red); }
+.draw-btn.set-stop.active { background: var(--red); color: #fff; }
+.draw-btn.set-entry { border-color: var(--amber); color: var(--amber); }
+.draw-btn.set-entry.active { background: var(--amber); color: #fff; }
+.draw-btn.set-target { border-color: var(--green); color: var(--green); }
+.draw-btn.set-target.active { background: var(--green); color: #fff; }
+.draw-btn.demand-zone { border-color: #3B82F6; color: #3B82F6; }
+.draw-btn.demand-zone.active { background: #3B82F6; color: #fff; }
+.draw-btn.supply-zone { border-color: var(--purple); color: var(--purple); }
+.draw-btn.supply-zone.active { background: var(--purple); color: #fff; }
+.draw-btn.clear-btn { border-color: var(--muted); color: var(--muted); }
+.draw-btn.clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+.chart-area { flex: 1; position: relative; background: var(--card); overflow: hidden; }
+#lwchart { width: 100%; height: 100%; }
+
+/* S.E.T. Panel */
+.set-panel { position: absolute; top: 12px; right: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 220px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 100; font-size: 12px; }
+.set-panel h4 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.set-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.set-row:last-child { border-bottom: none; }
+.set-label { font-weight: 600; }
+.set-val { font-weight: 700; font-family: 'Courier New', monospace; }
+.set-stop-val { color: var(--red); }
+.set-entry-val { color: var(--amber); }
+.set-target-val { color: var(--green); }
+.set-risk { margin-top: 8px; padding: 8px 10px; background: rgba(13,147,115,0.06); border-radius: 8px; font-size: 11px; line-height: 1.5; }
+.set-risk strong { color: var(--emerald); }
+
+/* Price overlay */
+.price-info { position: absolute; top: 12px; left: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.price-symbol { font-size: 18px; font-weight: 800; }
+.price-current { font-size: 24px; font-weight: 800; margin: 4px 0; }
+.price-change { font-size: 13px; font-weight: 600; }
+.price-up { color: var(--green); }
+.price-down { color: var(--red); }
+.price-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Zone legend */
+.zone-legend { position: absolute; bottom: 50px; left: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; z-index: 100; font-size: 11px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.zone-legend-item { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+.zone-swatch { width: 16px; height: 10px; border-radius: 2px; }
+
+/* ===== INFO BAR ===== */
+.info-bar { background: var(--card); border-top: 1px solid var(--border); padding: 6px 28px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); flex-shrink: 0; }
 .info-bar a { color: var(--emerald); text-decoration: none; font-weight: 500; }
 .info-bar a:hover { text-decoration: underline; }
 .quick-links { display: flex; gap: 16px; }
-.quick-links a { font-size: 11px; }
 
 @media (max-width: 768px) {
-  .header { padding: 12px 16px; }
-  .toolbar { padding: 10px 16px; gap: 8px; }
-  .toolbar input[type="text"] { width: 120px; }
+  .header { padding: 10px 16px; }
+  .tab-bar { padding: 0 12px; }
+  .tab-btn { padding: 10px 14px; font-size: 12px; }
+  .tv-toolbar, .ac-toolbar { padding: 8px 12px; gap: 6px; }
+  .tv-toolbar input[type="text"] { width: 120px; }
   .info-bar { padding: 8px 16px; flex-direction: column; gap: 6px; }
+  .set-panel { display: none; }
+  .price-info { top: 6px; left: 6px; padding: 8px 10px; }
+  .price-symbol { font-size: 14px; }
+  .price-current { font-size: 18px; }
 }
 </style>
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════════ -->
 <div class="header">
   <div class="header-left">
     <div class="header-logo">📈</div>
     <div>
       <h1>LIVE <span>CHARTS</span></h1>
-      <p>Powered by TradingView • Impact Trading Academy</p>
+      <p>TradingView • Webull • Academy Tools • Impact Trading Academy</p>
     </div>
   </div>
   <div class="header-actions">
-    <button class="btn btn-outline" id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
-    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Back to Academy</a>
+    <a href="/webull-guide.html" class="btn btn-outline">📱 Webull Guide</a>
+    <button class="btn btn-outline" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+    <a href="https://trading-training-portal.vercel.app/" class="btn btn-outline">← Academy</a>
   </div>
 </div>
 
-<div class="toolbar">
-  <div class="ac-wrap" id="acWrap">
-    <label>Symbol</label>
-    <input type="text" id="symbolInput" value="AAPL" placeholder="Search by ticker or company name..." autocomplete="off"
-      oninput="onSymbolInput(this.value)" onfocus="onSymbolInput(this.value)" onkeydown="acKeyDown(event)">
-    <div class="ac-dropdown" id="acDropdown" style="display:none;"></div>
-  </div>
-  <div>
-    <label>Timeframe</label>
-    <div style="display:flex;gap:4px;">
-      <button class="tf-btn" onclick="changeTF('1')">1m</button>
-      <button class="tf-btn" onclick="changeTF('5')">5m</button>
-      <button class="tf-btn" onclick="changeTF('15')">15m</button>
-      <button class="tf-btn" onclick="changeTF('60')">1H</button>
-      <button class="tf-btn active" onclick="changeTF('D')">1D</button>
-      <button class="tf-btn" onclick="changeTF('W')">1W</button>
-      <button class="tf-btn" onclick="changeTF('M')">1M</button>
+<!-- ═══════════════════════════════════════════════════════════════
+     TAB BAR
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('tradingview', this)">
+    📊 TradingView <span class="tab-badge tv">CHARTS</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('webull', this)">
+    📱 Webull <span class="tab-badge wb">PAPER TRADE</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('academy', this)">
+    🎯 Academy Charts <span class="tab-badge ac">S.E.T. TOOLS</span>
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TAB 1: TRADINGVIEW
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel active" id="panel-tradingview">
+  <div class="tv-toolbar">
+    <div class="ac-wrap" id="tvAcWrap">
+      <label>Symbol</label>
+      <input type="text" id="tvSymbolInput" value="AAPL" placeholder="Search ticker..." autocomplete="off"
+        oninput="tvOnSymbolInput(this.value)" onfocus="tvOnSymbolInput(this.value)" onkeydown="tvAcKeyDown(event)">
+      <div class="ac-dropdown" id="tvAcDropdown"></div>
+    </div>
+    <div>
+      <label>Timeframe</label>
+      <div style="display:flex;gap:4px;">
+        <button class="tf-btn" onclick="tvChangeTF('1',this)">1m</button>
+        <button class="tf-btn" onclick="tvChangeTF('5',this)">5m</button>
+        <button class="tf-btn" onclick="tvChangeTF('15',this)">15m</button>
+        <button class="tf-btn" onclick="tvChangeTF('60',this)">1H</button>
+        <button class="tf-btn active" onclick="tvChangeTF('D',this)">1D</button>
+        <button class="tf-btn" onclick="tvChangeTF('W',this)">1W</button>
+        <button class="tf-btn" onclick="tvChangeTF('M',this)">1M</button>
+      </div>
+    </div>
+    <div>
+      <label>Indicators</label>
+      <div class="indicator-chips">
+        <span class="chip" onclick="tvToggleStudy(this,'RSI@tv-basicstudies')">RSI</span>
+        <span class="chip" onclick="tvToggleStudy(this,'MACD@tv-basicstudies')">MACD</span>
+        <span class="chip" onclick="tvToggleStudy(this,'MAExp@tv-basicstudies')">EMA</span>
+        <span class="chip" onclick="tvToggleStudy(this,'MASimple@tv-basicstudies')">SMA</span>
+        <span class="chip" onclick="tvToggleStudy(this,'VWAP@tv-basicstudies')">VWAP</span>
+        <span class="chip" onclick="tvToggleStudy(this,'BB@tv-basicstudies')">Bollinger</span>
+        <span class="chip" onclick="tvToggleStudy(this,'Volume@tv-basicstudies')">Volume</span>
+        <span class="chip" onclick="tvToggleStudy(this,'ATR@tv-basicstudies')">ATR</span>
+      </div>
     </div>
   </div>
-  <div>
-    <label>Quick Add Indicators</label>
-    <div class="indicator-chips">
-      <span class="chip" onclick="toggleStudy(this,'RSI@tv-basicstudies')">RSI</span>
-      <span class="chip" onclick="toggleStudy(this,'MACD@tv-basicstudies')">MACD</span>
-      <span class="chip" onclick="toggleStudy(this,'MAExp@tv-basicstudies')">EMA</span>
-      <span class="chip" onclick="toggleStudy(this,'MASimple@tv-basicstudies')">SMA</span>
-      <span class="chip" onclick="toggleStudy(this,'VWAP@tv-basicstudies')">VWAP</span>
-      <span class="chip" onclick="toggleStudy(this,'BB@tv-basicstudies')">Bollinger</span>
-      <span class="chip" onclick="toggleStudy(this,'Volume@tv-basicstudies')">Volume</span>
-      <span class="chip" onclick="toggleStudy(this,'ADX@tv-basicstudies')">ADX</span>
-      <span class="chip" onclick="toggleStudy(this,'CCI@tv-basicstudies')">CCI</span>
-      <span class="chip" onclick="toggleStudy(this,'StochasticRSI@tv-basicstudies')">Stoch RSI</span>
-      <span class="chip" onclick="toggleStudy(this,'ATR@tv-basicstudies')">ATR</span>
+  <div class="tv-chart" id="tvChartWrap">
+    <div class="tradingview-widget-container" style="height:100%;width:100%">
+      <div id="tradingview_chart" style="height:100%;width:100%"></div>
     </div>
   </div>
 </div>
 
-<div class="chart-container" id="chartWrap">
-  <!-- TradingView Advanced Chart Widget -->
-  <div class="tradingview-widget-container" style="height:100%;width:100%">
-    <div id="tradingview_chart" style="height:100%;width:100%"></div>
+<!-- ═══════════════════════════════════════════════════════════════
+     TAB 2: WEBULL
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-webull">
+  <div class="webull-container">
+    <!-- Try iframe first -->
+    <iframe id="webullFrame" class="webull-iframe" src="about:blank" style="display:none;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"></iframe>
+
+    <!-- Fallback if iframe is blocked -->
+    <div class="webull-fallback" id="webullFallback">
+      <div class="webull-fallback-icon">📱</div>
+      <h2>Webull Paper Trading</h2>
+      <p>Trade stocks, options, and ETFs with zero commissions using Webull's full web platform. Practice your S.E.T. setups with paper money before risking real capital.</p>
+
+      <button class="webull-open-btn" onclick="window.open('https://app.webull.com/trade','_blank')">
+        🚀 Open Webull Web Trader
+      </button>
+
+      <div class="webull-links">
+        <a href="https://app.webull.com/trade" target="_blank">Stocks & ETFs</a>
+        <a href="https://app.webull.com/options" target="_blank">Options Trading</a>
+        <a href="https://app.webull.com/paper-trading" target="_blank">Paper Trading</a>
+        <a href="/webull-guide.html">Setup Guide</a>
+      </div>
+
+      <div class="webull-tip">
+        <strong>Pro Tip:</strong> Enable Paper Trading in Webull (Menu → Paper Trading → ON). This gives you $1,000,000 in virtual money to practice S.E.T. setups, supply/demand zone entries, and position sizing — exactly as taught in the Academy. Your real money stays untouched.
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; max-width: 600px; width: 100%;">
+        <div style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.15); border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 8px;">🛑</div>
+          <div style="font-weight: 700; font-size: 13px; color: var(--red);">Set Your STOP</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">1% max risk per trade</div>
+        </div>
+        <div style="background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.15); border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 8px;">🎯</div>
+          <div style="font-weight: 700; font-size: 13px; color: var(--amber);">Set Your ENTRY</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">Wait for your zone</div>
+        </div>
+        <div style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.15); border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 8px;">💰</div>
+          <div style="font-weight: 700; font-size: 13px; color: var(--green);">Set Your TARGET</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">3:1 reward-to-risk</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     TAB 3: ACADEMY CHARTS (Lightweight Charts + S.E.T. Tools)
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-academy">
+  <div class="ac-toolbar">
+    <div class="ac-wrap" id="acAcWrap">
+      <label>Symbol</label>
+      <input type="text" id="acSymbolInput" value="AAPL" placeholder="Search ticker..." autocomplete="off"
+        oninput="acOnSymbolInput(this.value)" onfocus="acOnSymbolInput(this.value)" onkeydown="acAcKeyDown(event)">
+      <div class="ac-dropdown" id="acAcDropdown"></div>
+    </div>
+    <div>
+      <label>Timeframe</label>
+      <div style="display:flex;gap:4px;">
+        <button class="tf-btn" onclick="acChangeTF('1min',this)">1m</button>
+        <button class="tf-btn" onclick="acChangeTF('5min',this)">5m</button>
+        <button class="tf-btn" onclick="acChangeTF('15min',this)">15m</button>
+        <button class="tf-btn" onclick="acChangeTF('1hour',this)">1H</button>
+        <button class="tf-btn active" onclick="acChangeTF('1day',this)">1D</button>
+        <button class="tf-btn" onclick="acChangeTF('1week',this)">1W</button>
+      </div>
+    </div>
+    <div>
+      <label>S.E.T. Tools</label>
+      <div class="draw-tools">
+        <button class="draw-btn set-stop" onclick="acSetDrawMode('stop',this)">🛑 Stop</button>
+        <button class="draw-btn set-entry" onclick="acSetDrawMode('entry',this)">🎯 Entry</button>
+        <button class="draw-btn set-target" onclick="acSetDrawMode('target',this)">💰 Target</button>
+      </div>
+    </div>
+    <div>
+      <label>Zones</label>
+      <div class="draw-tools">
+        <button class="draw-btn demand-zone" onclick="acSetDrawMode('demand',this)">📈 Demand</button>
+        <button class="draw-btn supply-zone" onclick="acSetDrawMode('supply',this)">📉 Supply</button>
+        <button class="draw-btn clear-btn" onclick="acClearAll()">✕ Clear</button>
+      </div>
+    </div>
+    <div>
+      <label>Indicators</label>
+      <div class="draw-tools">
+        <button class="draw-btn" onclick="acToggleIndicator('sma',this)">SMA</button>
+        <button class="draw-btn" onclick="acToggleIndicator('ema',this)">EMA</button>
+        <button class="draw-btn" onclick="acToggleIndicator('volume',this)">Vol</button>
+      </div>
+    </div>
+  </div>
+  <div class="chart-area">
+    <div id="lwchart"></div>
+    <div class="price-info" id="priceInfo">
+      <div class="price-symbol" id="priceSymbol">AAPL</div>
+      <div class="price-current" id="priceCurrent">--</div>
+      <div class="price-change" id="priceChange">--</div>
+      <div class="price-meta" id="priceMeta">Loading...</div>
+    </div>
+    <div class="set-panel" id="setPanel" style="display:none;">
+      <h4>🎯 S.E.T. Analysis</h4>
+      <div class="set-row"><span class="set-label">🛑 Stop</span><span class="set-val set-stop-val" id="setStopVal">—</span></div>
+      <div class="set-row"><span class="set-label">🎯 Entry</span><span class="set-val set-entry-val" id="setEntryVal">—</span></div>
+      <div class="set-row"><span class="set-label">💰 Target</span><span class="set-val set-target-val" id="setTargetVal">—</span></div>
+      <div class="set-risk" id="setRisk" style="display:none;">
+        <div><strong>Risk:</strong> <span id="riskDollars">—</span>/share</div>
+        <div><strong>Reward:</strong> <span id="rewardDollars">—</span>/share</div>
+        <div><strong>R:R Ratio:</strong> <span id="rrRatio">—</span></div>
+        <div style="margin-top:4px;"><strong>Position ($10K, 1%):</strong> <span id="posSize">—</span> shares</div>
+      </div>
+    </div>
+    <div class="zone-legend" id="zoneLegend" style="display:none;">
+      <div class="zone-legend-item"><div class="zone-swatch" style="background:rgba(59,130,246,0.3);border:1px solid #3B82F6;"></div> Demand Zone</div>
+      <div class="zone-legend-item"><div class="zone-swatch" style="background:rgba(124,58,237,0.3);border:1px solid #7C3AED;"></div> Supply Zone</div>
+      <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--red);"></div> Stop</div>
+      <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--amber);"></div> Entry</div>
+      <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--green);"></div> Target</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     INFO BAR
+     ═══════════════════════════════════════════════════════════════ -->
 <div class="info-bar">
-  <span>Impact Trading Academy • Live Charts powered by TradingView • Data may be delayed</span>
+  <span>Impact Trading Academy • Live Charts • Practice S.E.T. & Zone Analysis</span>
   <div class="quick-links">
-    <a href="https://trading-training-portal.vercel.app/">Academy Dashboard</a>
-    <a href="/options-backtester.html">Options Backtester</a>
-    <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView ↗</a>
+    <a href="https://trading-training-portal.vercel.app/">Academy</a>
+    <a href="/options-backtester.html">Backtester</a>
+    <a href="/webull-guide.html">Webull Guide</a>
+    <a href="https://app.webull.com/trade" target="_blank">Webull ↗</a>
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     TRADINGVIEW WIDGET SCRIPT
+     ═══════════════════════════════════════════════════════════════ -->
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-<script>
-let widget = null;
-let currentSymbol = 'AAPL';
-let currentInterval = 'D';
-let activeStudies = [];
-let chartTheme = 'light';
 
-function createWidget() {
+<script>
+// ============================================================
+// SHARED: TICKER DATA
+// ============================================================
+const TICKERS = {
+  AAPL:{name:'Apple Inc.'},MSFT:{name:'Microsoft Corp.'},GOOG:{name:'Alphabet (Google)'},GOOGL:{name:'Alphabet Class A'},
+  AMZN:{name:'Amazon.com'},NVDA:{name:'NVIDIA Corp.'},META:{name:'Meta Platforms'},TSLA:{name:'Tesla Inc.'},
+  AMD:{name:'Advanced Micro Devices'},NFLX:{name:'Netflix Inc.'},SPY:{name:'S&P 500 ETF'},QQQ:{name:'Nasdaq 100 ETF'},
+  IWM:{name:'Russell 2000 ETF'},DIA:{name:'Dow Jones ETF'},VOO:{name:'Vanguard S&P 500'},VTI:{name:'Vanguard Total Market'},
+  INTC:{name:'Intel Corp.'},CRM:{name:'Salesforce Inc.'},ORCL:{name:'Oracle Corp.'},ADBE:{name:'Adobe Inc.'},
+  PYPL:{name:'PayPal Holdings'},SQ:{name:'Block Inc.'},SHOP:{name:'Shopify Inc.'},ROKU:{name:'Roku Inc.'},
+  SNAP:{name:'Snap Inc.'},UBER:{name:'Uber Technologies'},LYFT:{name:'Lyft Inc.'},ABNB:{name:'Airbnb Inc.'},
+  COIN:{name:'Coinbase Global'},HOOD:{name:'Robinhood Markets'},SOFI:{name:'SoFi Technologies'},PLTR:{name:'Palantir Technologies'},
+  BA:{name:'Boeing Co.'},JPM:{name:'JPMorgan Chase'},GS:{name:'Goldman Sachs'},MS:{name:'Morgan Stanley'},
+  BAC:{name:'Bank of America'},WFC:{name:'Wells Fargo'},C:{name:'Citigroup'},V:{name:'Visa Inc.'},
+  MA:{name:'Mastercard Inc.'},AXP:{name:'American Express'},DIS:{name:'Walt Disney'},CMCSA:{name:'Comcast Corp.'},
+  T:{name:'AT&T Inc.'},VZ:{name:'Verizon Communications'},PFE:{name:'Pfizer Inc.'},JNJ:{name:'Johnson & Johnson'},
+  UNH:{name:'UnitedHealth Group'},MRK:{name:'Merck & Co.'},ABBV:{name:'AbbVie Inc.'},LLY:{name:'Eli Lilly'},
+  XOM:{name:'Exxon Mobil'},CVX:{name:'Chevron Corp.'},COP:{name:'ConocoPhillips'},WMT:{name:'Walmart Inc.'},
+  COST:{name:'Costco Wholesale'},TGT:{name:'Target Corp.'},HD:{name:'Home Depot'},LOW:{name:"Lowe's Companies"},
+  NKE:{name:'Nike Inc.'},SBUX:{name:'Starbucks Corp.'},MCD:{name:"McDonald's Corp."},KO:{name:'Coca-Cola Co.'},
+  PEP:{name:'PepsiCo Inc.'},PG:{name:'Procter & Gamble'},AVGO:{name:'Broadcom Inc.'},TXN:{name:'Texas Instruments'},
+  QCOM:{name:'Qualcomm Inc.'},MU:{name:'Micron Technology'},MRVL:{name:'Marvell Technology'},ARM:{name:'Arm Holdings'},
+  SMCI:{name:'Super Micro Computer'},DELL:{name:'Dell Technologies'},PANW:{name:'Palo Alto Networks'},CRWD:{name:'CrowdStrike'},
+  ZS:{name:'Zscaler Inc.'},NET:{name:'Cloudflare Inc.'},DDOG:{name:'Datadog Inc.'},SNOW:{name:'Snowflake Inc.'},
+  BRK_B:{name:'Berkshire Hathaway B'},CAT:{name:'Caterpillar Inc.'},DE:{name:'Deere & Co.'},GE:{name:'GE Aerospace'},
+  RTX:{name:'RTX Corp.'},LMT:{name:'Lockheed Martin'},NOC:{name:'Northrop Grumman'},F:{name:'Ford Motor'},
+  GM:{name:'General Motors'},RIVN:{name:'Rivian Automotive'},LCID:{name:'Lucid Group'},
+  XLF:{name:'Financial Select Sector ETF'},XLE:{name:'Energy Select Sector ETF'},XLK:{name:'Technology Select Sector ETF'},
+  XLV:{name:'Health Care Select Sector ETF'},ARKK:{name:'ARK Innovation ETF'},GLD:{name:'SPDR Gold Shares'},
+  SLV:{name:'iShares Silver Trust'},TLT:{name:'iShares 20+ Year Treasury'},HYG:{name:'iShares High Yield Corp Bond'},
+  BTC:{name:'Bitcoin'},ETH:{name:'Ethereum'},SOL:{name:'Solana'}
+};
+const TICKER_LIST = Object.entries(TICKERS).map(([code, info]) => ({ code, name: info.name }));
+
+// ============================================================
+// SHARED: THEME
+// ============================================================
+let isDark = false;
+function toggleTheme() {
+  isDark = !isDark;
+  document.body.classList.toggle('dark', isDark);
+  document.getElementById('themeToggle').textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  document.querySelector('.header').style.background = isDark
+    ? 'linear-gradient(135deg, #0F1423 0%, #1A1F35 100%)'
+    : 'linear-gradient(135deg, #1B2A4A 0%, #243B60 100%)';
+  // Rebuild active charts
+  if (activeTab === 'tradingview') tvCreateWidget();
+  if (activeTab === 'academy') { acInitChart(); if (acChartData.length) { acCandleSeries.setData(acChartData); acReapplyAll(); } else { acLoadData(acSymbol, acTF); } }
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+let activeTab = 'tradingview';
+let webullLoaded = false;
+let academyInitialized = false;
+
+function switchTab(tab, btn) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+
+  if (tab === 'webull' && !webullLoaded) {
+    webullLoaded = true;
+    tryLoadWebull();
+  }
+  if (tab === 'academy' && !academyInitialized) {
+    academyInitialized = true;
+    setTimeout(() => { acInitChart(); acLoadData(acSymbol, acTF); }, 100);
+  }
+  if (tab === 'academy' && academyInitialized && acChart) {
+    // Resize after tab switch
+    setTimeout(() => {
+      const container = document.getElementById('lwchart');
+      acChart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+    }, 50);
+  }
+}
+
+// ============================================================
+// TAB 1: TRADINGVIEW
+// ============================================================
+let tvWidget = null;
+let tvSymbol = 'AAPL';
+let tvInterval = 'D';
+let tvStudies = [];
+let tvChartTheme = 'light';
+
+function tvCreateWidget() {
   const container = document.getElementById('tradingview_chart');
   container.innerHTML = '';
-  const isDark = chartTheme === 'dark';
+  tvChartTheme = isDark ? 'dark' : 'light';
 
-  widget = new TradingView.widget({
+  tvWidget = new TradingView.widget({
     autosize: true,
-    symbol: currentSymbol,
-    interval: currentInterval,
+    symbol: tvSymbol,
+    interval: tvInterval,
     timezone: 'America/Chicago',
-    theme: isDark ? 'dark' : 'light',
+    theme: tvChartTheme,
     style: '1',
     locale: 'en',
     toolbar_bg: isDark ? '#1A1F35' : '#F7FAF9',
@@ -163,7 +495,7 @@ function createWidget() {
     details: true,
     hotlist: true,
     calendar: true,
-    studies: activeStudies,
+    studies: tvStudies,
     container_id: 'tradingview_chart',
     withdateranges: true,
     save_image: true,
@@ -172,26 +504,8 @@ function createWidget() {
     popup_height: '800',
     watchlist: ['SPY','QQQ','AAPL','MSFT','NVDA','TSLA','AMD','AMZN','META','GOOG'],
     drawings_access: { type: 'all' },
-    enabled_features: [
-      'header_compare',
-      'header_symbol_search',
-      'header_saveload',
-      'header_screenshot',
-      'header_chart_type',
-      'header_indicators',
-      'header_undo_redo',
-      'header_fullscreen_button',
-      'control_bar',
-      'timeframes_toolbar',
-      'use_localstorage_for_settings',
-      'side_toolbar_in_fullscreen_mode',
-      'countdown',
-      'display_market_status'
-    ],
-    disabled_features: [
-      'header_widget_dom_node',
-      'go_to_date'
-    ],
+    enabled_features: ['header_compare','header_symbol_search','header_saveload','header_screenshot','header_chart_type','header_indicators','header_undo_redo','header_fullscreen_button','control_bar','timeframes_toolbar','use_localstorage_for_settings','side_toolbar_in_fullscreen_mode','countdown','display_market_status'],
+    disabled_features: ['header_widget_dom_node','go_to_date'],
     loading_screen: { backgroundColor: isDark ? '#161B2B' : '#F0F5F3', foregroundColor: '#10B981' },
     overrides: {
       'mainSeriesProperties.candleStyle.upColor': '#10B981',
@@ -209,157 +523,388 @@ function createWidget() {
   });
 }
 
-function toggleTheme() {
-  chartTheme = chartTheme === 'light' ? 'dark' : 'light';
-  const isDark = chartTheme === 'dark';
-  const btn = document.getElementById('themeToggle');
-  btn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-  // Update page chrome
-  document.body.style.background = isDark ? '#0F1423' : '#F0F5F3';
-  document.body.style.color = isDark ? '#E0E4F0' : '#1B2A4A';
-  document.querySelector('.header').style.background = isDark ? 'linear-gradient(135deg, #0F1423 0%, #1A1F35 100%)' : 'linear-gradient(135deg, #1B2A4A 0%, #243B60 100%)';
-  document.querySelector('.toolbar').style.background = isDark ? '#161B2B' : '#FFFFFF';
-  document.querySelector('.toolbar').style.borderColor = isDark ? '#1F2640' : '#E5E7EB';
-  document.querySelector('.info-bar').style.background = isDark ? '#161B2B' : '#FFFFFF';
-  document.querySelector('.info-bar').style.borderColor = isDark ? '#1F2640' : '#E5E7EB';
-  document.querySelectorAll('.toolbar input, .toolbar select').forEach(el => {
-    el.style.background = isDark ? '#1A1F35' : '#F7FAF9';
-    el.style.color = isDark ? '#E0E4F0' : '#1B2A4A';
-    el.style.borderColor = isDark ? '#262D47' : '#E5E7EB';
-  });
-  document.querySelectorAll('.tf-btn').forEach(el => {
-    if (!el.classList.contains('active')) {
-      el.style.background = isDark ? '#1A1F35' : '#FFFFFF';
-      el.style.color = isDark ? '#E0E4F0' : '#1B2A4A';
-      el.style.borderColor = isDark ? '#262D47' : '#E5E7EB';
-    }
-  });
-  createWidget();
+function tvChangeTF(tf, btn) {
+  tvInterval = tf;
+  btn.parentElement.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  tvCreateWidget();
 }
 
-function changeSymbol() {
-  const input = document.getElementById('symbolInput');
-  const sym = input.value.trim().toUpperCase();
-  if (sym) {
-    currentSymbol = sym;
-    createWidget();
-  }
-}
-
-function changeTF(tf) {
-  currentInterval = tf;
-  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  createWidget();
-}
-
-function toggleStudy(el, studyId) {
+function tvToggleStudy(el, studyId) {
   el.classList.toggle('active');
-  const idx = activeStudies.indexOf(studyId);
-  if (idx > -1) activeStudies.splice(idx, 1);
-  else activeStudies.push(studyId);
-  createWidget();
+  const idx = tvStudies.indexOf(studyId);
+  if (idx > -1) tvStudies.splice(idx, 1); else tvStudies.push(studyId);
+  tvCreateWidget();
 }
 
-// ===== SYMBOL AUTOCOMPLETE =====
-const TICKERS = {
-  AAPL:{name:'Apple Inc.'},MSFT:{name:'Microsoft Corp.'},GOOG:{name:'Alphabet (Google)'},GOOGL:{name:'Alphabet Class A'},
-  AMZN:{name:'Amazon.com'},NVDA:{name:'NVIDIA Corp.'},META:{name:'Meta Platforms'},TSLA:{name:'Tesla Inc.'},
-  AMD:{name:'Advanced Micro Devices'},NFLX:{name:'Netflix Inc.'},SPY:{name:'S&P 500 ETF'},QQQ:{name:'Nasdaq 100 ETF'},
-  IWM:{name:'Russell 2000 ETF'},DIA:{name:'Dow Jones ETF'},VOO:{name:'Vanguard S&P 500'},VTI:{name:'Vanguard Total Market'},
-  INTC:{name:'Intel Corp.'},CRM:{name:'Salesforce Inc.'},ORCL:{name:'Oracle Corp.'},ADBE:{name:'Adobe Inc.'},
-  PYPL:{name:'PayPal Holdings'},SQ:{name:'Block Inc.'},SHOP:{name:'Shopify Inc.'},ROKU:{name:'Roku Inc.'},
-  SNAP:{name:'Snap Inc.'},UBER:{name:'Uber Technologies'},LYFT:{name:'Lyft Inc.'},ABNB:{name:'Airbnb Inc.'},
-  COIN:{name:'Coinbase Global'},HOOD:{name:'Robinhood Markets'},SOFI:{name:'SoFi Technologies'},PLTR:{name:'Palantir Technologies'},
-  BA:{name:'Boeing Co.'},JPM:{name:'JPMorgan Chase'},GS:{name:'Goldman Sachs'},MS:{name:'Morgan Stanley'},
-  BAC:{name:'Bank of America'},WFC:{name:'Wells Fargo'},C:{name:'Citigroup'},V:{name:'Visa Inc.'},
-  MA:{name:'Mastercard Inc.'},AXP:{name:'American Express'},DIS:{name:'Walt Disney'},CMCSA:{name:'Comcast Corp.'},
-  T:{name:'AT&T Inc.'},VZ:{name:'Verizon Communications'},PFE:{name:'Pfizer Inc.'},JNJ:{name:'Johnson & Johnson'},
-  UNH:{name:'UnitedHealth Group'},MRK:{name:'Merck & Co.'},ABBV:{name:'AbbVie Inc.'},LLY:{name:'Eli Lilly'},
-  XOM:{name:'Exxon Mobil'},CVX:{name:'Chevron Corp.'},COP:{name:'ConocoPhillips'},WMT:{name:'Walmart Inc.'},
-  COST:{name:'Costco Wholesale'},TGT:{name:'Target Corp.'},HD:{name:'Home Depot'},LOW:{name:'Lowe\'s Companies'},
-  NKE:{name:'Nike Inc.'},SBUX:{name:'Starbucks Corp.'},MCD:{name:'McDonald\'s Corp.'},KO:{name:'Coca-Cola Co.'},
-  PEP:{name:'PepsiCo Inc.'},PG:{name:'Procter & Gamble'},AVGO:{name:'Broadcom Inc.'},TXN:{name:'Texas Instruments'},
-  QCOM:{name:'Qualcomm Inc.'},MU:{name:'Micron Technology'},MRVL:{name:'Marvell Technology'},ARM:{name:'Arm Holdings'},
-  SMCI:{name:'Super Micro Computer'},DELL:{name:'Dell Technologies'},PANW:{name:'Palo Alto Networks'},CRWD:{name:'CrowdStrike'},
-  ZS:{name:'Zscaler Inc.'},NET:{name:'Cloudflare Inc.'},DDOG:{name:'Datadog Inc.'},SNOW:{name:'Snowflake Inc.'},
-  BRK_B:{name:'Berkshire Hathaway B'},CAT:{name:'Caterpillar Inc.'},DE:{name:'Deere & Co.'},GE:{name:'GE Aerospace'},
-  RTX:{name:'RTX Corp.'},LMT:{name:'Lockheed Martin'},NOC:{name:'Northrop Grumman'},F:{name:'Ford Motor'},
-  GM:{name:'General Motors'},RIVN:{name:'Rivian Automotive'},LCID:{name:'Lucid Group'},
-  XLF:{name:'Financial Select Sector ETF'},XLE:{name:'Energy Select Sector ETF'},XLK:{name:'Technology Select Sector ETF'},
-  XLV:{name:'Health Care Select Sector ETF'},ARKK:{name:'ARK Innovation ETF'},GLD:{name:'SPDR Gold Shares'},
-  SLV:{name:'iShares Silver Trust'},TLT:{name:'iShares 20+ Year Treasury'},HYG:{name:'iShares High Yield Corp Bond'},
-  BTC:{name:'Bitcoin'},ETH:{name:'Ethereum'},SOL:{name:'Solana'}
-};
-const TICKER_LIST = Object.entries(TICKERS).map(([code, info]) => ({ code, name: info.name }));
-let acIndex = -1;
-let acMatches = [];
-
+// TV Autocomplete
+let tvAcIndex = -1, tvAcMatches = [];
 function highlightText(text, query) {
   if (!query) return text;
   const idx = text.toUpperCase().indexOf(query.toUpperCase());
   if (idx === -1) return text;
   return text.slice(0, idx) + '<span class="ac-hl">' + text.slice(idx, idx + query.length) + '</span>' + text.slice(idx + query.length);
 }
-
-function onSymbolInput(val) {
+function tvOnSymbolInput(val) {
   val = val.trim().toUpperCase();
-  const dd = document.getElementById('acDropdown');
-  if (!val) { dd.style.display = 'none'; acMatches = []; return; }
-  acMatches = TICKER_LIST.filter(t =>
-    t.code.includes(val) || t.name.toUpperCase().includes(val)
-  ).slice(0, 15);
-  if (acMatches.length === 0) { dd.style.display = 'none'; return; }
-  acIndex = -1;
-  dd.innerHTML = acMatches.map((item, i) =>
-    `<div class="ac-item" onmousedown="selectAC('${item.code}')" onmouseenter="acIndex=${i}">` +
-    `<span class="ac-ticker">${highlightText(item.code, val)}</span>` +
-    `<span class="ac-name">${highlightText(item.name, val)}</span></div>`
+  const dd = document.getElementById('tvAcDropdown');
+  if (!val) { dd.style.display = 'none'; tvAcMatches = []; return; }
+  tvAcMatches = TICKER_LIST.filter(t => t.code.includes(val) || t.name.toUpperCase().includes(val)).slice(0, 15);
+  if (!tvAcMatches.length) { dd.style.display = 'none'; return; }
+  tvAcIndex = -1;
+  dd.innerHTML = tvAcMatches.map((item, i) =>
+    `<div class="ac-item" onmousedown="tvSelectAC('${item.code}')" onmouseenter="tvAcIndex=${i}"><span class="ac-ticker">${highlightText(item.code, val)}</span><span class="ac-name">${highlightText(item.name, val)}</span></div>`
   ).join('');
   dd.style.display = 'block';
 }
-
-function selectAC(code) {
-  document.getElementById('symbolInput').value = code;
-  document.getElementById('acDropdown').style.display = 'none';
-  acMatches = [];
-  acIndex = -1;
-  currentSymbol = code;
-  createWidget();
+function tvSelectAC(code) {
+  document.getElementById('tvSymbolInput').value = code;
+  document.getElementById('tvAcDropdown').style.display = 'none';
+  tvAcMatches = []; tvAcIndex = -1; tvSymbol = code; tvCreateWidget();
 }
-
-function acKeyDown(e) {
-  const dd = document.getElementById('acDropdown');
-  if (dd.style.display === 'none' || acMatches.length === 0) {
-    if (e.key === 'Enter') changeSymbol();
-    return;
-  }
-  if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex + 1, acMatches.length - 1); updateACHighlight(); return; }
-  if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex - 1, 0); updateACHighlight(); return; }
-  if (e.key === 'Enter' && acIndex >= 0) { e.preventDefault(); selectAC(acMatches[acIndex].code); return; }
-  if (e.key === 'Enter') { dd.style.display = 'none'; changeSymbol(); return; }
+function tvAcKeyDown(e) {
+  const dd = document.getElementById('tvAcDropdown');
+  if (dd.style.display === 'none' || !tvAcMatches.length) { if (e.key === 'Enter') { tvSymbol = document.getElementById('tvSymbolInput').value.trim().toUpperCase(); tvCreateWidget(); } return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); tvAcIndex = Math.min(tvAcIndex + 1, tvAcMatches.length - 1); tvUpdateACHL(); return; }
+  if (e.key === 'ArrowUp') { e.preventDefault(); tvAcIndex = Math.max(tvAcIndex - 1, 0); tvUpdateACHL(); return; }
+  if (e.key === 'Enter' && tvAcIndex >= 0) { e.preventDefault(); tvSelectAC(tvAcMatches[tvAcIndex].code); return; }
+  if (e.key === 'Enter') { dd.style.display = 'none'; tvSymbol = document.getElementById('tvSymbolInput').value.trim().toUpperCase(); tvCreateWidget(); return; }
   if (e.key === 'Escape') { dd.style.display = 'none'; return; }
 }
-
-function updateACHighlight() {
-  const items = document.querySelectorAll('#acDropdown .ac-item');
-  items.forEach((el, i) => el.classList.toggle('ac-active', i === acIndex));
-  if (items[acIndex]) items[acIndex].scrollIntoView({ block: 'nearest' });
+function tvUpdateACHL() {
+  const items = document.querySelectorAll('#tvAcDropdown .ac-item');
+  items.forEach((el, i) => el.classList.toggle('ac-active', i === tvAcIndex));
+  if (items[tvAcIndex]) items[tvAcIndex].scrollIntoView({ block: 'nearest' });
 }
 
-// Close dropdown on outside click
-document.addEventListener('mousedown', function(e) {
-  if (!document.getElementById('acWrap').contains(e.target)) {
-    document.getElementById('acDropdown').style.display = 'none';
+// ============================================================
+// TAB 2: WEBULL
+// ============================================================
+function tryLoadWebull() {
+  const iframe = document.getElementById('webullFrame');
+  const fallback = document.getElementById('webullFallback');
+
+  // Try loading iframe
+  iframe.src = 'https://app.webull.com/trade';
+  iframe.style.display = 'block';
+  fallback.style.display = 'none';
+
+  // If iframe fails to load (X-Frame-Options), show fallback
+  iframe.onerror = function() {
+    iframe.style.display = 'none';
+    fallback.style.display = 'flex';
+  };
+
+  // Timeout check — if iframe is blank after 3 seconds, show fallback
+  setTimeout(() => {
+    try {
+      // Try accessing iframe content — will throw if blocked by CORS/X-Frame-Options
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      if (!doc || !doc.body || doc.body.innerHTML === '') {
+        iframe.style.display = 'none';
+        fallback.style.display = 'flex';
+      }
+    } catch (e) {
+      // Cross-origin — iframe loaded but we can't access it. This is GOOD — means Webull loaded.
+      // Keep iframe visible
+    }
+  }, 3000);
+}
+
+// ============================================================
+// TAB 3: ACADEMY CHARTS (Lightweight Charts)
+// ============================================================
+let acChart, acCandleSeries, acVolumeSeries, acSmaSeries, acEmaSeries;
+let acSymbol = 'AAPL', acTF = '1day';
+let acDrawMode = null;
+let acSetValues = { stop: null, entry: null, target: null };
+let acPriceLines = { stop: null, entry: null, target: null };
+let acZones = [];
+let acZoneTopPrice = null;
+let acIndicators = { sma: false, ema: false, volume: false };
+let acChartData = [];
+
+function acInitChart() {
+  const container = document.getElementById('lwchart');
+  container.innerHTML = '';
+
+  acChart = LightweightCharts.createChart(container, {
+    width: container.clientWidth,
+    height: container.clientHeight,
+    layout: {
+      background: { type: 'solid', color: isDark ? '#161B2B' : '#FFFFFF' },
+      textColor: isDark ? '#6B7394' : '#6B7280',
+      fontFamily: "'Inter', system-ui, sans-serif",
+    },
+    grid: {
+      vertLines: { color: isDark ? '#1F2640' : '#F0F0F0' },
+      horzLines: { color: isDark ? '#1F2640' : '#F0F0F0' },
+    },
+    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    rightPriceScale: { borderColor: isDark ? '#1F2640' : '#E5E7EB' },
+    timeScale: { borderColor: isDark ? '#1F2640' : '#E5E7EB', timeVisible: acTF.includes('min') || acTF === '1hour' },
+  });
+
+  acCandleSeries = acChart.addCandlestickSeries({
+    upColor: '#10B981', downColor: '#EF4444',
+    borderUpColor: '#10B981', borderDownColor: '#EF4444',
+    wickUpColor: '#10B981', wickDownColor: '#EF4444',
+  });
+
+  acChart.subscribeClick((param) => {
+    if (!acDrawMode || !param.point) return;
+    const price = acCandleSeries.coordinateToPrice(param.point.y);
+    if (price == null) return;
+    if (['stop','entry','target'].includes(acDrawMode)) acPlaceSETLine(acDrawMode, price);
+    else if (['demand','supply'].includes(acDrawMode)) acPlaceZone(acDrawMode, price);
+  });
+
+  acChart.subscribeCrosshairMove((param) => {
+    if (!param.time || !param.seriesData) return;
+    const data = param.seriesData.get(acCandleSeries);
+    if (data) document.getElementById('priceCurrent').textContent = '$' + data.close.toFixed(2);
+  });
+
+  new ResizeObserver(() => {
+    if (acChart) acChart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+  }).observe(container);
+}
+
+async function acLoadData(symbol, tf) {
+  document.getElementById('priceMeta').textContent = 'Loading ' + symbol + '...';
+  const rangeMap = { '1min':'1d','5min':'5d','15min':'5d','1hour':'1mo','1day':'1y','1week':'5y' };
+  const intervalMap = { '1min':'1m','5min':'5m','15min':'15m','1hour':'60m','1day':'1d','1week':'1wk' };
+
+  try {
+    const res = await fetch(`/api/stock-data?symbol=${symbol}&range=${rangeMap[tf]||'1y'}&interval=${intervalMap[tf]||'1d'}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    const quotes = data.chart?.result?.[0];
+    if (!quotes) throw new Error('No data');
+    const ts = quotes.timestamp, ohlc = quotes.indicators.quote[0];
+    acChartData = [];
+    for (let i = 0; i < ts.length; i++) {
+      if (ohlc.open[i] == null) continue;
+      acChartData.push({ time: ts[i], open: ohlc.open[i], high: ohlc.high[i], low: ohlc.low[i], close: ohlc.close[i], volume: ohlc.volume?.[i] || 0 });
+    }
+    acCandleSeries.setData(acChartData);
+    if (acChartData.length > 0) {
+      const last = acChartData[acChartData.length - 1];
+      const prev = acChartData.length > 1 ? acChartData[acChartData.length - 2] : last;
+      const change = last.close - prev.close;
+      const pct = ((change / prev.close) * 100).toFixed(2);
+      const up = change >= 0;
+      document.getElementById('priceSymbol').textContent = acSymbol;
+      document.getElementById('priceCurrent').textContent = '$' + last.close.toFixed(2);
+      document.getElementById('priceCurrent').style.color = up ? 'var(--green)' : 'var(--red)';
+      const ce = document.getElementById('priceChange');
+      ce.textContent = `${up?'+':''}${change.toFixed(2)} (${up?'+':''}${pct}%)`;
+      ce.className = 'price-change ' + (up ? 'price-up' : 'price-down');
+    }
+    acReapplyAll();
+    document.getElementById('priceMeta').textContent = `${acChartData.length} bars • ${tf} • ${new Date().toLocaleTimeString()}`;
+  } catch (err) {
+    console.error(err);
+    document.getElementById('priceMeta').textContent = 'Error loading data — using demo';
+    acLoadDemo();
   }
+}
+
+function acLoadDemo() {
+  const base = 150; const now = Math.floor(Date.now() / 1000);
+  acChartData = [];
+  for (let i = 250; i >= 0; i--) {
+    const t = now - i * 86400, drift = (250 - i) * 0.05;
+    const o = base + drift + (Math.random() - 0.5) * 4, c = o + (Math.random() - 0.5) * 3;
+    const h = Math.max(o, c) + Math.random() * 2, l = Math.min(o, c) - Math.random() * 2;
+    acChartData.push({ time: t, open: +o.toFixed(2), high: +h.toFixed(2), low: +l.toFixed(2), close: +c.toFixed(2), volume: Math.floor(Math.random() * 5e7) });
+  }
+  acCandleSeries.setData(acChartData);
+  document.getElementById('priceCurrent').textContent = '$' + acChartData[acChartData.length-1].close.toFixed(2);
+}
+
+function acReapplyAll() {
+  ['stop','entry','target'].forEach(type => {
+    if (acSetValues[type] !== null) {
+      if (acPriceLines[type]) { try { acCandleSeries.removePriceLine(acPriceLines[type]); } catch(e) {} }
+      const colors = { stop:'#EF4444', entry:'#F59E0B', target:'#10B981' };
+      const labels = { stop:'STOP', entry:'ENTRY', target:'TARGET' };
+      acPriceLines[type] = acCandleSeries.createPriceLine({ price: acSetValues[type], color: colors[type], lineWidth: 2, lineStyle: type === 'entry' ? 0 : 2, axisLabelVisible: true, title: labels[type] });
+    }
+  });
+  if (acIndicators.sma) acApplySMA();
+  if (acIndicators.ema) acApplyEMA();
+  if (acIndicators.volume) acApplyVolume();
+}
+
+// S.E.T. Drawing
+function acSetDrawMode(mode, btn) {
+  if (acDrawMode === mode) { acDrawMode = null; btn.classList.remove('active'); return; }
+  document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+  acDrawMode = mode; btn.classList.add('active');
+}
+
+function acPlaceSETLine(type, price) {
+  if (acPriceLines[type]) { try { acCandleSeries.removePriceLine(acPriceLines[type]); } catch(e) {} }
+  const colors = { stop:'#EF4444', entry:'#F59E0B', target:'#10B981' };
+  const labels = { stop:'STOP', entry:'ENTRY', target:'TARGET' };
+  acPriceLines[type] = acCandleSeries.createPriceLine({ price, color: colors[type], lineWidth: 2, lineStyle: type === 'entry' ? 0 : 2, axisLabelVisible: true, title: labels[type] });
+  acSetValues[type] = price;
+  acUpdateSETPanel();
+  acDrawMode = null;
+  document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+}
+
+function acUpdateSETPanel() {
+  const s = acSetValues.stop, e = acSetValues.entry, t = acSetValues.target;
+  const panel = document.getElementById('setPanel');
+  if (!s && !e && !t) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  document.getElementById('setStopVal').textContent = s ? '$' + s.toFixed(2) : '—';
+  document.getElementById('setEntryVal').textContent = e ? '$' + e.toFixed(2) : '—';
+  document.getElementById('setTargetVal').textContent = t ? '$' + t.toFixed(2) : '—';
+  const riskPanel = document.getElementById('setRisk');
+  if (s && e && t) {
+    riskPanel.style.display = 'block';
+    const risk = Math.abs(e - s), reward = Math.abs(t - e);
+    const rr = risk > 0 ? (reward / risk).toFixed(2) : '∞';
+    const posSize = risk > 0 ? Math.floor(100 / risk) : 0; // $10K × 1% = $100
+    document.getElementById('riskDollars').textContent = '$' + risk.toFixed(2);
+    document.getElementById('rewardDollars').textContent = '$' + reward.toFixed(2);
+    document.getElementById('rrRatio').textContent = rr + ':1';
+    document.getElementById('rrRatio').style.color = parseFloat(rr) >= 3 ? 'var(--green)' : parseFloat(rr) >= 2 ? 'var(--amber)' : 'var(--red)';
+    document.getElementById('posSize').textContent = posSize + ' shares';
+  } else { riskPanel.style.display = 'none'; }
+}
+
+// Zones
+function acPlaceZone(type, price) {
+  if (!acZoneTopPrice) {
+    acZoneTopPrice = price;
+    document.getElementById('priceMeta').textContent = `Click again for ${type} zone bottom...`;
+    return;
+  }
+  const top = Math.max(acZoneTopPrice, price), bottom = Math.min(acZoneTopPrice, price);
+  const borderColor = type === 'demand' ? '#3B82F6' : '#7C3AED';
+  const label = type === 'demand' ? 'DEMAND' : 'SUPPLY';
+  const tl = acCandleSeries.createPriceLine({ price: top, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↑' });
+  const bl = acCandleSeries.createPriceLine({ price: bottom, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↓' });
+  acZones.push({ type, top, bottom, tl, bl });
+  acZoneTopPrice = null;
+  document.getElementById('zoneLegend').style.display = 'block';
+  document.getElementById('priceMeta').textContent = `${label} zone: $${bottom.toFixed(2)} — $${top.toFixed(2)}`;
+  acDrawMode = null;
+  document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+}
+
+function acClearAll() {
+  ['stop','entry','target'].forEach(type => {
+    if (acPriceLines[type]) { try { acCandleSeries.removePriceLine(acPriceLines[type]); } catch(e) {} acPriceLines[type] = null; acSetValues[type] = null; }
+  });
+  acZones.forEach(z => { try { acCandleSeries.removePriceLine(z.tl); } catch(e) {} try { acCandleSeries.removePriceLine(z.bl); } catch(e) {} });
+  acZones = []; acZoneTopPrice = null;
+  acUpdateSETPanel();
+  document.getElementById('zoneLegend').style.display = 'none';
+  document.getElementById('priceMeta').textContent = 'All drawings cleared';
+}
+
+// Indicators
+function acToggleIndicator(type, btn) {
+  acIndicators[type] = !acIndicators[type];
+  btn.classList.toggle('active');
+  if (type === 'sma') acIndicators.sma ? acApplySMA() : acRemoveSMA();
+  if (type === 'ema') acIndicators.ema ? acApplyEMA() : acRemoveEMA();
+  if (type === 'volume') acIndicators.volume ? acApplyVolume() : acRemoveVolume();
+}
+
+function calcSMA(data, period) {
+  const r = [];
+  for (let i = period - 1; i < data.length; i++) {
+    let s = 0; for (let j = 0; j < period; j++) s += data[i - j].close;
+    r.push({ time: data[i].time, value: s / period });
+  }
+  return r;
+}
+function calcEMA(data, period) {
+  const r = [], k = 2 / (period + 1);
+  let ema = data[0]?.close || 0;
+  for (let i = 0; i < data.length; i++) {
+    ema = data[i].close * k + ema * (1 - k);
+    if (i >= period - 1) r.push({ time: data[i].time, value: ema });
+  }
+  return r;
+}
+function acApplySMA() { acRemoveSMA(); acSmaSeries = acChart.addLineSeries({ color: '#3B82F6', lineWidth: 2, title: 'SMA 20' }); acSmaSeries.setData(calcSMA(acChartData, 20)); }
+function acRemoveSMA() { if (acSmaSeries) { acChart.removeSeries(acSmaSeries); acSmaSeries = null; } }
+function acApplyEMA() { acRemoveEMA(); acEmaSeries = acChart.addLineSeries({ color: '#F59E0B', lineWidth: 2, title: 'EMA 9' }); acEmaSeries.setData(calcEMA(acChartData, 9)); }
+function acRemoveEMA() { if (acEmaSeries) { acChart.removeSeries(acEmaSeries); acEmaSeries = null; } }
+function acApplyVolume() {
+  acRemoveVolume();
+  acVolumeSeries = acChart.addHistogramSeries({ color: '#10B981', priceFormat: { type: 'volume' }, priceScaleId: 'vol' });
+  acChart.priceScale('vol').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
+  acVolumeSeries.setData(acChartData.map(d => ({ time: d.time, value: d.volume, color: d.close >= d.open ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)' })));
+}
+function acRemoveVolume() { if (acVolumeSeries) { acChart.removeSeries(acVolumeSeries); acVolumeSeries = null; } }
+
+function acChangeTF(tf, btn) {
+  acTF = tf;
+  btn.parentElement.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  acLoadData(acSymbol, tf);
+}
+
+// Academy Autocomplete
+let acAcIdx = -1, acAcMatches = [];
+function acOnSymbolInput(val) {
+  val = val.trim().toUpperCase();
+  const dd = document.getElementById('acAcDropdown');
+  if (!val) { dd.style.display = 'none'; acAcMatches = []; return; }
+  acAcMatches = TICKER_LIST.filter(t => t.code.includes(val) || t.name.toUpperCase().includes(val)).slice(0, 15);
+  if (!acAcMatches.length) { dd.style.display = 'none'; return; }
+  acAcIdx = -1;
+  dd.innerHTML = acAcMatches.map((item, i) =>
+    `<div class="ac-item" onmousedown="acSelectAC('${item.code}')" onmouseenter="acAcIdx=${i}"><span class="ac-ticker">${highlightText(item.code, val)}</span><span class="ac-name">${highlightText(item.name, val)}</span></div>`
+  ).join('');
+  dd.style.display = 'block';
+}
+function acSelectAC(code) {
+  document.getElementById('acSymbolInput').value = code;
+  document.getElementById('acAcDropdown').style.display = 'none';
+  acAcMatches = []; acAcIdx = -1;
+  acSymbol = code;
+  document.getElementById('priceSymbol').textContent = code;
+  acClearAll();
+  acLoadData(code, acTF);
+}
+function acAcKeyDown(e) {
+  const dd = document.getElementById('acAcDropdown');
+  if (dd.style.display === 'none' || !acAcMatches.length) { if (e.key === 'Enter') acSelectAC(document.getElementById('acSymbolInput').value.trim().toUpperCase()); return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); acAcIdx = Math.min(acAcIdx + 1, acAcMatches.length - 1); acUpdateACHL(); return; }
+  if (e.key === 'ArrowUp') { e.preventDefault(); acAcIdx = Math.max(acAcIdx - 1, 0); acUpdateACHL(); return; }
+  if (e.key === 'Enter' && acAcIdx >= 0) { e.preventDefault(); acSelectAC(acAcMatches[acAcIdx].code); return; }
+  if (e.key === 'Enter') { dd.style.display = 'none'; acSelectAC(document.getElementById('acSymbolInput').value.trim().toUpperCase()); return; }
+  if (e.key === 'Escape') { dd.style.display = 'none'; return; }
+}
+function acUpdateACHL() {
+  const items = document.querySelectorAll('#acAcDropdown .ac-item');
+  items.forEach((el, i) => el.classList.toggle('ac-active', i === acAcIdx));
+  if (items[acAcIdx]) items[acAcIdx].scrollIntoView({ block: 'nearest' });
+}
+
+// Close all dropdowns on outside click
+document.addEventListener('mousedown', function(e) {
+  if (!document.getElementById('tvAcWrap').contains(e.target)) document.getElementById('tvAcDropdown').style.display = 'none';
+  if (document.getElementById('acAcWrap') && !document.getElementById('acAcWrap').contains(e.target)) document.getElementById('acAcDropdown').style.display = 'none';
 });
 
-// Initialize
-createWidget();
+// ============================================================
+// INIT — Start with TradingView tab
+// ============================================================
+tvCreateWidget();
 </script>
 
 <!-- ═══ TOOL MANUAL — Heyzine Flipbook Embed ═══ -->
-<div style="max-width:1100px;margin:24px auto;padding:0 20px;">
+<div style="max-width:1100px;margin:24px auto;padding:0 20px;display:none;" id="chartManual">
   <div style="background:#fff;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);">
     <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.tgl').textContent=this.nextElementSibling.style.display==='none'?'\u25BC':'\u25B2'" style="padding:16px 20px;background:linear-gradient(135deg,#1B2A4A,#243B60);cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
       <div style="display:flex;align-items:center;gap:10px;">
