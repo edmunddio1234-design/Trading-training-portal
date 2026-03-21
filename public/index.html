@@ -267,9 +267,14 @@
   .image-lightbox-img { max-width: 100%; max-height: 80vh; display: block; margin: 0 auto; overflow-y: auto; }
   .image-lightbox-actions { display: flex; gap: 8px; padding: 16px 20px; border-top: 1px solid var(--border); justify-content: center; }
   .image-lightbox-body { max-height: 80vh; overflow-y: auto; }
-  .image-lightbox-video { padding: 0 20px 16px; }
-  .image-lightbox-video-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-  .image-lightbox-video-label span { color: #EF4444; }
+  .lightbox-scroll-banner { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 20px; margin: 0 20px; background: linear-gradient(135deg, #1B2A4A, #0D9373); color: white; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; animation: bannerPulse 2s ease-in-out infinite; }
+  .lightbox-scroll-banner:hover { opacity: 0.9; }
+  .lightbox-scroll-arrow { font-size: 18px; animation: arrowBounce 1.5s ease-in-out infinite; }
+  @keyframes bannerPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(13,147,115,0.3); } 50% { box-shadow: 0 0 0 8px rgba(13,147,115,0); } }
+  @keyframes arrowBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+  .image-lightbox-video { padding: 12px 20px 16px; }
+  .image-lightbox-video-label { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 14px; padding-top: 14px; border-top: 2px solid var(--accent); }
+  .image-lightbox-video-label span { color: #EF4444; font-size: 20px; }
   .image-lightbox-video iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
 
   /* AI Visual clickable image */
@@ -813,7 +818,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729?i=1000755305168',
     staticInfographic: '/infographics/Module%202%20Infographic.jpg',
     staticMindMap: '/infographics/Module%202%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/7vClyIcJYQo'
   },
   m3: {
     youtube: 'https://youtu.be/wa7qzaJeKs8',
@@ -822,7 +827,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729?i=1000756415530',
     staticInfographic: '/infographics/Module%203%20Infographic.jpg',
     staticMindMap: '/infographics/Module%203%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/WTa7WRvZjHM'
   },
   m4: {
     youtube: 'https://youtu.be/kmmfk8edWAE',
@@ -831,7 +836,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-4-risk-management-and-s-e-t/id1883365729?i=1000756416045',
     staticInfographic: '/infographics/Module%204%20Infographic.jpg',
     staticMindMap: '/infographics/Module%204%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/_sxd3lO6o3I'
   },
   m5: {
     youtube: 'https://youtu.be/7S1FfEAwA4Y',
@@ -840,7 +845,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-5-leverage-strategy/id1883365729?i=1000756416756',
     staticInfographic: '/infographics/Module%205%20Infographic.jpg',
     staticMindMap: '/infographics/Module%205%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/ae3xtdrFxBA'
   },
   m6: {
     youtube: 'https://youtu.be/xO1izk4B8V4',
@@ -849,7 +854,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-6-options-deep-dive/id1883365729?i=1000756418273',
     staticInfographic: '/infographics/Module%206%20Infographic.jpg',
     staticMindMap: '/infographics/Module%206%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/4PNhwSiLUH0'
   },
   m7: {
     youtube: 'https://youtu.be/ah5YvTY51e0',
@@ -858,7 +863,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-7-futures-trading/id1883365729?i=1000756419388',
     staticInfographic: '/infographics/Module%207%20Infographic.jpg',
     staticMindMap: '/infographics/Module%207%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/P3qPGgveQcc'
   },
   m8: {
     youtube: 'https://youtu.be/3uKJ5kqOTDk',
@@ -867,7 +872,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-8-backtesting/id1883365729?i=1000756420121',
     staticInfographic: '/infographics/Module%208%20Infographic.jpg',
     staticMindMap: '/infographics/Module%208%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/nwP9fzQKrgE'
   },
   m9: {
     youtube: 'https://youtu.be/WHWD75diNQI',
@@ -876,7 +881,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/module-9-visual-guide-to-reading-volume/id1883365729?i=1000756420881',
     staticInfographic: '/infographics/Module%209%20Infographic.jpg',
     staticMindMap: '/infographics/Module%209%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/-2Ip4NIx2Dc'
   },
   m10: {
     youtube: 'https://youtu.be/JdPfJ1JWHoY',
@@ -885,7 +890,7 @@ const MODULE_MEDIA = {
     audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729?i=1000756422276',
     staticInfographic: '/infographics/Module%2010%20Infographic.jpg',
     staticMindMap: '/infographics/Module%2010%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/VhPfDdIMS18'
   },
   m11: {
     youtube: 'https://youtu.be/xPE7K26GhWQ',
@@ -1325,21 +1330,6 @@ function ImageLightbox({ imageUrl, sectionTitle, onClose, videoUrl }) {
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  const handleDownload = async () => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `ai-visual-${sectionTitle.replace(/\s+/g, '-').toLowerCase()}.png`;
-      link.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Download failed:', err);
-    }
-  };
-
   // Extract YouTube video ID from URL
   const getYoutubeId = (url) => {
     if (!url) return null;
@@ -1347,6 +1337,11 @@ function ImageLightbox({ imageUrl, sectionTitle, onClose, videoUrl }) {
     return match ? match[1] : null;
   };
   const videoId = videoUrl ? getYoutubeId(videoUrl) : null;
+
+  const scrollToVideo = () => {
+    const el = document.querySelector('.image-lightbox-video');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="image-lightbox-overlay" onClick={onClose}>
@@ -1357,6 +1352,13 @@ function ImageLightbox({ imageUrl, sectionTitle, onClose, videoUrl }) {
         </div>
         <div className="image-lightbox-body">
           <img className="image-lightbox-img" src={imageUrl} alt={`AI visual for ${sectionTitle}`} />
+          {videoId && (
+            <div className="lightbox-scroll-banner" onClick={scrollToVideo}>
+              <span className="lightbox-scroll-arrow">↓</span>
+              <span>Scroll Down for Explainer Video</span>
+              <span className="lightbox-scroll-arrow">↓</span>
+            </div>
+          )}
           {videoId && (
             <div className="image-lightbox-video">
               <div className="image-lightbox-video-label">
@@ -1372,7 +1374,6 @@ function ImageLightbox({ imageUrl, sectionTitle, onClose, videoUrl }) {
           )}
         </div>
         <div className="image-lightbox-actions">
-          <button className="ai-visual-btn" onClick={handleDownload} style={{fontSize:13,padding:'10px 24px'}}>⬇ Download Image</button>
           <button className="ai-visual-btn regenerate" onClick={onClose}>Close</button>
         </div>
       </div>
@@ -1693,13 +1694,12 @@ function App({ onLogout }) {
   const [editingModule, setEditingModule] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [toolsOpen, setToolsOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const adminClickRef = React.useRef({ count: 0, timer: null });
   const handleAdminAccess = () => {
     const ref = adminClickRef.current;
     ref.count++;
     clearTimeout(ref.timer);
-    if (ref.count >= 3) { ref.count = 0; setIsAdmin(true); setShowSettings(true); }
+    if (ref.count >= 3) { ref.count = 0; setShowSettings(true); }
     else { ref.timer = setTimeout(() => { ref.count = 0; }, 800); }
   };
   const [loading, setLoading] = useState(true);
@@ -1866,12 +1866,12 @@ function App({ onLogout }) {
             <button onClick={goToDashboard}>◈ Dashboard</button>
             <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
             {onLogout && <button className="logout-btn" onClick={onLogout}>⏻ Logout</button>}
-            {isAdmin && <button className="primary" onClick={openAdminNew}>+ Add Module</button>}
+            <button className="primary" onClick={openAdminNew}>+ Add Module</button>
           </div>
         </div>
         <div className="content-body">
           {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} onboardingComplete={onboardingComplete} isModuleUnlocked={isModuleUnlocked} />}
-          {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={isAdmin ? () => openAdminEdit(currentModule) : null} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
+          {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={() => openAdminEdit(currentModule)} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
         </div>
       </div>
       {showAdmin && editingModule && <AdminModal module={editingModule} onSave={saveModule} onDelete={deleteModule} onClose={() => { setShowAdmin(false); setEditingModule(null); }} isNew={!modules.find(m => m.id === editingModule.id)} />}
@@ -2919,7 +2919,7 @@ function ModuleView({ module, modules, quizState, setQuizState, onComplete, isCo
           <h2 className="module-title">{module.title}</h2>
           <p className="module-subtitle">{module.subtitle}</p>
         </div>
-        {onEdit && <button onClick={onEdit} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'6px 14px',borderRadius:6,cursor:'pointer',fontSize:12,whiteSpace:'nowrap',marginTop:8}}>✎ Edit</button>}
+        <button onClick={onEdit} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'6px 14px',borderRadius:6,cursor:'pointer',fontSize:12,whiteSpace:'nowrap',marginTop:8}}>✎ Edit</button>
       </div>
 
       <button className="generate-all-btn" onClick={generateAllVisuals} disabled={generatingAll}>
