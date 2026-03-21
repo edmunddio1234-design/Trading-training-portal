@@ -584,31 +584,13 @@ function tryLoadWebull() {
   const iframe = document.getElementById('webullFrame');
   const fallback = document.getElementById('webullFallback');
 
-  // Try loading iframe
-  iframe.src = 'https://app.webull.com/trade';
-  iframe.style.display = 'block';
-  fallback.style.display = 'none';
-
-  // If iframe fails to load (X-Frame-Options), show fallback
-  iframe.onerror = function() {
-    iframe.style.display = 'none';
-    fallback.style.display = 'flex';
-  };
-
-  // Timeout check — if iframe is blank after 3 seconds, show fallback
-  setTimeout(() => {
-    try {
-      // Try accessing iframe content — will throw if blocked by CORS/X-Frame-Options
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      if (!doc || !doc.body || doc.body.innerHTML === '') {
-        iframe.style.display = 'none';
-        fallback.style.display = 'flex';
-      }
-    } catch (e) {
-      // Cross-origin — iframe loaded but we can't access it. This is GOOD — means Webull loaded.
-      // Keep iframe visible
-    }
-  }, 3000);
+  // Webull blocks iframe embedding via X-Frame-Options / CSP.
+  // Skip the iframe attempt entirely and show the fallback immediately.
+  // This gives students instant access to the "Open Webull Web Trader" button
+  // instead of waiting 3 seconds for a failed iframe load.
+  iframe.style.display = 'none';
+  iframe.src = 'about:blank';
+  fallback.style.display = 'flex';
 }
 
 // ============================================================
