@@ -2713,9 +2713,9 @@ function AITutor({ moduleId, moduleTitle }) {
       .catch(() => setAvailable(false));
   }, [moduleId]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive (block: 'nearest' prevents page jump)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [messages]);
 
   // Reset messages when module changes
