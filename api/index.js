@@ -898,6 +898,11 @@ const MENTOR_VIDEO_QUERIES = {
       'Ross Cameron small cap momentum front side back side trading',
       'Ross Cameron downward spiral revenge trading psychology',
       'Ross Cameron micro pullback ABCD pattern execution'
+    ],
+    m14: [
+      'Ross Cameron 10 second chart micro pullback entry strategy',
+      'Ross Cameron Level 2 wall of sellers chipping away',
+      'Ross Cameron Icebreaker quarter size position management'
     ]
   }
 };
@@ -2556,7 +2561,61 @@ Phase 4 — Profit Extraction: Sell into "Front Side" (higher highs/lows). Cease
 5) "One-Bullet" Discipline: Trade as if you have one opportunity per day — forces waiting for A+ setups.
 
 8. Final Summary
-The ultimate philosophy: "Less is More." Professionalism defined by quality of trades, not quantity. Market sentiment is the final and most powerful filter. Prioritize "Survive till you Thrive" — preserve capital during slow cycles for firepower when the market heats up. Consistent simulator profitability is a non-negotiable prerequisite before live capital deployment.`
+The ultimate philosophy: "Less is More." Professionalism defined by quality of trades, not quantity. Market sentiment is the final and most powerful filter. Prioritize "Survive till you Thrive" — preserve capital during slow cycles for firepower when the market heats up. Consistent simulator profitability is a non-negotiable prerequisite before live capital deployment.`,
+    m14: `The Momentum Trader's Blueprint: A Correlated Intelligence Report on Intraday Volatility and Risk Management
+
+1. Overview: The Strategic Landscape of Momentum Trading
+In intraday trading, success is not speculation but a disciplined, data-driven profession. Personal psychology must be meticulously aligned with market cycles — transitioning from "hot" cycles (aggressively pursuing A-quality setups) to "cold" cycles (defensive posture to protect expected value). With a verified track record growing $583 into over $15.8 million in audited profits, this blueprint establishes a framework for consistency and technical precision.
+
+2. Cross-Source Thematic Analysis: The Architecture of a Trade
+Breaking News as Primary Catalyst: Whether biotech Phase 3 results (APVO's 75% remission rate) or corporate treasury announcements, the "freshness" of news determines momentum intensity. Without a fundamental catalyst, a stock lacks sustained demand to overcome institutional resistance.
+
+The Low-Float Variable: Stocks with float <10M-20M shares create the environment for 100%+ gains. When massive volume (demand) hits restricted shares (supply), price is forced into violent upward adjustments. Low-float is the difference between a "base hit" and explosive volatility.
+
+Icebreaker Position Management: Initiating with quarter-sized position (5,000 shares vs. 20,000 full size) during low-confidence discovery phase. Protects session EV by preventing early "emotional hijack." On green days accuracy hits 80%; red days drop to 30-40% — the Icebreaker limits exposure on low-accuracy mornings.
+
+3. Points of Convergence: Universal Laws
+The "Five Pillars" Protocol: Price ($2.00-$20.00), Volume (5x+ daily average), News (fresh catalyst), Float (<10M ideally, max 20M), Percentage Gain (10-25% minimum).
+
+The 7:00 AM - 10:00 AM Window: Strategic significance of early morning news cycle and pre-market volume (starting 4:00 AM).
+
+"Micro Pullback" Supremacy: The 10-second candlestick chart is the most reliable entry tool. Enter as the first 10-second candle makes a new high after a brief pause.
+
+Price Improvement: Brokers like Webull/Robinhood yield "half-cent fills" (e.g., $3.695 on $3.70 ask). Over thousands of trades, this edge significantly impacts the bottom line.
+
+4. Strategic Divergences
+Small Account vs. Main Account: $2,000 cash account governed by "One Bullet" mentality (PDT rule, settlement times) creates pressure to hold losers. $15.8M margin account allows infinite scalability.
+
+Market Cycle Adaptations: Hot Market — B-quality setups tradable due to FOMO liquidity. "Crypto-Treasury" catalyst became exhausted (pop and drop). Biotech remains tried-and-true for sustained moves.
+
+The "Jackknife" Variable: Biotech and Hong Kong/Singapore stocks (APVO, LGCL, HKD) exhibit rapid violent rejections dropping dollars in seconds. After two jackknifes, classified as A-minus or B-quality requiring tighter stops.
+
+"No-Catalyst" Risk: International names (HKD, LGCL) moving 100%+ without news are high-risk — prone to sudden unexplained collapses without fundamental demand.
+
+5. Unique Insights: The Human Factor
+The "Lawn Mower" Analogy: Break-even trader running "rough" — either "running rich" (over-trading) or "running lean" (lack of opportunity). Flow state requires "Starter Fluid" (fresh catalyst) and proper "Choke" adjustment (risk management).
+
+The "Ferry Boat" Lesson: External stressors subtly alter focus. Being "jolted" or physically compromised requires immediate 50% size reduction or cessation.
+
+Starlink/Mobile Command Center: Flow state requires technical redundancy — mobile setups with Starlink and 5G backups ensure zero blackouts during high-stakes moves.
+
+6. The Master-Tier Combined Strategy: Ideal Trade Lifecycle
+1) Selection: Scanners filter for Five Pillars.
+2) Validation: Correlate news with Level 2 "Wall of Sellers." Identify large seller at whole/half-dollar increment, wait for wall to be "chipped away."
+3) Execution: Icebreaker entry (1/4 size) on 10-second micro pullback. Enter as first candle makes new high.
+4) Scaling: Double position only after $1,000 profit cushion established and "Front Side" intact (higher highs/lows on 1-minute chart).
+5) Exiting: Identify "Topping Tails" or "Backside of the Move" (stairstepping down) to lock profit.
+
+7. Professional Risk Matrix
+Three consecutive losses → walk away immediately (prevent emotional hijack).
+Giving back 50% of daily gains → stop trading (capital preservation).
+Missing the 4:00 AM move → wait for 7:00 AM retail wave (avoid FOMO chasing backside).
+External stress/compromise → 50% size reduction or stop.
+
+Golden Rules: Accept "No-Trade Days" as discipline victories. Respect Daily Max Loss as unbreakable law. Mental Reset for "Ticker Emotional Residue" — never revenge-trade the same ticker. Never trade sleep-deprived.
+
+8. Final Summary
+Success is a "Houston, we have a problem" analytical mindset — relentless data pursuit and radical acceptance of market conditions. Evolution from $600 to $15.8M+ achieved through unwavering A-quality pursuit with 2:1 or 4:1 P/L ratio and 75-80% accuracy. Competence forged through exhaustive simulator practice. Master the 10-second micro pullback, respect the risk matrix, treat every trade as a statistical entry in a lifelong career.`
   }
 };
 
