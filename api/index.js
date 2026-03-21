@@ -888,6 +888,11 @@ const MENTOR_VIDEO_QUERIES = {
       'Ross Cameron Icebreaker strategy starter position sizing',
       'Ross Cameron Five Pillars stock selection momentum trading',
       'Ross Cameron hot vs cold market cycles day trading'
+    ],
+    m12: [
+      'Ross Cameron market psychology Dunning Kruger trading',
+      'Ross Cameron Jack Knife candle HFT algorithms stop loss',
+      'Ross Cameron Houston protocol analyzing losing trades'
     ]
   }
 };
@@ -2446,7 +2451,59 @@ Phase IV — Exit (9:30-10:00 AM): Once stock "stairssteps down," pump the brake
 3) The 50% Rule — if 50% of peak daily gain is relinquished, cease trading. Preserving capital and psychological health is the only path to longevity.
 
 8. Final Summary
-The Momentum Framework ensures traders remain "right more often than wrong" while losses stay mathematically insignificant compared to winners. The path to turning any account into a high-value asset is paved with discipline and a "Survive till you Thrive" mentality — relentless base hits and rigorous capital preservation during cold cycles. Simulator practice is the non-negotiable prerequisite for live execution.`
+The Momentum Framework ensures traders remain "right more often than wrong" while losses stay mathematically insignificant compared to winners. The path to turning any account into a high-value asset is paved with discipline and a "Survive till you Thrive" mentality — relentless base hits and rigorous capital preservation during cold cycles. Simulator practice is the non-negotiable prerequisite for live execution.`,
+    m12: `Comprehensive Correlated Report: Momentum Trading Dynamics and Risk Management Frameworks
+
+1. Overview
+In the high-frequency domain of equities trading, a quantitative, data-driven approach to momentum is the primary differentiator between institutional-grade longevity and retail attrition. Market volatility acts as a dual-edged catalyst: it provides the parabolic expansion necessary for significant capital appreciation while simultaneously manifesting liquidity vacuums and systemic risks. Professional momentum trading is not an exercise in prediction, but a systematic identification of high-probability imbalances between supply and demand, executed within a verified window of statistical edge.
+
+This report synthesizes multi-source insights from Ross Cameron, whose audited track record — turning an initial $583 into over $15.5 million — serves as the empirical foundation for this framework.
+
+2. Cross-Source Themes: The Foundations of Momentum
+The Five Pillars of Stock Selection: Price Action ($2.00-$20.00, or $1.50-$6.00 for small accounts), Relative Volume (minimum 5x, with "sensation" moves at 100x+), News Catalyst (biotech clinical results, earnings beats, sector catalysts), Float Management (<10M-20M shares, ideally <10M for squeeze effect), Percentage Gain (>10-25% intraday).
+
+These pillars function as a professional sieve, ensuring capital is only deployed into A-quality setups with high statistical probability.
+
+The Icebreaker Strategy: Risk management begins before a full position is taken. Starting with quarter-size (e.g., 5,000 shares for a 20,000-share max), the strategist evaluates if the market is respecting technical levels. Only after securing a profit cushion does the trader scale up, preventing "emotional hijack."
+
+3. Cross-Source Agreements: The Consensus on Discipline
+Universal Trading Truths: Daily Max Loss acts as a hard circuit breaker. The "Front Side" Rule — only trade upward trajectory (higher highs/lows); trading the "Back Side" is a primary cause of capital depletion. Data Tracking via metrics (Accuracy vs. P/L Ratio) is non-negotiable. Simulated Practice is a mandatory "dues-paying" phase before risking real capital.
+
+Market Sentiment and Aggression: In "Hot" markets, high liquidity and FOMO allow even B-quality setups to produce 70%+ accuracy. In "Cold" markets, even A-quality setups face failure, requiring defensive postures. "Sitting on hands" during cold cycles is as productive as trading during hot ones.
+
+4. Comparative Analysis: Differences in Strategy and Execution
+Large/Margin vs. Small/Cash Accounts: Margin accounts offer unlimited trades; cash accounts face PDT rule and overnight settlement creating "one shot, one bullet" psychology. Cash traders must wait for T+1 settlement.
+
+Catalyst Predictability — US vs. Foreign: Biotech catalysts are "tried-and-true" with predictable price action. Chinese/Hong Kong IPOs treated with high skepticism — not reviewed by US auditors, frequently exhibit "pop and drop" behavior requiring a "hot potato" exit approach.
+
+Stock Lending Mechanics: In retail platforms like Robinhood, disabling "Stock Lending" reduces localized selling pressure during a squeeze.
+
+5. Unique Insights and Specialized Concepts
+The "Jack-Knife" Candle: Sudden violent rejection triggered by HFT algorithms programmed to hunt stop-losses at psychological levels (whole and half-dollar marks).
+
+Mobile Command Centers: "Sprinter Van" setup (Starlink/5G) ensures institutional routine from any location during "hot" market windows.
+
+The "Houston, We Have a Problem" Protocol: Modeled after Apollo 13 — throw all data on the table after a significant loss. Analyze hold times, accuracy, and price ranges to identify the pattern of failure rather than blaming luck.
+
+Psychological Red Flags: Unrelated emotional residue (the "Parking Lot Incident") shortens the "trading fuse," leading to stubbornness, abandoned stops, and catastrophic revenge trading.
+
+6. The Master Strategy: Alpha-to-Omega Execution Workflow
+Golden Hour (7:00 AM - 10:00 AM EST):
+1) Internal Audit — verify sleep, nutrition, emotional centering.
+2) External Scan — identify leading gappers (>10% gain) with relative volume >5x and fresh catalyst.
+3) The Icebreaker Entry — quarter-size to "feel" the market; full size only after $1,000 profit threshold.
+4) Front-Side Focus — trade ABCD or Micro Pullback patterns on higher highs.
+5) Technical Exit — identify "Back-Side" where stock fails to make higher high.
+6) Profit Preservation — cease if 50% of peak gains surrendered or three consecutive large losses.
+
+7. Actionable Takeaways
+Technical Education: Internalize "Micro Pullback Strategy" and "Small Account Worksheet."
+Scanner Calibration: Configure for Relative Volume (>5x) and Low Float (<10M).
+Broker-Level Enforcement: Hard-code "Max Position Size" at broker level as physical barrier against emotional spiraling.
+Statistical Verification: Execute minimum 100 trades in simulator to verify positive P/L ratio before committing capital.
+
+8. Final Summary
+Profitability in momentum trading is a function of accuracy, and accuracy is a function of discipline. The market rewards patient execution of A-quality setups meeting the five pillars. By utilizing the Icebreaker strategy and focusing on the front-side of moves, traders mitigate HFT jack-knife candles and emotional volatility. The objective: survive until you thrive — preserving capital during the grind so the trader is fully funded when the next 300% biotech short squeeze arrives.`
   }
 };
 
