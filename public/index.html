@@ -1173,7 +1173,7 @@ function LoginScreen({ onLogin }) {
       });
       const data = await res.json();
       if (data.success) {
-        onLogin(data.token);
+        onLogin(data.token, data.role || 'admin');
       } else {
         setError('Invalid username or password');
       }
@@ -1711,7 +1711,7 @@ function InfographicGenerator({ module }) {
 // MAIN APP
 // =============================================================================
 
-function App({ onLogout }) {
+function App({ onLogout, userRole }) {
   const [modules, setModules] = useState([]);
   const [currentView, setCurrentView] = useState('dashboard');
   const [currentModuleId, setCurrentModuleId] = useState(null);
@@ -1722,7 +1722,7 @@ function App({ onLogout }) {
   const [editingModule, setEditingModule] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [toolsOpen, setToolsOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(userRole === 'admin');
   const [showPinModal, setShowPinModal] = useState(false);
   const adminClickRef = React.useRef({ count: 0, timer: null });
   const handleAdminAccess = () => {
@@ -1894,12 +1894,13 @@ function App({ onLogout }) {
           <div className="header-actions">
             <button onClick={goToDashboard}>◈ Dashboard</button>
             <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
+            {isAdmin && <button onClick={() => setShowSettings(true)} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'8px 12px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',fontWeight:600}} title="Settings">⚙ Settings</button>}
             {onLogout && <button className="logout-btn" onClick={onLogout}>⏻ Logout</button>}
             {isAdmin && <button className="primary" onClick={openAdminNew}>+ Add Module</button>}
           </div>
         </div>
         <div className="content-body">
-          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={openAdminEdit} onboardingComplete={onboardingComplete} isModuleUnlocked={isModuleUnlocked} />}
+          {currentView === 'dashboard' && <Dashboard modules={modules} completedModules={completedModules} progress={progress} onOpen={openModule} onEdit={isAdmin ? openAdminEdit : null} onboardingComplete={onboardingComplete} isModuleUnlocked={isModuleUnlocked} />}
           {currentView === 'module' && currentModule && <ModuleView module={currentModule} modules={modules} quizState={quizState} setQuizState={setQuizState} onComplete={() => completeModule(currentModule.id)} isCompleted={completedModules[currentModule.id]} onEdit={isAdmin ? () => openAdminEdit(currentModule) : null} onNext={() => { const idx = modules.findIndex(m => m.id === currentModule.id); if (idx < modules.length - 1) openModule(modules[idx + 1].id); }} hasNext={modules.findIndex(m => m.id === currentModule.id) < modules.length - 1} addToast={addToast} />}
         </div>
       </div>
@@ -3440,12 +3441,31 @@ function AnthropicKeyManager({ addToast }) {
 function PinModal({ onSuccess, onClose }) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
+  const [checking, setChecking] = useState(false);
   const inputRef = React.useRef(null);
   useEffect(() => { setTimeout(() => inputRef.current?.focus(), 100); }, []);
-  const ADMIN_PIN_HASH = '7771';
-  const handleSubmit = () => {
-    if (pin === ADMIN_PIN_HASH) { onSuccess(); }
-    else { setError('Incorrect PIN'); setPin(''); }
+  const handleSubmit = async () => {
+    if (pin.length < 4) return;
+    setChecking(true);
+    try {
+      const token = sessionStorage.getItem('ita_session_token');
+      const res = await fetch('/api/validate-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+      if (data.valid && data.role === 'admin') {
+        onSuccess();
+      } else {
+        setError('Admin access denied');
+        setPin('');
+      }
+    } catch (err) {
+      setError('Verification failed');
+      setPin('');
+    }
+    setChecking(false);
   };
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -3468,7 +3488,7 @@ function PinModal({ onSuccess, onClose }) {
         </div>
         <div className="modal-footer" style={{justifyContent:'center',gap:12}}>
           <button className="btn-cancel" onClick={onClose}>Cancel</button>
-          <button className="primary" onClick={handleSubmit} disabled={pin.length < 4}>Unlock</button>
+          <button className="primary" onClick={handleSubmit} disabled={pin.length < 4 || checking}>{checking ? '...' : 'Unlock'}</button>
         </div>
       </div>
     </div>
@@ -3480,6 +3500,19 @@ function SettingsModal({ onClose, addToast }) {
   const [hasKey, setHasKey] = useState(false);
   const [maskedKey, setMaskedKey] = useState('');
   const [saving, setSaving] = useState(false);
+  const [settingsTab, setSettingsTab] = useState('api');
+
+  // Student management state
+  const [students, setStudents] = useState([]);
+  const [loadingStudents, setLoadingStudents] = useState(false);
+  const [newStudentUser, setNewStudentUser] = useState('');
+  const [newStudentPass, setNewStudentPass] = useState('');
+  const [creatingStudent, setCreatingStudent] = useState(false);
+  const [showNewStudentPass, setShowNewStudentPass] = useState(false);
+
+  // Reset state
+  const [resetConfirm, setResetConfirm] = useState('');
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     API.getSettings().then(data => {
@@ -3487,6 +3520,68 @@ function SettingsModal({ onClose, addToast }) {
       setMaskedKey(data.geminiApiKey || '');
     });
   }, []);
+
+  // Load students when switching to that tab
+  useEffect(() => {
+    if (settingsTab === 'students') loadStudents();
+  }, [settingsTab]);
+
+  const loadStudents = async () => {
+    setLoadingStudents(true);
+    try {
+      const token = sessionStorage.getItem('ita_session_token');
+      const res = await fetch('/api/students', { headers: { 'Authorization': 'Bearer ' + token } });
+      const data = await res.json();
+      if (data.success) setStudents(data.students || []);
+    } catch (err) {
+      addToast('Failed to load students', 'error');
+    }
+    setLoadingStudents(false);
+  };
+
+  const createStudent = async () => {
+    if (!newStudentUser.trim() || !newStudentPass.trim()) return;
+    setCreatingStudent(true);
+    try {
+      const token = sessionStorage.getItem('ita_session_token');
+      const res = await fetch('/api/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ username: newStudentUser.trim(), password: newStudentPass.trim() })
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('Student "' + newStudentUser.trim() + '" created!', 'success');
+        setNewStudentUser('');
+        setNewStudentPass('');
+        setShowNewStudentPass(false);
+        loadStudents();
+      } else {
+        addToast(data.error || 'Failed to create student', 'error');
+      }
+    } catch (err) {
+      addToast('Failed to create student', 'error');
+    }
+    setCreatingStudent(false);
+  };
+
+  const deleteStudent = async (id, username) => {
+    if (!confirm('Delete student "' + username + '"? Their progress will also be deleted.')) return;
+    try {
+      const token = sessionStorage.getItem('ita_session_token');
+      const res = await fetch('/api/students/' + id, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('Student "' + username + '" deleted', 'info');
+        loadStudents();
+      }
+    } catch (err) {
+      addToast('Failed to delete student', 'error');
+    }
+  };
 
   const saveKey = async () => {
     if (!apiKey.trim()) return;
@@ -3510,55 +3605,225 @@ function SettingsModal({ onClose, addToast }) {
     addToast('API key removed', 'info');
   };
 
+  const handleReset = async () => {
+    if (resetConfirm !== 'RESET') return;
+    setResetting(true);
+    try {
+      const token = sessionStorage.getItem('ita_session_token');
+      const res = await fetch('/api/reset-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('All progress and scores have been reset!', 'success');
+        setResetConfirm('');
+        // Refresh the page to reload clean state
+        setTimeout(() => window.location.reload(), 1500);
+      } else {
+        addToast(data.error || 'Reset failed', 'error');
+      }
+    } catch (err) {
+      addToast('Failed to reset. Try again.', 'error');
+    }
+    setResetting(false);
+  };
+
+  const tabStyle = (tab) => ({
+    padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer', borderRadius: '6px 6px 0 0',
+    background: settingsTab === tab ? 'var(--bg-secondary)' : 'transparent',
+    color: settingsTab === tab ? 'var(--accent)' : 'var(--text-muted)',
+    border: settingsTab === tab ? '1px solid var(--border)' : '1px solid transparent',
+    borderBottom: settingsTab === tab ? '1px solid var(--bg-secondary)' : '1px solid var(--border)',
+    marginBottom: -1
+  });
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()} style={{maxWidth: 560}}>
+      <div className="modal" onClick={e => e.stopPropagation()} style={{maxWidth: 640}}>
         <div className="modal-header"><h2>⚙ Settings</h2><button className="modal-close" onClick={onClose}>×</button></div>
-        <div className="modal-body">
-          <div className="settings-section">
-            <h4>✦ AI Visual Generation</h4>
-            <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
-              Connect your Google Gemini API key to generate AI-powered visuals for each lesson section.
-              Images are cached so you only pay once per section.
-            </p>
-            <div className="form-group">
-              <label>Gemini API Key</label>
-              {hasKey && (
-                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
-                  <span className="api-status connected">● Connected</span>
-                  <span style={{fontSize:12,color:'var(--text-muted)',fontFamily:'monospace'}}>{maskedKey}</span>
-                  <button onClick={clearKey} style={{background:'none',border:'none',color:'var(--red)',cursor:'pointer',fontSize:12}}>Remove</button>
+
+        {/* Tab Bar */}
+        <div style={{display:'flex',gap:4,padding:'0 24px',borderBottom:'1px solid var(--border)',background:'var(--bg-card)'}}>
+          <button style={tabStyle('api')} onClick={() => setSettingsTab('api')}>API Keys</button>
+          <button style={tabStyle('students')} onClick={() => setSettingsTab('students')}>Students</button>
+          <button style={tabStyle('reset')} onClick={() => setSettingsTab('reset')}>Reset</button>
+        </div>
+
+        <div className="modal-body" style={{minHeight: 320}}>
+          {/* ===== API KEYS TAB ===== */}
+          {settingsTab === 'api' && (
+            <React.Fragment>
+              <div className="settings-section">
+                <h4>✦ AI Visual Generation</h4>
+                <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
+                  Connect your Google Gemini API key to generate AI-powered visuals for each lesson section.
+                  Images are cached so you only pay once per section.
+                </p>
+                <div className="form-group">
+                  <label>Gemini API Key</label>
+                  {hasKey && (
+                    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+                      <span className="api-status connected">● Connected</span>
+                      <span style={{fontSize:12,color:'var(--text-muted)',fontFamily:'monospace'}}>{maskedKey}</span>
+                      <button onClick={clearKey} style={{background:'none',border:'none',color:'var(--red)',cursor:'pointer',fontSize:12}}>Remove</button>
+                    </div>
+                  )}
+                  {!hasKey && <span className="api-status disconnected" style={{marginBottom:8,display:'inline-flex'}}>● Not connected</span>}
+                  <div className="api-key-row">
+                    <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder={hasKey ? 'Enter new key to replace' : 'Paste your Gemini API key'} />
+                    <button onClick={saveKey} disabled={saving || !apiKey.trim()}>{saving ? '...' : 'Save Key'}</button>
+                  </div>
+                  <div className="settings-info">
+                    Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{color:'var(--accent)'}}>aistudio.google.com/apikey</a>.
+                    Your key is stored securely on the server and never exposed to the browser.
+                  </div>
                 </div>
-              )}
-              {!hasKey && <span className="api-status disconnected" style={{marginBottom:8,display:'inline-flex'}}>● Not connected</span>}
-              <div className="api-key-row">
-                <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder={hasKey ? 'Enter new key to replace' : 'Paste your Gemini API key'} />
-                <button onClick={saveKey} disabled={saving || !apiKey.trim()}>{saving ? '...' : 'Save Key'}</button>
               </div>
-              <div className="settings-info">
-                Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{color:'var(--accent)'}}>aistudio.google.com/apikey</a>.
-                Your key is stored securely on the server and never exposed to the browser.
+              <div className="settings-section">
+                <h4>🤖 AI Tutor (Anthropic Claude)</h4>
+                <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
+                  Connect your Anthropic API key to enable the AI Tutor on each module page.
+                  The tutor answers questions using your course material.
+                </p>
+                <div className="form-group">
+                  <label>Anthropic API Key</label>
+                  <AnthropicKeyManager addToast={addToast} />
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="settings-section">
-            <h4>🤖 AI Tutor (Anthropic Claude)</h4>
-            <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
-              Connect your Anthropic API key to enable the AI Tutor on each module page.
-              The tutor answers questions using your course material.
-            </p>
-            <div className="form-group">
-              <label>Anthropic API Key</label>
-              <AnthropicKeyManager addToast={addToast} />
-            </div>
-          </div>
-          <div className="settings-section">
-            <h4>💾 Data Persistence</h4>
-            <p style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.6}}>
-              All modules, progress, quiz states, and generated images are automatically saved to the server.
-              Your data persists across browser sessions and devices.
-            </p>
-          </div>
+              <div className="settings-section">
+                <h4>💾 Data Persistence</h4>
+                <p style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.6}}>
+                  All modules, progress, quiz states, and generated images are automatically saved to the server.
+                  Your data persists across browser sessions and devices.
+                </p>
+              </div>
+            </React.Fragment>
+          )}
+
+          {/* ===== STUDENTS TAB ===== */}
+          {settingsTab === 'students' && (
+            <React.Fragment>
+              <div className="settings-section">
+                <h4>🎓 Student Accounts</h4>
+                <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
+                  Create login credentials for your students. Each student gets their own username and password
+                  with individual progress tracking. Students have view-only access (no module editing or admin features).
+                </p>
+
+                {/* Create New Student */}
+                <div style={{background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:10,padding:16,marginBottom:16}}>
+                  <div style={{fontSize:13,fontWeight:700,color:'var(--navy)',marginBottom:12}}>Create New Student</div>
+                  <div style={{display:'flex',gap:8,alignItems:'flex-end',flexWrap:'wrap'}}>
+                    <div style={{flex:'1 1 160px'}}>
+                      <label style={{fontSize:11,fontWeight:600,color:'var(--text-muted)',display:'block',marginBottom:4}}>Username</label>
+                      <input
+                        type="text"
+                        value={newStudentUser}
+                        onChange={e => setNewStudentUser(e.target.value)}
+                        placeholder="e.g. john.doe"
+                        style={{width:'100%',padding:'8px 10px',border:'1.5px solid var(--border)',borderRadius:6,fontSize:13}}
+                      />
+                    </div>
+                    <div style={{flex:'1 1 160px', position:'relative'}}>
+                      <label style={{fontSize:11,fontWeight:600,color:'var(--text-muted)',display:'block',marginBottom:4}}>Password</label>
+                      <div style={{position:'relative'}}>
+                        <input
+                          type={showNewStudentPass ? 'text' : 'password'}
+                          value={newStudentPass}
+                          onChange={e => setNewStudentPass(e.target.value)}
+                          placeholder="Min 4 characters"
+                          style={{width:'100%',padding:'8px 32px 8px 10px',border:'1.5px solid var(--border)',borderRadius:6,fontSize:13}}
+                        />
+                        <button onClick={() => setShowNewStudentPass(!showNewStudentPass)} style={{position:'absolute',right:6,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',fontSize:14,color:'var(--text-muted)'}}>{showNewStudentPass ? '🙈' : '👁'}</button>
+                      </div>
+                    </div>
+                    <button
+                      onClick={createStudent}
+                      disabled={creatingStudent || !newStudentUser.trim() || newStudentPass.trim().length < 4}
+                      style={{padding:'8px 18px',background:'var(--accent)',color:'white',border:'none',borderRadius:6,fontSize:13,fontWeight:600,cursor:'pointer',opacity:(creatingStudent || !newStudentUser.trim() || newStudentPass.trim().length < 4) ? 0.5 : 1}}
+                    >
+                      {creatingStudent ? 'Creating...' : '+ Create'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Student List */}
+                <div style={{fontSize:13,fontWeight:700,color:'var(--navy)',marginBottom:8}}>
+                  Active Students ({students.length})
+                </div>
+                {loadingStudents && <p style={{fontSize:13,color:'var(--text-muted)'}}>Loading...</p>}
+                {!loadingStudents && students.length === 0 && (
+                  <div style={{textAlign:'center',padding:'24px 16px',background:'var(--bg-card)',borderRadius:8,border:'1px dashed var(--border)'}}>
+                    <p style={{fontSize:13,color:'var(--text-muted)'}}>No students yet. Create one above to get started.</p>
+                  </div>
+                )}
+                {!loadingStudents && students.length > 0 && (
+                  <div style={{border:'1px solid var(--border)',borderRadius:8,overflow:'hidden'}}>
+                    {students.map((s, i) => (
+                      <div key={s.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px',borderBottom: i < students.length - 1 ? '1px solid var(--border)' : 'none',background: i % 2 === 0 ? 'white' : 'var(--bg-card)'}}>
+                        <div>
+                          <span style={{fontSize:13,fontWeight:600,color:'var(--navy)'}}>{s.username}</span>
+                          <span style={{fontSize:11,color:'var(--text-muted)',marginLeft:10}}>Created {new Date(s.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <button onClick={() => deleteStudent(s.id, s.username)} style={{background:'none',border:'1px solid var(--red)',color:'var(--red)',padding:'4px 10px',borderRadius:4,fontSize:11,cursor:'pointer',fontWeight:600}}>Delete</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </React.Fragment>
+          )}
+
+          {/* ===== RESET TAB ===== */}
+          {settingsTab === 'reset' && (
+            <React.Fragment>
+              <div className="settings-section">
+                <h4 style={{color:'var(--red)'}}>⚠ Reset All Progress</h4>
+                <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:16,lineHeight:1.6}}>
+                  This will permanently clear all student progress, quiz scores, and mastery exam results across the entire site.
+                  Module content, AI-generated images, and student accounts will NOT be affected.
+                  This action cannot be undone.
+                </p>
+                <div style={{background:'#FEF2F2',border:'1px solid #FECACA',borderRadius:10,padding:16}}>
+                  <div style={{fontSize:13,fontWeight:700,color:'#991B1B',marginBottom:8}}>What will be cleared:</div>
+                  <ul style={{fontSize:12,color:'#7F1D1D',lineHeight:1.8,paddingLeft:18,margin:0}}>
+                    <li>All student module completion progress</li>
+                    <li>All quiz and mastery exam scores</li>
+                    <li>Admin progress and quiz state</li>
+                  </ul>
+                  <div style={{fontSize:13,fontWeight:700,color:'#065F46',marginTop:12,marginBottom:4}}>What will NOT be cleared:</div>
+                  <ul style={{fontSize:12,color:'#065F46',lineHeight:1.8,paddingLeft:18,margin:0}}>
+                    <li>Module content and structure</li>
+                    <li>Student accounts and credentials</li>
+                    <li>AI-generated images and infographics</li>
+                    <li>API keys and settings</li>
+                  </ul>
+                </div>
+                <div style={{marginTop:16}}>
+                  <label style={{fontSize:12,fontWeight:600,color:'var(--text-muted)',display:'block',marginBottom:6}}>
+                    Type <span style={{color:'var(--red)',fontWeight:800}}>RESET</span> to confirm
+                  </label>
+                  <div style={{display:'flex',gap:8}}>
+                    <input
+                      type="text"
+                      value={resetConfirm}
+                      onChange={e => setResetConfirm(e.target.value.toUpperCase())}
+                      placeholder="Type RESET"
+                      style={{flex:1,padding:'8px 12px',border:'2px solid ' + (resetConfirm === 'RESET' ? 'var(--red)' : 'var(--border)'),borderRadius:6,fontSize:14,fontWeight:700,fontFamily:'monospace',letterSpacing:2,textTransform:'uppercase'}}
+                    />
+                    <button
+                      onClick={handleReset}
+                      disabled={resetting || resetConfirm !== 'RESET'}
+                      style={{padding:'8px 20px',background: resetConfirm === 'RESET' ? '#DC2626' : '#9CA3AF',color:'white',border:'none',borderRadius:6,fontSize:13,fontWeight:700,cursor: resetConfirm === 'RESET' ? 'pointer' : 'not-allowed'}}
+                    >
+                      {resetting ? 'Resetting...' : 'Reset All Progress'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </React.Fragment>
+          )}
         </div>
         <div className="modal-footer">
           <button className="btn-cancel" onClick={onClose}>Close</button>
@@ -3574,6 +3839,7 @@ function SettingsModal({ onClose, addToast }) {
 
 function AppWithLogin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null); // 'admin' or 'student'
   const [checkingSession, setCheckingSession] = useState(true);
 
   // On mount, check if there's a saved session token and validate it
@@ -3587,8 +3853,13 @@ function AppWithLogin() {
       })
         .then(r => r.json())
         .then(data => {
-          if (data.valid) setIsAuthenticated(true);
-          else sessionStorage.removeItem('ita_session_token');
+          if (data.valid) {
+            setIsAuthenticated(true);
+            setUserRole(data.role || 'admin');
+          } else {
+            sessionStorage.removeItem('ita_session_token');
+            sessionStorage.removeItem('ita_user_role');
+          }
           setCheckingSession(false);
         })
         .catch(() => setCheckingSession(false));
@@ -3597,14 +3868,18 @@ function AppWithLogin() {
     }
   }, []);
 
-  const handleLogin = (token) => {
+  const handleLogin = (token, role) => {
     sessionStorage.setItem('ita_session_token', token);
+    sessionStorage.setItem('ita_user_role', role);
     setIsAuthenticated(true);
+    setUserRole(role);
   };
 
   const handleLogout = () => {
     sessionStorage.removeItem('ita_session_token');
+    sessionStorage.removeItem('ita_user_role');
     setIsAuthenticated(false);
+    setUserRole(null);
   };
 
   if (checkingSession) {
@@ -3616,7 +3891,7 @@ function AppWithLogin() {
   }
 
   if (!isAuthenticated) return <LoginScreen onLogin={handleLogin} />;
-  return <App onLogout={handleLogout} />;
+  return <App onLogout={handleLogout} userRole={userRole} />;
 }
 
 ReactDOM.render(<AppWithLogin />, document.getElementById('root'));

@@ -22,23 +22,38 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // =============================================================================
-// AUTH MIDDLEWARE
+// AUTH MIDDLEWARE (role-aware: admin vs student)
 // =============================================================================
 
-// requireAuth middleware: validates Bearer token against stored session
-async function requireAuth(req, res, next) {
+// resolveSession: attaches session info to req.session if token is valid
+async function resolveSession(req) {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  const token = authHeader.slice(7);
+  const session = await kvGet(`session:${token}`);
+  return session || null;
+}
+
+// requireAuth: any valid session (admin or student)
+async function requireAuth(req, res, next) {
+  const session = await resolveSession(req);
+  if (!session) {
     return res.status(401).json({ error: 'Authorization required' });
   }
+  req.userSession = session;
+  next();
+}
 
-  const token = authHeader.slice(7); // Remove 'Bearer '
-  const storedToken = await kvGet('session_token');
-
-  if (!storedToken || token !== storedToken) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
+// requireAdmin: only admin sessions
+async function requireAdmin(req, res, next) {
+  const session = await resolveSession(req);
+  if (!session) {
+    return res.status(401).json({ error: 'Authorization required' });
   }
-
+  if (session.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  req.userSession = session;
   next();
 }
 
@@ -107,14 +122,14 @@ app.get('/api/modules', async (req, res) => {
   res.json(modules);
 });
 
-app.put('/api/modules', requireAuth, async (req, res) => {
+app.put('/api/modules', requireAdmin, async (req, res) => {
   const modules = req.body;
   if (!Array.isArray(modules)) return res.status(400).json({ error: 'Modules must be an array' });
   await kvSet('modules', modules);
   res.json({ success: true, count: modules.length });
 });
 
-app.post('/api/modules', async (req, res) => {
+app.post('/api/modules', requireAdmin, async (req, res) => {
   const modules = await kvGet('modules', []);
   const newModule = { ...req.body, id: req.body.id || 'm' + Date.now() };
   modules.push(newModule);
@@ -122,7 +137,7 @@ app.post('/api/modules', async (req, res) => {
   res.json({ success: true, module: newModule });
 });
 
-app.put('/api/modules/:id', requireAuth, async (req, res) => {
+app.put('/api/modules/:id', requireAdmin, async (req, res) => {
   const modules = await kvGet('modules', []);
   const idx = modules.findIndex(m => m.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Module not found' });
@@ -131,7 +146,7 @@ app.put('/api/modules/:id', requireAuth, async (req, res) => {
   res.json({ success: true, module: modules[idx] });
 });
 
-app.delete('/api/modules/:id', requireAuth, async (req, res) => {
+app.delete('/api/modules/:id', requireAdmin, async (req, res) => {
   let modules = await kvGet('modules', []);
   modules = modules.filter(m => m.id !== req.params.id);
   await kvSet('modules', modules);
@@ -142,13 +157,17 @@ app.delete('/api/modules/:id', requireAuth, async (req, res) => {
 // PROGRESS ENDPOINTS
 // =============================================================================
 
-app.get('/api/progress', async (req, res) => {
-  const progress = await kvGet('progress', { completedModules: {}, quizState: {} });
+app.get('/api/progress', requireAuth, async (req, res) => {
+  const session = req.userSession;
+  const key = session.role === 'student' ? `student_progress:${session.userId}` : 'progress';
+  const progress = await kvGet(key, { completedModules: {}, quizState: {} });
   res.json(progress);
 });
 
 app.put('/api/progress', requireAuth, async (req, res) => {
-  await kvSet('progress', req.body);
+  const session = req.userSession;
+  const key = session.role === 'student' ? `student_progress:${session.userId}` : 'progress';
+  await kvSet(key, req.body);
   res.json({ success: true });
 });
 
@@ -167,7 +186,7 @@ app.get('/api/settings', async (req, res) => {
   res.json({ geminiApiKey: masked, hasKey: !!settings.geminiApiKey, anthropicApiKey: anthropicMasked, hasAnthropicKey: !!settings.anthropicApiKey });
 });
 
-app.put('/api/settings', requireAuth, async (req, res) => {
+app.put('/api/settings', requireAdmin, async (req, res) => {
   const current = await kvGet('settings', {});
   const updated = { ...current, ...req.body };
   await kvSet('settings', updated);
@@ -497,35 +516,140 @@ app.get('/api/images/:filename', async (req, res) => {
 });
 
 // =============================================================================
-// LOGIN ENDPOINT (credentials stored as environment variables)
+// LOGIN ENDPOINT (admin via env vars, students via KV)
 // =============================================================================
 
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
-
-  const validUsername = process.env.ADMIN_USERNAME;
-  const validPassword = process.env.ADMIN_PASSWORD;
-
-  if (!validUsername || !validPassword) {
-    return res.status(500).json({ success: false, error: 'Server login not configured' });
+  if (!username || !password) {
+    return res.status(400).json({ success: false, error: 'Username and password required' });
   }
 
-  if (username === validUsername && password === validPassword) {
-    // Generate a simple session token so the frontend can persist login state
-    const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
-    await kvSet('session_token', token);
-    res.json({ success: true, token });
-  } else {
-    res.status(401).json({ success: false, error: 'Invalid username or password' });
+  const adminUser = process.env.ADMIN_USERNAME;
+  const adminPass = process.env.ADMIN_PASSWORD;
+
+  // Check admin credentials first
+  if (adminUser && adminPass && username === adminUser && password === adminPass) {
+    const token = Buffer.from(`admin:${Date.now()}:${Math.random()}`).toString('base64');
+    await kvSet(`session:${token}`, { role: 'admin', userId: 'admin', username });
+    return res.json({ success: true, token, role: 'admin' });
   }
+
+  // Check student credentials
+  const students = await kvGet('students', []);
+  const student = students.find(s => s.username === username && s.password === password);
+  if (student) {
+    const token = Buffer.from(`student:${student.id}:${Date.now()}`).toString('base64');
+    await kvSet(`session:${token}`, { role: 'student', userId: student.id, username: student.username });
+    return res.json({ success: true, token, role: 'student', studentId: student.id });
+  }
+
+  res.status(401).json({ success: false, error: 'Invalid username or password' });
 });
 
-// Session validation endpoint — checks if a stored token is still valid
+// Session validation — returns role so frontend can restore permissions
 app.post('/api/validate-session', async (req, res) => {
   const { token } = req.body;
   if (!token) return res.json({ valid: false });
-  const storedToken = await kvGet('session_token');
-  res.json({ valid: token === storedToken });
+  const session = await kvGet(`session:${token}`);
+  if (session) {
+    res.json({ valid: true, role: session.role, userId: session.userId, username: session.username });
+  } else {
+    res.json({ valid: false });
+  }
+});
+
+// =============================================================================
+// STUDENT MANAGEMENT ENDPOINTS (admin only)
+// =============================================================================
+
+// List all students
+app.get('/api/students', requireAdmin, async (req, res) => {
+  const students = await kvGet('students', []);
+  // Return without passwords
+  const safe = students.map(s => ({ id: s.id, username: s.username, createdAt: s.createdAt }));
+  res.json({ success: true, students: safe });
+});
+
+// Create a student account
+app.post('/api/students', requireAdmin, async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
+  if (username.length < 3) {
+    return res.status(400).json({ error: 'Username must be at least 3 characters' });
+  }
+  if (password.length < 4) {
+    return res.status(400).json({ error: 'Password must be at least 4 characters' });
+  }
+
+  const students = await kvGet('students', []);
+
+  // Check for duplicate username
+  if (students.find(s => s.username.toLowerCase() === username.toLowerCase())) {
+    return res.status(409).json({ error: 'A student with that username already exists' });
+  }
+
+  // Also check against admin username
+  if (username.toLowerCase() === (process.env.ADMIN_USERNAME || '').toLowerCase()) {
+    return res.status(409).json({ error: 'That username is reserved' });
+  }
+
+  const student = {
+    id: 'stu_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    username,
+    password,
+    createdAt: new Date().toISOString()
+  };
+
+  students.push(student);
+  await kvSet('students', students);
+
+  res.json({ success: true, student: { id: student.id, username: student.username, createdAt: student.createdAt } });
+});
+
+// Delete a student account (also clears their progress and sessions)
+app.delete('/api/students/:id', requireAdmin, async (req, res) => {
+  let students = await kvGet('students', []);
+  const student = students.find(s => s.id === req.params.id);
+  if (!student) return res.status(404).json({ error: 'Student not found' });
+
+  students = students.filter(s => s.id !== req.params.id);
+  await kvSet('students', students);
+
+  // Clean up student's progress
+  try { await kv.del(`student_progress:${req.params.id}`); } catch (e) {}
+
+  res.json({ success: true });
+});
+
+// =============================================================================
+// RESET SITE ENDPOINT (admin only — clears all student progress)
+// =============================================================================
+
+app.post('/api/reset-progress', requireAdmin, async (req, res) => {
+  try {
+    // Clear admin progress
+    await kvSet('progress', { completedModules: {}, quizState: {} });
+
+    // Clear all student progress
+    const students = await kvGet('students', []);
+    for (const student of students) {
+      try { await kv.del(`student_progress:${student.id}`); } catch (e) {}
+    }
+
+    // Clear all mastery exam results (quiz_70_*)
+    const modules = await getModules();
+    for (const mod of modules) {
+      try { await kv.del(`quiz_70_${mod.id}`); } catch (e) {}
+    }
+
+    res.json({ success: true, message: 'All progress and scores have been reset' });
+  } catch (error) {
+    console.error('Reset error:', error);
+    res.status(500).json({ error: 'Failed to reset progress' });
+  }
 });
 
 // =============================================================================
