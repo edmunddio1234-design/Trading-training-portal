@@ -902,20 +902,36 @@ const MENTOR_VIDEO_QUERIES = {
   }
 };
 
+// Channel verification map — only videos from these channels count as "Mentor" videos.
+// Videos from other channels are silently dropped (they still appear in general API results).
+const MENTOR_CHANNEL_FILTER = {
+  ross: ['warrior trading', 'ross cameron']
+};
+
 async function searchMentorVideos(moduleId, maxResults = 3) {
   const mentorVideos = [];
   for (const [mentorId, mentorConfig] of Object.entries(MENTOR_VIDEO_QUERIES)) {
     const queries = mentorConfig[moduleId];
     if (!queries || queries.length === 0) continue;
 
+    // Channel filter: only keep videos actually from the mentor's channel
+    const allowedChannels = MENTOR_CHANNEL_FILTER[mentorId] || [];
+    const isFromMentor = (video) => {
+      if (allowedChannels.length === 0) return true; // No filter defined = allow all
+      const ch = (video.channel || '').toLowerCase();
+      return allowedChannels.some(name => ch.includes(name));
+    };
+
     // Search using the first query (most specific)
-    const results = await searchYouTubeVideos(queries[0], maxResults);
-    if (results.length > 0) {
-      mentorVideos.push(...results.map(v => ({ ...v, mentor: mentorId, mentorName: MENTOR_SOURCES[mentorId]?.name || mentorId })));
+    const results = await searchYouTubeVideos(queries[0], maxResults + 2); // fetch extra to account for filtered-out videos
+    const verified = results.filter(isFromMentor);
+    if (verified.length > 0) {
+      mentorVideos.push(...verified.slice(0, maxResults).map(v => ({ ...v, mentor: mentorId, mentorName: MENTOR_SOURCES[mentorId]?.name || mentorId })));
     } else if (queries.length > 1) {
       // Fallback to second query
-      const fallback = await searchYouTubeVideos(queries[1], maxResults);
-      mentorVideos.push(...fallback.map(v => ({ ...v, mentor: mentorId, mentorName: MENTOR_SOURCES[mentorId]?.name || mentorId })));
+      const fallback = await searchYouTubeVideos(queries[1], maxResults + 2);
+      const verifiedFallback = fallback.filter(isFromMentor);
+      mentorVideos.push(...verifiedFallback.slice(0, maxResults).map(v => ({ ...v, mentor: mentorId, mentorName: MENTOR_SOURCES[mentorId]?.name || mentorId })));
     }
   }
   return mentorVideos;
