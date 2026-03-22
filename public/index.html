@@ -945,7 +945,7 @@ const MODULE_MEDIA = {
     audioUrl: null,
     staticInfographic: '/infographics/Module%2014%20Infographic.jpg',
     staticMindMap: '/infographics/Module%2014%20Mind%20Map.png',
-    infographicVideo: null
+    infographicVideo: 'https://youtu.be/kMpJqeQzyQU'
   },
   m15: {
     youtube: null,
@@ -1491,9 +1491,9 @@ function InfographicGenerator({ module }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [checked, setChecked] = useState(false);
-  const [showStatic, setShowStatic] = useState(false);
+  const [showStatic, setShowStatic] = useState(true);
   const [staticLightbox, setStaticLightbox] = useState(false);
-  const [showMindMap, setShowMindMap] = useState(false);
+  const [showMindMap, setShowMindMap] = useState(true);
   const [mindMapLightbox, setMindMapLightbox] = useState(false);
   const staticUrl = MODULE_MEDIA[module.id]?.staticInfographic;
   const mindMapUrl = MODULE_MEDIA[module.id]?.staticMindMap;
