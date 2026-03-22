@@ -1491,9 +1491,9 @@ function InfographicGenerator({ module }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [checked, setChecked] = useState(false);
-  const [showStatic, setShowStatic] = useState(true);
+  const [showStatic, setShowStatic] = useState(false);
   const [staticLightbox, setStaticLightbox] = useState(false);
-  const [showMindMap, setShowMindMap] = useState(true);
+  const [showMindMap, setShowMindMap] = useState(false);
   const [mindMapLightbox, setMindMapLightbox] = useState(false);
   const staticUrl = MODULE_MEDIA[module.id]?.staticInfographic;
   const mindMapUrl = MODULE_MEDIA[module.id]?.staticMindMap;
