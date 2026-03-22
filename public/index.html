@@ -1490,7 +1490,6 @@ function InfographicGenerator({ module }) {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [checked, setChecked] = useState(false);
   const [cacheChecked, setCacheChecked] = useState(false);
   const [showStatic, setShowStatic] = useState(false);
   const [staticLightbox, setStaticLightbox] = useState(false);
@@ -1500,20 +1499,22 @@ function InfographicGenerator({ module }) {
   const mindMapUrl = MODULE_MEDIA[module.id]?.staticMindMap;
   const infographicVideoUrl = MODULE_MEDIA[module.id]?.infographicVideo;
 
-  // Check for cached infographic on mount
+  // Check for cached infographic on mount AND when module changes
   useEffect(() => {
-    if (!checked) {
-      setChecked(true);
-      fetch('/api/generate-infographic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleId: module.id, cacheOnly: true })
-      }).then(r => r.json()).then(data => {
-        if (data.success && data.cached) {
-          setImageUrl(data.imageUrl + '?t=' + Date.now());
-        }
-      }).catch(() => {}).finally(() => setCacheChecked(true));
-    }
+    setImageUrl(null);
+    setCacheChecked(false);
+    setShowStatic(false);
+    setShowMindMap(false);
+    setError(null);
+    fetch('/api/generate-infographic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ moduleId: module.id, cacheOnly: true })
+    }).then(r => r.json()).then(data => {
+      if (data.success && data.cached) {
+        setImageUrl(data.imageUrl + '?t=' + Date.now());
+      }
+    }).catch(() => {}).finally(() => setCacheChecked(true));
   }, [module.id]);
 
   // Auto-expand static infographic & mind map when no AI infographic is cached
@@ -1600,9 +1601,21 @@ function InfographicGenerator({ module }) {
 
       {!loading && !imageUrl && (
         <div>
-          <button className="infographic-btn" onClick={() => generateInfographic(false)} disabled={loading}>
-            ✦ Generate AI Infographic
-          </button>
+          <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
+            <button className="infographic-btn" onClick={() => generateInfographic(false)} disabled={loading} style={{margin: 0}}>
+              ✦ Generate AI Infographic
+            </button>
+            {staticUrl && (
+              <button className="infographic-download-btn static" onClick={() => setShowStatic(!showStatic)}>
+                🖼️ {showStatic ? 'Hide' : 'View'} Static Infographic
+              </button>
+            )}
+            {mindMapUrl && (
+              <button className="infographic-download-btn mindmap" onClick={() => setShowMindMap(!showMindMap)}>
+                🧠 {showMindMap ? 'Hide' : 'View'} Mind Map
+              </button>
+            )}
+          </div>
           {error && <div className="ai-visual-error" style={{marginTop: 12}}>{error}</div>}
         </div>
       )}
@@ -1639,21 +1652,6 @@ function InfographicGenerator({ module }) {
               </button>
             )}
           </div>
-        </div>
-      )}
-
-      {!loading && !imageUrl && (staticUrl || mindMapUrl) && (
-        <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
-          {staticUrl && (
-            <button className="infographic-download-btn static" onClick={() => setShowStatic(!showStatic)}>
-              🖼️ {showStatic ? 'Hide' : 'View'} Static Infographic
-            </button>
-          )}
-          {mindMapUrl && (
-            <button className="infographic-download-btn mindmap" onClick={() => setShowMindMap(!showMindMap)}>
-              🧠 {showMindMap ? 'Hide' : 'View'} Mind Map
-            </button>
-          )}
         </div>
       )}
 
