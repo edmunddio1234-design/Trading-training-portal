@@ -373,7 +373,7 @@ DESIGN REQUIREMENTS:
 
 app.post('/api/generate-infographic', async (req, res) => {
   try {
-    const { moduleId } = req.body;
+    const { moduleId, cacheOnly } = req.body;
 
     // Check cache first
     const infographicKey = `infographic_${moduleId}`;
@@ -384,6 +384,11 @@ app.post('/api/generate-infographic', async (req, res) => {
         imageUrl: `/api/infographics/${moduleId}.png`,
         cached: true
       });
+    }
+
+    // If cacheOnly flag is set, don't auto-generate — just report no cache
+    if (cacheOnly) {
+      return res.json({ success: false, cached: false, message: 'No cached infographic' });
     }
 
     // Get the module data
