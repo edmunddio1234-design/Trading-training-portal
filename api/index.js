@@ -884,16 +884,6 @@ const MENTOR_VIDEO_QUERIES = {
       'Ross Cameron 4 market types you need to understand',
       'Ross Cameron stop overtrading doing less made 3x'
     ],
-    m11: [
-      'Ross Cameron Icebreaker strategy starter position sizing',
-      'Ross Cameron Five Pillars stock selection momentum trading',
-      'Ross Cameron hot vs cold market cycles day trading'
-    ],
-    m12: [
-      'Ross Cameron market psychology Dunning Kruger trading',
-      'Ross Cameron Jack Knife candle HFT algorithms stop loss',
-      'Ross Cameron Houston protocol analyzing losing trades'
-    ],
     m13: [
       'Ross Cameron small cap momentum front side back side trading',
       'Ross Cameron downward spiral revenge trading psychology',
