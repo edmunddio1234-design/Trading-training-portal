@@ -1491,6 +1491,7 @@ function InfographicGenerator({ module }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [checked, setChecked] = useState(false);
+  const [cacheChecked, setCacheChecked] = useState(false);
   const [showStatic, setShowStatic] = useState(false);
   const [staticLightbox, setStaticLightbox] = useState(false);
   const [showMindMap, setShowMindMap] = useState(false);
@@ -1511,9 +1512,17 @@ function InfographicGenerator({ module }) {
         if (data.success && data.cached) {
           setImageUrl(data.imageUrl + '?t=' + Date.now());
         }
-      }).catch(() => {});
+      }).catch(() => {}).finally(() => setCacheChecked(true));
     }
   }, [module.id]);
+
+  // Auto-expand static infographic & mind map when no AI infographic is cached
+  useEffect(() => {
+    if (cacheChecked && !imageUrl) {
+      if (staticUrl) setShowStatic(true);
+      if (mindMapUrl) setShowMindMap(true);
+    }
+  }, [cacheChecked, imageUrl]);
 
   const generateInfographic = async (regenerate = false) => {
     setLoading(true);
