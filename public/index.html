@@ -942,7 +942,7 @@ const MODULE_MEDIA = {
     youtube: null,
     flipbook: 'https://heyzine.com/flip-book/6d6342ea71.html',
     slideDeck: 'https://heyzine.com/flip-book/53dd349fe3.html',
-    audioUrl: null,
+    audioUrl: 'https://podcasts.apple.com/us/podcast/the-trading-show/id1883365729?i=1000756540241',
     staticInfographic: '/infographics/Module%2014%20Infographic.jpg',
     staticMindMap: '/infographics/Module%2014%20Mind%20Map.png',
     infographicVideo: 'https://youtu.be/kMpJqeQzyQU'
@@ -1499,22 +1499,19 @@ function InfographicGenerator({ module }) {
   const mindMapUrl = MODULE_MEDIA[module.id]?.staticMindMap;
   const infographicVideoUrl = MODULE_MEDIA[module.id]?.infographicVideo;
 
-  // Check for cached infographic on mount AND when module changes
+  // Load cached AI infographic directly — no API call, just try the image URL
   useEffect(() => {
+    let cancelled = false;
     setImageUrl(null);
     setCacheChecked(false);
     setShowStatic(false);
     setShowMindMap(false);
     setError(null);
-    fetch('/api/generate-infographic', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ moduleId: module.id, cacheOnly: true })
-    }).then(r => r.json()).then(data => {
-      if (data.success && data.cached) {
-        setImageUrl(data.imageUrl + '?t=' + Date.now());
-      }
-    }).catch(() => {}).finally(() => setCacheChecked(true));
+    const img = new Image();
+    img.onload = () => { if (!cancelled) { setImageUrl(`/api/infographics/${module.id}.png`); setCacheChecked(true); } };
+    img.onerror = () => { if (!cancelled) { setCacheChecked(true); } };
+    img.src = `/api/infographics/${module.id}.png`;
+    return () => { cancelled = true; };
   }, [module.id]);
 
   // Auto-expand static infographic & mind map when no AI infographic is cached
@@ -1539,10 +1536,12 @@ function InfographicGenerator({ module }) {
       if (data.success) {
         setImageUrl(data.imageUrl + '?t=' + Date.now());
       } else {
-        setError(data.error || 'Failed to generate infographic');
+        const msg = data.error || 'Failed to generate infographic';
+        setError(msg.includes('API key') || msg.includes('API_KEY') ? 'AI generation unavailable — Gemini API key needs to be updated in Settings.' : msg);
       }
     } catch (err) {
-      setError(err.message);
+      const msg = err.message || '';
+      setError(msg.includes('API key') || msg.includes('API_KEY') ? 'AI generation unavailable — Gemini API key needs to be updated in Settings.' : msg || 'Failed to generate infographic');
     }
     setLoading(false);
   };
