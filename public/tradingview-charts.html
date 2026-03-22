@@ -50,10 +50,10 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .tv-toolbar input, .tv-toolbar select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: var(--card); color: var(--text); }
 .tv-toolbar input:focus { outline: none; border-color: var(--emerald); }
 .tv-toolbar input[type="text"] { width: 180px; }
-.tf-btn { padding: 7px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.tf-btn { padding: 7px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; font-family: inherit; position: relative; }
 .tf-btn:hover { border-color: var(--emerald); color: var(--emerald); }
 .tf-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
-.chip { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: rgba(13,147,115,0.08); color: var(--emerald); cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+.chip { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: rgba(13,147,115,0.08); color: var(--emerald); cursor: pointer; border: 1px solid transparent; transition: all 0.15s; position: relative; }
 .chip:hover { border-color: var(--emerald); }
 .chip.active { background: var(--emerald); color: #fff; }
 .indicator-chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -88,30 +88,141 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .webull-tip strong { color: #3B82F6; }
 
 /* ===== ACADEMY CHARTS TAB ===== */
-.ac-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 6px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-shrink: 0; }
+.ac-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 8px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; flex-shrink: 0; }
+.ac-toolbar-section { display: flex; align-items: center; gap: 8px; }
+.ac-toolbar-section-divider { width: 1px; height: 20px; background: var(--border); }
 .ac-toolbar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .ac-toolbar input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: var(--card); color: var(--text); width: 140px; }
 .ac-toolbar input:focus { outline: none; border-color: var(--emerald); }
+.ac-search-hint { font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 500; }
 
-.draw-tools { display: flex; gap: 4px; align-items: center; }
-.draw-btn { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.draw-tools { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.draw-btn { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; position: relative; }
 .draw-btn:hover { border-color: var(--emerald); color: var(--emerald); }
 .draw-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
 .draw-btn.set-stop { border-color: var(--red); color: var(--red); }
+.draw-btn.set-stop:hover { border-color: var(--red); }
 .draw-btn.set-stop.active { background: var(--red); color: #fff; }
 .draw-btn.set-entry { border-color: var(--amber); color: var(--amber); }
+.draw-btn.set-entry:hover { border-color: var(--amber); }
 .draw-btn.set-entry.active { background: var(--amber); color: #fff; }
 .draw-btn.set-target { border-color: var(--green); color: var(--green); }
+.draw-btn.set-target:hover { border-color: var(--green); }
 .draw-btn.set-target.active { background: var(--green); color: #fff; }
 .draw-btn.demand-zone { border-color: #3B82F6; color: #3B82F6; }
+.draw-btn.demand-zone:hover { border-color: #3B82F6; }
 .draw-btn.demand-zone.active { background: #3B82F6; color: #fff; }
 .draw-btn.supply-zone { border-color: var(--purple); color: var(--purple); }
+.draw-btn.supply-zone:hover { border-color: var(--purple); }
 .draw-btn.supply-zone.active { background: var(--purple); color: #fff; }
 .draw-btn.clear-btn { border-color: var(--muted); color: var(--muted); }
 .draw-btn.clear-btn:hover { border-color: var(--red); color: var(--red); }
 
-.chart-area { flex: 1; position: relative; background: var(--card); overflow: hidden; }
-#lwchart { width: 100%; height: 100%; }
+/* Tooltip system */
+.draw-btn[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: var(--navy);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 6px;
+  z-index: 1000;
+  max-width: 220px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.3;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.draw-btn[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  background: var(--navy);
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  bottom: calc(100% - 3px);
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: 1000;
+}
+.draw-btn[data-tooltip]:hover::before,
+.draw-btn[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+body.dark .draw-btn[data-tooltip]::before,
+body.dark .draw-btn[data-tooltip]::after {
+  background: #E0E4F0;
+  color: var(--navy);
+}
+
+.tf-btn[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: var(--navy);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  z-index: 1000;
+  max-width: 180px;
+  text-align: center;
+  line-height: 1.3;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.tf-btn[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  background: var(--navy);
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  bottom: calc(100% - 2px);
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: 1000;
+}
+.tf-btn[data-tooltip]:hover::before,
+.tf-btn[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+body.dark .tf-btn[data-tooltip]::before,
+body.dark .tf-btn[data-tooltip]::after {
+  background: #E0E4F0;
+  color: var(--navy);
+}
+
+.chart-area { flex: 1; position: relative; background: var(--card); overflow: hidden; display: flex; flex-direction: column; }
+#lwchart { flex: 1; width: 100%; position: relative; }
+#drawingCanvas { position: absolute; top: 0; left: 0; z-index: 50; pointer-events: none; }
 
 /* S.E.T. Panel */
 .set-panel { position: absolute; top: 12px; right: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 220px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 100; font-size: 12px; }
@@ -152,11 +263,13 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
   .tab-btn { padding: 10px 14px; font-size: 12px; }
   .tv-toolbar, .ac-toolbar { padding: 8px 12px; gap: 6px; }
   .tv-toolbar input[type="text"] { width: 120px; }
+  .ac-toolbar input { width: 100px; }
   .info-bar { padding: 8px 16px; flex-direction: column; gap: 6px; }
   .set-panel { display: none; }
   .price-info { top: 6px; left: 6px; padding: 8px 10px; }
   .price-symbol { font-size: 14px; }
   .price-current { font-size: 18px; }
+  .draw-btn[data-tooltip]::before { max-width: 140px; font-size: 9px; }
 }
 </style>
 </head>
@@ -210,13 +323,13 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
     <div>
       <label>Timeframe</label>
       <div style="display:flex;gap:4px;">
-        <button class="tf-btn" onclick="tvChangeTF('1',this)">1m</button>
-        <button class="tf-btn" onclick="tvChangeTF('5',this)">5m</button>
-        <button class="tf-btn" onclick="tvChangeTF('15',this)">15m</button>
-        <button class="tf-btn" onclick="tvChangeTF('60',this)">1H</button>
-        <button class="tf-btn active" onclick="tvChangeTF('D',this)">1D</button>
-        <button class="tf-btn" onclick="tvChangeTF('W',this)">1W</button>
-        <button class="tf-btn" onclick="tvChangeTF('M',this)">1M</button>
+        <button class="tf-btn" data-tooltip="1-MINUTE: Ultra-short-term, for scalping" onclick="tvChangeTF('1',this)">1m</button>
+        <button class="tf-btn" data-tooltip="5-MINUTE: Short-term, for day trading entries" onclick="tvChangeTF('5',this)">5m</button>
+        <button class="tf-btn" data-tooltip="15-MINUTE: Short-term trend confirmation" onclick="tvChangeTF('15',this)">15m</button>
+        <button class="tf-btn" data-tooltip="1-HOUR: Swing trading direction" onclick="tvChangeTF('60',this)">1H</button>
+        <button class="tf-btn active" data-tooltip="1-DAY: Long-term trend & support/resistance" onclick="tvChangeTF('D',this)">1D</button>
+        <button class="tf-btn" data-tooltip="1-WEEK: Multi-month trend analysis" onclick="tvChangeTF('W',this)">1W</button>
+        <button class="tf-btn" data-tooltip="1-MONTH: Macro trend direction" onclick="tvChangeTF('M',this)">1M</button>
       </div>
     </div>
     <div>
@@ -245,30 +358,23 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
      ═══════════════════════════════════════════════════════════════ -->
 <div class="tab-panel" id="panel-webull">
   <div class="webull-container">
-    <!-- Try iframe first -->
     <iframe id="webullFrame" class="webull-iframe" src="about:blank" style="display:none;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"></iframe>
-
-    <!-- Fallback if iframe is blocked -->
     <div class="webull-fallback" id="webullFallback">
       <div class="webull-fallback-icon">📱</div>
       <h2>Webull Paper Trading</h2>
       <p>Trade stocks, options, and ETFs with zero commissions using Webull's full web platform. Practice your S.E.T. setups with paper money before risking real capital.</p>
-
       <button class="webull-open-btn" onclick="window.open('https://app.webull.com/trade','_blank')">
         🚀 Open Webull Web Trader
       </button>
-
       <div class="webull-links">
         <a href="https://app.webull.com/trade" target="_blank">Stocks & ETFs</a>
         <a href="https://app.webull.com/options" target="_blank">Options Trading</a>
         <a href="https://app.webull.com/paper-trading" target="_blank">Paper Trading</a>
         <a href="/webull-guide.html">Setup Guide</a>
       </div>
-
       <div class="webull-tip">
         <strong>Pro Tip:</strong> Enable Paper Trading in Webull (Menu → Paper Trading → ON). This gives you $1,000,000 in virtual money to practice S.E.T. setups, supply/demand zone entries, and position sizing — exactly as taught in the Academy. Your real money stays untouched.
       </div>
-
       <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; max-width: 600px; width: 100%;">
         <div style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.15); border-radius: 12px; padding: 16px; text-align: center;">
           <div style="font-size: 28px; margin-bottom: 8px;">🛑</div>
@@ -295,50 +401,90 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
      ═══════════════════════════════════════════════════════════════ -->
 <div class="tab-panel" id="panel-academy">
   <div class="ac-toolbar">
-    <div class="ac-wrap" id="acAcWrap">
-      <label>Symbol</label>
-      <input type="text" id="acSymbolInput" value="AAPL" placeholder="Search ticker..." autocomplete="off"
-        oninput="acOnSymbolInput(this.value)" onfocus="acOnSymbolInput(this.value)" onkeydown="acAcKeyDown(event)">
-      <div class="ac-dropdown" id="acAcDropdown"></div>
+    <!-- Symbol + Timeframe Section -->
+    <div class="ac-toolbar-section">
+      <div class="ac-wrap" id="acAcWrap">
+        <label>Symbol</label>
+        <input type="text" id="acSymbolInput" value="AAPL" placeholder="Type company name or ticker..." autocomplete="off"
+          oninput="acOnSymbolInput(this.value)" onfocus="acOnSymbolInput(this.value)" onkeydown="acAcKeyDown(event)">
+        <div class="ac-search-hint">Search by ticker or company name</div>
+        <div class="ac-dropdown" id="acAcDropdown"></div>
+      </div>
     </div>
-    <div>
+    <div class="ac-toolbar-section-divider"></div>
+
+    <!-- Timeframe Section -->
+    <div class="ac-toolbar-section">
       <label>Timeframe</label>
       <div style="display:flex;gap:4px;">
-        <button class="tf-btn" onclick="acChangeTF('1min',this)">1m</button>
-        <button class="tf-btn" onclick="acChangeTF('5min',this)">5m</button>
-        <button class="tf-btn" onclick="acChangeTF('15min',this)">15m</button>
-        <button class="tf-btn" onclick="acChangeTF('1hour',this)">1H</button>
-        <button class="tf-btn active" onclick="acChangeTF('1day',this)">1D</button>
-        <button class="tf-btn" onclick="acChangeTF('1week',this)">1W</button>
+        <button class="tf-btn" data-tooltip="1-MINUTE: Ultra-short-term, for scalping" onclick="acChangeTF('1min',this)">1m</button>
+        <button class="tf-btn" data-tooltip="5-MINUTE: Short-term, for day trading entries" onclick="acChangeTF('5min',this)">5m</button>
+        <button class="tf-btn" data-tooltip="15-MINUTE: Short-term trend confirmation" onclick="acChangeTF('15min',this)">15m</button>
+        <button class="tf-btn" data-tooltip="1-HOUR: Swing trading direction" onclick="acChangeTF('1hour',this)">1H</button>
+        <button class="tf-btn active" data-tooltip="1-DAY: Long-term trend & support/resistance" onclick="acChangeTF('1day',this)">1D</button>
+        <button class="tf-btn" data-tooltip="1-WEEK: Multi-month trend analysis" onclick="acChangeTF('1week',this)">1W</button>
       </div>
     </div>
-    <div>
-      <label>S.E.T. Tools</label>
+    <div class="ac-toolbar-section-divider"></div>
+
+    <!-- S.E.T. Tools Section -->
+    <div class="ac-toolbar-section">
+      <label>S.E.T.</label>
       <div class="draw-tools">
-        <button class="draw-btn set-stop" onclick="acSetDrawMode('stop',this)">🛑 Stop</button>
-        <button class="draw-btn set-entry" onclick="acSetDrawMode('entry',this)">🎯 Entry</button>
-        <button class="draw-btn set-target" onclick="acSetDrawMode('target',this)">💰 Target</button>
+        <button class="draw-btn set-stop" data-tooltip="STOP LOSS — Click the chart to place your stop loss. This is your maximum risk level. The S.E.T. Rule says: Always set your stop FIRST before entering any trade. 1% max risk per trade." onclick="acSetDrawMode('stop',this)">🛑 Stop</button>
+        <button class="draw-btn set-entry" data-tooltip="ENTRY POINT — Click the chart to mark where you'll enter the trade. Look for entries at demand zones (longs) or supply zones (shorts)." onclick="acSetDrawMode('entry',this)">🎯 Entry</button>
+        <button class="draw-btn set-target" data-tooltip="PROFIT TARGET — Click to set where you'll take profits. Aim for at least 3:1 reward-to-risk ratio." onclick="acSetDrawMode('target',this)">💰 Target</button>
       </div>
     </div>
-    <div>
+    <div class="ac-toolbar-section-divider"></div>
+
+    <!-- Zones Section -->
+    <div class="ac-toolbar-section">
       <label>Zones</label>
       <div class="draw-tools">
-        <button class="draw-btn demand-zone" onclick="acSetDrawMode('demand',this)">📈 Demand</button>
-        <button class="draw-btn supply-zone" onclick="acSetDrawMode('supply',this)">📉 Supply</button>
-        <button class="draw-btn clear-btn" onclick="acClearAll()">✕ Clear</button>
+        <button class="draw-btn demand-zone" data-tooltip="DEMAND ZONE — Click twice to draw a demand zone. These are areas where institutional buyers placed large orders. Price tends to bounce UP from demand zones." onclick="acSetDrawMode('demand',this)">📈 Demand</button>
+        <button class="draw-btn supply-zone" data-tooltip="SUPPLY ZONE — Click twice to draw a supply zone. These are areas where institutional sellers placed large orders. Price tends to DROP from supply zones." onclick="acSetDrawMode('supply',this)">📉 Supply</button>
       </div>
     </div>
-    <div>
+    <div class="ac-toolbar-section-divider"></div>
+
+    <!-- Drawing Tools Section -->
+    <div class="ac-toolbar-section">
+      <label>Draw</label>
+      <div class="draw-tools">
+        <button class="draw-btn" data-tooltip="TRENDLINE — Click two points to draw a line showing the direction of price movement. Uptrend = higher lows. Downtrend = lower highs." onclick="acSetDrawMode('trendline',this)">📈 Trend</button>
+        <button class="draw-btn" data-tooltip="HORIZONTAL LINE — Click to place a level at any price. Use for marking key support/resistance levels." onclick="acSetDrawMode('hline',this)">➖ H-Line</button>
+        <button class="draw-btn" data-tooltip="FIBONACCI RETRACEMENT — Click swing low, then swing high (or vice versa). Shows key retracement levels (23.6%, 38.2%, 50%, 61.8%, 78.6%) where price often bounces." onclick="acSetDrawMode('fib',this)">🔢 Fib</button>
+        <button class="draw-btn" data-tooltip="RECTANGLE — Click two corners to highlight a price range. Use for marking consolidation areas or supply/demand zones." onclick="acSetDrawMode('rect',this)">▢ Rect</button>
+        <button class="draw-btn" data-tooltip="PARALLEL CHANNEL — Click two points for one line, then a third point for the parallel. Shows the trading range where price oscillates." onclick="acSetDrawMode('channel',this)">◇ Channel</button>
+      </div>
+    </div>
+    <div class="ac-toolbar-section-divider"></div>
+
+    <!-- Indicators Section -->
+    <div class="ac-toolbar-section">
       <label>Indicators</label>
       <div class="draw-tools">
-        <button class="draw-btn" onclick="acToggleIndicator('sma',this)">SMA</button>
-        <button class="draw-btn" onclick="acToggleIndicator('ema',this)">EMA</button>
-        <button class="draw-btn" onclick="acToggleIndicator('volume',this)">Vol</button>
+        <button class="draw-btn" data-tooltip="SIMPLE MOVING AVERAGE (20) — Shows the average closing price over the last 20 periods. When price is above the SMA, the trend is bullish. When below, bearish." onclick="acToggleIndicator('sma',this)">SMA</button>
+        <button class="draw-btn" data-tooltip="EXPONENTIAL MOVING AVERAGE (9) — Faster-reacting than SMA, gives more weight to recent prices. Used for short-term trend direction." onclick="acToggleIndicator('ema',this)">EMA</button>
+        <button class="draw-btn" data-tooltip="RELATIVE STRENGTH INDEX (14) — Measures momentum from 0-100. Above 70 = overbought (may drop). Below 30 = oversold (may bounce). Use with S.E.T. for confirmation." onclick="acToggleIndicator('rsi',this)">RSI</button>
+        <button class="draw-btn" data-tooltip="MACD — Moving Average Convergence/Divergence. Shows trend direction and momentum. Bullish when MACD crosses ABOVE signal line. Bearish when it crosses BELOW." onclick="acToggleIndicator('macd',this)">MACD</button>
+        <button class="draw-btn" data-tooltip="BOLLINGER BANDS — Shows volatility. When bands tighten = big move coming (squeeze). Price touching lower band near demand zone = potential entry." onclick="acToggleIndicator('bb',this)">BB</button>
+        <button class="draw-btn" data-tooltip="VWAP — Volume Weighted Average Price. The 'fair value' of the day. Institutional traders use VWAP as a benchmark. Above VWAP = bullish, below = bearish." onclick="acToggleIndicator('vwap',this)">VWAP</button>
+        <button class="draw-btn" data-tooltip="VOLUME — Shows how many shares traded. High volume at a demand zone confirms institutional interest. Low volume = weak move." onclick="acToggleIndicator('volume',this)">Vol</button>
       </div>
     </div>
+    <div class="ac-toolbar-section-divider"></div>
+
+    <!-- Clear Section -->
+    <div class="ac-toolbar-section">
+      <button class="draw-btn clear-btn" data-tooltip="CLEAR ALL — Remove all drawings, S.E.T. lines, and zones from the chart." onclick="acClearAll()">✕ Clear</button>
+    </div>
   </div>
+
   <div class="chart-area">
     <div id="lwchart"></div>
+    <canvas id="drawingCanvas"></canvas>
     <div class="price-info" id="priceInfo">
       <div class="price-symbol" id="priceSymbol">AAPL</div>
       <div class="price-current" id="priceCurrent">--</div>
@@ -431,7 +577,6 @@ function toggleTheme() {
   document.querySelector('.header').style.background = isDark
     ? 'linear-gradient(135deg, #0F1423 0%, #1A1F35 100%)'
     : 'linear-gradient(135deg, #1B2A4A 0%, #243B60 100%)';
-  // Rebuild active charts
   if (activeTab === 'tradingview') tvCreateWidget();
   if (activeTab === 'academy') { acInitChart(); if (acChartData.length) { acCandleSeries.setData(acChartData); acReapplyAll(); } else { acLoadData(acSymbol, acTF); } }
 }
@@ -459,10 +604,10 @@ function switchTab(tab, btn) {
     setTimeout(() => { acInitChart(); acLoadData(acSymbol, acTF); }, 100);
   }
   if (tab === 'academy' && academyInitialized && acChart) {
-    // Resize after tab switch
     setTimeout(() => {
       const container = document.getElementById('lwchart');
       acChart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+      acResizeCanvas();
     }, 50);
   }
 }
@@ -539,7 +684,6 @@ function tvToggleStudy(el, studyId) {
   tvCreateWidget();
 }
 
-// TV Autocomplete
 let tvAcIndex = -1, tvAcMatches = [];
 function highlightText(text, query) {
   if (!query) return text;
@@ -585,28 +729,137 @@ function tvUpdateACHL() {
 function tryLoadWebull() {
   const iframe = document.getElementById('webullFrame');
   const fallback = document.getElementById('webullFallback');
-
-  // Webull blocks iframe embedding via X-Frame-Options / CSP.
-  // Skip the iframe attempt entirely and show the fallback immediately.
-  // This gives students instant access to the "Open Webull Web Trader" button
-  // instead of waiting 3 seconds for a failed iframe load.
   iframe.style.display = 'none';
   iframe.src = 'about:blank';
   fallback.style.display = 'flex';
 }
 
 // ============================================================
-// TAB 3: ACADEMY CHARTS (Lightweight Charts)
+// TAB 3: ACADEMY CHARTS (Lightweight Charts + Drawing Tools)
 // ============================================================
-let acChart, acCandleSeries, acVolumeSeries, acSmaSeries, acEmaSeries;
+let acChart, acCandleSeries, acVolumeSeries, acSmaSeries, acEmaSeries, acRsiSeries, acMacdSeries, acMacdSignalSeries, acMacdHistSeries, acBbUpper, acBbMiddle, acBbLower, acVwapSeries;
 let acSymbol = 'AAPL', acTF = '1day';
 let acDrawMode = null;
 let acSetValues = { stop: null, entry: null, target: null };
 let acPriceLines = { stop: null, entry: null, target: null };
 let acZones = [];
 let acZoneTopPrice = null;
-let acIndicators = { sma: false, ema: false, volume: false };
+let acIndicators = { sma: false, ema: false, volume: false, rsi: false, macd: false, bb: false, vwap: false };
 let acChartData = [];
+let acCanvas, acCanvasCtx;
+let acDrawings = [];
+let acDrawClickCount = 0;
+let acDrawFirstPoint = null;
+
+// Utility functions for drawing
+function acInitCanvas() {
+  const chartArea = document.querySelector('.chart-area');
+  acCanvas = document.getElementById('drawingCanvas');
+  acCanvasCtx = acCanvas.getContext('2d');
+  acResizeCanvas();
+}
+
+function acResizeCanvas() {
+  if (!acCanvas) return;
+  const chartArea = document.querySelector('.chart-area');
+  const lwchartDiv = document.getElementById('lwchart');
+  acCanvas.width = lwchartDiv.clientWidth;
+  acCanvas.height = lwchartDiv.clientHeight;
+  acRedrawCanvas();
+}
+
+function acRedrawCanvas() {
+  if (!acCanvasCtx || !acChart) return;
+  acCanvasCtx.clearRect(0, 0, acCanvas.width, acCanvas.height);
+  acDrawings.forEach(drawing => acDrawDrawing(drawing));
+}
+
+function acDrawDrawing(drawing) {
+  if (!acCanvasCtx || !acChart) return;
+  const chart = acChart;
+  const timeScale = chart.timeScale();
+
+  // Use series.priceToCoordinate() directly (Lightweight Charts v4 API)
+  const p2c = (price) => acCandleSeries.priceToCoordinate(price);
+
+  const ctx = acCanvasCtx;
+  ctx.strokeStyle = '#7C3AED';
+  ctx.fillStyle = 'rgba(124, 58, 237, 0.1)';
+  ctx.lineWidth = 2;
+
+  if (drawing.type === 'trendline' && drawing.points.length === 2) {
+    const p1x = timeScale.timeToCoordinate(drawing.points[0].time);
+    const p1y = p2c(drawing.points[0].price);
+    const p2x = timeScale.timeToCoordinate(drawing.points[1].time);
+    const p2y = p2c(drawing.points[1].price);
+    if (p1x != null && p1y != null && p2x != null && p2y != null) {
+      ctx.beginPath();
+      ctx.moveTo(p1x, p1y);
+      ctx.lineTo(p2x, p2y);
+      ctx.stroke();
+    }
+  } else if (drawing.type === 'hline' && drawing.price != null) {
+    const py = p2c(drawing.price);
+    if (py != null) {
+      ctx.beginPath();
+      ctx.moveTo(0, py);
+      ctx.lineTo(acCanvas.width, py);
+      ctx.stroke();
+    }
+  } else if (drawing.type === 'fib' && drawing.points.length === 2) {
+    const p1y = p2c(drawing.points[0].price);
+    const p2y = p2c(drawing.points[1].price);
+    if (p1y != null && p2y != null) {
+      const high = Math.min(p1y, p2y);
+      const low = Math.max(p1y, p2y);
+      const range = low - high;
+      const levels = [0.236, 0.382, 0.5, 0.618, 0.786];
+      ctx.strokeStyle = 'rgba(124, 58, 237, 0.3)';
+      ctx.lineWidth = 1;
+      levels.forEach(level => {
+        const y = high + range * level;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(acCanvas.width, y);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(124, 58, 237, 0.6)';
+        ctx.font = '10px Inter';
+        ctx.fillText((level * 100).toFixed(1) + '%', 5, y - 3);
+      });
+    }
+  } else if (drawing.type === 'rect' && drawing.points.length === 2) {
+    const p1x = timeScale.timeToCoordinate(drawing.points[0].time);
+    const p1y = p2c(drawing.points[0].price);
+    const p2x = timeScale.timeToCoordinate(drawing.points[1].time);
+    const p2y = p2c(drawing.points[1].price);
+    if (p1x != null && p1y != null && p2x != null && p2y != null) {
+      const x = Math.min(p1x, p2x);
+      const y = Math.min(p1y, p2y);
+      const w = Math.abs(p2x - p1x);
+      const h = Math.abs(p2y - p1y);
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
+    }
+  } else if (drawing.type === 'channel' && drawing.points.length === 3) {
+    const p1x = timeScale.timeToCoordinate(drawing.points[0].time);
+    const p1y = p2c(drawing.points[0].price);
+    const p2x = timeScale.timeToCoordinate(drawing.points[1].time);
+    const p2y = p2c(drawing.points[1].price);
+    const p3x = timeScale.timeToCoordinate(drawing.points[2].time);
+    const p3y = p2c(drawing.points[2].price);
+    if (p1x != null && p1y != null && p2x != null && p2y != null && p3x != null && p3y != null) {
+      ctx.beginPath();
+      ctx.moveTo(p1x, p1y);
+      ctx.lineTo(p2x, p2y);
+      ctx.stroke();
+      const dx = p2x - p1x, dy = p2y - p1y;
+      ctx.beginPath();
+      ctx.moveTo(p3x, p3y);
+      ctx.lineTo(p3x + dx, p3y + dy);
+      ctx.stroke();
+    }
+  }
+}
 
 function acInitChart() {
   const container = document.getElementById('lwchart');
@@ -638,9 +891,21 @@ function acInitChart() {
   acChart.subscribeClick((param) => {
     if (!acDrawMode || !param.point) return;
     const price = acCandleSeries.coordinateToPrice(param.point.y);
+    const time = acChart.timeScale().coordinateToTime(param.point.x);
     if (price == null) return;
-    if (['stop','entry','target'].includes(acDrawMode)) acPlaceSETLine(acDrawMode, price);
-    else if (['demand','supply'].includes(acDrawMode)) acPlaceZone(acDrawMode, price);
+
+    if (['stop','entry','target'].includes(acDrawMode)) {
+      acPlaceSETLine(acDrawMode, price);
+    } else if (['demand','supply'].includes(acDrawMode)) {
+      acPlaceZone(acDrawMode, price);
+    } else if (['trendline','fib','rect','channel'].includes(acDrawMode)) {
+      acPlaceDrawing(acDrawMode, time, price);
+    } else if (acDrawMode === 'hline') {
+      acDrawings.push({ type: 'hline', price });
+      acRedrawCanvas();
+      acDrawMode = null;
+      document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+    }
   });
 
   acChart.subscribeCrosshairMove((param) => {
@@ -650,8 +915,56 @@ function acInitChart() {
   });
 
   new ResizeObserver(() => {
-    if (acChart) acChart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+    if (acChart) {
+      const c = document.getElementById('lwchart');
+      acChart.applyOptions({ width: c.clientWidth, height: c.clientHeight });
+      acResizeCanvas();
+    }
   }).observe(container);
+
+  acInitCanvas();
+
+  // Redraw canvas drawings when chart is panned or zoomed
+  chart.timeScale().subscribeVisibleLogicalRangeChange(() => acRedrawCanvas());
+}
+
+function acPlaceDrawing(type, time, price) {
+  if (type === 'trendline' || type === 'rect' || type === 'fib') {
+    if (!acDrawFirstPoint) {
+      acDrawFirstPoint = { time, price };
+      document.getElementById('priceMeta').textContent = `Click second point for ${type}...`;
+      return;
+    }
+    acDrawings.push({ type, points: [acDrawFirstPoint, { time, price }] });
+    acDrawFirstPoint = null;
+    acRedrawCanvas();
+    document.getElementById('priceMeta').textContent = `${type} drawn`;
+    acDrawMode = null;
+    document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+  } else if (type === 'channel') {
+    if (!acDrawFirstPoint) {
+      acDrawFirstPoint = { time, price };
+      document.getElementById('priceMeta').textContent = 'Click second point for channel...';
+      return;
+    }
+    acDrawClickCount++;
+    if (acDrawClickCount === 1) {
+      document.getElementById('priceMeta').textContent = 'Click third point for parallel...';
+      const drawing = acDrawings.find(d => d.type === 'channel' && !d.points[1]);
+      if (!drawing) {
+        acDrawings.push({ type: 'channel', points: [acDrawFirstPoint, { time, price }] });
+      }
+    } else {
+      const lastDrawing = acDrawings[acDrawings.length - 1];
+      lastDrawing.points.push({ time, price });
+      acRedrawCanvas();
+      document.getElementById('priceMeta').textContent = 'Channel drawn';
+      acDrawMode = null;
+      acDrawFirstPoint = null;
+      acDrawClickCount = 0;
+      document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+    }
+  }
 }
 
 async function acLoadData(symbol, tf) {
@@ -719,11 +1032,14 @@ function acReapplyAll() {
   if (acIndicators.sma) acApplySMA();
   if (acIndicators.ema) acApplyEMA();
   if (acIndicators.volume) acApplyVolume();
+  if (acIndicators.rsi) acApplyRSI();
+  if (acIndicators.macd) acApplyMACD();
+  if (acIndicators.bb) acApplyBB();
+  if (acIndicators.vwap) acApplyVWAP();
 }
 
-// S.E.T. Drawing
 function acSetDrawMode(mode, btn) {
-  if (acDrawMode === mode) { acDrawMode = null; btn.classList.remove('active'); return; }
+  if (acDrawMode === mode) { acDrawMode = null; acDrawFirstPoint = null; acDrawClickCount = 0; btn.classList.remove('active'); return; }
   document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
   acDrawMode = mode; btn.classList.add('active');
 }
@@ -752,7 +1068,7 @@ function acUpdateSETPanel() {
     riskPanel.style.display = 'block';
     const risk = Math.abs(e - s), reward = Math.abs(t - e);
     const rr = risk > 0 ? (reward / risk).toFixed(2) : '∞';
-    const posSize = risk > 0 ? Math.floor(100 / risk) : 0; // $10K × 1% = $100
+    const posSize = risk > 0 ? Math.floor(100 / risk) : 0;
     document.getElementById('riskDollars').textContent = '$' + risk.toFixed(2);
     document.getElementById('rewardDollars').textContent = '$' + reward.toFixed(2);
     document.getElementById('rrRatio').textContent = rr + ':1';
@@ -761,7 +1077,6 @@ function acUpdateSETPanel() {
   } else { riskPanel.style.display = 'none'; }
 }
 
-// Zones
 function acPlaceZone(type, price) {
   if (!acZoneTopPrice) {
     acZoneTopPrice = price;
@@ -787,20 +1102,26 @@ function acClearAll() {
   });
   acZones.forEach(z => { try { acCandleSeries.removePriceLine(z.tl); } catch(e) {} try { acCandleSeries.removePriceLine(z.bl); } catch(e) {} });
   acZones = []; acZoneTopPrice = null;
+  acDrawings = []; acDrawFirstPoint = null; acDrawClickCount = 0;
   acUpdateSETPanel();
   document.getElementById('zoneLegend').style.display = 'none';
   document.getElementById('priceMeta').textContent = 'All drawings cleared';
+  acRedrawCanvas();
 }
 
-// Indicators
 function acToggleIndicator(type, btn) {
   acIndicators[type] = !acIndicators[type];
   btn.classList.toggle('active');
   if (type === 'sma') acIndicators.sma ? acApplySMA() : acRemoveSMA();
   if (type === 'ema') acIndicators.ema ? acApplyEMA() : acRemoveEMA();
   if (type === 'volume') acIndicators.volume ? acApplyVolume() : acRemoveVolume();
+  if (type === 'rsi') acIndicators.rsi ? acApplyRSI() : acRemoveRSI();
+  if (type === 'macd') acIndicators.macd ? acApplyMACD() : acRemoveMACD();
+  if (type === 'bb') acIndicators.bb ? acApplyBB() : acRemoveBB();
+  if (type === 'vwap') acIndicators.vwap ? acApplyVWAP() : acRemoveVWAP();
 }
 
+// Technical Indicators
 function calcSMA(data, period) {
   const r = [];
   for (let i = period - 1; i < data.length; i++) {
@@ -811,13 +1132,85 @@ function calcSMA(data, period) {
 }
 function calcEMA(data, period) {
   const r = [], k = 2 / (period + 1);
-  let ema = data[0]?.close || 0;
+  // Support both candle data (.close) and series data (.value)
+  const getVal = (d) => d.close !== undefined ? d.close : d.value;
+  let ema = getVal(data[0]) || 0;
   for (let i = 0; i < data.length; i++) {
-    ema = data[i].close * k + ema * (1 - k);
+    ema = getVal(data[i]) * k + ema * (1 - k);
     if (i >= period - 1) r.push({ time: data[i].time, value: ema });
   }
   return r;
 }
+function calcRSI(data, period = 14) {
+  if (data.length < period + 1) return [];
+  const r = [];
+  let avgGain = 0, avgLoss = 0;
+  // Calculate initial average gain/loss from first `period` bars
+  for (let j = 1; j <= period; j++) {
+    const d = data[j].close - data[j - 1].close;
+    if (d > 0) avgGain += d; else avgLoss += Math.abs(d);
+  }
+  avgGain /= period;
+  avgLoss /= period;
+  const rs0 = avgLoss === 0 ? 100 : avgGain / avgLoss;
+  r.push({ time: data[period].time, value: 100 - (100 / (1 + rs0)) });
+  // Smoothed RSI for remaining bars
+  for (let i = period + 1; i < data.length; i++) {
+    const delta = data[i].close - data[i - 1].close;
+    avgGain = (avgGain * (period - 1) + (delta > 0 ? delta : 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + (delta < 0 ? Math.abs(delta) : 0)) / period;
+    const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+    r.push({ time: data[i].time, value: 100 - (100 / (1 + rs)) });
+  }
+  return r;
+}
+function calcMACD(data, fast = 12, slow = 26, signal = 9) {
+  const fastEMA = calcEMA(data, fast);
+  const slowEMA = calcEMA(data, slow);
+  // Build lookup maps for O(1) access by time
+  const fastMap = new Map(fastEMA.map(e => [e.time, e.value]));
+  const slowMap = new Map(slowEMA.map(e => [e.time, e.value]));
+  const macdLine = [];
+  for (let i = 0; i < data.length; i++) {
+    const t = data[i].time;
+    if (fastMap.has(t) && slowMap.has(t)) {
+      macdLine.push({ time: t, value: fastMap.get(t) - slowMap.get(t) });
+    }
+  }
+  const signalLine = calcEMA(macdLine, signal);
+  const sigMap = new Map(signalLine.map(s => [s.time, s.value]));
+  const histogram = [];
+  for (const m of macdLine) {
+    if (sigMap.has(m.time)) histogram.push({ time: m.time, value: m.value - sigMap.get(m.time) });
+  }
+  return { macd: macdLine, signal: signalLine, histogram };
+}
+function calcBB(data, period = 20, stdDev = 2) {
+  const sma = calcSMA(data, period);
+  const r = { upper: [], middle: [], lower: [] };
+  for (let i = period - 1; i < data.length; i++) {
+    let variance = 0;
+    for (let j = 0; j < period; j++) variance += Math.pow(data[i - j].close - sma[i - (period - 1)].value, 2);
+    const std = Math.sqrt(variance / period);
+    const mid = sma[i - (period - 1)].value;
+    r.upper.push({ time: data[i].time, value: mid + std * stdDev });
+    r.middle.push({ time: data[i].time, value: mid });
+    r.lower.push({ time: data[i].time, value: mid - std * stdDev });
+  }
+  return r;
+}
+function calcVWAP(data) {
+  const r = [];
+  let cumTypicalPrice = 0, cumVolume = 0;
+  for (let i = 0; i < data.length; i++) {
+    const tp = (data[i].high + data[i].low + data[i].close) / 3;
+    cumTypicalPrice += tp * data[i].volume;
+    cumVolume += data[i].volume;
+    if (cumVolume > 0) r.push({ time: data[i].time, value: cumTypicalPrice / cumVolume });
+  }
+  return r;
+}
+
 function acApplySMA() { acRemoveSMA(); acSmaSeries = acChart.addLineSeries({ color: '#3B82F6', lineWidth: 2, title: 'SMA 20' }); acSmaSeries.setData(calcSMA(acChartData, 20)); }
 function acRemoveSMA() { if (acSmaSeries) { acChart.removeSeries(acSmaSeries); acSmaSeries = null; } }
 function acApplyEMA() { acRemoveEMA(); acEmaSeries = acChart.addLineSeries({ color: '#F59E0B', lineWidth: 2, title: 'EMA 9' }); acEmaSeries.setData(calcEMA(acChartData, 9)); }
@@ -829,6 +1222,38 @@ function acApplyVolume() {
   acVolumeSeries.setData(acChartData.map(d => ({ time: d.time, value: d.volume, color: d.close >= d.open ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)' })));
 }
 function acRemoveVolume() { if (acVolumeSeries) { acChart.removeSeries(acVolumeSeries); acVolumeSeries = null; } }
+function acApplyRSI() {
+  acRemoveRSI();
+  acRsiSeries = acChart.addLineSeries({ color: '#EF4444', lineWidth: 2, priceScaleId: 'rsi', title: 'RSI 14' });
+  acChart.priceScale('rsi').applyOptions({ scaleMargins: { top: 0.2, bottom: 0 } });
+  acRsiSeries.setData(calcRSI(acChartData, 14));
+}
+function acRemoveRSI() { if (acRsiSeries) { acChart.removeSeries(acRsiSeries); acRsiSeries = null; } }
+function acApplyMACD() {
+  acRemoveMACD();
+  const { macd, signal, histogram } = calcMACD(acChartData);
+  acMacdSeries = acChart.addLineSeries({ color: '#7C3AED', lineWidth: 2, priceScaleId: 'macd', title: 'MACD' });
+  acMacdSignalSeries = acChart.addLineSeries({ color: '#F59E0B', lineWidth: 1, priceScaleId: 'macd', title: 'Signal' });
+  acMacdHistSeries = acChart.addHistogramSeries({ color: '#10B981', priceScaleId: 'macd', title: 'Histogram' });
+  acChart.priceScale('macd').applyOptions({ scaleMargins: { top: 0.2, bottom: 0 } });
+  acMacdSeries.setData(macd);
+  acMacdSignalSeries.setData(signal);
+  acMacdHistSeries.setData(histogram.map(h => ({ time: h.time, value: h.value, color: h.value >= 0 ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)' })));
+}
+function acRemoveMACD() { if (acMacdSeries) { acChart.removeSeries(acMacdSeries); acMacdSeries = null; } if (acMacdSignalSeries) { acChart.removeSeries(acMacdSignalSeries); acMacdSignalSeries = null; } if (acMacdHistSeries) { acChart.removeSeries(acMacdHistSeries); acMacdHistSeries = null; } }
+function acApplyBB() {
+  acRemoveBB();
+  const { upper, middle, lower } = calcBB(acChartData, 20, 2);
+  acBbUpper = acChart.addLineSeries({ color: 'rgba(124, 58, 237, 0.4)', lineWidth: 1, title: 'BB Upper' });
+  acBbMiddle = acChart.addLineSeries({ color: 'rgba(124, 58, 237, 0.6)', lineWidth: 1, lineStyle: 2, title: 'BB Middle' });
+  acBbLower = acChart.addLineSeries({ color: 'rgba(124, 58, 237, 0.4)', lineWidth: 1, title: 'BB Lower' });
+  acBbUpper.setData(upper);
+  acBbMiddle.setData(middle);
+  acBbLower.setData(lower);
+}
+function acRemoveBB() { if (acBbUpper) { acChart.removeSeries(acBbUpper); acBbUpper = null; } if (acBbMiddle) { acChart.removeSeries(acBbMiddle); acBbMiddle = null; } if (acBbLower) { acChart.removeSeries(acBbLower); acBbLower = null; } }
+function acApplyVWAP() { acRemoveVWAP(); acVwapSeries = acChart.addLineSeries({ color: '#10B981', lineWidth: 2, title: 'VWAP', lineStyle: 2 }); acVwapSeries.setData(calcVWAP(acChartData)); }
+function acRemoveVWAP() { if (acVwapSeries) { acChart.removeSeries(acVwapSeries); acVwapSeries = null; } }
 
 function acChangeTF(tf, btn) {
   acTF = tf;
@@ -837,7 +1262,6 @@ function acChangeTF(tf, btn) {
   acLoadData(acSymbol, tf);
 }
 
-// Academy Autocomplete
 let acAcIdx = -1, acAcMatches = [];
 function acOnSymbolInput(val) {
   val = val.trim().toUpperCase();
