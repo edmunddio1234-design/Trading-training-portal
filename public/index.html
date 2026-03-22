@@ -2693,7 +2693,7 @@ function Dashboard({ modules, completedModules, progress, onOpen, onboardingComp
           <div className="hero-stat"><div className="val">{modules.length}</div><div className="desc">Total Modules</div></div>
           <div className="hero-stat"><div className="val">{completed}</div><div className="desc">Completed</div></div>
           <div className="hero-stat"><div className="val">{progress}%</div><div className="desc">Progress</div></div>
-          <div className="hero-stat"><div className="val">{modules.reduce((a,m) => a + (m.quiz?.length||0), 0)}</div><div className="desc">Quiz Questions</div></div>
+          <div className="hero-stat"><div className="val">{(modules.length * 70) + modules.reduce((a,m) => a + (m.quiz?.length||0), 0)}</div><div className="desc">Quiz Questions</div></div>
         </div>
       </div>
       {showOnboarding && (
