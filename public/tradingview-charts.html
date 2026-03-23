@@ -64,7 +64,7 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 
 /* Autocomplete */
 .ac-wrap { position: relative; }
-.ac-dropdown { position: absolute; top: 100%; left: 0; max-height: 260px; overflow-y: auto; background: var(--card); border: 1px solid var(--emerald); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; margin-top: 4px; min-width: 300px; display: none; }
+.ac-dropdown { position: fixed; max-height: 260px; overflow-y: auto; background: var(--card); border: 1px solid var(--emerald); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 9999; min-width: 300px; display: none; }
 .ac-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background 0.1s; border-bottom: 1px solid var(--border); font-size: 13px; }
 .ac-item:last-child { border-bottom: none; }
 .ac-item:hover, .ac-item.ac-active { background: rgba(13,147,115,0.08); }
@@ -900,6 +900,10 @@ function tvOnSymbolInput(val) {
   dd.innerHTML = tvAcMatches.map((item, i) =>
     `<div class="ac-item" onmousedown="tvSelectAC('${item.code}')" onmouseenter="tvAcIdx=${i}"><span class="ac-ticker">${highlightText(item.code, val)}</span><span class="ac-name">${highlightText(item.name, val)}</span></div>`
   ).join('');
+  const rect = input.getBoundingClientRect();
+  dd.style.left = rect.left + 'px';
+  dd.style.top = (rect.bottom + 4) + 'px';
+  dd.style.width = Math.max(rect.width, 300) + 'px';
   dd.style.display = 'block';
 }
 
@@ -1113,15 +1117,13 @@ function acStartDrawingDrag(type, startTime, startPrice, startX, startY) {
     const rect = el.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const endPrice = acCandleSeries.coordinateToPrice(y);
-    const endTime = acChart.timeScale().coordinateToTime(x);
-    if (endPrice == null || endTime == null) return;
     acRedrawCanvas();
     const ctx = acCtx;
-    const x1 = acChart.timeScale().timeToCoordinate(startTime);
-    const y1 = acCandleSeries.priceToCoordinate(startPrice);
+    const x1 = acChart.timeScale().timeToCoordinate(startTime) ?? startX;
+    const y1 = acCandleSeries.priceToCoordinate(startPrice) ?? startY;
     const x2 = x;
     const y2 = y;
+    if (x1 == null || y1 == null) return;
     ctx.strokeStyle = '#10B981';
     ctx.lineWidth = 2;
     if (['trendline','ray','extline','hray','vline'].includes(type)) {
@@ -1181,13 +1183,17 @@ function acStartDrawingDrag(type, startTime, startPrice, startX, startY) {
     const y = e.clientY - rect.top;
     const endPrice = acCandleSeries.coordinateToPrice(y);
     const endTime = acChart.timeScale().coordinateToTime(x);
-    if (endPrice !== null && endTime !== null && (startPrice !== endPrice || startTime !== endTime)) {
-      acDrawings.push({ type, points: [{ time: startTime, price: startPrice }, { time: endTime, price: endPrice }] });
+    const ep = endPrice ?? 0;
+    const et = endTime ?? 0;
+    const sp = startPrice ?? 0;
+    const st = startTime ?? 0;
+    if ((ep !== 0 || et !== 0) && (sp !== ep || st !== et)) {
+      acDrawings.push({ type, points: [{ time: st, price: sp }, { time: et, price: ep }] });
       acDrawingStack.push({ drawing: acDrawings.length });
     }
     acDrawMode = null;
     acRedrawCanvas();
-    document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.draw-btn, .lt-btn, .lt-flyout-item').forEach(b => b.classList.remove('active'));
     acUpdateChartCursor();
   }
   el.addEventListener('mousemove', onMouseMove);
@@ -1772,6 +1778,11 @@ function acOnSymbolInput(val) {
   dd.innerHTML = acAcMatches.map((item, i) =>
     `<div class="ac-item" onmousedown="acSelectAC('${item.code}')" onmouseenter="acAcIdx=${i}"><span class="ac-ticker">${highlightText(item.code, val)}</span><span class="ac-name">${highlightText(item.name, val)}</span></div>`
   ).join('');
+  const inputEl = document.getElementById('acSymbolInput');
+  const rect = inputEl.getBoundingClientRect();
+  dd.style.left = rect.left + 'px';
+  dd.style.top = (rect.bottom + 4) + 'px';
+  dd.style.width = Math.max(rect.width, 300) + 'px';
   dd.style.display = 'block';
 }
 function acSelectAC(code) {
@@ -1845,8 +1856,8 @@ async function rpLoadProfile(symbol) {
     const data = await res.json();
     if (data.error) { console.error(data.error); return; }
     rpProfileData = data;
-    rpRenderProfile(data);
     rpSwitchTab('details', document.querySelectorAll('.rp-tab')[1]);
+    requestAnimationFrame(() => rpRenderProfile(data));
   } catch(e) { console.error('Profile load error:', e); }
 }
 
