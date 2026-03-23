@@ -137,7 +137,7 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .lt-label { font-size: 7px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 0; }
 
 /* Left toolbar flyout dropdowns */
-.lt-flyout { position: absolute; left: 100%; top: 0; background: var(--card); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 300; min-width: 150px; display: none; padding: 4px; margin-left: 4px; }
+.lt-flyout { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 300; min-width: 150px; display: none; padding: 4px; }
 .lt-flyout.open { display: block; }
 .lt-flyout-item { display: flex; align-items: center; gap: 8px; padding: 7px 12px; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; color: var(--text); transition: background 0.1s; white-space: nowrap; }
 .lt-flyout-item:hover { background: rgba(13,147,115,0.08); }
@@ -609,6 +609,7 @@ body.dark .tf-btn[data-tooltip]::after {
         <div class="price-change" id="priceChange">--</div>
         <div class="price-meta" id="priceMeta">Loading...</div>
       </div>
+      <div id="drawToolStatus" style="display:none; position:absolute; top:8px; right:12px; z-index:110; background:var(--emerald); color:#fff; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:700; pointer-events:none; letter-spacing:0.5px;"></div>
       <div class="set-panel" id="setPanel" style="display:none;">
         <h4>🎯 S.E.T. Analysis</h4>
         <div class="set-row"><span class="set-label">🛑 Stop</span><span class="set-val set-stop-val" id="setStopVal">—</span></div>
@@ -1527,6 +1528,15 @@ function acUpdateChartCursor() {
   if (!el) return;
   if (acDrawMode === 'eraser') el.style.cursor = 'grab';
   else el.style.cursor = acDrawMode ? 'crosshair' : 'default';
+  const status = document.getElementById('drawToolStatus');
+  if (status) {
+    if (acDrawMode) {
+      const names = { stop:'STOP LOSS',entry:'ENTRY',target:'TARGET',demand:'DEMAND ZONE (drag)',supply:'SUPPLY ZONE (drag)',trendline:'TREND LINE',ray:'RAY',extline:'EXT LINE',hline:'H-LINE',hray:'H-RAY',vline:'V-LINE',fib:'FIB RETRACE',fibext:'FIB EXTEND',rect:'RECTANGLE',ellipse:'ELLIPSE',channel:'CHANNEL',pitchfork:'PITCHFORK',pricemeasure:'PRICE RANGE',datemeasure:'DATE & PRICE',ruler:'RULER',text:'TEXT',arrowup:'ARROW UP',arrowdown:'ARROW DOWN',pricelabel:'PRICE LABEL',eraser:'ERASER' };
+      status.textContent = (names[acDrawMode] || acDrawMode.toUpperCase()) + ' — click chart';
+      status.style.display = 'block';
+      status.style.background = ['stop'].includes(acDrawMode) ? 'var(--red)' : ['entry'].includes(acDrawMode) ? 'var(--amber)' : ['target'].includes(acDrawMode) ? 'var(--green)' : ['demand'].includes(acDrawMode) ? '#3B82F6' : ['supply'].includes(acDrawMode) ? '#7C3AED' : 'var(--emerald)';
+    } else { status.style.display = 'none'; }
+  }
 }
 
 function acPlaceSETLine(type, price) {
@@ -1973,7 +1983,12 @@ function acToggleLtFlyout(btn) {
   const flyout = btn.nextElementSibling;
   const wasOpen = flyout?.classList.contains('open');
   acCloseLtFlyouts();
-  if (!wasOpen && flyout) flyout.classList.add('open');
+  if (!wasOpen && flyout) {
+    const rect = btn.getBoundingClientRect();
+    flyout.style.left = (rect.right + 4) + 'px';
+    flyout.style.top = rect.top + 'px';
+    flyout.classList.add('open');
+  }
 }
 
 function acCloseLtFlyouts() {

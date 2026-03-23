@@ -1321,6 +1321,36 @@ app.get('/api/stock-search', async (req, res) => {
   }
 });
 
+// Yahoo Finance crumb + cookies cache (30 min TTL)
+let yfCrumbCache = { crumb: null, cookies: null, ts: 0 };
+
+async function getYahooCrumb() {
+  if (yfCrumbCache.crumb && Date.now() - yfCrumbCache.ts < 30 * 60 * 1000) {
+    return yfCrumbCache;
+  }
+  try {
+    // Step 1: Get cookies
+    const initResp = await fetch('https://fc.yahoo.com/', { redirect: 'manual' });
+    const setCookies = initResp.headers.raw?.()?.['set-cookie'] || initResp.headers.getSetCookie?.() || [];
+    const cookieStr = setCookies.map(c => c.split(';')[0]).join('; ');
+
+    // Step 2: Get crumb
+    const crumbResp = await fetch('https://query2.finance.yahoo.com/v1/test/getcrumb', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Cookie': cookieStr
+      }
+    });
+    const crumb = await crumbResp.text();
+
+    yfCrumbCache = { crumb, cookies: cookieStr, ts: Date.now() };
+    return yfCrumbCache;
+  } catch (error) {
+    console.error('Error fetching Yahoo crumb:', error.message);
+    throw error;
+  }
+}
+
 // Company profile & fundamentals
 app.get('/api/stock-profile', async (req, res) => {
   const { symbol } = req.query;
@@ -1330,9 +1360,16 @@ app.get('/api/stock-profile', async (req, res) => {
 
   try {
     const modules = 'assetProfile,summaryDetail,defaultKeyStatistics,financialData,calendarEvents,earnings,incomeStatementHistory,incomeStatementHistoryQuarterly';
-    const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol.toUpperCase())}?modules=${modules}`;
+
+    // Get crumb and cookies for Yahoo Finance authentication
+    const { crumb, cookies } = await getYahooCrumb();
+
+    const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol.toUpperCase())}?modules=${modules}&crumb=${encodeURIComponent(crumb)}`;
     const resp = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MissionMetrics/1.0)' }
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Cookie': cookies
+      }
     });
     if (!resp.ok) return res.status(resp.status).json({ error: `Yahoo returned ${resp.status}` });
     const raw = await resp.json();
