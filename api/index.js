@@ -1321,6 +1321,112 @@ app.get('/api/stock-search', async (req, res) => {
   }
 });
 
+// Company profile & fundamentals
+app.get('/api/stock-profile', async (req, res) => {
+  const { symbol } = req.query;
+  if (!symbol) return res.status(400).json({ error: 'Symbol required' });
+  const allowed = /^[A-Z0-9.\-]{1,10}$/i;
+  if (!allowed.test(symbol)) return res.status(400).json({ error: 'Invalid symbol' });
+
+  try {
+    const modules = 'assetProfile,summaryDetail,defaultKeyStatistics,financialData,calendarEvents,earnings,incomeStatementHistory,incomeStatementHistoryQuarterly';
+    const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol.toUpperCase())}?modules=${modules}`;
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MissionMetrics/1.0)' }
+    });
+    if (!resp.ok) return res.status(resp.status).json({ error: `Yahoo returned ${resp.status}` });
+    const raw = await resp.json();
+    const result = raw?.quoteSummary?.result?.[0];
+    if (!result) return res.status(404).json({ error: 'No data found' });
+
+    const profile = result.assetProfile || {};
+    const summary = result.summaryDetail || {};
+    const keyStats = result.defaultKeyStatistics || {};
+    const financial = result.financialData || {};
+    const calendar = result.calendarEvents || {};
+    const earnings = result.earnings || {};
+    const incomeAnnual = result.incomeStatementHistory?.incomeStatementHistory || [];
+    const incomeQuarterly = result.incomeStatementHistoryQuarterly?.incomeStatementHistory || [];
+
+    res.json({
+      symbol: symbol.toUpperCase(),
+      profile: {
+        name: profile.longBusinessSummary ? profile.longBusinessSummary.substring(0, 200) + '...' : '',
+        sector: profile.sector || '',
+        industry: profile.industry || '',
+        website: profile.website || '',
+        employees: profile.fullTimeEmployees || 0,
+        city: profile.city || '',
+        state: profile.state || '',
+        country: profile.country || ''
+      },
+      stats: {
+        marketCap: summary.marketCap?.raw || 0,
+        marketCapFmt: summary.marketCap?.fmt || '--',
+        volume: summary.volume?.raw || 0,
+        volumeFmt: summary.volume?.fmt || '--',
+        avgVolume: summary.averageVolume?.raw || 0,
+        avgVolumeFmt: summary.averageVolume?.fmt || '--',
+        pe: summary.trailingPE?.fmt || '--',
+        forwardPe: summary.forwardPE?.fmt || '--',
+        eps: keyStats.trailingEps?.fmt || '--',
+        beta: summary.beta?.fmt || '--',
+        fiftyTwoWeekHigh: summary.fiftyTwoWeekHigh?.fmt || '--',
+        fiftyTwoWeekLow: summary.fiftyTwoWeekLow?.fmt || '--',
+        fiftyDayAvg: summary.fiftyDayAverage?.fmt || '--',
+        twoHundredDayAvg: summary.twoHundredDayAverage?.fmt || '--',
+        targetPrice: financial.targetMeanPrice?.fmt || '--',
+        recommendation: financial.recommendationKey || '--',
+        numberOfAnalysts: financial.numberOfAnalystOpinions?.raw || 0
+      },
+      dividends: {
+        rate: summary.dividendRate?.fmt || '--',
+        yield: summary.dividendYield?.fmt || '--',
+        exDate: summary.exDividendDate?.fmt || '--',
+        payoutRatio: summary.payoutRatio?.fmt || '--'
+      },
+      earningsDate: calendar.earnings?.earningsDate?.map(d => d.fmt) || [],
+      earningsHistory: (earnings.earningsChart?.quarterly || []).map(q => ({
+        quarter: q.date || '',
+        actual: q.actual?.raw || 0,
+        estimate: q.estimate?.raw || 0
+      })),
+      financials: {
+        annual: incomeAnnual.slice(0, 4).map(stmt => ({
+          date: stmt.endDate?.fmt || '',
+          revenue: stmt.totalRevenue?.raw || 0,
+          revenueFmt: stmt.totalRevenue?.fmt || '--',
+          netIncome: stmt.netIncome?.raw || 0,
+          netIncomeFmt: stmt.netIncome?.fmt || '--',
+          grossProfit: stmt.grossProfit?.raw || 0,
+          operatingIncome: stmt.operatingIncome?.raw || 0
+        })),
+        quarterly: incomeQuarterly.slice(0, 4).map(stmt => ({
+          date: stmt.endDate?.fmt || '',
+          revenue: stmt.totalRevenue?.raw || 0,
+          revenueFmt: stmt.totalRevenue?.fmt || '--',
+          netIncome: stmt.netIncome?.raw || 0,
+          netIncomeFmt: stmt.netIncome?.fmt || '--'
+        }))
+      },
+      performance: {
+        revenueGrowth: financial.revenueGrowth?.fmt || '--',
+        earningsGrowth: financial.earningsGrowth?.fmt || '--',
+        profitMargin: financial.profitMargins?.fmt || '--',
+        operatingMargin: financial.operatingMargins?.fmt || '--',
+        returnOnEquity: financial.returnOnEquity?.fmt || '--',
+        returnOnAssets: financial.returnOnAssets?.fmt || '--',
+        debtToEquity: financial.debtToEquity?.fmt || '--',
+        currentRatio: financial.currentRatio?.fmt || '--',
+        freeCashflow: financial.freeCashflow?.fmt || '--'
+      }
+    });
+  } catch (error) {
+    console.error('Stock profile error:', error.message);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
 // =============================================================================
 // AI TUTOR ENDPOINT (Anthropic Claude API)
 // Answers student questions using module content + correlation reports

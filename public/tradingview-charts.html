@@ -118,7 +118,32 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .draw-btn.clear-btn { border-color: var(--muted); color: var(--muted); }
 .draw-btn.clear-btn:hover { border-color: var(--red); color: var(--red); }
 
-/* Dropdown Menus */
+/* Left Drawing Toolbar (vertical, like TradingView) */
+.left-toolbar { width: 42px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 6px 0; gap: 2px; flex-shrink: 0; overflow-y: auto; overflow-x: visible; z-index: 150; position: relative; }
+.lt-btn { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border: none; background: none; cursor: pointer; border-radius: 6px; font-size: 15px; color: var(--muted); transition: all 0.12s; position: relative; }
+.lt-btn:hover { background: rgba(13,147,115,0.08); color: var(--emerald); }
+.lt-btn.active { background: var(--emerald); color: #fff; }
+.lt-btn.lt-stop { color: var(--red); }
+.lt-btn.lt-stop.active { background: var(--red); color: #fff; }
+.lt-btn.lt-entry { color: var(--amber); }
+.lt-btn.lt-entry.active { background: var(--amber); color: #fff; }
+.lt-btn.lt-target { color: var(--green); }
+.lt-btn.lt-target.active { background: var(--green); color: #fff; }
+.lt-btn.lt-demand { color: #3B82F6; }
+.lt-btn.lt-demand.active { background: #3B82F6; color: #fff; }
+.lt-btn.lt-supply { color: var(--purple); }
+.lt-btn.lt-supply.active { background: var(--purple); color: #fff; }
+.lt-divider { width: 28px; height: 1px; background: var(--border); margin: 3px 0; }
+.lt-label { font-size: 7px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 0; }
+
+/* Left toolbar flyout dropdowns */
+.lt-flyout { position: absolute; left: 100%; top: 0; background: var(--card); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 300; min-width: 150px; display: none; padding: 4px; margin-left: 4px; }
+.lt-flyout.open { display: block; }
+.lt-flyout-item { display: flex; align-items: center; gap: 8px; padding: 7px 12px; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; color: var(--text); transition: background 0.1s; white-space: nowrap; }
+.lt-flyout-item:hover { background: rgba(13,147,115,0.08); }
+.lt-flyout-item.active { background: rgba(13,147,115,0.12); color: var(--emerald); font-weight: 600; }
+
+/* Dropdown Menus (kept for top toolbar indicator chips) */
 .tool-dropdown { position: relative; display: inline-block; }
 .tool-dropdown-btn { padding: 4px 8px; border: 1px solid var(--border); border-radius: 5px; font-size: 10px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
 .tool-dropdown-btn:hover { border-color: var(--emerald); color: var(--emerald); }
@@ -230,10 +255,28 @@ body.dark .tf-btn[data-tooltip]::after {
   color: var(--navy);
 }
 
-.ac-body { flex: 1; display: flex; overflow: hidden; }
-.watchlist-panel { width: 170px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
-.watchlist-header { padding: 10px 12px; font-size: 12px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.watchlist-header button { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--muted); padding: 2px; }
+/* Right Panel */
+.right-panel { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; order: 3; }
+.rp-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.rp-tab { flex: 1; padding: 8px; font-size: 11px; font-weight: 700; text-align: center; border: none; background: none; cursor: pointer; color: var(--muted); font-family: inherit; transition: all 0.15s; }
+.rp-tab.active { color: var(--emerald); border-bottom: 2px solid var(--emerald); }
+.rp-tab:hover { color: var(--text); }
+.rp-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.rp-scroll { flex: 1; overflow-y: auto; padding: 8px; }
+.rp-section { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.rp-section:last-child { border-bottom: none; }
+.rp-section-title { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.rp-company-name { font-size: 14px; font-weight: 800; color: var(--text); }
+.rp-company-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.rp-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.rp-stat { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11px; }
+.rp-stat-label { color: var(--muted); font-weight: 500; }
+.rp-stat-value { font-weight: 700; color: var(--text); }
+.rp-fin-toggle { display: flex; gap: 4px; margin-bottom: 6px; }
+.rp-fin-btn { padding: 3px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 10px; font-weight: 600; background: none; color: var(--muted); cursor: pointer; font-family: inherit; }
+.rp-fin-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+
+/* Watchlist items (shared with old watchlist, kept for compatibility) */
 .watchlist-items { flex: 1; overflow-y: auto; }
 .wl-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; font-size: 12px; }
 .wl-item:hover { background: rgba(13,147,115,0.05); }
@@ -245,16 +288,16 @@ body.dark .tf-btn[data-tooltip]::after {
 .wl-change { font-size: 10px; font-weight: 600; }
 .wl-up { color: var(--green); }
 .wl-down { color: var(--red); }
-.wl-toggle { position: absolute; top: 8px; left: 8px; z-index: 110; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--muted); display: none; }
-.watchlist-panel.collapsed { display: none; }
-.wl-toggle.visible { display: block; }
+
+.ac-body { flex: 1; display: flex; overflow: hidden; }
 
 .chart-area { flex: 1; position: relative; background: var(--card); overflow: hidden; display: flex; flex-direction: column; }
 #lwchart { flex: 1; width: 100%; position: relative; }
 #drawingCanvas { position: absolute; top: 0; left: 0; z-index: 50; pointer-events: none; }
 
 @media (max-width: 768px) {
-  .watchlist-panel { display: none !important; }
+  .right-panel { display: none !important; }
+  .left-toolbar { display: none !important; }
 }
 
 /* S.E.T. Panel */
@@ -433,8 +476,9 @@ body.dark .tf-btn[data-tooltip]::after {
      TAB 3: ACADEMY CHARTS
      ═══════════════════════════════════════════════════════════════ -->
 <div class="tab-panel" id="panel-academy">
+  <!-- Top toolbar: ONLY Symbol + Timeframe + Indicators -->
   <div class="ac-toolbar">
-    <!-- Symbol + Timeframe Section -->
+    <!-- Symbol search -->
     <div class="ac-toolbar-section">
       <div class="ac-wrap" id="acAcWrap">
         <label>Symbol</label>
@@ -445,167 +489,249 @@ body.dark .tf-btn[data-tooltip]::after {
       </div>
     </div>
     <div class="ac-toolbar-section-divider"></div>
-
-    <!-- Timeframe Section -->
+    <!-- Timeframe buttons -->
     <div class="ac-toolbar-section">
       <label>Timeframe</label>
       <div style="display:flex;gap:4px;">
-        <button class="tf-btn" data-tooltip="1-MINUTE: Ultra-short-term, for scalping" onclick="acChangeTF('1min',this)">1m</button>
-        <button class="tf-btn" data-tooltip="5-MINUTE: Short-term, for day trading entries" onclick="acChangeTF('5min',this)">5m</button>
-        <button class="tf-btn" data-tooltip="15-MINUTE: Short-term trend confirmation" onclick="acChangeTF('15min',this)">15m</button>
-        <button class="tf-btn" data-tooltip="1-HOUR: Swing trading direction" onclick="acChangeTF('1hour',this)">1H</button>
-        <button class="tf-btn active" data-tooltip="1-DAY: Long-term trend & support/resistance" onclick="acChangeTF('1day',this)">1D</button>
-        <button class="tf-btn" data-tooltip="1-WEEK: Multi-month trend analysis" onclick="acChangeTF('1week',this)">1W</button>
+        <button class="tf-btn" data-tooltip="1-MINUTE" onclick="acChangeTF('1min',this)">1m</button>
+        <button class="tf-btn" data-tooltip="5-MINUTE" onclick="acChangeTF('5min',this)">5m</button>
+        <button class="tf-btn" data-tooltip="15-MINUTE" onclick="acChangeTF('15min',this)">15m</button>
+        <button class="tf-btn" data-tooltip="1-HOUR" onclick="acChangeTF('1hour',this)">1H</button>
+        <button class="tf-btn active" data-tooltip="1-DAY" onclick="acChangeTF('1day',this)">1D</button>
+        <button class="tf-btn" data-tooltip="1-WEEK" onclick="acChangeTF('1week',this)">1W</button>
       </div>
     </div>
     <div class="ac-toolbar-section-divider"></div>
-
-    <!-- S.E.T. Tools Section -->
-    <div class="ac-toolbar-section">
-      <label>S.E.T.</label>
-      <div class="draw-tools">
-        <button class="draw-btn set-stop" data-tooltip="STOP LOSS — Click the chart to place your stop loss. This is your maximum risk level. The S.E.T. Rule says: Always set your stop FIRST before entering any trade. 1% max risk per trade." onclick="acSetDrawMode('stop',this)">🛑 Stop</button>
-        <button class="draw-btn set-entry" data-tooltip="ENTRY POINT — Click the chart to mark where you'll enter the trade. Look for entries at demand zones (longs) or supply zones (shorts)." onclick="acSetDrawMode('entry',this)">🎯 Entry</button>
-        <button class="draw-btn set-target" data-tooltip="PROFIT TARGET — Click to set where you'll take profits. Aim for at least 3:1 reward-to-risk ratio." onclick="acSetDrawMode('target',this)">💰 Target</button>
-      </div>
-    </div>
-    <div class="ac-toolbar-section-divider"></div>
-
-    <!-- Zones Section -->
-    <div class="ac-toolbar-section">
-      <label>Zones</label>
-      <div class="draw-tools">
-        <button class="draw-btn demand-zone" data-tooltip="DEMAND ZONE — Click-drag to draw a demand zone. These are areas where institutional buyers placed large orders. Price tends to bounce UP from demand zones." onclick="acSetDrawMode('demand',this)">📈 Demand</button>
-        <button class="draw-btn supply-zone" data-tooltip="SUPPLY ZONE — Click-drag to draw a supply zone. These are areas where institutional sellers placed large orders. Price tends to DROP from supply zones." onclick="acSetDrawMode('supply',this)">📉 Supply</button>
-      </div>
-    </div>
-    <div class="ac-toolbar-section-divider"></div>
-
-    <!-- Drawing Tools Dropdowns -->
-    <div class="ac-toolbar-section">
-      <label>Draw</label>
-      <div class="draw-tools">
-        <!-- Lines Dropdown -->
-        <div class="tool-dropdown">
-          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">📈 Lines ▾</button>
-          <div class="tool-dropdown-menu">
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('trendline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Trend Line">Trend Line</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('ray',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Ray">Ray</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('extline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Extended Line">Ext Line</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('hline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Horizontal Line">H-Line</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('hray',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Horizontal Ray">H-Ray</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('vline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Vertical Line">V-Line</div>
-          </div>
-        </div>
-
-        <!-- Fibonacci Dropdown -->
-        <div class="tool-dropdown">
-          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">🔢 Fib ▾</button>
-          <div class="tool-dropdown-menu">
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('fib',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Fibonacci Retracement">Fib Retrace</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('fibext',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Fibonacci Extension">Fib Extend</div>
-          </div>
-        </div>
-
-        <!-- Shapes Dropdown -->
-        <div class="tool-dropdown">
-          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">▢ Shapes ▾</button>
-          <div class="tool-dropdown-menu">
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('rect',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Rectangle">Rectangle</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('ellipse',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Ellipse">Ellipse</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('channel',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Parallel Channel">Channel</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('pitchfork',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Pitchfork">Pitchfork</div>
-          </div>
-        </div>
-
-        <!-- Measure Dropdown -->
-        <div class="tool-dropdown">
-          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">📏 Measure ▾</button>
-          <div class="tool-dropdown-menu">
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('pricemeasure',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Price Range">Price Range</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('datemeasure',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Date & Price Range">Date & Price</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('ruler',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Ruler">Ruler</div>
-          </div>
-        </div>
-
-        <!-- Annotations Dropdown -->
-        <div class="tool-dropdown">
-          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">📝 Annotate ▾</button>
-          <div class="tool-dropdown-menu">
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('text',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Text">Text</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('arrowup',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Arrow Up">↑ Arrow Up</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('arrowdown',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Arrow Down">↓ Arrow Down</div>
-            <div class="tool-dropdown-item" onclick="acSetDrawMode('pricelabel',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Price Label">Price Label</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="ac-toolbar-section-divider"></div>
-
-    <!-- Indicators Section -->
+    <!-- Indicators -->
     <div class="ac-toolbar-section">
       <label>Indicators</label>
       <div class="draw-tools">
-        <button class="draw-btn" data-tooltip="SIMPLE MOVING AVERAGE (20) — Shows the average closing price over the last 20 periods. When price is above the SMA, the trend is bullish. When below, bearish." onclick="acToggleIndicator('sma',this)">SMA</button>
-        <button class="draw-btn" data-tooltip="EXPONENTIAL MOVING AVERAGE (9) — Faster-reacting than SMA, gives more weight to recent prices. Used for short-term trend direction." onclick="acToggleIndicator('ema',this)">EMA</button>
-        <button class="draw-btn" data-tooltip="RELATIVE STRENGTH INDEX (14) — Measures momentum from 0-100. Above 70 = overbought (may drop). Below 30 = oversold (may bounce). Use with S.E.T. for confirmation." onclick="acToggleIndicator('rsi',this)">RSI</button>
-        <button class="draw-btn" data-tooltip="MACD — Moving Average Convergence/Divergence. Shows trend direction and momentum. Bullish when MACD crosses ABOVE signal line. Bearish when it crosses BELOW." onclick="acToggleIndicator('macd',this)">MACD</button>
-        <button class="draw-btn" data-tooltip="BOLLINGER BANDS — Shows volatility. When bands tighten = big move coming (squeeze). Price touching lower band near demand zone = potential entry." onclick="acToggleIndicator('bb',this)">BB</button>
-        <button class="draw-btn" data-tooltip="VWAP — Volume Weighted Average Price. The 'fair value' of the day. Institutional traders use VWAP as a benchmark. Above VWAP = bullish, below = bearish." onclick="acToggleIndicator('vwap',this)">VWAP</button>
-        <button class="draw-btn" data-tooltip="VOLUME — Shows how many shares traded. High volume at a demand zone confirms institutional interest. Low volume = weak move." onclick="acToggleIndicator('volume',this)">Vol</button>
+        <button class="draw-btn" data-tooltip="SIMPLE MOVING AVERAGE (20)" onclick="acToggleIndicator('sma',this)">SMA</button>
+        <button class="draw-btn" data-tooltip="EXPONENTIAL MOVING AVERAGE (9)" onclick="acToggleIndicator('ema',this)">EMA</button>
+        <button class="draw-btn" data-tooltip="RSI (14)" onclick="acToggleIndicator('rsi',this)">RSI</button>
+        <button class="draw-btn" data-tooltip="MACD" onclick="acToggleIndicator('macd',this)">MACD</button>
+        <button class="draw-btn" data-tooltip="BOLLINGER BANDS" onclick="acToggleIndicator('bb',this)">BB</button>
+        <button class="draw-btn" data-tooltip="VWAP" onclick="acToggleIndicator('vwap',this)">VWAP</button>
+        <button class="draw-btn" data-tooltip="VOLUME" onclick="acToggleIndicator('volume',this)">Vol</button>
       </div>
-    </div>
-    <div class="ac-toolbar-section-divider"></div>
-
-    <!-- Actions Section -->
-    <div class="ac-toolbar-section">
-      <button class="draw-btn" data-tooltip="ERASER — Click on a drawing to delete it" onclick="acSetDrawMode('eraser',this)">🗑 Erase</button>
-      <button class="draw-btn" data-tooltip="UNDO — Remove the last drawing" onclick="acUndo()">↶ Undo</button>
-      <button class="draw-btn clear-btn" data-tooltip="CLEAR ALL — Remove all drawings, S.E.T. lines, and zones from the chart." onclick="acClearAll()">✕ Clear</button>
     </div>
   </div>
 
+  <!-- Main body: LEFT TOOLBAR | CHART | RIGHT PANEL -->
   <div class="ac-body">
-  <!-- Watchlist Sidebar -->
-  <div class="watchlist-panel" id="watchlistPanel">
-    <div class="watchlist-header">
-      <span>📋 Watchlist</span>
-      <button onclick="toggleWatchlist()" title="Hide watchlist">✕</button>
-    </div>
-    <div class="watchlist-items" id="watchlistItems"></div>
-  </div>
+    <!-- LEFT VERTICAL TOOLBAR -->
+    <div class="left-toolbar" id="leftToolbar">
+      <!-- Cursor/Select -->
+      <button class="lt-btn" data-tooltip="Select" onclick="acSetDrawMode(null,this)" title="Select (Esc)">↖</button>
+      <div class="lt-divider"></div>
 
-  <div class="chart-area">
-    <button class="wl-toggle" id="wlToggle" onclick="toggleWatchlist()" title="Show watchlist">📋</button>
-    <div id="lwchart"></div>
-    <canvas id="drawingCanvas"></canvas>
-    <div class="price-info" id="priceInfo">
-      <div class="price-symbol" id="priceSymbol">AAPL</div>
-      <div class="price-current" id="priceCurrent">--</div>
-      <div class="price-change" id="priceChange">--</div>
-      <div class="price-meta" id="priceMeta">Loading...</div>
+      <!-- S.E.T. Tools -->
+      <div class="lt-label">S.E.T.</div>
+      <button class="lt-btn lt-stop" data-tooltip="Stop Loss" onclick="acSetDrawMode('stop',this)" title="Stop Loss">🛑</button>
+      <button class="lt-btn lt-entry" data-tooltip="Entry" onclick="acSetDrawMode('entry',this)" title="Entry Point">🎯</button>
+      <button class="lt-btn lt-target" data-tooltip="Target" onclick="acSetDrawMode('target',this)" title="Profit Target">💰</button>
+      <div class="lt-divider"></div>
+
+      <!-- Zones -->
+      <div class="lt-label">Zone</div>
+      <button class="lt-btn lt-demand" data-tooltip="Demand Zone (drag)" onclick="acSetDrawMode('demand',this)" title="Demand Zone">📈</button>
+      <button class="lt-btn lt-supply" data-tooltip="Supply Zone (drag)" onclick="acSetDrawMode('supply',this)" title="Supply Zone">📉</button>
+      <div class="lt-divider"></div>
+
+      <!-- Lines (with flyout) -->
+      <div style="position:relative;">
+        <button class="lt-btn" onclick="acToggleLtFlyout(this)" title="Lines">╱</button>
+        <div class="lt-flyout" id="flyoutLines">
+          <div class="lt-flyout-item" onclick="acSetDrawMode('trendline'); acCloseLtFlyouts();">Trend Line</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('ray'); acCloseLtFlyouts();">Ray</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('extline'); acCloseLtFlyouts();">Extended Line</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('hline'); acCloseLtFlyouts();">H-Line</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('hray'); acCloseLtFlyouts();">H-Ray</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('vline'); acCloseLtFlyouts();">V-Line</div>
+        </div>
+      </div>
+
+      <!-- Fibonacci (with flyout) -->
+      <div style="position:relative;">
+        <button class="lt-btn" onclick="acToggleLtFlyout(this)" title="Fibonacci">🔢</button>
+        <div class="lt-flyout" id="flyoutFib">
+          <div class="lt-flyout-item" onclick="acSetDrawMode('fib'); acCloseLtFlyouts();">Fib Retrace</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('fibext'); acCloseLtFlyouts();">Fib Extend</div>
+        </div>
+      </div>
+
+      <!-- Shapes (with flyout) -->
+      <div style="position:relative;">
+        <button class="lt-btn" onclick="acToggleLtFlyout(this)" title="Shapes">▢</button>
+        <div class="lt-flyout" id="flyoutShapes">
+          <div class="lt-flyout-item" onclick="acSetDrawMode('rect'); acCloseLtFlyouts();">Rectangle</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('ellipse'); acCloseLtFlyouts();">Ellipse</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('channel'); acCloseLtFlyouts();">Channel</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('pitchfork'); acCloseLtFlyouts();">Pitchfork</div>
+        </div>
+      </div>
+
+      <!-- Measure (with flyout) -->
+      <div style="position:relative;">
+        <button class="lt-btn" onclick="acToggleLtFlyout(this)" title="Measure">📏</button>
+        <div class="lt-flyout" id="flyoutMeasure">
+          <div class="lt-flyout-item" onclick="acSetDrawMode('pricemeasure'); acCloseLtFlyouts();">Price Range</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('datemeasure'); acCloseLtFlyouts();">Date & Price</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('ruler'); acCloseLtFlyouts();">Ruler</div>
+        </div>
+      </div>
+
+      <!-- Annotations (with flyout) -->
+      <div style="position:relative;">
+        <button class="lt-btn" onclick="acToggleLtFlyout(this)" title="Annotate">📝</button>
+        <div class="lt-flyout" id="flyoutAnnotate">
+          <div class="lt-flyout-item" onclick="acSetDrawMode('text'); acCloseLtFlyouts();">Text</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('arrowup'); acCloseLtFlyouts();">↑ Arrow Up</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('arrowdown'); acCloseLtFlyouts();">↓ Arrow Down</div>
+          <div class="lt-flyout-item" onclick="acSetDrawMode('pricelabel'); acCloseLtFlyouts();">Price Label</div>
+        </div>
+      </div>
+      <div class="lt-divider"></div>
+
+      <!-- Actions -->
+      <button class="lt-btn" onclick="acSetDrawMode('eraser',this)" title="Eraser">🗑</button>
+      <button class="lt-btn" onclick="acUndo()" title="Undo">↶</button>
+      <button class="lt-btn" onclick="acClearAll()" title="Clear All" style="color:var(--red);">✕</button>
     </div>
-    <div class="set-panel" id="setPanel" style="display:none;">
-      <h4>🎯 S.E.T. Analysis</h4>
-      <div class="set-row"><span class="set-label">🛑 Stop</span><span class="set-val set-stop-val" id="setStopVal">—</span></div>
-      <div class="set-row"><span class="set-label">🎯 Entry</span><span class="set-val set-entry-val" id="setEntryVal">—</span></div>
-      <div class="set-row"><span class="set-label">💰 Target</span><span class="set-val set-target-val" id="setTargetVal">—</span></div>
-      <div class="set-risk" id="setRisk" style="display:none;">
-        <div><strong>Risk:</strong> <span id="riskDollars">—</span>/share</div>
-        <div><strong>Reward:</strong> <span id="rewardDollars">—</span>/share</div>
-        <div><strong>R:R Ratio:</strong> <span id="rrRatio">—</span></div>
-        <div style="margin-top:4px;"><strong>Position ($10K, 1%):</strong> <span id="posSize">—</span> shares</div>
+
+    <!-- CENTER: Chart Area -->
+    <div class="chart-area">
+      <div id="lwchart"></div>
+      <canvas id="drawingCanvas"></canvas>
+      <div class="price-info" id="priceInfo">
+        <div class="price-symbol" id="priceSymbol">AAPL</div>
+        <div class="price-current" id="priceCurrent">--</div>
+        <div class="price-change" id="priceChange">--</div>
+        <div class="price-meta" id="priceMeta">Loading...</div>
+      </div>
+      <div class="set-panel" id="setPanel" style="display:none;">
+        <h4>🎯 S.E.T. Analysis</h4>
+        <div class="set-row"><span class="set-label">🛑 Stop</span><span class="set-val set-stop-val" id="setStopVal">—</span></div>
+        <div class="set-row"><span class="set-label">🎯 Entry</span><span class="set-val set-entry-val" id="setEntryVal">—</span></div>
+        <div class="set-row"><span class="set-label">💰 Target</span><span class="set-val set-target-val" id="setTargetVal">—</span></div>
+        <div class="set-risk" id="setRisk" style="display:none;">
+          <div><strong>Risk:</strong> <span id="riskDollars">—</span>/share</div>
+          <div><strong>Reward:</strong> <span id="rewardDollars">—</span>/share</div>
+          <div><strong>R:R Ratio:</strong> <span id="rrRatio">—</span></div>
+          <div style="margin-top:4px;"><strong>Position ($10K, 1%):</strong> <span id="posSize">—</span> shares</div>
+        </div>
+      </div>
+      <div class="zone-legend" id="zoneLegend" style="display:none;">
+        <div class="zone-legend-item"><div class="zone-swatch" style="background:rgba(59,130,246,0.3);border:1px solid #3B82F6;"></div> Demand Zone</div>
+        <div class="zone-legend-item"><div class="zone-swatch" style="background:rgba(124,58,237,0.3);border:1px solid #7C3AED;"></div> Supply Zone</div>
+        <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--red);"></div> Stop</div>
+        <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--amber);"></div> Entry</div>
+        <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--green);"></div> Target</div>
       </div>
     </div>
-    <div class="zone-legend" id="zoneLegend" style="display:none;">
-      <div class="zone-legend-item"><div class="zone-swatch" style="background:rgba(59,130,246,0.3);border:1px solid #3B82F6;"></div> Demand Zone</div>
-      <div class="zone-legend-item"><div class="zone-swatch" style="background:rgba(124,58,237,0.3);border:1px solid #7C3AED;"></div> Supply Zone</div>
-      <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--red);"></div> Stop</div>
-      <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--amber);"></div> Entry</div>
-      <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--green);"></div> Target</div>
+
+    <!-- RIGHT PANEL: Watchlist + Company Details -->
+    <div class="right-panel" id="rightPanel">
+      <!-- Tab toggle: Watchlist vs Details -->
+      <div class="rp-tabs">
+        <button class="rp-tab active" onclick="rpSwitchTab('watchlist',this)">Watchlist</button>
+        <button class="rp-tab" onclick="rpSwitchTab('details',this)">Details</button>
+      </div>
+
+      <!-- Watchlist tab -->
+      <div class="rp-content" id="rpWatchlist">
+        <div class="watchlist-items" id="watchlistItems"></div>
+      </div>
+
+      <!-- Details tab -->
+      <div class="rp-content" id="rpDetails" style="display:none;">
+        <div class="rp-scroll">
+          <!-- Company Header -->
+          <div class="rp-section">
+            <div class="rp-company-name" id="rpCompanyName">Apple Inc.</div>
+            <div class="rp-company-meta" id="rpCompanyMeta">Technology • NASDAQ</div>
+          </div>
+
+          <!-- Key Stats -->
+          <div class="rp-section">
+            <div class="rp-section-title">Key Stats</div>
+            <div class="rp-stat-grid" id="rpKeyStats">
+              <div class="rp-stat"><span class="rp-stat-label">Market Cap</span><span class="rp-stat-value" id="rpMarketCap">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Volume</span><span class="rp-stat-value" id="rpVolume">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Avg Volume</span><span class="rp-stat-value" id="rpAvgVolume">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">P/E Ratio</span><span class="rp-stat-value" id="rpPE">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">EPS</span><span class="rp-stat-value" id="rpEPS">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Beta</span><span class="rp-stat-value" id="rpBeta">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">52W High</span><span class="rp-stat-value" id="rp52High">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">52W Low</span><span class="rp-stat-value" id="rp52Low">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Target Price</span><span class="rp-stat-value" id="rpTarget">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Analysts</span><span class="rp-stat-value" id="rpAnalysts">--</span></div>
+            </div>
+          </div>
+
+          <!-- Next Earnings -->
+          <div class="rp-section">
+            <div class="rp-section-title">Next Earnings</div>
+            <div class="rp-stat-value" id="rpNextEarnings" style="font-size:13px;font-weight:700;">--</div>
+          </div>
+
+          <!-- Earnings Chart -->
+          <div class="rp-section">
+            <div class="rp-section-title">Earnings (Actual vs Est.)</div>
+            <canvas id="rpEarningsChart" height="120" style="width:100%;"></canvas>
+          </div>
+
+          <!-- Dividends -->
+          <div class="rp-section">
+            <div class="rp-section-title">Dividends</div>
+            <div class="rp-stat-grid" id="rpDividends">
+              <div class="rp-stat"><span class="rp-stat-label">Dividend Rate</span><span class="rp-stat-value" id="rpDivRate">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Yield</span><span class="rp-stat-value" id="rpDivYield">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Ex-Date</span><span class="rp-stat-value" id="rpDivExDate">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Payout Ratio</span><span class="rp-stat-value" id="rpDivPayout">--</span></div>
+            </div>
+          </div>
+
+          <!-- Revenue Chart -->
+          <div class="rp-section">
+            <div class="rp-section-title">Revenue & Net Income</div>
+            <div class="rp-fin-toggle">
+              <button class="rp-fin-btn active" onclick="rpShowFinancials('annual',this)">Annual</button>
+              <button class="rp-fin-btn" onclick="rpShowFinancials('quarterly',this)">Quarterly</button>
+            </div>
+            <canvas id="rpRevenueChart" height="140" style="width:100%;"></canvas>
+          </div>
+
+          <!-- Performance -->
+          <div class="rp-section">
+            <div class="rp-section-title">Performance</div>
+            <div class="rp-stat-grid" id="rpPerformance">
+              <div class="rp-stat"><span class="rp-stat-label">Revenue Growth</span><span class="rp-stat-value" id="rpRevGrowth">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Earnings Growth</span><span class="rp-stat-value" id="rpEarnGrowth">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Profit Margin</span><span class="rp-stat-value" id="rpProfitMargin">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Operating Margin</span><span class="rp-stat-value" id="rpOpMargin">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">ROE</span><span class="rp-stat-value" id="rpROE">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">ROA</span><span class="rp-stat-value" id="rpROA">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Debt/Equity</span><span class="rp-stat-value" id="rpDebtEquity">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Current Ratio</span><span class="rp-stat-value" id="rpCurrentRatio">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Free Cash Flow</span><span class="rp-stat-value" id="rpFCF">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Recommendation</span><span class="rp-stat-value" id="rpRecommendation">--</span></div>
+            </div>
+          </div>
+
+          <!-- Technicals -->
+          <div class="rp-section">
+            <div class="rp-section-title">Technicals</div>
+            <div class="rp-stat-grid">
+              <div class="rp-stat"><span class="rp-stat-label">50-Day Avg</span><span class="rp-stat-value" id="rp50DayAvg">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">200-Day Avg</span><span class="rp-stat-value" id="rp200DayAvg">--</span></div>
+              <div class="rp-stat"><span class="rp-stat-label">Forward P/E</span><span class="rp-stat-value" id="rpForwardPE">--</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  </div><!-- /ac-body -->
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -696,7 +822,7 @@ function switchTab(tab, btn) {
   }
   if (tab === 'academy' && !academyInitialized) {
     academyInitialized = true;
-    setTimeout(() => { acInitChart(); acLoadData(acSymbol, acTF); loadWatchlist(); }, 100);
+    setTimeout(() => { acInitChart(); acLoadData(acSymbol, acTF); loadWatchlist(); rpLoadProfile(acSymbol); }, 100);
   }
   if (tab === 'academy' && academyInitialized && acChart) {
     setTimeout(() => {
@@ -816,11 +942,11 @@ function tvToggleStudy(btn, study) {
 }
 
 function tryLoadWebull() {
+  const iframe = document.getElementById('webullFrame');
   const fallback = document.getElementById('webullFallback');
-  const frame = document.getElementById('webullFrame');
-  frame.src = 'https://app.webull.com/trade';
-  frame.style.display = 'block';
-  fallback.style.display = 'none';
+  iframe.style.display = 'none';
+  iframe.src = 'about:blank';
+  fallback.style.display = 'flex';
 }
 
 // ============================================================
@@ -1325,13 +1451,14 @@ async function acLoadData(symbol, tf) {
     const res = await fetch(`/api/stock-data?symbol=${symbol}&range=${rangeMap[tf]||'1y'}&interval=${intervalMap[tf]||'1d'}`);
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    const quotes = data.chart?.result?.[0];
-    if (!quotes) throw new Error('No data');
-    const ts = quotes.timestamp, ohlc = quotes.indicators.quote[0];
+    const candles = data.candles;
+    if (!candles || !candles.length) throw new Error('No data');
     acChartData = [];
-    for (let i = 0; i < ts.length; i++) {
-      if (ohlc.open[i] == null) continue;
-      acChartData.push({ time: ts[i], open: ohlc.open[i], high: ohlc.high[i], low: ohlc.low[i], close: ohlc.close[i], volume: ohlc.volume?.[i] || 0 });
+    for (let i = 0; i < candles.length; i++) {
+      const c = candles[i];
+      // Convert date string to unix timestamp
+      const t = Math.floor(new Date(c.date).getTime() / 1000);
+      acChartData.push({ time: t, open: c.open, high: c.high, low: c.low, close: c.close, volume: c.volume || 0 });
     }
     acCandleSeries.setData(acChartData);
     if (acChartData.length > 0) {
@@ -1644,6 +1771,7 @@ function acSelectAC(code) {
   document.getElementById('priceSymbol').textContent = code;
   acClearDrawingsOnly();
   acLoadData(code, acTF);
+  rpLoadProfile(code);
 }
 function acAcKeyDown(e) {
   const dd = document.getElementById('acAcDropdown');
@@ -1679,11 +1807,176 @@ document.addEventListener('mousedown', function(e) {
   }
   if (!document.getElementById('tvAcWrap')?.contains(e.target)) document.getElementById('tvAcDropdown').style.display = 'none';
   if (document.getElementById('acAcWrap') && !document.getElementById('acAcWrap').contains(e.target)) document.getElementById('acAcDropdown').style.display = 'none';
+  if (!document.getElementById('leftToolbar')?.contains(e.target)) acCloseLtFlyouts();
 });
 
 function highlightText(text, highlight) {
   const regex = new RegExp(`(${highlight})`, 'gi');
   return text.replace(regex, '<span class="ac-hl">$1</span>');
+}
+
+// ============================================================
+// RIGHT PANEL: Company Details
+// ============================================================
+let rpProfileData = null;
+let rpFinancialMode = 'annual';
+
+function rpSwitchTab(tab, btn) {
+  document.querySelectorAll('.rp-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rpWatchlist').style.display = tab === 'watchlist' ? 'flex' : 'none';
+  document.getElementById('rpDetails').style.display = tab === 'details' ? 'flex' : 'none';
+}
+
+async function rpLoadProfile(symbol) {
+  try {
+    const res = await fetch('/api/stock-profile?symbol=' + symbol);
+    const data = await res.json();
+    if (data.error) { console.error(data.error); return; }
+    rpProfileData = data;
+    rpRenderProfile(data);
+    rpSwitchTab('details', document.querySelectorAll('.rp-tab')[1]);
+  } catch(e) { console.error('Profile load error:', e); }
+}
+
+function rpRenderProfile(d) {
+  const ticker = TICKERS[d.symbol] || {};
+  document.getElementById('rpCompanyName').textContent = ticker.name || d.symbol;
+  document.getElementById('rpCompanyMeta').textContent = (d.profile?.sector || 'N/A') + ' • ' + (d.profile?.industry || '');
+  document.getElementById('rpMarketCap').textContent = d.stats?.marketCapFmt || '--';
+  document.getElementById('rpVolume').textContent = d.stats?.volumeFmt || '--';
+  document.getElementById('rpAvgVolume').textContent = d.stats?.avgVolumeFmt || '--';
+  document.getElementById('rpPE').textContent = d.stats?.pe || '--';
+  document.getElementById('rpEPS').textContent = d.stats?.eps || '--';
+  document.getElementById('rpBeta').textContent = d.stats?.beta || '--';
+  document.getElementById('rp52High').textContent = d.stats?.fiftyTwoWeekHigh || '--';
+  document.getElementById('rp52Low').textContent = d.stats?.fiftyTwoWeekLow || '--';
+  document.getElementById('rpTarget').textContent = d.stats?.targetPrice || '--';
+  document.getElementById('rpAnalysts').textContent = (d.stats?.numberOfAnalysts || 0) + ' analysts';
+  document.getElementById('rpNextEarnings').textContent = d.earningsDate?.length ? d.earningsDate.join(' - ') : 'N/A';
+  document.getElementById('rpDivRate').textContent = d.dividends?.rate || '--';
+  document.getElementById('rpDivYield').textContent = d.dividends?.yield || '--';
+  document.getElementById('rpDivExDate').textContent = d.dividends?.exDate || '--';
+  document.getElementById('rpDivPayout').textContent = d.dividends?.payoutRatio || '--';
+  document.getElementById('rpRevGrowth').textContent = d.performance?.revenueGrowth || '--';
+  document.getElementById('rpEarnGrowth').textContent = d.performance?.earningsGrowth || '--';
+  document.getElementById('rpProfitMargin').textContent = d.performance?.profitMargin || '--';
+  document.getElementById('rpOpMargin').textContent = d.performance?.operatingMargin || '--';
+  document.getElementById('rpROE').textContent = d.performance?.returnOnEquity || '--';
+  document.getElementById('rpROA').textContent = d.performance?.returnOnAssets || '--';
+  document.getElementById('rpDebtEquity').textContent = d.performance?.debtToEquity || '--';
+  document.getElementById('rpCurrentRatio').textContent = d.performance?.currentRatio || '--';
+  document.getElementById('rpFCF').textContent = d.performance?.freeCashflow || '--';
+  document.getElementById('rpRecommendation').textContent = d.stats?.recommendation?.toUpperCase() || '--';
+  document.getElementById('rp50DayAvg').textContent = d.stats?.fiftyDayAvg || '--';
+  document.getElementById('rp200DayAvg').textContent = d.stats?.twoHundredDayAvg || '--';
+  document.getElementById('rpForwardPE').textContent = d.stats?.forwardPe || '--';
+  rpDrawEarningsChart(d.earningsHistory || []);
+  rpDrawRevenueChart(rpFinancialMode === 'annual' ? (d.financials?.annual || []) : (d.financials?.quarterly || []));
+}
+
+function rpDrawEarningsChart(data) {
+  const canvas = document.getElementById('rpEarningsChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.clientWidth * 2;
+  canvas.height = 120 * 2;
+  ctx.scale(2, 2);
+  const W = canvas.clientWidth, H = 120;
+  ctx.clearRect(0, 0, W, H);
+  if (!data || !data.length) {
+    ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+    ctx.font = '11px Inter';
+    ctx.fillText('No earnings data', 10, 60);
+    return;
+  }
+  const maxVal = Math.max(...data.map(d => Math.max(Math.abs(d.actual || 0), Math.abs(d.estimate || 0)))) * 1.2 || 1;
+  const barW = Math.min(20, (W - 40) / (data.length * 3));
+  const baseY = H - 25;
+  data.forEach((d, i) => {
+    const x = 20 + i * (W - 40) / data.length;
+    const estH = (Math.abs(d.estimate || 0) / maxVal) * (H - 40);
+    const actH = (Math.abs(d.actual || 0) / maxVal) * (H - 40);
+    ctx.fillStyle = isDark ? '#374151' : '#E5E7EB';
+    ctx.fillRect(x, baseY - estH, barW, estH);
+    ctx.fillStyle = (d.actual || 0) >= (d.estimate || 0) ? '#10B981' : '#EF4444';
+    ctx.fillRect(x + barW + 2, baseY - actH, barW, actH);
+    ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+    ctx.font = '9px Inter';
+    ctx.fillText(d.quarter || '', x, H - 5);
+  });
+  ctx.font = '9px Inter';
+  ctx.fillStyle = isDark ? '#374151' : '#E5E7EB';
+  ctx.fillRect(W - 90, 5, 8, 8);
+  ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+  ctx.fillText('Est.', W - 78, 13);
+  ctx.fillStyle = '#10B981';
+  ctx.fillRect(W - 50, 5, 8, 8);
+  ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+  ctx.fillText('Act.', W - 38, 13);
+}
+
+function rpDrawRevenueChart(data) {
+  const canvas = document.getElementById('rpRevenueChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.clientWidth * 2;
+  canvas.height = 140 * 2;
+  ctx.scale(2, 2);
+  const W = canvas.clientWidth, H = 140;
+  ctx.clearRect(0, 0, W, H);
+  if (!data || !data.length) {
+    ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+    ctx.font = '11px Inter';
+    ctx.fillText('No financial data', 10, 70);
+    return;
+  }
+  const sorted = [...data].reverse();
+  const maxRev = Math.max(...sorted.map(d => d.revenue || 0)) * 1.2 || 1;
+  const barW = Math.min(30, (W - 50) / (sorted.length * 3));
+  const baseY = H - 30;
+  sorted.forEach((d, i) => {
+    const x = 30 + i * (W - 50) / sorted.length;
+    const revH = ((d.revenue || 0) / maxRev) * (H - 50);
+    const niH = (Math.abs(d.netIncome || 0) / maxRev) * (H - 50);
+    ctx.fillStyle = '#3B82F6';
+    ctx.fillRect(x, baseY - revH, barW, revH);
+    ctx.fillStyle = (d.netIncome || 0) >= 0 ? '#10B981' : '#EF4444';
+    ctx.fillRect(x + barW + 2, baseY - niH, barW, niH);
+    ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+    ctx.font = '8px Inter';
+    const label = d.date ? d.date.substring(0, 7) : '';
+    ctx.fillText(label, x, H - 8);
+  });
+  ctx.font = '9px Inter';
+  ctx.fillStyle = '#3B82F6';
+  ctx.fillRect(5, 5, 8, 8);
+  ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+  ctx.fillText('Revenue', 17, 13);
+  ctx.fillStyle = '#10B981';
+  ctx.fillRect(70, 5, 8, 8);
+  ctx.fillStyle = isDark ? '#6B7394' : '#6B7280';
+  ctx.fillText('Net Income', 82, 13);
+}
+
+function rpShowFinancials(mode, btn) {
+  rpFinancialMode = mode;
+  document.querySelectorAll('.rp-fin-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (rpProfileData) {
+    rpDrawRevenueChart(mode === 'annual' ? (rpProfileData.financials?.annual || []) : (rpProfileData.financials?.quarterly || []));
+  }
+}
+
+function acToggleLtFlyout(btn) {
+  const flyout = btn.nextElementSibling;
+  const wasOpen = flyout?.classList.contains('open');
+  acCloseLtFlyouts();
+  if (!wasOpen && flyout) flyout.classList.add('open');
+}
+
+function acCloseLtFlyouts() {
+  document.querySelectorAll('.lt-flyout').forEach(f => f.classList.remove('open'));
 }
 
 // ============================================================
@@ -1721,15 +2014,13 @@ async function fetchWatchlistPrice(symbol) {
   try {
     const res = await fetch('/api/stock-data?symbol=' + symbol + '&range=2d&interval=1d');
     const data = await res.json();
-    const quotes = data.chart?.result?.[0];
-    if (!quotes) return;
-    const ohlc = quotes.indicators.quote[0];
-    const ts = quotes.timestamp;
+    const candles = data.candles;
+    if (!candles || !candles.length) return;
     let lastClose = null, prevClose = null;
-    for (let i = ts.length - 1; i >= 0; i--) {
-      if (ohlc.close[i] != null) {
-        if (lastClose === null) lastClose = ohlc.close[i];
-        else if (prevClose === null) { prevClose = ohlc.close[i]; break; }
+    for (let i = candles.length - 1; i >= 0; i--) {
+      if (candles[i].close != null) {
+        if (lastClose === null) lastClose = candles[i].close;
+        else if (prevClose === null) { prevClose = candles[i].close; break; }
       }
     }
     if (lastClose !== null) {
@@ -1755,6 +2046,7 @@ function wlSelectSymbol(sym) {
   acSymbol = sym;
   acClearDrawingsOnly();
   acLoadData(sym, acTF);
+  rpLoadProfile(sym);
   document.querySelectorAll('.wl-item').forEach(el => el.classList.remove('wl-active'));
   const items = document.querySelectorAll('.wl-item');
   items.forEach(el => { if (el.querySelector('.wl-ticker').textContent === sym) el.classList.add('wl-active'); });
