@@ -1027,7 +1027,7 @@ function acInitChart() {
       acDrawingStack.push({ drawing: acDrawings.length });
       acRedrawCanvas();
       acDrawMode = null;
-      document.querySelectorAll('.draw-btn,.tool-dropdown-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.draw-btn,.tool-dropdown-btn,.lt-btn,.lt-flyout-item').forEach(b => b.classList.remove('active'));
       acUpdateChartCursor();
     } else if (['trendline','ray','extline','fib','fibext','rect','ellipse','channel','pitchfork','pricemeasure','datemeasure','ruler'].includes(acDrawMode)) {
       acStartDrawingDrag(acDrawMode, time, price, param.point.x, param.point.y);
@@ -1515,9 +1515,10 @@ function acReapplyAll() {
 }
 
 function acSetDrawMode(mode, btn) {
-  if (acDrawMode === mode) { acDrawMode = null; acDrawFirstPoint = null; acDrawClickCount = 0; btn.classList.remove('active'); acUpdateChartCursor(); return; }
-  document.querySelectorAll('.draw-btn, .tool-dropdown-item').forEach(b => b.classList.remove('active'));
-  acDrawMode = mode; btn.classList.add('active');
+  if (acDrawMode === mode && btn) { acDrawMode = null; acDrawFirstPoint = null; acDrawClickCount = 0; btn.classList.remove('active'); acUpdateChartCursor(); return; }
+  document.querySelectorAll('.draw-btn, .tool-dropdown-item, .lt-btn, .lt-flyout-item').forEach(b => b.classList.remove('active'));
+  acDrawMode = mode;
+  if (btn) btn.classList.add('active');
   acUpdateChartCursor();
 }
 
@@ -1537,7 +1538,7 @@ function acPlaceSETLine(type, price) {
   acDrawingStack.push({ set: type });
   acUpdateSETPanel();
   acDrawMode = null;
-  document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.draw-btn,.lt-btn,.lt-flyout-item').forEach(b => b.classList.remove('active'));
 }
 
 function acUpdateSETPanel() {
