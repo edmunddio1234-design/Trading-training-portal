@@ -17,7 +17,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; --muted: #6B7394; }
 
 /* ===== HEADER ===== */
-.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 8px 28px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.header { background: linear-gradient(135deg, #1B2A4A 0%, #243B60 100%); padding: 4px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .header-left { display: flex; align-items: center; gap: 14px; }
 .header-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--emerald), var(--emerald-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 800; }
 .header h1 { font-size: 18px; color: #fff; font-weight: 700; letter-spacing: -0.3px; }
@@ -29,8 +29,8 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .btn-outline:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
 /* ===== TAB BAR ===== */
-.tab-bar { background: var(--card); border-bottom: 2px solid var(--border); padding: 0 28px; display: flex; align-items: stretch; gap: 0; flex-shrink: 0; }
-.tab-btn { padding: 12px 24px; font-size: 14px; font-weight: 700; color: var(--muted); background: none; border: none; cursor: pointer; position: relative; transition: color 0.2s; font-family: inherit; display: flex; align-items: center; gap: 8px; }
+.tab-bar { background: var(--card); border-bottom: 2px solid var(--border); padding: 0 20px; display: flex; align-items: stretch; gap: 0; flex-shrink: 0; }
+.tab-btn { padding: 8px 18px; font-size: 13px; font-weight: 700; color: var(--muted); background: none; border: none; cursor: pointer; position: relative; transition: color 0.2s; font-family: inherit; display: flex; align-items: center; gap: 6px; }
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--emerald); }
 .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: var(--emerald); border-radius: 3px 3px 0 0; }
@@ -50,7 +50,7 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .tv-toolbar input, .tv-toolbar select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: var(--card); color: var(--text); }
 .tv-toolbar input:focus { outline: none; border-color: var(--emerald); }
 .tv-toolbar input[type="text"] { width: 180px; }
-.tf-btn { padding: 7px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; font-family: inherit; position: relative; }
+.tf-btn { padding: 4px 10px; border: 1px solid var(--border); border-radius: 5px; font-size: 11px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; font-family: inherit; position: relative; }
 .tf-btn:hover { border-color: var(--emerald); color: var(--emerald); }
 .tf-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
 .chip { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: rgba(13,147,115,0.08); color: var(--emerald); cursor: pointer; border: 1px solid transparent; transition: all 0.15s; position: relative; }
@@ -88,16 +88,16 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .webull-tip strong { color: #3B82F6; }
 
 /* ===== ACADEMY CHARTS TAB ===== */
-.ac-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 8px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; flex-shrink: 0; overflow: visible; position: relative; z-index: 100; }
-.ac-toolbar-section { display: flex; align-items: center; gap: 8px; }
-.ac-toolbar-section-divider { width: 1px; height: 20px; background: var(--border); }
-.ac-toolbar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.ac-toolbar input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; background: var(--card); color: var(--text); width: 140px; }
+.ac-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 4px 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; overflow: visible; position: relative; z-index: 100; }
+.ac-toolbar-section { display: flex; align-items: center; gap: 4px; position: relative; }
+.ac-toolbar-section-divider { width: 1px; height: 16px; background: var(--border); margin: 0 2px; }
+.ac-toolbar label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.ac-toolbar input { padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 12px; background: var(--card); color: var(--text); width: 160px; }
 .ac-toolbar input:focus { outline: none; border-color: var(--emerald); }
-.ac-search-hint { font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+.ac-search-hint { font-size: 9px; color: var(--muted); margin-top: 1px; font-weight: 500; }
 
-.draw-tools { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-.draw-btn { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; position: relative; }
+.draw-tools { display: flex; gap: 3px; align-items: center; flex-wrap: wrap; }
+.draw-btn { padding: 4px 8px; border: 1px solid var(--border); border-radius: 5px; font-size: 10px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; position: relative; }
 .draw-btn:hover { border-color: var(--emerald); color: var(--emerald); }
 .draw-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
 .draw-btn.set-stop { border-color: var(--red); color: var(--red); }
@@ -118,7 +118,18 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .draw-btn.clear-btn { border-color: var(--muted); color: var(--muted); }
 .draw-btn.clear-btn:hover { border-color: var(--red); color: var(--red); }
 
-/* Tooltip system — tooltips appear BELOW buttons to avoid top-of-page cutoff */
+/* Dropdown Menus */
+.tool-dropdown { position: relative; display: inline-block; }
+.tool-dropdown-btn { padding: 4px 8px; border: 1px solid var(--border); border-radius: 5px; font-size: 10px; font-weight: 600; background: var(--card); color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; font-family: inherit; }
+.tool-dropdown-btn:hover { border-color: var(--emerald); color: var(--emerald); }
+.tool-dropdown-btn.active { background: var(--emerald); color: #fff; border-color: var(--emerald); }
+.tool-dropdown-menu { position: absolute; top: 100%; left: 0; background: var(--card); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 300; min-width: 180px; display: none; padding: 4px; margin-top: 2px; }
+.tool-dropdown-menu.open { display: block; }
+.tool-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; color: var(--text); transition: background 0.1s; white-space: nowrap; }
+.tool-dropdown-item:hover { background: rgba(13,147,115,0.08); }
+.tool-dropdown-item.active { background: rgba(13,147,115,0.12); color: var(--emerald); font-weight: 600; }
+
+/* Tooltip system */
 .draw-btn[data-tooltip]::before {
   content: attr(data-tooltip);
   position: absolute;
@@ -220,7 +231,7 @@ body.dark .tf-btn[data-tooltip]::after {
 }
 
 .ac-body { flex: 1; display: flex; overflow: hidden; }
-.watchlist-panel { width: 200px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+.watchlist-panel { width: 170px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
 .watchlist-header { padding: 10px 12px; font-size: 12px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .watchlist-header button { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--muted); padding: 2px; }
 .watchlist-items { flex: 1; overflow-y: auto; }
@@ -236,7 +247,7 @@ body.dark .tf-btn[data-tooltip]::after {
 .wl-down { color: var(--red); }
 .wl-toggle { position: absolute; top: 8px; left: 8px; z-index: 110; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--muted); display: none; }
 .watchlist-panel.collapsed { display: none; }
-.watchlist-panel.collapsed + .chart-area .wl-toggle { display: block; }
+.wl-toggle.visible { display: block; }
 
 .chart-area { flex: 1; position: relative; background: var(--card); overflow: hidden; display: flex; flex-direction: column; }
 #lwchart { flex: 1; width: 100%; position: relative; }
@@ -274,7 +285,7 @@ body.dark .tf-btn[data-tooltip]::after {
 .zone-swatch { width: 16px; height: 10px; border-radius: 2px; }
 
 /* ===== INFO BAR ===== */
-.info-bar { background: var(--card); border-top: 1px solid var(--border); padding: 6px 28px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+.info-bar { background: var(--card); border-top: 1px solid var(--border); padding: 3px 20px; display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--muted); flex-shrink: 0; }
 .info-bar a { color: var(--emerald); text-decoration: none; font-weight: 500; }
 .info-bar a:hover { text-decoration: underline; }
 .quick-links { display: flex; gap: 16px; }
@@ -419,7 +430,7 @@ body.dark .tf-btn[data-tooltip]::after {
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     TAB 3: ACADEMY CHARTS (Lightweight Charts + S.E.T. Tools)
+     TAB 3: ACADEMY CHARTS
      ═══════════════════════════════════════════════════════════════ -->
 <div class="tab-panel" id="panel-academy">
   <div class="ac-toolbar">
@@ -464,21 +475,69 @@ body.dark .tf-btn[data-tooltip]::after {
     <div class="ac-toolbar-section">
       <label>Zones</label>
       <div class="draw-tools">
-        <button class="draw-btn demand-zone" data-tooltip="DEMAND ZONE — Click twice to draw a demand zone. These are areas where institutional buyers placed large orders. Price tends to bounce UP from demand zones." onclick="acSetDrawMode('demand',this)">📈 Demand</button>
-        <button class="draw-btn supply-zone" data-tooltip="SUPPLY ZONE — Click twice to draw a supply zone. These are areas where institutional sellers placed large orders. Price tends to DROP from supply zones." onclick="acSetDrawMode('supply',this)">📉 Supply</button>
+        <button class="draw-btn demand-zone" data-tooltip="DEMAND ZONE — Click-drag to draw a demand zone. These are areas where institutional buyers placed large orders. Price tends to bounce UP from demand zones." onclick="acSetDrawMode('demand',this)">📈 Demand</button>
+        <button class="draw-btn supply-zone" data-tooltip="SUPPLY ZONE — Click-drag to draw a supply zone. These are areas where institutional sellers placed large orders. Price tends to DROP from supply zones." onclick="acSetDrawMode('supply',this)">📉 Supply</button>
       </div>
     </div>
     <div class="ac-toolbar-section-divider"></div>
 
-    <!-- Drawing Tools Section -->
+    <!-- Drawing Tools Dropdowns -->
     <div class="ac-toolbar-section">
       <label>Draw</label>
       <div class="draw-tools">
-        <button class="draw-btn" data-tooltip="TRENDLINE — Click two points to draw a line showing the direction of price movement. Uptrend = higher lows. Downtrend = lower highs." onclick="acSetDrawMode('trendline',this)">📈 Trend</button>
-        <button class="draw-btn" data-tooltip="HORIZONTAL LINE — Click to place a level at any price. Use for marking key support/resistance levels." onclick="acSetDrawMode('hline',this)">➖ H-Line</button>
-        <button class="draw-btn" data-tooltip="FIBONACCI RETRACEMENT — Click swing low, then swing high (or vice versa). Shows key retracement levels (23.6%, 38.2%, 50%, 61.8%, 78.6%) where price often bounces." onclick="acSetDrawMode('fib',this)">🔢 Fib</button>
-        <button class="draw-btn" data-tooltip="RECTANGLE — Click two corners to highlight a price range. Use for marking consolidation areas or supply/demand zones." onclick="acSetDrawMode('rect',this)">▢ Rect</button>
-        <button class="draw-btn" data-tooltip="PARALLEL CHANNEL — Click two points for one line, then a third point for the parallel. Shows the trading range where price oscillates." onclick="acSetDrawMode('channel',this)">◇ Channel</button>
+        <!-- Lines Dropdown -->
+        <div class="tool-dropdown">
+          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">📈 Lines ▾</button>
+          <div class="tool-dropdown-menu">
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('trendline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Trend Line">Trend Line</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('ray',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Ray">Ray</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('extline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Extended Line">Ext Line</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('hline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Horizontal Line">H-Line</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('hray',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Horizontal Ray">H-Ray</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('vline',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Vertical Line">V-Line</div>
+          </div>
+        </div>
+
+        <!-- Fibonacci Dropdown -->
+        <div class="tool-dropdown">
+          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">🔢 Fib ▾</button>
+          <div class="tool-dropdown-menu">
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('fib',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Fibonacci Retracement">Fib Retrace</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('fibext',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Fibonacci Extension">Fib Extend</div>
+          </div>
+        </div>
+
+        <!-- Shapes Dropdown -->
+        <div class="tool-dropdown">
+          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">▢ Shapes ▾</button>
+          <div class="tool-dropdown-menu">
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('rect',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Rectangle">Rectangle</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('ellipse',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Ellipse">Ellipse</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('channel',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Parallel Channel">Channel</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('pitchfork',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Pitchfork">Pitchfork</div>
+          </div>
+        </div>
+
+        <!-- Measure Dropdown -->
+        <div class="tool-dropdown">
+          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">📏 Measure ▾</button>
+          <div class="tool-dropdown-menu">
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('pricemeasure',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Price Range">Price Range</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('datemeasure',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Date & Price Range">Date & Price</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('ruler',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Ruler">Ruler</div>
+          </div>
+        </div>
+
+        <!-- Annotations Dropdown -->
+        <div class="tool-dropdown">
+          <button class="tool-dropdown-btn" onclick="acToggleDropdown(this)">📝 Annotate ▾</button>
+          <div class="tool-dropdown-menu">
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('text',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Text">Text</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('arrowup',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Arrow Up">↑ Arrow Up</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('arrowdown',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Arrow Down">↓ Arrow Down</div>
+            <div class="tool-dropdown-item" onclick="acSetDrawMode('pricelabel',this.closest('.tool-dropdown').querySelector('.tool-dropdown-btn')); acCloseAllDropdowns();" data-tooltip="Price Label">Price Label</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="ac-toolbar-section-divider"></div>
@@ -498,8 +557,10 @@ body.dark .tf-btn[data-tooltip]::after {
     </div>
     <div class="ac-toolbar-section-divider"></div>
 
-    <!-- Clear Section -->
+    <!-- Actions Section -->
     <div class="ac-toolbar-section">
+      <button class="draw-btn" data-tooltip="ERASER — Click on a drawing to delete it" onclick="acSetDrawMode('eraser',this)">🗑 Erase</button>
+      <button class="draw-btn" data-tooltip="UNDO — Remove the last drawing" onclick="acUndo()">↶ Undo</button>
       <button class="draw-btn clear-btn" data-tooltip="CLEAR ALL — Remove all drawings, S.E.T. lines, and zones from the chart." onclick="acClearAll()">✕ Clear</button>
     </div>
   </div>
@@ -697,203 +758,88 @@ function tvCreateWidget() {
       'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
       'scalesProperties.lineColor': isDark ? '#1F2640' : '#E5E7EB',
       'scalesProperties.textColor': isDark ? '#6B7394' : '#6B7280',
-      'paneProperties.background': isDark ? '#161B2B' : '#FFFFFF',
-      'paneProperties.vertGridProperties.color': isDark ? '#1F2640' : '#F0F0F0',
-      'paneProperties.horzGridProperties.color': isDark ? '#1F2640' : '#F0F0F0',
-    }
+    },
   });
+}
+
+function tvOnSymbolInput(val) {
+  const dd = document.getElementById('tvAcDropdown');
+  const input = document.getElementById('tvSymbolInput');
+  val = val.trim().toUpperCase();
+  if (!val) { dd.style.display = 'none'; tvAcMatches = []; return; }
+  tvAcMatches = TICKER_LIST.filter(t => t.code.includes(val) || t.name.toUpperCase().includes(val)).slice(0, 15);
+  if (!tvAcMatches.length) { dd.style.display = 'none'; return; }
+  tvAcIdx = -1;
+  dd.innerHTML = tvAcMatches.map((item, i) =>
+    `<div class="ac-item" onmousedown="tvSelectAC('${item.code}')" onmouseenter="tvAcIdx=${i}"><span class="ac-ticker">${highlightText(item.code, val)}</span><span class="ac-name">${highlightText(item.name, val)}</span></div>`
+  ).join('');
+  dd.style.display = 'block';
+}
+
+function tvSelectAC(code) {
+  tvSymbol = code;
+  document.getElementById('tvSymbolInput').value = code;
+  document.getElementById('tvAcDropdown').style.display = 'none';
+  if (tvWidget) tvWidget.setSymbol(code, tvInterval);
+}
+
+let tvAcIdx = -1, tvAcMatches = [];
+function tvAcKeyDown(e) {
+  const dd = document.getElementById('tvAcDropdown');
+  if (dd.style.display === 'none' || !tvAcMatches.length) { if (e.key === 'Enter') tvSelectAC(document.getElementById('tvSymbolInput').value.trim().toUpperCase()); return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); tvAcIdx = Math.min(tvAcIdx + 1, tvAcMatches.length - 1); tvUpdateACHL(); return; }
+  if (e.key === 'ArrowUp') { e.preventDefault(); tvAcIdx = Math.max(tvAcIdx - 1, 0); tvUpdateACHL(); return; }
+  if (e.key === 'Enter' && tvAcIdx >= 0) { e.preventDefault(); tvSelectAC(tvAcMatches[tvAcIdx].code); return; }
+  if (e.key === 'Enter') { dd.style.display = 'none'; tvSelectAC(document.getElementById('tvSymbolInput').value.trim().toUpperCase()); return; }
+  if (e.key === 'Escape') { dd.style.display = 'none'; return; }
+}
+
+function tvUpdateACHL() {
+  const items = document.querySelectorAll('#tvAcDropdown .ac-item');
+  items.forEach((el, i) => el.classList.toggle('ac-active', i === tvAcIdx));
+  if (items[tvAcIdx]) items[tvAcIdx].scrollIntoView({ block: 'nearest' });
 }
 
 function tvChangeTF(tf, btn) {
   tvInterval = tf;
   btn.parentElement.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  tvCreateWidget();
+  if (tvWidget) tvWidget.setInterval(tf);
 }
 
-function tvToggleStudy(el, studyId) {
-  el.classList.toggle('active');
-  const idx = tvStudies.indexOf(studyId);
-  if (idx > -1) tvStudies.splice(idx, 1); else tvStudies.push(studyId);
-  tvCreateWidget();
+function tvToggleStudy(btn, study) {
+  btn.classList.toggle('active');
+  const idx = tvStudies.indexOf(study);
+  if (idx === -1) tvStudies.push(study);
+  else tvStudies.splice(idx, 1);
+  if (tvWidget) tvCreateWidget();
 }
 
-let tvAcIndex = -1, tvAcMatches = [];
-function highlightText(text, query) {
-  if (!query) return text;
-  const idx = text.toUpperCase().indexOf(query.toUpperCase());
-  if (idx === -1) return text;
-  return text.slice(0, idx) + '<span class="ac-hl">' + text.slice(idx, idx + query.length) + '</span>' + text.slice(idx + query.length);
-}
-function tvOnSymbolInput(val) {
-  val = val.trim().toUpperCase();
-  const dd = document.getElementById('tvAcDropdown');
-  if (!val) { dd.style.display = 'none'; tvAcMatches = []; return; }
-  tvAcMatches = TICKER_LIST.filter(t => t.code.includes(val) || t.name.toUpperCase().includes(val)).slice(0, 15);
-  if (!tvAcMatches.length) { dd.style.display = 'none'; return; }
-  tvAcIndex = -1;
-  dd.innerHTML = tvAcMatches.map((item, i) =>
-    `<div class="ac-item" onmousedown="tvSelectAC('${item.code}')" onmouseenter="tvAcIndex=${i}"><span class="ac-ticker">${highlightText(item.code, val)}</span><span class="ac-name">${highlightText(item.name, val)}</span></div>`
-  ).join('');
-  dd.style.display = 'block';
-}
-function tvSelectAC(code) {
-  document.getElementById('tvSymbolInput').value = code;
-  document.getElementById('tvAcDropdown').style.display = 'none';
-  tvAcMatches = []; tvAcIndex = -1; tvSymbol = code; tvCreateWidget();
-}
-function tvAcKeyDown(e) {
-  const dd = document.getElementById('tvAcDropdown');
-  if (dd.style.display === 'none' || !tvAcMatches.length) { if (e.key === 'Enter') { tvSymbol = document.getElementById('tvSymbolInput').value.trim().toUpperCase(); tvCreateWidget(); } return; }
-  if (e.key === 'ArrowDown') { e.preventDefault(); tvAcIndex = Math.min(tvAcIndex + 1, tvAcMatches.length - 1); tvUpdateACHL(); return; }
-  if (e.key === 'ArrowUp') { e.preventDefault(); tvAcIndex = Math.max(tvAcIndex - 1, 0); tvUpdateACHL(); return; }
-  if (e.key === 'Enter' && tvAcIndex >= 0) { e.preventDefault(); tvSelectAC(tvAcMatches[tvAcIndex].code); return; }
-  if (e.key === 'Enter') { dd.style.display = 'none'; tvSymbol = document.getElementById('tvSymbolInput').value.trim().toUpperCase(); tvCreateWidget(); return; }
-  if (e.key === 'Escape') { dd.style.display = 'none'; return; }
-}
-function tvUpdateACHL() {
-  const items = document.querySelectorAll('#tvAcDropdown .ac-item');
-  items.forEach((el, i) => el.classList.toggle('ac-active', i === tvAcIndex));
-  if (items[tvAcIndex]) items[tvAcIndex].scrollIntoView({ block: 'nearest' });
-}
-
-// ============================================================
-// TAB 2: WEBULL
-// ============================================================
 function tryLoadWebull() {
-  const iframe = document.getElementById('webullFrame');
   const fallback = document.getElementById('webullFallback');
-  iframe.style.display = 'none';
-  iframe.src = 'about:blank';
-  fallback.style.display = 'flex';
+  const frame = document.getElementById('webullFrame');
+  frame.src = 'https://app.webull.com/trade';
+  frame.style.display = 'block';
+  fallback.style.display = 'none';
 }
 
 // ============================================================
-// TAB 3: ACADEMY CHARTS (Lightweight Charts + Drawing Tools)
+// TAB 3: ACADEMY CHARTS
 // ============================================================
-let acChart, acCandleSeries, acVolumeSeries, acSmaSeries, acEmaSeries, acRsiSeries, acMacdSeries, acMacdSignalSeries, acMacdHistSeries, acBbUpper, acBbMiddle, acBbLower, acVwapSeries;
+let acChart = null, acCandleSeries = null;
 let acSymbol = 'AAPL', acTF = '1day';
-let acDrawMode = null;
+let acChartData = [];
+let acDrawMode = null, acDrawFirstPoint = null, acDrawClickCount = 0;
+let acZones = [], acZoneTopPrice = null;
+let acDrawings = [], acDrawingStack = [];
 let acSetValues = { stop: null, entry: null, target: null };
 let acPriceLines = { stop: null, entry: null, target: null };
-let acZones = [];
-let acZoneTopPrice = null;
 let acIndicators = { sma: false, ema: false, volume: false, rsi: false, macd: false, bb: false, vwap: false };
-let acChartData = [];
-let acCanvas, acCanvasCtx;
-let acDrawings = [];
-let acDrawClickCount = 0;
-let acDrawFirstPoint = null;
-
-// Utility functions for drawing
-function acInitCanvas() {
-  const chartArea = document.querySelector('.chart-area');
-  acCanvas = document.getElementById('drawingCanvas');
-  acCanvasCtx = acCanvas.getContext('2d');
-  acResizeCanvas();
-}
-
-function acResizeCanvas() {
-  if (!acCanvas) return;
-  const chartArea = document.querySelector('.chart-area');
-  const lwchartDiv = document.getElementById('lwchart');
-  acCanvas.width = lwchartDiv.clientWidth;
-  acCanvas.height = lwchartDiv.clientHeight;
-  acRedrawCanvas();
-}
-
-function acRedrawCanvas() {
-  if (!acCanvasCtx || !acChart) return;
-  acCanvasCtx.clearRect(0, 0, acCanvas.width, acCanvas.height);
-  acDrawings.forEach(drawing => acDrawDrawing(drawing));
-}
-
-function acDrawDrawing(drawing) {
-  if (!acCanvasCtx || !acChart) return;
-  const chart = acChart;
-  const timeScale = chart.timeScale();
-
-  // Use series.priceToCoordinate() directly (Lightweight Charts v4 API)
-  const p2c = (price) => acCandleSeries.priceToCoordinate(price);
-
-  const ctx = acCanvasCtx;
-  ctx.strokeStyle = '#7C3AED';
-  ctx.fillStyle = 'rgba(124, 58, 237, 0.1)';
-  ctx.lineWidth = 2;
-
-  if (drawing.type === 'trendline' && drawing.points.length === 2) {
-    const p1x = timeScale.timeToCoordinate(drawing.points[0].time);
-    const p1y = p2c(drawing.points[0].price);
-    const p2x = timeScale.timeToCoordinate(drawing.points[1].time);
-    const p2y = p2c(drawing.points[1].price);
-    if (p1x != null && p1y != null && p2x != null && p2y != null) {
-      ctx.beginPath();
-      ctx.moveTo(p1x, p1y);
-      ctx.lineTo(p2x, p2y);
-      ctx.stroke();
-    }
-  } else if (drawing.type === 'hline' && drawing.price != null) {
-    const py = p2c(drawing.price);
-    if (py != null) {
-      ctx.beginPath();
-      ctx.moveTo(0, py);
-      ctx.lineTo(acCanvas.width, py);
-      ctx.stroke();
-    }
-  } else if (drawing.type === 'fib' && drawing.points.length === 2) {
-    const p1y = p2c(drawing.points[0].price);
-    const p2y = p2c(drawing.points[1].price);
-    if (p1y != null && p2y != null) {
-      const high = Math.min(p1y, p2y);
-      const low = Math.max(p1y, p2y);
-      const range = low - high;
-      const levels = [0.236, 0.382, 0.5, 0.618, 0.786];
-      ctx.strokeStyle = 'rgba(124, 58, 237, 0.3)';
-      ctx.lineWidth = 1;
-      levels.forEach(level => {
-        const y = high + range * level;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(acCanvas.width, y);
-        ctx.stroke();
-        ctx.fillStyle = 'rgba(124, 58, 237, 0.6)';
-        ctx.font = '10px Inter';
-        ctx.fillText((level * 100).toFixed(1) + '%', 5, y - 3);
-      });
-    }
-  } else if (drawing.type === 'rect' && drawing.points.length === 2) {
-    const p1x = timeScale.timeToCoordinate(drawing.points[0].time);
-    const p1y = p2c(drawing.points[0].price);
-    const p2x = timeScale.timeToCoordinate(drawing.points[1].time);
-    const p2y = p2c(drawing.points[1].price);
-    if (p1x != null && p1y != null && p2x != null && p2y != null) {
-      const x = Math.min(p1x, p2x);
-      const y = Math.min(p1y, p2y);
-      const w = Math.abs(p2x - p1x);
-      const h = Math.abs(p2y - p1y);
-      ctx.fillRect(x, y, w, h);
-      ctx.strokeRect(x, y, w, h);
-    }
-  } else if (drawing.type === 'channel' && drawing.points.length === 3) {
-    const p1x = timeScale.timeToCoordinate(drawing.points[0].time);
-    const p1y = p2c(drawing.points[0].price);
-    const p2x = timeScale.timeToCoordinate(drawing.points[1].time);
-    const p2y = p2c(drawing.points[1].price);
-    const p3x = timeScale.timeToCoordinate(drawing.points[2].time);
-    const p3y = p2c(drawing.points[2].price);
-    if (p1x != null && p1y != null && p2x != null && p2y != null && p3x != null && p3y != null) {
-      ctx.beginPath();
-      ctx.moveTo(p1x, p1y);
-      ctx.lineTo(p2x, p2y);
-      ctx.stroke();
-      const dx = p2x - p1x, dy = p2y - p1y;
-      ctx.beginPath();
-      ctx.moveTo(p3x, p3y);
-      ctx.lineTo(p3x + dx, p3y + dy);
-      ctx.stroke();
-    }
-  }
-}
+let acSmaSeries = null, acEmaSeries = null, acVolumeSeries = null;
+let acRsiSeries = null, acMacdSeries = null, acMacdSignalSeries = null, acMacdHistSeries = null;
+let acBbUpper = null, acBbMiddle = null, acBbLower = null, acVwapSeries = null;
+let acCanvas = null, acCtx = null;
+let acDragStartX = 0, acDragStartY = 0, acDragStartPrice = 0, acDragStartTime = 0;
 
 function acInitChart() {
   const container = document.getElementById('lwchart');
@@ -928,19 +874,39 @@ function acInitChart() {
     if (!acDrawMode || !param.point) return;
     const price = acCandleSeries.coordinateToPrice(param.point.y);
     const time = acChart.timeScale().coordinateToTime(param.point.x);
-    if (price == null) return;
+    if (price == null || isNaN(price)) return;
 
     if (['stop','entry','target'].includes(acDrawMode)) {
       acPlaceSETLine(acDrawMode, price);
     } else if (['demand','supply'].includes(acDrawMode)) {
-      acPlaceZone(acDrawMode, price);
-    } else if (['trendline','fib','rect','channel'].includes(acDrawMode)) {
-      acPlaceDrawing(acDrawMode, time, price);
-    } else if (acDrawMode === 'hline') {
-      acDrawings.push({ type: 'hline', price });
+      acStartZoneDrag(acDrawMode, price, time, param.point.x, param.point.y);
+    } else if (['hline','hray','vline','text','arrowup','arrowdown','pricelabel'].includes(acDrawMode)) {
+      // Single-click tools
+      if (acDrawMode === 'text') {
+        const txt = prompt('Enter text:');
+        if (txt) acDrawings.push({ type: 'text', points: [{ time, price }], text: txt });
+      } else if (acDrawMode === 'arrowup') {
+        acDrawings.push({ type: 'arrowup', points: [{ time, price }] });
+      } else if (acDrawMode === 'arrowdown') {
+        acDrawings.push({ type: 'arrowdown', points: [{ time, price }] });
+      } else if (acDrawMode === 'pricelabel') {
+        acDrawings.push({ type: 'pricelabel', points: [{ time, price }] });
+      } else if (acDrawMode === 'hline') {
+        acDrawings.push({ type: 'hline', points: [{ time, price }] });
+      } else if (acDrawMode === 'hray') {
+        acDrawings.push({ type: 'hray', points: [{ time, price }] });
+      } else if (acDrawMode === 'vline') {
+        acDrawings.push({ type: 'vline', points: [{ time, price }] });
+      }
+      acDrawingStack.push({ drawing: acDrawings.length });
       acRedrawCanvas();
       acDrawMode = null;
-      document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.draw-btn,.tool-dropdown-btn').forEach(b => b.classList.remove('active'));
+      acUpdateChartCursor();
+    } else if (['trendline','ray','extline','fib','fibext','rect','ellipse','channel','pitchfork','pricemeasure','datemeasure','ruler'].includes(acDrawMode)) {
+      acStartDrawingDrag(acDrawMode, time, price, param.point.x, param.point.y);
+    } else if (acDrawMode === 'eraser') {
+      acEraseDrawing(param.point.x, param.point.y);
     }
   });
 
@@ -960,47 +926,394 @@ function acInitChart() {
 
   acInitCanvas();
 
-  // Redraw canvas drawings when chart is panned or zoomed
-  chart.timeScale().subscribeVisibleLogicalRangeChange(() => acRedrawCanvas());
+  // Fixed: Changed 'chart' to 'acChart'
+  acChart.timeScale().subscribeVisibleLogicalRangeChange(() => acRedrawCanvas());
 }
 
-function acPlaceDrawing(type, time, price) {
-  if (type === 'trendline' || type === 'rect' || type === 'fib') {
-    if (!acDrawFirstPoint) {
-      acDrawFirstPoint = { time, price };
-      document.getElementById('priceMeta').textContent = `Click second point for ${type}...`;
-      return;
-    }
-    acDrawings.push({ type, points: [acDrawFirstPoint, { time, price }] });
-    acDrawFirstPoint = null;
+function acStartZoneDrag(type, startPrice, startTime, startX, startY) {
+  const el = document.getElementById('lwchart');
+  function onMouseMove(e) {
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const endPrice = acCandleSeries.coordinateToPrice(y);
+    if (endPrice == null) return;
     acRedrawCanvas();
-    document.getElementById('priceMeta').textContent = `${type} drawn`;
-    acDrawMode = null;
-    document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
-  } else if (type === 'channel') {
-    if (!acDrawFirstPoint) {
-      acDrawFirstPoint = { time, price };
-      document.getElementById('priceMeta').textContent = 'Click second point for channel...';
-      return;
+    const ctx = acCtx;
+    const topPrice = Math.max(startPrice, endPrice);
+    const bottomPrice = Math.min(startPrice, endPrice);
+    const color = type === 'demand' ? 'rgba(59,130,246,0.2)' : 'rgba(124,58,237,0.2)';
+    const borderColor = type === 'demand' ? '#3B82F6' : '#7C3AED';
+    const topY = acCandleSeries.priceToCoordinate(topPrice);
+    const bottomY = acCandleSeries.priceToCoordinate(bottomPrice);
+    ctx.fillStyle = color;
+    ctx.fillRect(0, topY, ctx.canvas.width, bottomY - topY);
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(0, topY, ctx.canvas.width, bottomY - topY);
+  }
+  function onMouseUp(e) {
+    el.removeEventListener('mousemove', onMouseMove);
+    el.removeEventListener('mouseup', onMouseUp);
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const endPrice = acCandleSeries.coordinateToPrice(y);
+    if (endPrice !== null && endPrice !== startPrice) {
+      const top = Math.max(startPrice, endPrice), bottom = Math.min(startPrice, endPrice);
+      const borderColor = type === 'demand' ? '#3B82F6' : '#7C3AED';
+      const label = type === 'demand' ? 'DEMAND' : 'SUPPLY';
+      const tl = acCandleSeries.createPriceLine({ price: top, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↑' });
+      const bl = acCandleSeries.createPriceLine({ price: bottom, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↓' });
+      acZones.push({ type, top, bottom, tl, bl });
+      document.getElementById('zoneLegend').style.display = 'block';
+      document.getElementById('priceMeta').textContent = `${label} zone: $${bottom.toFixed(2)} — $${top.toFixed(2)}`;
+      acDrawingStack.push({ zones: acZones.length });
     }
-    acDrawClickCount++;
-    if (acDrawClickCount === 1) {
-      document.getElementById('priceMeta').textContent = 'Click third point for parallel...';
-      const drawing = acDrawings.find(d => d.type === 'channel' && !d.points[1]);
-      if (!drawing) {
-        acDrawings.push({ type: 'channel', points: [acDrawFirstPoint, { time, price }] });
+    acDrawMode = null;
+    acRedrawCanvas();
+    document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+    acUpdateChartCursor();
+  }
+  el.addEventListener('mousemove', onMouseMove);
+  el.addEventListener('mouseup', onMouseUp);
+}
+
+function acStartDrawingDrag(type, startTime, startPrice, startX, startY) {
+  const el = document.getElementById('lwchart');
+  const points = [{ time: startTime, price: startPrice }];
+  function onMouseMove(e) {
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const endPrice = acCandleSeries.coordinateToPrice(y);
+    const endTime = acChart.timeScale().coordinateToTime(x);
+    if (endPrice == null || endTime == null) return;
+    acRedrawCanvas();
+    const ctx = acCtx;
+    const x1 = acChart.timeScale().timeToCoordinate(startTime);
+    const y1 = acCandleSeries.priceToCoordinate(startPrice);
+    const x2 = x;
+    const y2 = y;
+    ctx.strokeStyle = '#10B981';
+    ctx.lineWidth = 2;
+    if (['trendline','ray','extline','hray','vline'].includes(type)) {
+      if (type === 'vline') {
+        ctx.beginPath();
+        ctx.moveTo(x1, 0);
+        ctx.lineTo(x1, ctx.canvas.height);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        if (type === 'hray') {
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(ctx.canvas.width, y1);
+        } else if (type === 'extline' || type === 'ray') {
+          const slope = (y2 - y1) / (x2 - x1 || 1);
+          ctx.moveTo(type === 'extline' ? 0 : x1, type === 'extline' ? y1 - slope * x1 : y1);
+          ctx.lineTo(x2, y2);
+          if (type === 'ray' || type === 'extline') {
+            ctx.lineTo(ctx.canvas.width, y1 + slope * (ctx.canvas.width - x1));
+          }
+        } else {
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+        }
+        ctx.stroke();
       }
-    } else {
-      const lastDrawing = acDrawings[acDrawings.length - 1];
-      lastDrawing.points.push({ time, price });
-      acRedrawCanvas();
-      document.getElementById('priceMeta').textContent = 'Channel drawn';
-      acDrawMode = null;
-      acDrawFirstPoint = null;
-      acDrawClickCount = 0;
-      document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+    } else if (['rect','ellipse'].includes(type)) {
+      const w = x2 - x1, h = y2 - y1;
+      ctx.fillStyle = 'rgba(16,185,129,0.1)';
+      if (type === 'rect') {
+        ctx.fillRect(x1, y1, w, h);
+        ctx.strokeRect(x1, y1, w, h);
+      } else {
+        ctx.beginPath();
+        ctx.ellipse(x1 + w/2, y1 + h/2, Math.abs(w/2), Math.abs(h/2), 0, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.stroke();
+      }
+    } else if (type === 'ruler') {
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      const dist = Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+      ctx.fillStyle = 'var(--navy)';
+      ctx.font = '12px Inter';
+      ctx.fillText(dist.toFixed(0) + 'px', (x1+x2)/2, (y1+y2)/2);
     }
   }
+  function onMouseUp(e) {
+    el.removeEventListener('mousemove', onMouseMove);
+    el.removeEventListener('mouseup', onMouseUp);
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const endPrice = acCandleSeries.coordinateToPrice(y);
+    const endTime = acChart.timeScale().coordinateToTime(x);
+    if (endPrice !== null && endTime !== null && (startPrice !== endPrice || startTime !== endTime)) {
+      acDrawings.push({ type, points: [{ time: startTime, price: startPrice }, { time: endTime, price: endPrice }] });
+      acDrawingStack.push({ drawing: acDrawings.length });
+    }
+    acDrawMode = null;
+    acRedrawCanvas();
+    document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+    acUpdateChartCursor();
+  }
+  el.addEventListener('mousemove', onMouseMove);
+  el.addEventListener('mouseup', onMouseUp);
+}
+
+function acEraseDrawing(x, y) {
+  const threshold = 10;
+  for (let i = acDrawings.length - 1; i >= 0; i--) {
+    const d = acDrawings[i];
+    if (d.points && d.points.length > 0) {
+      const p1 = d.points[0];
+      const x1 = acChart.timeScale().timeToCoordinate(p1.time);
+      const y1 = acCandleSeries.priceToCoordinate(p1.price);
+      const dist = Math.sqrt((x - x1)**2 + (y - y1)**2);
+      if (dist < threshold) {
+        acDrawings.splice(i, 1);
+        acDrawingStack.push({ erase: i });
+        acRedrawCanvas();
+        return;
+      }
+    }
+  }
+}
+
+function acInitCanvas() {
+  let canvas = document.getElementById('drawingCanvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.id = 'drawingCanvas';
+    document.getElementById('lwchart').appendChild(canvas);
+  }
+  acCanvas = canvas;
+  acCtx = canvas.getContext('2d');
+  acResizeCanvas();
+}
+
+function acResizeCanvas() {
+  const el = document.getElementById('lwchart');
+  if (!acCanvas || !el) return;
+  acCanvas.width = el.clientWidth;
+  acCanvas.height = el.clientHeight;
+  acRedrawCanvas();
+}
+
+function acRedrawCanvas() {
+  if (!acCtx || !acCanvas || !acChart || !acCandleSeries) return;
+  const ctx = acCtx;
+  const W = acCanvas.width, H = acCanvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Helper: get pixel coords from time/price
+  const ts = acChart.timeScale();
+  const t2x = (t) => ts.timeToCoordinate(t);
+  const p2y = (p) => acCandleSeries.priceToCoordinate(p);
+
+  // Draw demand zones (filled rectangles)
+  acZones.forEach(z => {
+    const topY = p2y(z.top), bottomY = p2y(z.bottom);
+    if (topY == null || bottomY == null) return;
+    const color = z.type === 'demand' ? 'rgba(59,130,246,0.15)' : 'rgba(124,58,237,0.15)';
+    const border = z.type === 'demand' ? '#3B82F6' : '#7C3AED';
+    ctx.fillStyle = color;
+    ctx.fillRect(0, topY, W, bottomY - topY);
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, topY, W, bottomY - topY);
+  });
+
+  // Draw all stored drawings
+  acDrawings.forEach(d => {
+    if (!d.points || d.points.length < 1) return;
+    const x1 = t2x(d.points[0].time), y1 = p2y(d.points[0].price);
+    if (x1 == null || y1 == null) return;
+    ctx.strokeStyle = '#10B981';
+    ctx.fillStyle = 'rgba(16,185,129,0.08)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+
+    if (d.type === 'trendline' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+
+    } else if (d.type === 'ray' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      const slope = (y2 - y1) / (x2 - x1 || 1);
+      ctx.beginPath(); ctx.moveTo(x1, y1);
+      ctx.lineTo(W, y1 + slope * (W - x1)); ctx.stroke();
+
+    } else if (d.type === 'extline' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      const slope = (y2 - y1) / (x2 - x1 || 1);
+      ctx.beginPath();
+      ctx.moveTo(0, y1 - slope * x1);
+      ctx.lineTo(W, y1 + slope * (W - x1));
+      ctx.stroke();
+
+    } else if (d.type === 'hline') {
+      ctx.beginPath(); ctx.moveTo(0, y1); ctx.lineTo(W, y1); ctx.stroke();
+      ctx.fillStyle = '#10B981'; ctx.font = '10px Inter';
+      ctx.fillText('$' + d.points[0].price.toFixed(2), 5, y1 - 4);
+
+    } else if (d.type === 'hray') {
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(W, y1); ctx.stroke();
+      ctx.fillStyle = '#10B981'; ctx.font = '10px Inter';
+      ctx.fillText('$' + d.points[0].price.toFixed(2), x1 + 4, y1 - 4);
+
+    } else if (d.type === 'vline') {
+      ctx.beginPath(); ctx.moveTo(x1, 0); ctx.lineTo(x1, H); ctx.stroke();
+
+    } else if (d.type === 'rect' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      ctx.fillRect(Math.min(x1,x2), Math.min(y1,y2), Math.abs(x2-x1), Math.abs(y2-y1));
+      ctx.strokeRect(Math.min(x1,x2), Math.min(y1,y2), Math.abs(x2-x1), Math.abs(y2-y1));
+
+    } else if (d.type === 'ellipse' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      const cx = (x1+x2)/2, cy = (y1+y2)/2, rx = Math.abs(x2-x1)/2, ry = Math.abs(y2-y1)/2;
+      ctx.beginPath(); ctx.ellipse(cx, cy, rx || 1, ry || 1, 0, 0, 2*Math.PI);
+      ctx.fill(); ctx.stroke();
+
+    } else if (d.type === 'channel' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      if (d.points.length > 2) {
+        const x3 = t2x(d.points[2].time), y3 = p2y(d.points[2].price);
+        if (x3 != null && y3 != null) {
+          const dx = x2 - x1, dy = y2 - y1;
+          ctx.beginPath(); ctx.moveTo(x3, y3); ctx.lineTo(x3 + dx, y3 + dy); ctx.stroke();
+          // Fill between
+          ctx.fillStyle = 'rgba(16,185,129,0.06)';
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x3+dx, y3+dy); ctx.lineTo(x3, y3); ctx.closePath(); ctx.fill();
+        }
+      }
+
+    } else if (d.type === 'pitchfork' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      // Pitchfork: point 1 = pivot, point 2 = anchor. Median from pivot through midpoint of anchor
+      const midY = (y1 + y2) / 2;
+      ctx.strokeStyle = '#F59E0B';
+      // Median line from x1 to far right
+      ctx.beginPath(); ctx.moveTo(x1, (y1+y2)/2);
+      ctx.lineTo(W, (y1+y2)/2); ctx.stroke();
+      // Upper tine
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(W, y1); ctx.stroke();
+      // Lower tine
+      ctx.beginPath(); ctx.moveTo(x1, y2); ctx.lineTo(W, y2); ctx.stroke();
+      // Fill
+      ctx.fillStyle = 'rgba(245,158,11,0.06)';
+      ctx.fillRect(x1, Math.min(y1,y2), W-x1, Math.abs(y2-y1));
+
+    } else if (d.type === 'fib' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      const topY = Math.min(y1, y2), botY = Math.max(y1, y2), range = botY - topY;
+      const levels = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
+      const colors = ['#EF4444','#F59E0B','#10B981','#3B82F6','#7C3AED','#EC4899','#EF4444'];
+      levels.forEach((lv, i) => {
+        const ly = topY + range * lv;
+        ctx.strokeStyle = colors[i] || '#7C3AED'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(W, ly); ctx.stroke();
+        ctx.fillStyle = colors[i] || '#7C3AED'; ctx.font = '10px Inter';
+        ctx.fillText((lv * 100).toFixed(1) + '%', 5, ly - 3);
+      });
+      // Light fill between levels
+      for (let i = 0; i < levels.length - 1; i++) {
+        const ly1 = topY + range * levels[i], ly2 = topY + range * levels[i+1];
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(124,58,237,0.04)' : 'rgba(124,58,237,0.08)';
+        ctx.fillRect(0, ly1, W, ly2 - ly1);
+      }
+
+    } else if (d.type === 'fibext' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      const range = y2 - y1; // direction matters
+      const levels = [0, 1, 1.272, 1.618, 2, 2.618];
+      levels.forEach(lv => {
+        const ly = y1 + range * lv;
+        ctx.strokeStyle = '#7C3AED'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(W, ly); ctx.stroke();
+        ctx.fillStyle = '#7C3AED'; ctx.font = '10px Inter';
+        ctx.fillText((lv * 100).toFixed(1) + '%', 5, ly - 3);
+      });
+
+    } else if (d.type === 'ruler' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      ctx.setLineDash([5, 5]); ctx.strokeStyle = '#F59E0B';
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      ctx.setLineDash([]);
+      // Label
+      const priceDiff = d.points[1].price - d.points[0].price;
+      const pct = ((priceDiff / d.points[0].price) * 100).toFixed(2);
+      ctx.fillStyle = isDark ? '#E0E4F0' : '#1B2A4A'; ctx.font = 'bold 11px Inter';
+      const label = `$${priceDiff.toFixed(2)} (${pct}%)`;
+      ctx.fillText(label, (x1+x2)/2 + 6, (y1+y2)/2 - 6);
+
+    } else if (d.type === 'pricemeasure' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = '#3B82F6';
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x1, y2); ctx.stroke();
+      ctx.setLineDash([]);
+      const priceDiff = d.points[1].price - d.points[0].price;
+      const pct = ((priceDiff / d.points[0].price) * 100).toFixed(2);
+      ctx.fillStyle = '#3B82F6'; ctx.font = 'bold 11px Inter';
+      ctx.fillText(`$${priceDiff.toFixed(2)} (${pct}%)`, x1 + 6, (y1+y2)/2);
+
+    } else if (d.type === 'datemeasure' && d.points.length > 1) {
+      const x2 = t2x(d.points[1].time), y2 = p2y(d.points[1].price);
+      if (x2 == null || y2 == null) return;
+      ctx.setLineDash([3, 3]); ctx.strokeStyle = '#7C3AED';
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y1); ctx.stroke();
+      ctx.setLineDash([]);
+      const priceDiff = d.points[1].price - d.points[0].price;
+      const pct = ((priceDiff / d.points[0].price) * 100).toFixed(2);
+      const timeDiff = Math.abs(d.points[1].time - d.points[0].time);
+      const days = Math.round(timeDiff / 86400);
+      ctx.fillStyle = '#7C3AED'; ctx.font = 'bold 11px Inter';
+      ctx.fillText(`$${priceDiff.toFixed(2)} (${pct}%) • ${days}d`, (x1+x2)/2 + 6, y1 - 8);
+
+    } else if (d.type === 'text' && d.text) {
+      ctx.fillStyle = isDark ? '#E0E4F0' : '#1B2A4A';
+      ctx.font = 'bold 13px Inter';
+      ctx.fillText(d.text, x1, y1);
+
+    } else if (d.type === 'arrowup') {
+      ctx.fillStyle = '#10B981'; ctx.font = 'bold 18px Inter';
+      ctx.fillText('▲', x1 - 8, y1 + 6);
+
+    } else if (d.type === 'arrowdown') {
+      ctx.fillStyle = '#EF4444'; ctx.font = 'bold 18px Inter';
+      ctx.fillText('▼', x1 - 8, y1 + 6);
+
+    } else if (d.type === 'pricelabel') {
+      const price = d.points[0].price;
+      const txt = '$' + price.toFixed(2);
+      ctx.fillStyle = isDark ? '#1F2640' : '#E5E7EB';
+      const tw = ctx.measureText ? ctx.measureText(txt).width + 12 : 60;
+      ctx.fillRect(x1, y1 - 10, tw, 20);
+      ctx.strokeStyle = '#10B981'; ctx.lineWidth = 1;
+      ctx.strokeRect(x1, y1 - 10, tw, 20);
+      ctx.fillStyle = isDark ? '#E0E4F0' : '#1B2A4A'; ctx.font = 'bold 11px Inter';
+      ctx.fillText(txt, x1 + 6, y1 + 4);
+    }
+  });
 }
 
 async function acLoadData(symbol, tf) {
@@ -1075,9 +1388,17 @@ function acReapplyAll() {
 }
 
 function acSetDrawMode(mode, btn) {
-  if (acDrawMode === mode) { acDrawMode = null; acDrawFirstPoint = null; acDrawClickCount = 0; btn.classList.remove('active'); return; }
-  document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+  if (acDrawMode === mode) { acDrawMode = null; acDrawFirstPoint = null; acDrawClickCount = 0; btn.classList.remove('active'); acUpdateChartCursor(); return; }
+  document.querySelectorAll('.draw-btn, .tool-dropdown-item').forEach(b => b.classList.remove('active'));
   acDrawMode = mode; btn.classList.add('active');
+  acUpdateChartCursor();
+}
+
+function acUpdateChartCursor() {
+  const el = document.getElementById('lwchart');
+  if (!el) return;
+  if (acDrawMode === 'eraser') el.style.cursor = 'grab';
+  else el.style.cursor = acDrawMode ? 'crosshair' : 'default';
 }
 
 function acPlaceSETLine(type, price) {
@@ -1086,6 +1407,7 @@ function acPlaceSETLine(type, price) {
   const labels = { stop:'STOP', entry:'ENTRY', target:'TARGET' };
   acPriceLines[type] = acCandleSeries.createPriceLine({ price, color: colors[type], lineWidth: 2, lineStyle: type === 'entry' ? 0 : 2, axisLabelVisible: true, title: labels[type] });
   acSetValues[type] = price;
+  acDrawingStack.push({ set: type });
   acUpdateSETPanel();
   acDrawMode = null;
   document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
@@ -1113,26 +1435,6 @@ function acUpdateSETPanel() {
   } else { riskPanel.style.display = 'none'; }
 }
 
-function acPlaceZone(type, price) {
-  if (!acZoneTopPrice) {
-    acZoneTopPrice = price;
-    document.getElementById('priceMeta').textContent = `Click again for ${type} zone bottom...`;
-    return;
-  }
-  const top = Math.max(acZoneTopPrice, price), bottom = Math.min(acZoneTopPrice, price);
-  const borderColor = type === 'demand' ? '#3B82F6' : '#7C3AED';
-  const label = type === 'demand' ? 'DEMAND' : 'SUPPLY';
-  const tl = acCandleSeries.createPriceLine({ price: top, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↑' });
-  const bl = acCandleSeries.createPriceLine({ price: bottom, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↓' });
-  acZones.push({ type, top, bottom, tl, bl });
-  acZoneTopPrice = null;
-  document.getElementById('zoneLegend').style.display = 'block';
-  document.getElementById('priceMeta').textContent = `${label} zone: $${bottom.toFixed(2)} — $${top.toFixed(2)}`;
-  acDrawMode = null;
-  document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
-}
-
-// Clears drawings/zones/S.E.T. but preserves indicators (used when switching symbols)
 function acClearDrawingsOnly() {
   if (!acCandleSeries) return;
   ['stop','entry','target'].forEach(type => {
@@ -1147,15 +1449,25 @@ function acClearDrawingsOnly() {
   acRedrawCanvas();
 }
 
-// Full clear — removes EVERYTHING including indicators (Clear button)
 function acClearAll() {
   if (!acCandleSeries) return;
   acClearDrawingsOnly();
-  // Also remove all indicator series
   acRemoveSMA(); acRemoveEMA(); acRemoveVolume(); acRemoveRSI(); acRemoveMACD(); acRemoveBB(); acRemoveVWAP();
   Object.keys(acIndicators).forEach(k => acIndicators[k] = false);
   document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('priceMeta').textContent = 'All drawings cleared';
+  acDrawingStack = [];
+}
+
+function acUndo() {
+  if (acDrawingStack.length === 0) return;
+  const last = acDrawingStack.pop();
+  if (last.drawing) acDrawings.pop();
+  else if (last.zones) acZones.pop();
+  else if (last.set) acSetValues[last.set] = null;
+  else if (last.erase) acDrawings.splice(last.erase, 0, {});
+  acRedrawCanvas();
+  acUpdateSETPanel();
 }
 
 function acToggleIndicator(type, btn) {
@@ -1170,7 +1482,6 @@ function acToggleIndicator(type, btn) {
   if (type === 'vwap') acIndicators.vwap ? acApplyVWAP() : acRemoveVWAP();
 }
 
-// Technical Indicators
 function calcSMA(data, period) {
   const r = [];
   for (let i = period - 1; i < data.length; i++) {
@@ -1179,9 +1490,9 @@ function calcSMA(data, period) {
   }
   return r;
 }
+
 function calcEMA(data, period) {
   const r = [], k = 2 / (period + 1);
-  // Support both candle data (.close) and series data (.value)
   const getVal = (d) => d.close !== undefined ? d.close : d.value;
   let ema = getVal(data[0]) || 0;
   for (let i = 0; i < data.length; i++) {
@@ -1190,11 +1501,11 @@ function calcEMA(data, period) {
   }
   return r;
 }
+
 function calcRSI(data, period = 14) {
   if (data.length < period + 1) return [];
   const r = [];
   let avgGain = 0, avgLoss = 0;
-  // Calculate initial average gain/loss from first `period` bars
   for (let j = 1; j <= period; j++) {
     const d = data[j].close - data[j - 1].close;
     if (d > 0) avgGain += d; else avgLoss += Math.abs(d);
@@ -1203,7 +1514,6 @@ function calcRSI(data, period = 14) {
   avgLoss /= period;
   const rs0 = avgLoss === 0 ? 100 : avgGain / avgLoss;
   r.push({ time: data[period].time, value: 100 - (100 / (1 + rs0)) });
-  // Smoothed RSI for remaining bars
   for (let i = period + 1; i < data.length; i++) {
     const delta = data[i].close - data[i - 1].close;
     avgGain = (avgGain * (period - 1) + (delta > 0 ? delta : 0)) / period;
@@ -1213,10 +1523,10 @@ function calcRSI(data, period = 14) {
   }
   return r;
 }
+
 function calcMACD(data, fast = 12, slow = 26, signal = 9) {
   const fastEMA = calcEMA(data, fast);
   const slowEMA = calcEMA(data, slow);
-  // Build lookup maps for O(1) access by time
   const fastMap = new Map(fastEMA.map(e => [e.time, e.value]));
   const slowMap = new Map(slowEMA.map(e => [e.time, e.value]));
   const macdLine = [];
@@ -1234,6 +1544,7 @@ function calcMACD(data, fast = 12, slow = 26, signal = 9) {
   }
   return { macd: macdLine, signal: signalLine, histogram };
 }
+
 function calcBB(data, period = 20, stdDev = 2) {
   const sma = calcSMA(data, period);
   const r = { upper: [], middle: [], lower: [] };
@@ -1248,6 +1559,7 @@ function calcBB(data, period = 20, stdDev = 2) {
   }
   return r;
 }
+
 function calcVWAP(data) {
   const r = [];
   let cumTypicalPrice = 0, cumVolume = 0;
@@ -1348,11 +1660,31 @@ function acUpdateACHL() {
   if (items[acAcIdx]) items[acAcIdx].scrollIntoView({ block: 'nearest' });
 }
 
-// Close all dropdowns on outside click
+// Dropdown menu management
+function acToggleDropdown(btn) {
+  acCloseAllDropdowns();
+  const menu = btn.nextElementSibling;
+  if (menu && menu.classList.contains('tool-dropdown-menu')) {
+    menu.classList.add('open');
+  }
+}
+
+function acCloseAllDropdowns() {
+  document.querySelectorAll('.tool-dropdown-menu').forEach(m => m.classList.remove('open'));
+}
+
 document.addEventListener('mousedown', function(e) {
-  if (!document.getElementById('tvAcWrap').contains(e.target)) document.getElementById('tvAcDropdown').style.display = 'none';
+  if (!document.querySelector('.tool-dropdown')?.contains(e.target)) {
+    acCloseAllDropdowns();
+  }
+  if (!document.getElementById('tvAcWrap')?.contains(e.target)) document.getElementById('tvAcDropdown').style.display = 'none';
   if (document.getElementById('acAcWrap') && !document.getElementById('acAcWrap').contains(e.target)) document.getElementById('acAcDropdown').style.display = 'none';
 });
+
+function highlightText(text, highlight) {
+  const regex = new RegExp(`(${highlight})`, 'gi');
+  return text.replace(regex, '<span class="ac-hl">$1</span>');
+}
 
 // ============================================================
 // WATCHLIST
@@ -1361,8 +1693,9 @@ const WATCHLIST_SYMBOLS = ['SPY','QQQ','AAPL','MSFT','NVDA','TSLA','AMD','AMZN',
 
 function toggleWatchlist() {
   const panel = document.getElementById('watchlistPanel');
-  panel.classList.toggle('collapsed');
-  // Resize chart after toggle
+  const toggle = document.getElementById('wlToggle');
+  const isCollapsed = panel.classList.toggle('collapsed');
+  if (toggle) { isCollapsed ? toggle.classList.add('visible') : toggle.classList.remove('visible'); }
   setTimeout(() => {
     if (acChart) {
       const c = document.getElementById('lwchart');
@@ -1381,7 +1714,6 @@ function loadWatchlist() {
       <div class="wl-price"><div class="wl-price-val" id="wl-price-${sym}">—</div><div class="wl-change" id="wl-change-${sym}">—</div></div>
     </div>`;
   }).join('');
-  // Fetch prices
   WATCHLIST_SYMBOLS.forEach(sym => fetchWatchlistPrice(sym));
 }
 
@@ -1410,8 +1742,11 @@ async function fetchWatchlistPrice(symbol) {
         const cel = document.getElementById('wl-change-' + symbol);
         if (cel) { cel.textContent = (up?'+':'') + pct + '%'; cel.className = 'wl-change ' + (up ? 'wl-up' : 'wl-down'); }
       }
+    } else {
+      const el = document.getElementById('wl-price-' + symbol);
+      if (el) el.textContent = '—';
     }
-  } catch(e) { /* silently fail for individual tickers */ }
+  } catch(e) { }
 }
 
 function wlSelectSymbol(sym) {
@@ -1420,14 +1755,13 @@ function wlSelectSymbol(sym) {
   acSymbol = sym;
   acClearDrawingsOnly();
   acLoadData(sym, acTF);
-  // Update active highlight
   document.querySelectorAll('.wl-item').forEach(el => el.classList.remove('wl-active'));
   const items = document.querySelectorAll('.wl-item');
   items.forEach(el => { if (el.querySelector('.wl-ticker').textContent === sym) el.classList.add('wl-active'); });
 }
 
 // ============================================================
-// INIT — Start with TradingView tab
+// INIT
 // ============================================================
 tvCreateWidget();
 </script>
@@ -1435,7 +1769,7 @@ tvCreateWidget();
 <!-- ═══ TOOL MANUAL — Heyzine Flipbook Embed ═══ -->
 <div style="max-width:1100px;margin:24px auto;padding:0 20px;display:none;" id="chartManual">
   <div style="background:#fff;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);">
-    <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.tgl').textContent=this.nextElementSibling.style.display==='none'?'\u25BC':'\u25B2'" style="padding:16px 20px;background:linear-gradient(135deg,#1B2A4A,#243B60);cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
+    <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.tgl').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'" style="padding:16px 20px;background:linear-gradient(135deg,#1B2A4A,#243B60);cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="font-size:20px;">📖</span>
         <span style="color:#fff;font-size:15px;font-weight:700;">Live Charts Manual</span>
