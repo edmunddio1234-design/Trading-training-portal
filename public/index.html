@@ -1894,7 +1894,7 @@ function App({ onLogout, userRole }) {
           <div className="header-actions">
             <button onClick={goToDashboard}>◈ Dashboard</button>
             <a href="/options-backtester.html" target="_blank" rel="noopener" style={{background:'none',border:'1px solid var(--border-light)',color:'var(--accent)',padding:'8px 16px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',display:'flex',alignItems:'center',gap:'6px',textDecoration:'none',fontWeight:600}}>📊 Backtester</a>
-            {isAdmin && <button onClick={() => setShowSettings(true)} style={{background:'none',border:'1px solid var(--border-light)',color:'var(--text-muted)',padding:'8px 12px',borderRadius:'6px',cursor:'pointer',fontSize:'13px',fontWeight:600}} title="Settings">⚙ Settings</button>}
+
             {onLogout && <button className="logout-btn" onClick={onLogout}>⏻ Logout</button>}
             {isAdmin && <button className="primary" onClick={openAdminNew}>+ Add Module</button>}
           </div>
