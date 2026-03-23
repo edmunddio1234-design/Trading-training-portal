@@ -88,7 +88,7 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .webull-tip strong { color: #3B82F6; }
 
 /* ===== ACADEMY CHARTS TAB ===== */
-.ac-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 8px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; flex-shrink: 0; }
+.ac-toolbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 8px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; flex-shrink: 0; overflow: visible; position: relative; z-index: 100; }
 .ac-toolbar-section { display: flex; align-items: center; gap: 8px; }
 .ac-toolbar-section-divider { width: 1px; height: 20px; background: var(--border); }
 .ac-toolbar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -118,7 +118,7 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
 .draw-btn.clear-btn { border-color: var(--muted); color: var(--muted); }
 .draw-btn.clear-btn:hover { border-color: var(--red); color: var(--red); }
 
-/* Tooltip system */
+/* Tooltip system — tooltips appear BELOW buttons to avoid top-of-page cutoff */
 .draw-btn[data-tooltip]::before {
   content: attr(data-tooltip);
   position: absolute;
@@ -128,20 +128,19 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
   border-radius: 8px;
   font-size: 11px;
   font-weight: 500;
-  white-space: nowrap;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s;
-  bottom: 100%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 6px;
+  margin-top: 6px;
   z-index: 1000;
-  max-width: 220px;
+  max-width: 260px;
   white-space: normal;
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.4;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 .draw-btn[data-tooltip]::after {
@@ -154,7 +153,7 @@ body.dark { --bg: #0F1423; --card: #161B2B; --border: #1F2640; --text: #E0E4F0; 
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s;
-  bottom: calc(100% - 3px);
+  top: calc(100% + 0px);
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
   z-index: 1000;
@@ -184,10 +183,10 @@ body.dark .draw-btn[data-tooltip]::after {
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s;
-  bottom: 100%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: 4px;
+  margin-top: 4px;
   z-index: 1000;
   max-width: 180px;
   text-align: center;
@@ -204,7 +203,7 @@ body.dark .draw-btn[data-tooltip]::after {
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s;
-  bottom: calc(100% - 2px);
+  top: calc(100% + 0px);
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
   z-index: 1000;
@@ -220,9 +219,32 @@ body.dark .tf-btn[data-tooltip]::after {
   color: var(--navy);
 }
 
+.ac-body { flex: 1; display: flex; overflow: hidden; }
+.watchlist-panel { width: 200px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+.watchlist-header { padding: 10px 12px; font-size: 12px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.watchlist-header button { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--muted); padding: 2px; }
+.watchlist-items { flex: 1; overflow-y: auto; }
+.wl-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; cursor: pointer; border-bottom: 1px solid var(--border); transition: background 0.1s; font-size: 12px; }
+.wl-item:hover { background: rgba(13,147,115,0.05); }
+.wl-item.wl-active { background: rgba(13,147,115,0.08); border-left: 3px solid var(--emerald); }
+.wl-ticker { font-weight: 700; color: var(--text); }
+.wl-name { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
+.wl-price { text-align: right; }
+.wl-price-val { font-weight: 700; font-size: 11px; }
+.wl-change { font-size: 10px; font-weight: 600; }
+.wl-up { color: var(--green); }
+.wl-down { color: var(--red); }
+.wl-toggle { position: absolute; top: 8px; left: 8px; z-index: 110; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--muted); display: none; }
+.watchlist-panel.collapsed { display: none; }
+.watchlist-panel.collapsed + .chart-area .wl-toggle { display: block; }
+
 .chart-area { flex: 1; position: relative; background: var(--card); overflow: hidden; display: flex; flex-direction: column; }
 #lwchart { flex: 1; width: 100%; position: relative; }
 #drawingCanvas { position: absolute; top: 0; left: 0; z-index: 50; pointer-events: none; }
+
+@media (max-width: 768px) {
+  .watchlist-panel { display: none !important; }
+}
 
 /* S.E.T. Panel */
 .set-panel { position: absolute; top: 12px; right: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 220px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 100; font-size: 12px; }
@@ -482,7 +504,18 @@ body.dark .tf-btn[data-tooltip]::after {
     </div>
   </div>
 
+  <div class="ac-body">
+  <!-- Watchlist Sidebar -->
+  <div class="watchlist-panel" id="watchlistPanel">
+    <div class="watchlist-header">
+      <span>📋 Watchlist</span>
+      <button onclick="toggleWatchlist()" title="Hide watchlist">✕</button>
+    </div>
+    <div class="watchlist-items" id="watchlistItems"></div>
+  </div>
+
   <div class="chart-area">
+    <button class="wl-toggle" id="wlToggle" onclick="toggleWatchlist()" title="Show watchlist">📋</button>
     <div id="lwchart"></div>
     <canvas id="drawingCanvas"></canvas>
     <div class="price-info" id="priceInfo">
@@ -511,6 +544,7 @@ body.dark .tf-btn[data-tooltip]::after {
       <div class="zone-legend-item"><div class="zone-swatch" style="background:var(--green);"></div> Target</div>
     </div>
   </div>
+  </div><!-- /ac-body -->
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -601,7 +635,7 @@ function switchTab(tab, btn) {
   }
   if (tab === 'academy' && !academyInitialized) {
     academyInitialized = true;
-    setTimeout(() => { acInitChart(); acLoadData(acSymbol, acTF); }, 100);
+    setTimeout(() => { acInitChart(); acLoadData(acSymbol, acTF); loadWatchlist(); }, 100);
   }
   if (tab === 'academy' && academyInitialized && acChart) {
     setTimeout(() => {
@@ -878,8 +912,10 @@ function acInitChart() {
       horzLines: { color: isDark ? '#1F2640' : '#F0F0F0' },
     },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-    rightPriceScale: { borderColor: isDark ? '#1F2640' : '#E5E7EB' },
-    timeScale: { borderColor: isDark ? '#1F2640' : '#E5E7EB', timeVisible: acTF.includes('min') || acTF === '1hour' },
+    handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: true },
+    handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true },
+    rightPriceScale: { borderColor: isDark ? '#1F2640' : '#E5E7EB', autoScale: true },
+    timeScale: { borderColor: isDark ? '#1F2640' : '#E5E7EB', timeVisible: acTF.includes('min') || acTF === '1hour', rightBarStaysOnScroll: true },
   });
 
   acCandleSeries = acChart.addCandlestickSeries({
@@ -1096,17 +1132,30 @@ function acPlaceZone(type, price) {
   document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
 }
 
-function acClearAll() {
+// Clears drawings/zones/S.E.T. but preserves indicators (used when switching symbols)
+function acClearDrawingsOnly() {
+  if (!acCandleSeries) return;
   ['stop','entry','target'].forEach(type => {
     if (acPriceLines[type]) { try { acCandleSeries.removePriceLine(acPriceLines[type]); } catch(e) {} acPriceLines[type] = null; acSetValues[type] = null; }
   });
   acZones.forEach(z => { try { acCandleSeries.removePriceLine(z.tl); } catch(e) {} try { acCandleSeries.removePriceLine(z.bl); } catch(e) {} });
   acZones = []; acZoneTopPrice = null;
   acDrawings = []; acDrawFirstPoint = null; acDrawClickCount = 0;
+  acDrawMode = null;
   acUpdateSETPanel();
   document.getElementById('zoneLegend').style.display = 'none';
-  document.getElementById('priceMeta').textContent = 'All drawings cleared';
   acRedrawCanvas();
+}
+
+// Full clear — removes EVERYTHING including indicators (Clear button)
+function acClearAll() {
+  if (!acCandleSeries) return;
+  acClearDrawingsOnly();
+  // Also remove all indicator series
+  acRemoveSMA(); acRemoveEMA(); acRemoveVolume(); acRemoveRSI(); acRemoveMACD(); acRemoveBB(); acRemoveVWAP();
+  Object.keys(acIndicators).forEach(k => acIndicators[k] = false);
+  document.querySelectorAll('.draw-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('priceMeta').textContent = 'All drawings cleared';
 }
 
 function acToggleIndicator(type, btn) {
@@ -1281,7 +1330,7 @@ function acSelectAC(code) {
   acAcMatches = []; acAcIdx = -1;
   acSymbol = code;
   document.getElementById('priceSymbol').textContent = code;
-  acClearAll();
+  acClearDrawingsOnly();
   acLoadData(code, acTF);
 }
 function acAcKeyDown(e) {
@@ -1304,6 +1353,78 @@ document.addEventListener('mousedown', function(e) {
   if (!document.getElementById('tvAcWrap').contains(e.target)) document.getElementById('tvAcDropdown').style.display = 'none';
   if (document.getElementById('acAcWrap') && !document.getElementById('acAcWrap').contains(e.target)) document.getElementById('acAcDropdown').style.display = 'none';
 });
+
+// ============================================================
+// WATCHLIST
+// ============================================================
+const WATCHLIST_SYMBOLS = ['SPY','QQQ','AAPL','MSFT','NVDA','TSLA','AMD','AMZN','META','GOOG','NFLX','JPM','BA','DIS','COIN'];
+
+function toggleWatchlist() {
+  const panel = document.getElementById('watchlistPanel');
+  panel.classList.toggle('collapsed');
+  // Resize chart after toggle
+  setTimeout(() => {
+    if (acChart) {
+      const c = document.getElementById('lwchart');
+      acChart.applyOptions({ width: c.clientWidth, height: c.clientHeight });
+      acResizeCanvas();
+    }
+  }, 50);
+}
+
+function loadWatchlist() {
+  const container = document.getElementById('watchlistItems');
+  container.innerHTML = WATCHLIST_SYMBOLS.map(sym => {
+    const info = TICKERS[sym] || { name: sym };
+    return `<div class="wl-item ${sym === acSymbol ? 'wl-active' : ''}" onclick="wlSelectSymbol('${sym}')">
+      <div><div class="wl-ticker">${sym}</div><div class="wl-name">${info.name}</div></div>
+      <div class="wl-price"><div class="wl-price-val" id="wl-price-${sym}">—</div><div class="wl-change" id="wl-change-${sym}">—</div></div>
+    </div>`;
+  }).join('');
+  // Fetch prices
+  WATCHLIST_SYMBOLS.forEach(sym => fetchWatchlistPrice(sym));
+}
+
+async function fetchWatchlistPrice(symbol) {
+  try {
+    const res = await fetch('/api/stock-data?symbol=' + symbol + '&range=2d&interval=1d');
+    const data = await res.json();
+    const quotes = data.chart?.result?.[0];
+    if (!quotes) return;
+    const ohlc = quotes.indicators.quote[0];
+    const ts = quotes.timestamp;
+    let lastClose = null, prevClose = null;
+    for (let i = ts.length - 1; i >= 0; i--) {
+      if (ohlc.close[i] != null) {
+        if (lastClose === null) lastClose = ohlc.close[i];
+        else if (prevClose === null) { prevClose = ohlc.close[i]; break; }
+      }
+    }
+    if (lastClose !== null) {
+      const el = document.getElementById('wl-price-' + symbol);
+      if (el) el.textContent = '$' + lastClose.toFixed(2);
+      if (prevClose !== null) {
+        const change = lastClose - prevClose;
+        const pct = ((change / prevClose) * 100).toFixed(2);
+        const up = change >= 0;
+        const cel = document.getElementById('wl-change-' + symbol);
+        if (cel) { cel.textContent = (up?'+':'') + pct + '%'; cel.className = 'wl-change ' + (up ? 'wl-up' : 'wl-down'); }
+      }
+    }
+  } catch(e) { /* silently fail for individual tickers */ }
+}
+
+function wlSelectSymbol(sym) {
+  document.getElementById('acSymbolInput').value = sym;
+  document.getElementById('priceSymbol').textContent = sym;
+  acSymbol = sym;
+  acClearDrawingsOnly();
+  acLoadData(sym, acTF);
+  // Update active highlight
+  document.querySelectorAll('.wl-item').forEach(el => el.classList.remove('wl-active'));
+  const items = document.querySelectorAll('.wl-item');
+  items.forEach(el => { if (el.querySelector('.wl-ticker').textContent === sym) el.classList.add('wl-active'); });
+}
 
 // ============================================================
 // INIT — Start with TradingView tab
