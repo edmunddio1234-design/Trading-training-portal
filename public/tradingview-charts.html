@@ -314,7 +314,7 @@ body.dark .tf-btn[data-tooltip]::after {
 .set-risk strong { color: var(--emerald); }
 
 /* Price overlay */
-.price-info { position: absolute; top: 12px; left: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.price-info { position: absolute; top: 12px; left: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; z-index: 40; box-shadow: 0 2px 12px rgba(0,0,0,0.05); pointer-events: none; }
 .price-symbol { font-size: 18px; font-weight: 800; }
 .price-current { font-size: 24px; font-weight: 800; margin: 4px 0; }
 .price-change { font-size: 13px; font-weight: 600; }
@@ -603,6 +603,7 @@ body.dark .tf-btn[data-tooltip]::after {
     <div class="chart-area">
       <div id="lwchart"></div>
       <canvas id="drawingCanvas"></canvas>
+      <div id="drawOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:60;display:none;cursor:crosshair;"></div>
       <div class="price-info" id="priceInfo">
         <div class="price-symbol" id="priceSymbol">AAPL</div>
         <div class="price-current" id="priceCurrent">--</div>
@@ -1063,26 +1064,31 @@ function acInitChart() {
 
   acInitCanvas();
 
-  // Canvas mousedown handler for drawing tools (canvas gets pointer-events:auto when tool active)
-  document.getElementById('drawingCanvas').addEventListener('mousedown', function(e) {
+  // Drawing overlay handles ALL mouse events when a tool is active
+  // This div sits above the chart (z-index:60) and captures mouse events
+  // preventing the chart library from interpreting drags as scroll/pan
+  const drawOverlay = document.getElementById('drawOverlay');
+  drawOverlay.addEventListener('mousedown', function(e) {
     if (!acDrawMode) return;
-    const rect = document.getElementById('lwchart').getBoundingClientRect();
+    e.preventDefault();
+    e.stopPropagation();
+    const chartEl = document.getElementById('lwchart');
+    const rect = chartEl.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const price = acCandleSeries.coordinateToPrice(y);
     const time = acChart.timeScale().coordinateToTime(x);
-    if (price == null || isNaN(price)) return;
 
     if (['stop','entry','target'].includes(acDrawMode)) {
-      acPlaceSETLine(acDrawMode, price);
+      if (price != null && !isNaN(price)) acPlaceSETLine(acDrawMode, price);
     } else if (['demand','supply'].includes(acDrawMode)) {
-      acStartZoneDrag(acDrawMode, price, time, x, y);
+      if (price != null) acStartOverlayDrag(acDrawMode, price, time, x, y);
     } else if (['hline','hray','vline','text','arrowup','arrowdown','pricelabel'].includes(acDrawMode)) {
       if (acDrawMode === 'text') {
         const txt = prompt('Enter text:');
-        if (txt) acDrawings.push({ type: 'text', points: [{ time, price }], text: txt });
+        if (txt) acDrawings.push({ type: 'text', points: [{ time: time || 0, price: price || 0 }], text: txt });
       } else {
-        acDrawings.push({ type: acDrawMode, points: [{ time, price }] });
+        acDrawings.push({ type: acDrawMode, points: [{ time: time || 0, price: price || 0 }] });
       }
       acDrawingStack.push({ drawing: acDrawings.length });
       acRedrawCanvas();
@@ -1090,7 +1096,7 @@ function acInitChart() {
       document.querySelectorAll('.draw-btn,.tool-dropdown-btn,.lt-btn,.lt-flyout-item').forEach(b => b.classList.remove('active'));
       acUpdateChartCursor();
     } else if (['trendline','ray','extline','fib','fibext','rect','ellipse','channel','pitchfork','pricemeasure','datemeasure','ruler'].includes(acDrawMode)) {
-      acStartDrawingDrag(acDrawMode, time, price, x, y);
+      acStartOverlayDrag(acDrawMode, price, time, x, y);
     } else if (acDrawMode === 'eraser') {
       acEraseDrawing(x, y);
     }
@@ -1098,6 +1104,121 @@ function acInitChart() {
 
   // Fixed: Changed 'chart' to 'acChart'
   acChart.timeScale().subscribeVisibleLogicalRangeChange(() => acRedrawCanvas());
+}
+
+// Unified overlay drag handler — attaches mousemove/mouseup to the overlay div
+// so the chart library NEVER sees these events
+function acStartOverlayDrag(type, startPrice, startTime, startX, startY) {
+  const overlay = document.getElementById('drawOverlay');
+  const chartEl = document.getElementById('lwchart');
+  const isZone = ['demand','supply'].includes(type);
+
+  function onMouseMove(e) {
+    e.preventDefault();
+    const rect = chartEl.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    acRedrawCanvas();
+    const ctx = acCtx;
+    if (!ctx) return;
+
+    if (isZone) {
+      const endPrice = acCandleSeries.coordinateToPrice(y);
+      if (endPrice == null) return;
+      const topPrice = Math.max(startPrice, endPrice);
+      const bottomPrice = Math.min(startPrice, endPrice);
+      const color = type === 'demand' ? 'rgba(59,130,246,0.2)' : 'rgba(124,58,237,0.2)';
+      const borderColor = type === 'demand' ? '#3B82F6' : '#7C3AED';
+      const topY = acCandleSeries.priceToCoordinate(topPrice);
+      const bottomY = acCandleSeries.priceToCoordinate(bottomPrice);
+      if (topY == null || bottomY == null) return;
+      ctx.fillStyle = color;
+      ctx.fillRect(0, topY, ctx.canvas.width, bottomY - topY);
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, topY, ctx.canvas.width, bottomY - topY);
+    } else {
+      const x1 = acChart.timeScale().timeToCoordinate(startTime) ?? startX;
+      const y1 = acCandleSeries.priceToCoordinate(startPrice) ?? startY;
+      const x2 = x, y2 = y;
+      if (x1 == null || y1 == null) return;
+      ctx.strokeStyle = '#10B981';
+      ctx.lineWidth = 2;
+      if (['trendline','ray','extline','hray','vline'].includes(type)) {
+        ctx.beginPath();
+        if (type === 'vline') { ctx.moveTo(x1, 0); ctx.lineTo(x1, ctx.canvas.height); }
+        else if (type === 'hray') { ctx.moveTo(x1, y1); ctx.lineTo(ctx.canvas.width, y1); }
+        else if (type === 'extline' || type === 'ray') {
+          const slope = (y2 - y1) / (x2 - x1 || 1);
+          ctx.moveTo(type === 'extline' ? 0 : x1, type === 'extline' ? y1 - slope * x1 : y1);
+          ctx.lineTo(x2, y2);
+          ctx.lineTo(ctx.canvas.width, y1 + slope * (ctx.canvas.width - x1));
+        } else { ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); }
+        ctx.stroke();
+      } else if (['rect','ellipse'].includes(type)) {
+        const w = x2 - x1, h = y2 - y1;
+        ctx.fillStyle = 'rgba(16,185,129,0.1)';
+        if (type === 'rect') { ctx.fillRect(x1, y1, w, h); ctx.strokeRect(x1, y1, w, h); }
+        else { ctx.beginPath(); ctx.ellipse(x1 + w/2, y1 + h/2, Math.abs(w/2), Math.abs(h/2), 0, 0, 2*Math.PI); ctx.fill(); ctx.stroke(); }
+      } else if (['channel','pitchfork'].includes(type)) {
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(x1, y1 + (y2 - y1) * 0.5); ctx.lineTo(x2, y2 + (y2 - y1) * 0.5); ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (['fib','fibext'].includes(type)) {
+        const levels = type === 'fib' ? [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1] : [0, 0.618, 1, 1.618, 2.618, 4.236];
+        const colors = ['#EF4444','#F59E0B','#10B981','#3B82F6','#7C3AED','#EC4899','#6B7280'];
+        levels.forEach((l, i) => { const ly = y1 + (y2 - y1) * l; ctx.strokeStyle = colors[i % colors.length]; ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(ctx.canvas.width, ly); ctx.stroke(); ctx.fillStyle = colors[i % colors.length]; ctx.font = '10px Inter'; ctx.fillText((l * 100).toFixed(1) + '%', 4, ly - 3); });
+      } else if (['pricemeasure','datemeasure'].includes(type)) {
+        ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]);
+        const priceDiff = Math.abs((acCandleSeries.coordinateToPrice(y2) || 0) - (startPrice || 0));
+        ctx.fillStyle = '#10B981'; ctx.font = '11px Inter'; ctx.fillText('$' + priceDiff.toFixed(2), (x1+x2)/2 + 5, (y1+y2)/2);
+      } else if (type === 'ruler') {
+        ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]);
+        const dist = Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+        ctx.fillStyle = '#10B981'; ctx.font = '12px Inter'; ctx.fillText(dist.toFixed(0) + 'px', (x1+x2)/2, (y1+y2)/2);
+      }
+    }
+  }
+
+  function onMouseUp(e) {
+    overlay.removeEventListener('mousemove', onMouseMove);
+    overlay.removeEventListener('mouseup', onMouseUp);
+    const rect = chartEl.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (isZone) {
+      const endPrice = acCandleSeries.coordinateToPrice(y);
+      if (endPrice !== null && endPrice !== startPrice) {
+        const top = Math.max(startPrice, endPrice), bottom = Math.min(startPrice, endPrice);
+        const borderColor = type === 'demand' ? '#3B82F6' : '#7C3AED';
+        const label = type === 'demand' ? 'DEMAND' : 'SUPPLY';
+        const tl = acCandleSeries.createPriceLine({ price: top, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↑' });
+        const bl = acCandleSeries.createPriceLine({ price: bottom, color: borderColor, lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: label + ' ↓' });
+        acZones.push({ type, top, bottom, tl, bl });
+        document.getElementById('zoneLegend').style.display = 'block';
+        document.getElementById('priceMeta').textContent = `${label} zone: $${bottom.toFixed(2)} — $${top.toFixed(2)}`;
+        acDrawingStack.push({ zones: acZones.length });
+      }
+    } else {
+      const endPrice = acCandleSeries.coordinateToPrice(y);
+      const endTime = acChart.timeScale().coordinateToTime(x);
+      const ep = endPrice ?? 0, et = endTime ?? 0;
+      const sp = startPrice ?? 0, st = startTime ?? 0;
+      if ((ep !== 0 || et !== 0) && (sp !== ep || st !== et)) {
+        acDrawings.push({ type, points: [{ time: st, price: sp }, { time: et, price: ep }] });
+        acDrawingStack.push({ drawing: acDrawings.length });
+      }
+    }
+    acDrawMode = null;
+    acRedrawCanvas();
+    document.querySelectorAll('.draw-btn, .lt-btn, .lt-flyout-item').forEach(b => b.classList.remove('active'));
+    acUpdateChartCursor();
+  }
+
+  overlay.addEventListener('mousemove', onMouseMove);
+  overlay.addEventListener('mouseup', onMouseUp);
 }
 
 function acStartZoneDrag(type, startPrice, startTime, startX, startY) {
@@ -1573,14 +1694,14 @@ function acUpdateChartCursor() {
   if (!el) return;
   if (acDrawMode === 'eraser') el.style.cursor = 'grab';
   else el.style.cursor = acDrawMode ? 'crosshair' : 'default';
-  // Toggle chart scroll/scale and canvas pointer-events based on draw mode
-  const canvas = document.getElementById('drawingCanvas');
+  // Toggle drawing overlay and chart scroll based on draw mode
+  const overlay = document.getElementById('drawOverlay');
   if (acDrawMode) {
     if (acChart) acChart.applyOptions({ handleScroll: false, handleScale: false });
-    if (canvas) canvas.style.pointerEvents = 'auto';
+    if (overlay) { overlay.style.display = 'block'; overlay.style.cursor = acDrawMode === 'eraser' ? 'grab' : 'crosshair'; }
   } else {
     if (acChart) acChart.applyOptions({ handleScroll: true, handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true } });
-    if (canvas) canvas.style.pointerEvents = 'none';
+    if (overlay) overlay.style.display = 'none';
   }
   const status = document.getElementById('drawToolStatus');
   if (status) {
