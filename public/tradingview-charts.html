@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Impact Trading Academy — Live Charts</title>
 
-<!-- TradingView Charting Library (Advanced Charts) -->
-<script src="https://charting-library.tradingview-widget.com/charting_library/charting_library.standalone.js"></script>
-<script src="https://charting-library.tradingview-widget.com/datafeeds/udf/dist/bundle.js"></script>
-
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
@@ -84,13 +80,13 @@
 
   /* Top Bar Right */
   .top-bar-right { display: flex; align-items: center; gap: 10px; }
-  .indicator-btn, .fullscreen-btn, .screenshot-btn, .back-btn {
+  .fullscreen-btn, .back-btn {
     background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
     padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 600;
     cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px;
     transition: all 0.15s;
   }
-  .indicator-btn:hover, .fullscreen-btn:hover, .screenshot-btn:hover, .back-btn:hover { color: var(--text); border-color: var(--green); background: var(--bg-hover); }
+  .fullscreen-btn:hover, .back-btn:hover { color: var(--text); border-color: var(--green); background: var(--bg-hover); }
   .back-btn { color: var(--green-light); border-color: var(--green); }
 
   /* Price Display */
@@ -104,7 +100,7 @@
 
   /* ===== CHART CONTAINER ===== */
   #tv_chart_container {
-    flex: 1; width: 100%; min-height: 0;
+    flex: 1; width: 100%; min-height: 0; position: relative;
   }
 
   /* ===== BOTTOM BAR ===== */
@@ -115,9 +111,7 @@
   }
   .bottom-bar a { color: var(--green-light); text-decoration: none; }
   .bottom-bar a:hover { text-decoration: underline; }
-  .data-status {
-    display: flex; align-items: center; gap: 6px;
-  }
+  .data-status { display: flex; align-items: center; gap: 6px; }
   .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-light); animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
@@ -163,14 +157,14 @@
 
     <!-- Symbol Search -->
     <div class="symbol-input-wrap">
-      <span class="icon">🔍</span>
+      <span class="icon">&#128269;</span>
       <input type="text" id="symbolInput" value="AAPL" placeholder="Search symbol..." autocomplete="off" spellcheck="false">
       <div class="search-results" id="searchResults"></div>
     </div>
 
     <!-- Price Display -->
     <div class="price-display">
-      <span class="price-current" id="priceDisplay">—</span>
+      <span class="price-current" id="priceDisplay">&mdash;</span>
       <span class="price-change" id="priceChange"></span>
     </div>
 
@@ -191,10 +185,8 @@
   </div>
 
   <div class="top-bar-right">
-    <button class="indicator-btn" id="indicatorsBtn" title="Add Indicators">📊 Indicators</button>
-    <button class="screenshot-btn" id="screenshotBtn" title="Take Screenshot">📸 Screenshot</button>
-    <button class="fullscreen-btn" id="fullscreenBtn" title="Fullscreen">⛶ Fullscreen</button>
-    <a href="/" class="back-btn">← Back to Academy</a>
+    <button class="fullscreen-btn" id="fullscreenBtn" title="Fullscreen">&#x26F6; Fullscreen</button>
+    <a href="/" class="back-btn">&larr; Back to Academy</a>
   </div>
 </div>
 
@@ -205,12 +197,15 @@
 <div class="bottom-bar">
   <div class="data-status">
     <div class="status-dot"></div>
-    <span>Market data via Yahoo Finance (15-min delayed) · Powered by <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView</a></span>
+    <span>Real-time market data &middot; Powered by <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView</a></span>
   </div>
   <div>
-    <span>Impact Trading Academy · Mission Metrics</span>
+    <span>Impact Trading Academy &middot; Mission Metrics</span>
   </div>
 </div>
+
+<!-- TradingView Widget Script -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
 // =============================================================================
@@ -227,102 +222,63 @@ let currentResolution = DEFAULT_RESOLUTION;
 let searchTimeout = null;
 
 // =============================================================================
-// INITIALIZE TRADINGVIEW CHARTING LIBRARY
+// TRADINGVIEW ADVANCED CHARTS WIDGET
 // =============================================================================
 
 function initChart(symbol, resolution) {
-  // Destroy existing widget if it exists (prevent memory leak)
-  if (tvWidget) {
-    try { tvWidget.remove(); } catch (e) {}
-    tvWidget = null;
-  }
-
-  currentSymbol = symbol || DEFAULT_SYMBOL;
+  currentSymbol = (symbol || DEFAULT_SYMBOL).toUpperCase();
   currentResolution = resolution || DEFAULT_RESOLUTION;
 
-  const widgetOptions = {
-    // === Core Configuration ===
+  // Clear existing widget
+  const container = document.getElementById('tv_chart_container');
+  container.innerHTML = '';
+
+  // Map our resolution codes to TradingView widget intervals
+  var intervalMap = {
+    '1': '1', '5': '5', '15': '15', '30': '30',
+    '60': '60', '240': '240',
+    'D': 'D', 'W': 'W', 'M': 'M'
+  };
+  var tvInterval = intervalMap[currentResolution] || 'D';
+
+  tvWidget = new TradingView.widget({
+    // Core
     symbol: currentSymbol,
-    interval: currentResolution,
-    container: 'tv_chart_container',
-    library_path: 'https://charting-library.tradingview-widget.com/charting_library/',
+    interval: tvInterval,
+    container_id: 'tv_chart_container',
+    autosize: true,
 
-    // === Data Feed — UDF adapter pointing to our backend ===
-    datafeed: new Datafeeds.UDFCompatibleDatafeed(API_BASE + '/api/udf', 15000),
-
-    // === Locale & Timezone ===
+    // Theme — Mission Metrics Dark
+    theme: 'dark',
+    style: '1',  // Candlestick
+    toolbar_bg: '#1B2A4A',
     locale: 'en',
     timezone: 'America/New_York',
 
-    // === Size ===
-    autosize: true,
-    fullscreen: false,
+    // Features
+    enable_publishing: false,
+    allow_symbol_change: true,
+    save_image: true,
+    hide_top_toolbar: false,
+    hide_legend: false,
+    hide_side_toolbar: false,
+    withdateranges: true,
+    details: true,
+    hotlist: false,
+    calendar: false,
+    show_popup_button: true,
+    popup_width: '1000',
+    popup_height: '650',
 
-    // === Theme — Mission Metrics Dark ===
-    theme: 'dark',
-    toolbar_bg: '#1B2A4A',
-    loading_screen: {
-      backgroundColor: '#0F1724',
-      foregroundColor: '#10B981'
-    },
-
-    // === Custom CSS for Mission Metrics branding ===
-    custom_css_url: '',
-
-    // === Chart Features ===
-    enabled_features: [
-      'study_templates',
-      'use_localstorage_for_settings',
-      'save_chart_properties_to_local_storage',
-      'side_toolbar_in_fullscreen_mode',
-      'header_in_fullscreen_mode',
-      'show_logo_on_all_charts',
-      'header_symbol_search',
-      'header_chart_type',
-      'header_compare',
-      'header_undo_redo',
-      'header_screenshot',
-      'header_fullscreen_button',
-      'header_settings',
-      'header_indicators',
-      'legend_widget',
-      'left_toolbar',
-      'control_bar',
-      'timeframes_toolbar',
-      'volume_force_overlay',
-      'create_volume_indicator_by_default',
-      'display_market_status',
-      'popup_hints'
-    ],
-    disabled_features: [
-      'header_saveload',
-      'use_demo_property_pages',
-      'countdown',
-      'trading_notifications',
-      'border_around_the_chart'
+    // Default studies (indicators)
+    studies: [
+      'MASimple@tv-basicstudies',
+      'Volume@tv-basicstudies'
     ],
 
-    // === Time Frames (bottom bar) ===
-    time_frames: [
-      { text: '1D', resolution: '5', description: '1 Day', title: '1D' },
-      { text: '5D', resolution: '15', description: '5 Days', title: '5D' },
-      { text: '1M', resolution: '60', description: '1 Month', title: '1M' },
-      { text: '3M', resolution: 'D', description: '3 Months', title: '3M' },
-      { text: '6M', resolution: 'D', description: '6 Months', title: '6M' },
-      { text: '1Y', resolution: 'D', description: '1 Year', title: '1Y' },
-      { text: '5Y', resolution: 'W', description: '5 Years', title: '5Y' },
-      { text: 'ALL', resolution: 'M', description: 'All Data', title: 'ALL' }
-    ],
-
-    // === Favorites (default studies and chart types) ===
-    favorites: {
-      intervals: ['5', '15', '60', 'D', 'W'],
-      chartTypes: ['Candles', 'Line', 'Area', 'Hollow Candles', 'Heikin Ashi', 'Bars']
-    },
-
-    // === Overrides — Mission Metrics color scheme ===
+    // Appearance overrides
     overrides: {
-      // Main chart area
+      // Chart background
       'paneProperties.backgroundType': 'solid',
       'paneProperties.background': '#0F1724',
       'paneProperties.vertGridProperties.color': 'rgba(42, 58, 82, 0.3)',
@@ -330,7 +286,7 @@ function initChart(symbol, resolution) {
       'scalesProperties.textColor': '#94A3B8',
       'scalesProperties.lineColor': '#2A3A52',
 
-      // Candle colors — Standard trading: Green UP, Red DOWN
+      // Candle colors — Green UP, Red DOWN
       'mainSeriesProperties.candleStyle.upColor': '#10B981',
       'mainSeriesProperties.candleStyle.downColor': '#EF4444',
       'mainSeriesProperties.candleStyle.borderUpColor': '#10B981',
@@ -338,13 +294,13 @@ function initChart(symbol, resolution) {
       'mainSeriesProperties.candleStyle.wickUpColor': '#10B981',
       'mainSeriesProperties.candleStyle.wickDownColor': '#EF4444',
 
-      // Hollow candle colors
+      // Hollow candle
       'mainSeriesProperties.hollowCandleStyle.upColor': '#10B981',
       'mainSeriesProperties.hollowCandleStyle.downColor': '#EF4444',
       'mainSeriesProperties.hollowCandleStyle.borderUpColor': '#10B981',
       'mainSeriesProperties.hollowCandleStyle.borderDownColor': '#EF4444',
 
-      // Bar colors
+      // Bar
       'mainSeriesProperties.barStyle.upColor': '#10B981',
       'mainSeriesProperties.barStyle.downColor': '#EF4444',
 
@@ -364,15 +320,12 @@ function initChart(symbol, resolution) {
       'mainSeriesProperties.areaStyle.color1': 'rgba(16, 185, 129, 0.28)',
       'mainSeriesProperties.areaStyle.color2': 'rgba(16, 185, 129, 0.02)',
 
-      // Crosshair
-      'paneProperties.crossHairProperties.color': '#64748B',
-
-      // Volume
+      // Volume colors
       'volume.volume.color.0': 'rgba(239, 68, 68, 0.5)',
-      'volume.volume.color.1': 'rgba(16, 185, 129, 0.5)',
+      'volume.volume.color.1': 'rgba(16, 185, 129, 0.5)'
     },
 
-    // === Studies (indicator) style overrides ===
+    // Studies overrides
     studies_overrides: {
       'volume.volume.color.0': 'rgba(239, 68, 68, 0.5)',
       'volume.volume.color.1': 'rgba(16, 185, 129, 0.5)',
@@ -383,69 +336,56 @@ function initChart(symbol, resolution) {
       'moving average.plot.color': '#F59E0B',
       'moving average exponential.plot.color': '#8B5CF6',
       'relative strength index.plot.color': '#10B981',
-      'relative strength index.hlines background.color': 'rgba(16, 185, 129, 0.05)',
       'macd.macd.color': '#10B981',
       'macd.signal.color': '#EF4444',
       'stochastic.%k.color': '#10B981',
       'stochastic.%d.color': '#EF4444'
     },
 
-    // === Debugging (disable in production) ===
-    debug: false
-  };
-
-  // Create the widget
-  tvWidget = new TradingView.widget(widgetOptions);
-
-  // Wire up events once chart is ready
-  tvWidget.onChartReady(function () {
-    // Hide loading
-    document.getElementById('loadingOverlay').classList.add('hidden');
-
-    const chart = tvWidget.activeChart();
-
-    // Update price display on symbol change or data load
-    chart.onSymbolChanged().subscribe(null, function (symbolInfo) {
-      currentSymbol = symbolInfo.name || symbolInfo.ticker;
-      document.getElementById('symbolInput').value = currentSymbol;
-      updatePriceDisplay();
-    });
-
-    chart.onIntervalChanged().subscribe(null, function (interval) {
-      currentResolution = interval;
-      updateIntervalButtons();
-    });
-
-    // Update crosshair price
-    chart.crossHairMoved().subscribe(null, function (params) {
-      if (params.price && params.price > 0) {
-        document.getElementById('priceDisplay').textContent = '$' + params.price.toFixed(2);
-      }
-    });
-
-    // Initial price fetch
-    updatePriceDisplay();
+    // Loading screen
+    loading_screen: {
+      backgroundColor: '#0F1724',
+      foregroundColor: '#10B981'
+    }
   });
+
+  // Hide loading overlay once widget iframe loads
+  var checkLoaded = setInterval(function () {
+    var iframe = container.querySelector('iframe');
+    if (iframe) {
+      clearInterval(checkLoaded);
+      iframe.addEventListener('load', function () {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+      });
+      // Fallback: hide loading after 4 seconds max
+      setTimeout(function () {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+      }, 4000);
+    }
+  }, 200);
+
+  // Update price display
+  updatePriceDisplay();
 }
 
 // =============================================================================
-// PRICE DISPLAY
+// PRICE DISPLAY (via our Yahoo Finance backend)
 // =============================================================================
 
 async function updatePriceDisplay() {
   try {
-    const resp = await fetch(API_BASE + '/api/stock-data?symbol=' + encodeURIComponent(currentSymbol) + '&range=5d&interval=1d');
+    var resp = await fetch(API_BASE + '/api/stock-data?symbol=' + encodeURIComponent(currentSymbol) + '&range=5d&interval=1d');
     if (!resp.ok) return;
-    const data = await resp.json();
-    const price = data.regularMarketPrice || 0;
-    const prevClose = data.previousClose || 0;
+    var data = await resp.json();
+    var price = data.regularMarketPrice || 0;
+    var prevClose = data.previousClose || 0;
 
     if (price > 0) {
       document.getElementById('priceDisplay').textContent = '$' + price.toFixed(2);
       if (prevClose > 0) {
-        const change = price - prevClose;
-        const pct = (change / prevClose * 100);
-        const el = document.getElementById('priceChange');
+        var change = price - prevClose;
+        var pct = (change / prevClose * 100);
+        var el = document.getElementById('priceChange');
         el.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + ' (' + (change >= 0 ? '+' : '') + pct.toFixed(2) + '%)';
         el.className = 'price-change ' + (change >= 0 ? 'up' : 'down');
       }
@@ -456,22 +396,22 @@ async function updatePriceDisplay() {
 }
 
 // =============================================================================
-// SYMBOL SEARCH
+// SYMBOL SEARCH (via our Yahoo Finance backend)
 // =============================================================================
 
-const symbolInput = document.getElementById('symbolInput');
-const searchResults = document.getElementById('searchResults');
+var symbolInput = document.getElementById('symbolInput');
+var searchResults = document.getElementById('searchResults');
 
 symbolInput.addEventListener('input', function () {
   clearTimeout(searchTimeout);
-  const q = this.value.trim();
+  var q = this.value.trim();
   if (q.length < 1) { searchResults.classList.remove('active'); return; }
 
   searchTimeout = setTimeout(async function () {
     try {
-      const resp = await fetch(API_BASE + '/api/stock-search?q=' + encodeURIComponent(q));
+      var resp = await fetch(API_BASE + '/api/stock-search?q=' + encodeURIComponent(q));
       if (!resp.ok) return;
-      const results = await resp.json();
+      var results = await resp.json();
 
       if (results.length === 0) { searchResults.classList.remove('active'); return; }
 
@@ -482,10 +422,9 @@ symbolInput.addEventListener('input', function () {
       }).join('');
       searchResults.classList.add('active');
 
-      // Click handlers
       searchResults.querySelectorAll('.search-result-item').forEach(function (item) {
         item.addEventListener('click', function () {
-          const sym = this.dataset.symbol;
+          var sym = this.dataset.symbol;
           symbolInput.value = sym;
           searchResults.classList.remove('active');
           changeSymbol(sym);
@@ -498,7 +437,7 @@ symbolInput.addEventListener('input', function () {
 symbolInput.addEventListener('keydown', function (e) {
   if (e.key === 'Enter') {
     searchResults.classList.remove('active');
-    const sym = this.value.trim().toUpperCase();
+    var sym = this.value.trim().toUpperCase();
     if (sym) changeSymbol(sym);
   }
   if (e.key === 'Escape') {
@@ -514,11 +453,9 @@ document.addEventListener('click', function (e) {
 
 function changeSymbol(symbol) {
   currentSymbol = symbol.toUpperCase();
-  if (tvWidget) {
-    tvWidget.setSymbol(currentSymbol, currentResolution, function () {
-      updatePriceDisplay();
-    });
-  }
+  symbolInput.value = currentSymbol;
+  // Recreate widget with new symbol (most reliable method)
+  initChart(currentSymbol, currentResolution);
 }
 
 // =============================================================================
@@ -526,14 +463,13 @@ function changeSymbol(symbol) {
 // =============================================================================
 
 document.getElementById('intervalBar').addEventListener('click', function (e) {
-  const btn = e.target.closest('.interval-btn');
+  var btn = e.target.closest('.interval-btn');
   if (!btn) return;
-  const res = btn.dataset.res;
+  var res = btn.dataset.res;
   currentResolution = res;
   updateIntervalButtons();
-  if (tvWidget) {
-    tvWidget.setSymbol(currentSymbol, res, function () {});
-  }
+  // Recreate widget with new interval
+  initChart(currentSymbol, currentResolution);
 });
 
 function updateIntervalButtons() {
@@ -546,32 +482,9 @@ function updateIntervalButtons() {
 // TOOLBAR BUTTONS
 // =============================================================================
 
-// Indicators button — opens TradingView's built-in indicators dialog
-document.getElementById('indicatorsBtn').addEventListener('click', function () {
-  if (tvWidget) {
-    tvWidget.activeChart().executeActionById('insertIndicator');
-  }
-});
-
-// Screenshot button
-document.getElementById('screenshotBtn').addEventListener('click', async function () {
-  if (!tvWidget) return;
-  try {
-    const canvas = await tvWidget.takeClientScreenshot();
-    const link = document.createElement('a');
-    link.download = currentSymbol + '_chart_' + new Date().toISOString().slice(0, 10) + '.png';
-    link.href = canvas.toDataURL('image/png');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } catch (e) {
-    console.error('Screenshot failed:', e);
-  }
-});
-
 // Fullscreen button
 document.getElementById('fullscreenBtn').addEventListener('click', function () {
-  const container = document.getElementById('tv_chart_container');
+  var container = document.getElementById('tv_chart_container');
   if (document.fullscreenElement) {
     document.exitFullscreen();
   } else {
@@ -580,11 +493,11 @@ document.getElementById('fullscreenBtn').addEventListener('click', function () {
 });
 
 // =============================================================================
-// URL PARAMS (deep linking)
+// URL PARAMS (deep linking — supports ?symbol=AAPL&interval=D)
 // =============================================================================
 
 function getUrlParams() {
-  const params = new URLSearchParams(window.location.search);
+  var params = new URLSearchParams(window.location.search);
   return {
     symbol: (params.get('symbol') || params.get('s') || DEFAULT_SYMBOL).toUpperCase(),
     resolution: params.get('resolution') || params.get('interval') || params.get('r') || DEFAULT_RESOLUTION
@@ -596,30 +509,23 @@ function getUrlParams() {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', function () {
-  const params = getUrlParams();
-  document.getElementById('symbolInput').value = params.symbol;
+  var params = getUrlParams();
+  symbolInput.value = params.symbol;
+  currentSymbol = params.symbol;
   currentResolution = params.resolution;
   updateIntervalButtons();
 
-  // Small delay to ensure scripts are fully loaded
+  // Small delay to ensure tv.js is fully loaded
   setTimeout(function () {
-    if (typeof TradingView !== 'undefined' && typeof Datafeeds !== 'undefined') {
+    if (typeof TradingView !== 'undefined') {
       initChart(params.symbol, params.resolution);
     } else {
       document.getElementById('loadingOverlay').innerHTML =
         '<p style="color: #EF4444; text-align: center; padding: 20px;">' +
-        'Failed to load TradingView Charting Library.<br>' +
+        'Failed to load TradingView Charts.<br>' +
         'Please check your internet connection and refresh the page.</p>';
     }
-  }, 500);
-});
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', function () {
-  if (tvWidget) {
-    try { tvWidget.remove(); } catch (e) {}
-    tvWidget = null;
-  }
+  }, 300);
 });
 </script>
 </body>
