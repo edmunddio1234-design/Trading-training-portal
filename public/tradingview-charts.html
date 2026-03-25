@@ -80,13 +80,13 @@
 
   /* Top Bar Right */
   .top-bar-right { display: flex; align-items: center; gap: 10px; }
-  .fullscreen-btn, .back-btn {
+  .fullscreen-btn, .back-btn, .theme-btn {
     background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
     padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 600;
     cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px;
     transition: all 0.15s;
   }
-  .fullscreen-btn:hover, .back-btn:hover { color: var(--text); border-color: var(--green); background: var(--bg-hover); }
+  .fullscreen-btn:hover, .back-btn:hover, .theme-btn:hover { color: var(--text); border-color: var(--green); background: var(--bg-hover); }
   .back-btn { color: var(--green-light); border-color: var(--green); }
 
   /* Price Display */
@@ -192,6 +192,7 @@
   </div>
 
   <div class="top-bar-right">
+    <button class="theme-btn" id="themeBtn" title="Toggle Light/Dark Mode">&#9788; Light</button>
     <button class="fullscreen-btn" id="fullscreenBtn" title="Fullscreen">&#x26F6; Fullscreen</button>
     <a href="/" class="back-btn">&larr; Back to Academy</a>
   </div>
@@ -227,6 +228,7 @@ let tvWidget = null;
 let currentSymbol = DEFAULT_SYMBOL;
 let currentResolution = DEFAULT_RESOLUTION;
 let searchTimeout = null;
+let currentTheme = 'dark';
 
 // =============================================================================
 // TRADINGVIEW ADVANCED CHARTS WIDGET
@@ -255,10 +257,10 @@ function initChart(symbol, resolution) {
     container_id: 'tv_chart_container',
     autosize: true,
 
-    // Theme — Mission Metrics Dark
-    theme: 'dark',
+    // Theme
+    theme: currentTheme,
     style: '1',  // Candlestick
-    toolbar_bg: '#1B2A4A',
+    toolbar_bg: currentTheme === 'dark' ? '#1B2A4A' : '#F8FAFC',
     locale: 'en',
     timezone: 'America/New_York',
 
@@ -287,11 +289,11 @@ function initChart(symbol, resolution) {
     overrides: {
       // Chart background
       'paneProperties.backgroundType': 'solid',
-      'paneProperties.background': '#0F1724',
-      'paneProperties.vertGridProperties.color': 'rgba(42, 58, 82, 0.3)',
-      'paneProperties.horzGridProperties.color': 'rgba(42, 58, 82, 0.3)',
-      'scalesProperties.textColor': '#94A3B8',
-      'scalesProperties.lineColor': '#2A3A52',
+      'paneProperties.background': currentTheme === 'dark' ? '#0F1724' : '#FFFFFF',
+      'paneProperties.vertGridProperties.color': currentTheme === 'dark' ? 'rgba(42, 58, 82, 0.3)' : 'rgba(42, 58, 82, 0.08)',
+      'paneProperties.horzGridProperties.color': currentTheme === 'dark' ? 'rgba(42, 58, 82, 0.3)' : 'rgba(42, 58, 82, 0.08)',
+      'scalesProperties.textColor': currentTheme === 'dark' ? '#94A3B8' : '#64748B',
+      'scalesProperties.lineColor': currentTheme === 'dark' ? '#2A3A52' : '#E2E8F0',
 
       // Candle colors — Green UP, Red DOWN
       'mainSeriesProperties.candleStyle.upColor': '#10B981',
@@ -351,7 +353,7 @@ function initChart(symbol, resolution) {
 
     // Loading screen
     loading_screen: {
-      backgroundColor: '#0F1724',
+      backgroundColor: currentTheme === 'dark' ? '#0F1724' : '#FFFFFF',
       foregroundColor: '#10B981'
     }
   });
@@ -488,6 +490,42 @@ function updateIntervalButtons() {
 // =============================================================================
 // TOOLBAR BUTTONS
 // =============================================================================
+
+// Theme toggle button
+document.getElementById('themeBtn').addEventListener('click', function () {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  var btn = document.getElementById('themeBtn');
+  var isLight = currentTheme === 'light';
+
+  // Update button text
+  btn.innerHTML = isLight ? '&#9790; Dark' : '&#9788; Light';
+
+  // Update page chrome for light mode
+  var topBar = document.querySelector('.top-bar');
+  var bottomBar = document.querySelector('.bottom-bar');
+  var body = document.body;
+
+  if (isLight) {
+    body.style.background = '#F8FAFC';
+    topBar.style.background = '#F1F5F9';
+    topBar.style.borderBottomColor = '#CBD5E1';
+    bottomBar.style.background = '#F1F5F9';
+    bottomBar.style.borderTopColor = '#CBD5E1';
+    bottomBar.style.color = '#64748B';
+    btn.style.color = '#334155';
+  } else {
+    body.style.background = '';
+    topBar.style.background = '';
+    topBar.style.borderBottomColor = '';
+    bottomBar.style.background = '';
+    bottomBar.style.borderTopColor = '';
+    bottomBar.style.color = '';
+    btn.style.color = '';
+  }
+
+  // Recreate chart with new theme
+  initChart(currentSymbol, currentResolution);
+});
 
 // Fullscreen button
 document.getElementById('fullscreenBtn').addEventListener('click', function () {
