@@ -294,11 +294,55 @@ app.post('/api/generate-visual', async (req, res) => {
 });
 
 app.post('/api/regenerate-visual', async (req, res) => {
-  const { moduleId, sectionIndex } = req.body;
-  const imageKey = `image_${moduleId}_s${sectionIndex}`;
-  try { await kv.del(imageKey); } catch (e) {}
-  req.url = '/api/generate-visual';
-  app.handle(req, res);
+  try {
+    const { moduleId, sectionIndex, sectionTitle, sectionContent, moduleTitle } = req.body;
+    const imageId = `${moduleId}_s${sectionIndex}`;
+    const imageKey = `image_${imageId}`;
+
+    // Delete cached image first
+    try { await kv.del(imageKey); } catch (e) { console.error('Cache delete error:', e); }
+
+    // Get API key
+    const settings = await kvGet('settings', {});
+    const apiKey = settings.geminiApiKey || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(400).json({ error: 'No Gemini API key configured. Go to Settings to add your key.' });
+    }
+
+    // Generate new image directly (no app.handle redirect)
+    const ai = new GoogleGenAI({ apiKey });
+    const prompt = buildImagePrompt(moduleTitle, sectionTitle, sectionContent);
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: prompt,
+      config: { responseModalities: ['TEXT', 'IMAGE'] }
+    });
+
+    let imageData = null;
+    let mimeType = 'image/png';
+
+    if (response.candidates && response.candidates[0]) {
+      const parts = response.candidates[0].content.parts;
+      for (const part of parts) {
+        if (part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')) {
+          imageData = part.inlineData.data;
+          mimeType = part.inlineData.mimeType;
+          break;
+        }
+      }
+    }
+
+    if (imageData) {
+      await kvSet(imageKey, { imageData, mimeType });
+      return res.json({ success: true, imageUrl: `/api/images/${imageId}.png`, cached: false });
+    }
+
+    return res.json({ success: false, error: 'Image generation returned text only — no image produced.' });
+  } catch (error) {
+    console.error('Regenerate visual error:', error);
+    res.status(500).json({ error: error.message || 'Failed to regenerate image' });
+  }
 });
 
 app.post('/api/generate-module-visuals', async (req, res) => {
@@ -722,7 +766,15 @@ Return ONLY a valid JSON array (no markdown, no code blocks):
     });
 
     let questions = [];
-    const text = response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    // Support both @google/genai v1.x response formats
+    const text = response.candidates?.[0]?.content?.parts?.[0]?.text
+      || (typeof response.text === 'string' ? response.text : '')
+      || '';
+
+    if (!text) {
+      console.error('Quiz generation: empty response from Gemini', JSON.stringify(response).substring(0, 500));
+      return res.status(500).json({ error: 'Gemini returned an empty response. The model may be temporarily unavailable.' });
+    }
 
     try {
       questions = JSON.parse(text);
@@ -732,6 +784,7 @@ Return ONLY a valid JSON array (no markdown, no code blocks):
       if (match) {
         questions = JSON.parse(match[0]);
       } else {
+        console.error('Quiz parse failure. Raw text:', text.substring(0, 300));
         return res.status(500).json({ error: 'Failed to parse quiz questions from AI response' });
       }
     }
@@ -873,7 +926,9 @@ Return ONLY valid JSON (no markdown, no code blocks):
       config: { responseMimeType: 'application/json' }
     });
 
-    const text = response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const text = response.candidates?.[0]?.content?.parts?.[0]?.text
+      || (typeof response.text === 'string' ? response.text : '')
+      || '';
     let strategy;
     try {
       strategy = JSON.parse(text);
@@ -3874,3 +3929,4 @@ app.get('/api/health', (req, res) => {
 });
 
 module.exports = app;
+

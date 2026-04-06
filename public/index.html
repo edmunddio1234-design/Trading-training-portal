@@ -2042,6 +2042,7 @@ function MasteryExam({ moduleId, moduleTitle, onPass }) {
   const [submitted, setSubmitted] = useState({});
   const [loading, setLoading] = useState(false);
   const [generated, setGenerated] = useState(false);
+  const [error, setError] = useState(null);
 
   const QUESTIONS_PER_PAGE = 5;
 
@@ -2054,21 +2055,32 @@ function MasteryExam({ moduleId, moduleTitle, onPass }) {
           setQuiz(data.questions || []);
           setGenerated(data.questions?.length > 0);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Quiz load error:', e);
+      }
     }
     load();
   }, [moduleId]);
 
   const generateQuiz = async () => {
     setLoading(true);
+    setError(null);
     try {
-      const res = await fetch(`/api/quizzes/generate/${moduleId}`, { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setQuiz(data.questions || []);
+      const res = await fetch(`/api/quizzes/generate/${moduleId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ force: false })
+      });
+      const data = await res.json();
+      if (data.success && data.questions && data.questions.length > 0) {
+        setQuiz(data.questions);
         setGenerated(true);
+      } else {
+        setError(data.error || 'Quiz generation returned no questions. Check Settings for your Gemini API key.');
       }
-    } catch (e) {}
+    } catch (e) {
+      setError('Network error: ' + e.message);
+    }
     setLoading(false);
   };
 
@@ -2079,6 +2091,7 @@ function MasteryExam({ moduleId, moduleTitle, onPass }) {
         <p style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '12px 0' }}>
           Master this module by passing a 70-question exam with a score of 50/70 (71%). This ensures deep understanding before moving forward.
         </p>
+        {error && <p style={{ fontSize: 13, color: '#dc2626', background: '#fef2f2', padding: '8px 12px', borderRadius: 8, margin: '8px 0' }}>{error}</p>}
         <button className="quiz-btn" onClick={generateQuiz} disabled={loading}>
           {loading ? '⟳ Generating...' : '✦ Generate Quiz'}
         </button>
@@ -3901,3 +3914,4 @@ ReactDOM.render(<AppWithLogin />, document.getElementById('root'));
 </script>
 </body>
 </html>
+
