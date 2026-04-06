@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impact Trading Academy - TradingView Practice Lab</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --bg-primary: #F0F5F3;
+    --bg-secondary: #FFFFFF;
+    --bg-card: #F7FAF9;
+    --bg-hover: #E8F0ED;
+    --accent: #0D9373;
+    --accent-light: #10B981;
+    --accent-dark: #0B7A60;
+    --green: #10B981;
+    --green-dark: #0D9373;
+    --red: #EF4444;
+    --blue: #3B82F6;
+    --navy: #1B2A4A;
+    --gold: #F59E0B;
+    --purple: #7C3AED;
+    --text-primary: #1B2A4A;
+    --text-secondary: #374151;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
+    --border-light: #D1D5DB;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR — matches main portal */
+  .sidebar { width: 300px; background: var(--bg-secondary); border-right: 1px solid var(--border); position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+  .sidebar-header { padding: 24px 20px; border-bottom: 1px solid var(--border); background: var(--navy); }
+  .sidebar-header h1 { font-size: 18px; color: #FFFFFF; font-weight: 700; letter-spacing: -0.3px; }
+  .sidebar-header h1 span { color: var(--accent-light); }
+  .sidebar-header p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .back-link { display: flex; align-items: center; gap: 8px; padding: 12px 20px; color: var(--accent); font-size: 13px; text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--border); transition: all 0.2s; }
+  .back-link:hover { background: var(--bg-hover); }
+  .nav-section { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); padding: 12px 20px 6px; font-weight: 600; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; font-size: 13px; color: var(--text-secondary); }
+  .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .nav-item.active { background: rgba(13,147,115,0.08); border-left-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-light); flex-shrink: 0; }
+  .nav-item.active .nav-dot { background: var(--accent); box-shadow: 0 0 8px rgba(13,147,115,0.4); }
+  .nav-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* MAIN CONTENT */
+  .main { margin-left: 300px; flex: 1; }
+  .content-header { padding: 16px 40px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; }
+  .content-body { padding: 40px; max-width: 920px; }
+
+  /* MODULE HEADER */
+  .module-badge { display: inline-block; background: rgba(13,147,115,0.12); color: var(--accent); font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; margin-right: 8px; }
+  .module-badge.intermediate { background: rgba(245,158,11,0.12); color: var(--gold); }
+  .page-title { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; letter-spacing: -0.5px; color: var(--navy); }
+  .page-subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5; }
+
+  /* CARDS — matches portal lesson-section style */
+  .card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
+  .card-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .card-head h3 { font-size: 16px; font-weight: 700; color: var(--navy); }
+  .card-head p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .card-body { padding: 24px; }
+
+  /* PRINCIPLE BOX */
+  .principle-box { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .principle-box h4 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+  .principle-box p { font-size: 14px; color: var(--text-secondary); line-height: 1.75; }
+
+  /* WHY BOX */
+  .why-box { background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .why-box h4 { font-size: 15px; font-weight: 700; color: #065F46; margin-bottom: 10px; }
+  .why-box p { font-size: 14px; color: var(--text-secondary); line-height: 1.75; }
+
+  /* TIP / WARNING BOXES */
+  .tip-box { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+  .tip-box h4 { font-size: 14px; font-weight: 700; color: #5B21B6; margin-bottom: 6px; }
+  .tip-box p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .warn-box { background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+  .warn-box h4 { font-size: 14px; font-weight: 700; color: #92400E; margin-bottom: 6px; }
+  .warn-box p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* STEPS */
+  .steps { counter-reset: step-counter; }
+  .step-item { display: flex; gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .step-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .step-num { counter-increment: step-counter; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  .step-num::before { content: counter(step-counter); }
+  .step-body h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .step-body p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+  .cmd { display: inline-block; background: var(--navy); color: var(--accent-light); font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 13px; padding: 6px 12px; border-radius: 8px; margin-top: 8px; line-height: 1.4; }
+
+  /* EXERCISES */
+  .exercise { background: var(--bg-card); border: 2px dashed var(--border-light); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .exercise h4 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .exercise p { font-size: 14px; color: var(--text-muted); line-height: 1.65; margin-bottom: 8px; }
+  .claude-cmd { background: var(--navy); color: var(--accent-light); font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 13px; padding: 12px 16px; border-radius: 10px; display: block; margin-top: 10px; line-height: 1.5; white-space: pre-wrap; }
+  .claude-cmd-label { display: block; font-size: 10px; color: rgba(255,255,255,0.45); font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .self-check { background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 16px 20px; margin-top: 16px; }
+  .self-check h4 { font-size: 14px; font-weight: 700; color: #065F46; margin-bottom: 8px; }
+  .self-check ul { list-style: none; padding: 0; }
+  .self-check li { font-size: 14px; color: var(--text-secondary); padding: 4px 0 4px 24px; position: relative; line-height: 1.5; }
+  .self-check li::before { content: '\2713'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  /* WELCOME */
+  .welcome { text-align: center; padding: 60px 20px; }
+  .welcome h2 { font-size: 32px; font-weight: 800; color: var(--navy); margin-bottom: 12px; letter-spacing: -0.5px; }
+  .welcome p { font-size: 16px; color: var(--text-muted); max-width: 560px; margin: 0 auto 32px; line-height: 1.6; }
+  .welcome-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 700px; margin: 0 auto 40px; text-align: left; }
+  .wcard { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+  .wcard h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 10px 0 6px; }
+  .wcard p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* TOOLS REFERENCE */
+  .tool-entry { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .tool-entry:last-child { border-bottom: none; }
+  .tool-cmd { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  .tool-row { font-size: 14px; color: var(--text-secondary); margin-bottom: 3px; }
+  .tool-row strong { color: var(--navy); }
+  .tool-example { font-size: 13px; color: var(--text-muted); font-style: italic; }
+
+  /* COLLAPSIBLE */
+  .collapse-trigger { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; cursor: pointer; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; transition: all 0.2s; font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .collapse-trigger:hover { background: var(--bg-hover); }
+  .collapse-trigger .arr { font-size: 12px; color: var(--text-muted); transition: transform 0.2s; }
+  .collapse-trigger.open { border-radius: 10px 10px 0 0; margin-bottom: 0; }
+  .collapse-trigger.open .arr { transform: rotate(90deg); }
+  .collapse-panel { border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; padding: 18px; margin-bottom: 16px; display: none; }
+  .collapse-panel.open { display: block; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+/* ===== MODULE DATA ===== */
+var MODULES = [
+  {id:'m1',icon:'M1',title:'Mindset & The Chasm of Fear',subtitle:'Module 1 \u2014 Psychology Foundation',difficulty:'beginner',
+    principle:{title:'What is the Chasm of Fear?',
+      explanation:'The Chasm of Fear is the emotional gap between knowing what to do and actually doing it with real money. Every new trader faces this. You study charts, learn strategies, understand the math \u2014 but when it is time to press the button, fear takes over. This module teaches you that the fear is normal, expected, and something you can train yourself to work through. The top 5% of traders are not fearless \u2014 they have just practiced enough that their process overrides their emotions.',
+      whyItMatters:'If you skip the mindset work, every other module becomes useless. You will learn the perfect setup but freeze when it appears. You will see a winning trade but close it too early out of fear. The 1% risk rule (which we cover in Module 4) exists specifically because it makes each trade small enough that fear does not control your decisions. Mindset is not soft \u2014 it is the foundation everything else sits on.'},
+    guide:{title:'Setting Up Your TradingView Workspace',intro:'Before you can practice anything, you need your workspace ready. TradingView is the charting platform where you will see price action, draw zones, and test strategies. Think of it as your trading desk \u2014 everything starts here.',
+      steps:[
+        {title:'Open TradingView',detail:'Claude has already connected to your TradingView Desktop app. If the chart is not showing, ask Claude to launch it.',command:'"Launch TradingView for me"'},
+        {title:'Load your first chart',detail:'We will start with SPY (the S&P 500 ETF) on the Daily timeframe. This is the most-watched chart in the world \u2014 it shows you what the overall market is doing. "Daily" means each candle on the chart represents one full trading day.',command:'"Switch my chart to SPY on the daily timeframe"'},
+        {title:'Understand what you see',detail:'Each candle has four pieces of information: the Open (where price started), the High (highest point), the Low (lowest point), and the Close (where it ended). Green candles mean price went UP. Red candles mean price went DOWN. This is called OHLC data.',command:'"Pull the last 20 OHLCV bars for SPY and explain what I am looking at"'},
+        {title:'Take a screenshot to study',detail:'Screenshots help you review what you are learning. Claude can capture your current chart so you can reference it later.',command:'"Take a screenshot of my current chart"'}]},
+    exercises:[
+      {title:'Exercise: Read a Price Chart',desc:'Look at the SPY daily chart. Without any indicators, answer: Is the trend going up, down, or sideways over the last 30 days? Can you spot the biggest single-day move?',cmd:'"Show me SPY on the daily chart and tell me the trend direction over the last 30 days"',checks:['You can identify whether the chart is trending up, down, or sideways','You understand that green = price went up, red = price went down','You know that each candle represents one day on the daily timeframe']},
+      {title:'Exercise: Change Timeframes',desc:'Timeframes change how much time each candle covers. The daily shows one candle per day. The 5-minute shows one candle every 5 minutes. The weekly shows one candle per week. Switch between them and notice how the same stock looks completely different.',cmd:'"Switch SPY to the 5-minute chart, then the weekly, then back to daily \u2014 explain the difference"',checks:['You understand that a 5-minute chart zooms in (more detail, shorter time)','You understand that a weekly chart zooms out (less detail, longer time)','You can ask Claude to switch timeframes whenever you need to']}]},
+
+  {id:'m2',icon:'M2',title:'Supply & Demand Zones',subtitle:'Module 2 \u2014 Where Big Money Acts',difficulty:'beginner',
+    principle:{title:'What are Supply and Demand Zones?',
+      explanation:'Supply and Demand zones are specific price areas on a chart where large institutional traders (banks, hedge funds, pension funds) have placed massive buy or sell orders. A Demand Zone is a price area where buyers overwhelmed sellers \u2014 price dropped to that level and then shot back up. Think of it as a "floor" where big money stepped in to buy. A Supply Zone is the opposite \u2014 a price area where sellers overwhelmed buyers, and price fell after reaching that level. Think of it as a "ceiling." These zones are NOT random lines. They represent real orders from real institutions. When price returns to these zones, there is a high probability it will react the same way again.',
+      whyItMatters:'Supply and Demand zones are where you make your trading decisions. You do not buy at a random price \u2014 you buy at a Demand Zone where institutions are likely to push price up again. You do not sell randomly \u2014 you sell at a Supply Zone. Every strategy in this academy is built around identifying these zones first. Without knowing where the zones are, you are trading blind.'},
+    guide:{title:'Finding and Drawing Supply & Demand Zones',intro:'You are going to learn to spot zones visually on the chart and draw them. A zone is identified by looking for a strong, explosive move away from a price area. The area where that move started is your zone.',
+      steps:[
+        {title:'Load a clean daily chart',detail:'Start with a clean chart \u2014 no indicators cluttering your view. We want to see just the price candles so you can learn to read them directly.',command:'"Switch to AAPL daily chart and remove all indicators"'},
+        {title:'Look for explosive departures',detail:'Scroll through the chart and find where price was moving sideways and then suddenly shot up or down with big candles. The sideways area before the explosive move is your zone. A Demand Zone forms before an upward explosion. A Supply Zone forms before a downward explosion.',command:'"Show me the last 6 months of AAPL and help me identify explosive moves"'},
+        {title:'Draw the Demand Zone',detail:'Once you find a Demand Zone, draw a rectangle from the lowest low of the consolidation area to the highest high of the last candle before the explosive move up. This rectangle is your zone.',command:'"Draw a horizontal rectangle on my chart at the demand zone you identified"'},
+        {title:'Draw the Supply Zone',detail:'Same process in reverse. Find where price consolidated before a big drop. Draw a rectangle covering that consolidation area.',command:'"Draw a supply zone rectangle where you see the most recent supply area"'}]},
+    exercises:[
+      {title:'Exercise: Find 3 Demand Zones on SPY',desc:'Load the SPY daily chart for the last year. Identify 3 areas where price dropped to a level and then bounced back up strongly. These are your demand zones.',cmd:'"On SPY daily, find and draw the 3 strongest demand zones from the last year"',checks:['Each zone sits below where an explosive upward move began','The zones are drawn as rectangles, not single lines','When price returned to any of these zones later, it bounced again']},
+      {title:'Exercise: Find 3 Supply Zones on TSLA',desc:'Load TSLA daily chart. Find 3 areas where price rallied up and then dropped sharply. These are supply zones \u2014 ceilings where sellers took control.',cmd:'"Switch to TSLA daily and draw the 3 strongest supply zones from the last 6 months"',checks:['Each zone sits above where a strong downward move began','You can explain why institutions might be selling at those levels','You understand that zones are areas (ranges), not exact prices']}]},
+
+  {id:'m3',icon:'M3',title:'The Master Surge Strategy',subtitle:'Module 3 \u2014 The Five Pillars',difficulty:'beginner',
+    principle:{title:'What is the Master Surge Strategy?',
+      explanation:'The Master Surge Strategy is the core timing method of the Impact Trading Academy. It answers: "When do I enter a trade?" The strategy is built on Five Pillars that must all align before you trade. Think of it like a checklist \u2014 all five boxes must be checked. The Five Pillars are: (1) Price Cycle Phase \u2014 is the market in accumulation, markup, distribution, or markdown? (2) Volume Surge \u2014 is trading volume confirming the move? (3) Institutional Footprint \u2014 are big players actually participating? (4) Trend Confirmation \u2014 does the overall trend support your direction? (5) Risk Management \u2014 does the trade meet your 1% risk and 3:1 reward rules? When all five align, you have a "surge" \u2014 a high-probability entry.',
+      whyItMatters:'Most beginners lose money because they enter based on one signal. The Master Surge Strategy forces you to confirm from five independent sources before risking money. This dramatically reduces false entries. You will take fewer trades, but the ones you take will have a much higher probability of working.'},
+    guide:{title:'Checking the Five Pillars on Your Chart',intro:'Each pillar can be checked directly on your TradingView chart. We will go through them one at a time.',
+      steps:[
+        {title:'Pillar 1: Price Cycle Phase',detail:'Look at the chart and determine which phase price is in. Accumulation = sideways at the bottom. Markup = trending up. Distribution = sideways at the top. Markdown = trending down. Buy during Accumulation or early Markup.',command:'"On SPY daily, what price cycle phase are we currently in? Show me the evidence."'},
+        {title:'Pillar 2: Volume',detail:'Volume tells you how many shares were traded. High volume on an up move = institutions buying. High volume on a down move = institutions selling. Low volume = possibly fake move.',command:'"Add volume indicator and tell me if volume is confirming the current move"'},
+        {title:'Pillar 3: Institutional Footprint',detail:'Look for: large candles with high volume at zones, gaps (price jumping), and wide-range candles that close near their high (bullish) or low (bearish).',command:'"Analyze the last 30 bars and show me any institutional footprints"'},
+        {title:'Pillar 4: Trend Direction',detail:'Add a 50-period SMA. Price above the 50 SMA pointing up = uptrend. Price below pointing down = downtrend. Only buy in uptrends, only short in downtrends.',command:'"Add a 50-period SMA and tell me the current trend direction"'}]},
+    exercises:[
+      {title:'Exercise: Five Pillar Checklist on SPY',desc:'Right now, on the current SPY daily chart, go through all five pillars. Assess each one. Is this a good time to enter a trade, or should you wait?',cmd:'"Run a Five Pillar analysis on SPY daily right now. Check price cycle, volume, footprints, trend, and tell me if this is a valid setup."',checks:['You can identify which price cycle phase SPY is in','You know whether volume is confirming or diverging','You checked the 50 SMA for trend direction','You made a decision: trade or wait \u2014 and you know WHY']}]},
+
+  {id:'m4',icon:'M4',title:'Risk Management & S.E.T. Rule',subtitle:'Module 4 \u2014 Protect Your Capital',difficulty:'beginner',
+    principle:{title:'What is the S.E.T. Rule?',
+      explanation:'S.E.T. stands for Stop, Entry, Target \u2014 the three price levels you MUST define before entering any trade. Your ENTRY is the exact price where you will buy. Your STOP is the price where you will exit if wrong \u2014 your safety net. Your TARGET is where you take profit. The 1% Rule: never risk more than 1% of your total account on any single trade. $10,000 account = $100 max risk per trade. The 3:1 Rule: your target must be at least 3x the distance of your stop. If your stop is $2 below entry, your target must be at least $6 above entry. This means even if you are wrong on 2 out of 3 trades, you still make money.',
+      whyItMatters:'The S.E.T. Rule is not optional. Without it, you are gambling. The math: if you risk 1% per trade with a 3:1 ratio, you only need to be right 25% of the time to break even. At 40% accuracy (very achievable), you are consistently profitable. The S.E.T. Rule turns trading from a guessing game into a math game.'},
+    guide:{title:'Setting Up S.E.T. Levels on Your Chart',intro:'Every time you see a potential trade, the first thing you do is draw your S.E.T. levels. Claude can help calculate the exact position size.',
+      steps:[
+        {title:'Identify your Entry price',detail:'Your entry is at or near a demand zone (for buys) or supply zone (for sells). Not random \u2014 a level where your analysis says the odds are in your favor.',command:'"On AAPL daily, show me the nearest demand zone where I could set an entry"'},
+        {title:'Place your Stop',detail:'Your stop goes just below the demand zone (for buys). "Just below" means a small buffer \u2014 typically 0.5-1% below the bottom of the zone. If price breaks the zone, you exit.',command:'"Draw my stop loss level just below that demand zone"'},
+        {title:'Calculate your Target',detail:'Measure the distance from entry to stop (your "risk"). Multiply by 3. Example: Entry $150, Stop $147 (risk=$3). Target = $150 + ($3 x 3) = $159.',command:'"Calculate S.E.T. levels: entry at the demand zone, stop below, target at 3:1 ratio. Show all three."'},
+        {title:'Calculate position size',detail:'Account Risk (1% of account) / Trade Risk (entry minus stop) = shares. Example: $10,000 account, 1% = $100. Risk/share = $3. Shares = $100 / $3 = 33.',command:'"I have a $10,000 account. How many shares can I buy while only risking 1%?"'}]},
+    exercises:[
+      {title:'Exercise: Complete S.E.T. on TSLA',desc:'Find a demand zone on TSLA daily. Set entry, stop below, target at 3:1. Calculate position size for $10,000.',cmd:'"Set up a complete S.E.T. trade on TSLA daily at the nearest demand zone. Entry, stop, target at 3:1, position size for $10,000."',checks:['Your stop is below the demand zone','Your target is exactly 3x the stop distance from entry','Your position size keeps risk at 1% ($100)','You can explain WHY each level is where it is']},
+      {title:'Exercise: S.E.T. on a Supply Zone (Short)',desc:'Find a supply zone on QQQ daily. Entry at the zone (selling). Stop ABOVE the zone. Target BELOW at 3:1.',cmd:'"Set up a short S.E.T. trade on QQQ daily at the nearest supply zone."',checks:['Your stop is ABOVE the supply zone','Your target is below entry at 3:1','The math still works: 1% risk, 3:1 reward']}]},
+
+  {id:'m5',icon:'M5',title:'Leverage & Asset Vehicles',subtitle:'Module 5 \u2014 Choose Your Weapon',difficulty:'intermediate',
+    principle:{title:'What are Asset Vehicles?',
+      explanation:'An "asset vehicle" is the type of financial instrument you use to trade. Main types: Stocks (you own shares), ETFs (baskets of stocks like SPY), Options (contracts to buy/sell 100 shares at a specific price), and Futures (contracts for future delivery with massive leverage). Each has different advantages. Stocks are simplest but need the most capital. Options cost less but expire. Futures give 23-hour access and tax advantages.',
+      whyItMatters:'A $5,000 account cannot effectively day-trade stocks (due to the $25,000 pattern day trader rule), but CAN trade options or micro futures. Understanding vehicles means you can trade profitably regardless of account size.'},
+    guide:{title:'Comparing Vehicles on TradingView',intro:'TradingView lets you look at stocks, ETFs, and futures. Let us explore each type.',
+      steps:[
+        {title:'Compare SPY vs ES',detail:'SPY is the ETF. ES is S&P 500 futures. They track the same thing but futures trade nearly 24 hours.',command:'"Switch to ES1! (S&P 500 futures) on the daily chart"'},
+        {title:'Understand Micro Futures',detail:'MES is 1/10th the size of ES. Each point = $5. You can start with as little as $2,000.',command:'"Switch to MES1! and explain the contract specs"'},
+        {title:'See the overnight advantage',detail:'On a 5-minute futures chart, notice price moves overnight \u2014 the "23-hour advantage."',command:'"Show me MES on the 5-minute chart and highlight overnight moves"'}]},
+    exercises:[
+      {title:'Exercise: Vehicle Comparison',desc:'Compare SPY daily and ES1! daily. Note how they move almost identically during market hours but futures have overnight data.',cmd:'"Compare SPY and ES1! daily \u2014 show me the last month and explain when futures are better"',checks:['You understand ETF vs futures','You know futures trade nearly 24 hours','You can explain the 60/40 tax advantage']}]},
+
+  {id:'m6',icon:'M6',title:'Options Deep Dive',subtitle:'Module 6 \u2014 Mechanics & Strategy',difficulty:'intermediate',
+    principle:{title:'How Do Options Actually Work?',
+      explanation:'An option is a contract giving you the RIGHT to buy or sell 100 shares at a specific price (strike) before a specific date (expiration). CALL = right to BUY (bet price goes up). PUT = right to SELL (bet price goes down). You pay a "premium" \u2014 this is the most you can lose. If the stock moves your way past the strike, gains are amplified because you control 100 shares for a fraction of the cost.',
+      whyItMatters:'Options are the great equalizer. A $5,000 account can control 100 shares of a $200 stock ($20,000 worth) for maybe $500-$1,000 in premium. Options also let you profit when stocks go DOWN. The key: options expire, so time works against you.'},
+    guide:{title:'Reading Options on TradingView',intro:'Use the chart to identify strike prices and timeframes for options trades.',
+      steps:[
+        {title:'Identify direction',detail:'Is the stock at a demand zone (bullish = buy calls) or supply zone (bearish = buy puts)?',command:'"On AAPL daily, is price near a demand zone or supply zone?"'},
+        {title:'Choose strike price',detail:'For calls, choose AT or slightly IN the money. Costs more but higher probability of profit.',command:'"Based on the AAPL chart, what strike price for a call at this demand zone?"'},
+        {title:'Determine timeframe',detail:'Give yourself at least 30-45 DTE (days to expiration). Shorter = cheaper but much higher risk of time decay.',command:'"What expiration date should I target based on the distance to the nearest supply zone?"'}]},
+    exercises:[
+      {title:'Exercise: Mock Options Trade',desc:'On AAPL daily, find a demand zone. Determine: strike price, expiration, stop, and profit target.',cmd:'"Set up a mock call option trade on AAPL at the demand zone with strike, expiration, and S.E.T. levels."',checks:['Strike is at/near the demand zone','Expiration is at least 30-45 days','You can explain why calls (not puts) at a demand zone']}]},
+
+  {id:'m7',icon:'M7',title:'Futures Trading',subtitle:'Module 7 \u2014 The 23-Hour Advantage',difficulty:'intermediate',
+    principle:{title:'Why Trade Futures?',
+      explanation:'Futures advantages: (1) 23-hour trading \u2014 Sunday 6 PM to Friday 5 PM ET. (2) Leverage \u2014 $2,000 controls a Micro contract worth ~$25,000; each point = $5. (3) Tax advantage \u2014 60% long-term / 40% short-term regardless of hold time. (4) No pattern day trader rule. However, leverage cuts both ways \u2014 a 4% move against you on a $2,000 account wipes out half.',
+      whyItMatters:'For accounts under $25,000, futures may be the only way to actively day-trade. The S.E.T. Rule and 1% risk are absolutely non-negotiable with futures.'},
+    guide:{title:'Trading Futures on TradingView',intro:'Futures have their own symbols. Let us get familiar.',
+      steps:[
+        {title:'Load Micro E-mini',detail:'MES1! is the continuous front-month contract. The "1!" auto-rolls.',command:'"Switch to MES1! on the 15-minute timeframe"'},
+        {title:'Notice extended hours',detail:'Unlike stocks, futures are nearly continuous \u2014 no gaps between sessions.',command:'"Show me 3 days of MES1! on 5-minute and point out overnight sessions"'},
+        {title:'Apply S.E.T. to futures',detail:'Same rules: 1% risk, 3:1 target. Use $5/point for MES sizing. $5,000 account, 1% = $50. Stop 10 points away = 1 contract.',command:'"S.E.T. trade on MES1! at nearest demand zone. Position size for $5,000 at $5/point."'}]},
+    exercises:[
+      {title:'Exercise: Futures S.E.T. Setup',desc:'On MES1! 15-min, find demand zone. Complete S.E.T. with position size for $5,000.',cmd:'"Complete S.E.T. on MES1! 15-min: demand zone entry, stop, 3:1 target, $5,000 account at $5/point."',checks:['MES = Micro E-mini S&P 500, $5/point','Risk at 1% ($50)','You know why futures work for small accounts']}]},
+
+  {id:'m8',icon:'M8',title:'Trade Execution Workflow',subtitle:'Module 8 \u2014 The 4-Step Process',difficulty:'beginner',
+    principle:{title:'What is the 4-Step Institutional Workflow?',
+      explanation:'Before executing any trade: Step 1 \u2014 SETUP: Scan for stocks at or near a supply/demand zone. Step 2 \u2014 FOOTPRINT: Confirm institutional money is present (volume, large candles, gaps). Step 3 \u2014 S.E.T.: Define Stop, Entry, Target. Calculate position size. Write these down. Step 4 \u2014 EXECUTE: Only after steps 1-3 are complete do you place your order. Most beginners skip to Step 4 and lose money.',
+      whyItMatters:'This is your pre-flight checklist. Pilots do not skip it after 10,000 flights. Neither do professional traders.'},
+    guide:{title:'Running the 4-Step Workflow on Your Chart',intro:'Let us walk through the entire workflow on a real chart.',
+      steps:[
+        {title:'Step 1: Find stocks at zones',detail:'Ask Claude to scan for stocks near demand zones.',command:'"Find me 3 stocks currently near a demand zone on the daily chart"'},
+        {title:'Step 2: Check for institutions',detail:'Pick one stock, load chart, check volume and footprints.',command:'"Load [STOCK] and check for institutional footprints near the demand zone"'},
+        {title:'Step 3: Plan the trade',detail:'Set S.E.T. levels if footprints present.',command:'"Set up S.E.T. levels on this stock. Entry, stop, target at 3:1, position size for $10,000."'},
+        {title:'Step 4: Decide',detail:'All pillars aligned? S.E.T. makes sense? 3:1 achievable? Go or pass.',command:'"Run the full Five Pillar and S.E.T. check \u2014 give me a GO or NO-GO with reasons."'}]},
+    exercises:[
+      {title:'Exercise: Full 4-Step Workflow',desc:'Run the complete process on NVDA daily. Document every step. Make a GO or NO-GO decision.',cmd:'"Walk me through the full 4-step workflow on NVDA daily, one step at a time."',checks:['You did not skip any steps','You checked footprints before S.E.T.','Your decision was based on evidence, not feeling','If you passed, that is a GOOD outcome']}]},
+
+  {id:'m9',icon:'M9',title:'Volume Analysis',subtitle:'Module 9 \u2014 Reading Institutional Activity',difficulty:'intermediate',
+    principle:{title:'What Does Volume Tell You?',
+      explanation:'Volume = number of shares traded. Price shows WHAT happened. Volume shows WHO did it. Big move + HIGH volume = institutions involved (trustworthy). Big move + LOW volume = retail only (unreliable). Volume surges (spikes above average) at supply/demand zones are the strongest confirmation. Price up + volume up = bullish confirmation. Price up + volume down = divergence (warning).',
+      whyItMatters:'Without volume confirmation, you are guessing whether a price move is real or a trap. Volume prevents buying at the top of a fake rally.'},
+    guide:{title:'Adding and Reading Volume on Your Chart',intro:'Volume appears as bars below your candles. Green = more buying. Red = more selling. Tall = high activity.',
+      steps:[
+        {title:'Add Volume indicator',detail:'Shows how much was traded each period.',command:'"Add volume indicator to my chart"'},
+        {title:'Add Volume Moving Average',detail:'A 20-period average helps you see what "normal" is. Bars 2x+ above average = potential institutional activity.',command:'"Add a 20-period moving average to my volume indicator"'},
+        {title:'Identify volume surges',detail:'Look for bars 2x or more above average at supply/demand zones.',command:'"Highlight bars where volume was more than 2x the 20-period average over last 3 months"'}]},
+    exercises:[
+      {title:'Exercise: Volume Confirmation Check',desc:'On SPY daily, find the last 3 demand zone tests. Was volume above average (confirmation) or below (warning)?',cmd:'"On SPY daily, show me the last 3 demand zone tests and check if volume confirmed each one"',checks:['You can read volume bars vs the average','High volume at a zone = institutional confirmation','You can identify volume divergence']}]},
+
+  {id:'m10',icon:'M10',title:'Price Cycle Phases',subtitle:'Module 10 \u2014 The Four Market Phases',difficulty:'beginner',
+    principle:{title:'What Are the Four Price Cycle Phases?',
+      explanation:'(1) ACCUMULATION \u2014 Sideways at a LOW level. Smart money buying quietly. Chart looks boring. (2) MARKUP \u2014 Price trending UP. Profits on long trades. (3) DISTRIBUTION \u2014 Sideways at a HIGH level. Institutions selling to retail. (4) MARKDOWN \u2014 Price trending DOWN. These repeat endlessly.',
+      whyItMatters:'If you buy during Distribution, you are buying as institutions sell \u2014 you lose. If you buy during Accumulation, you buy alongside institutions \u2014 you win. Phase ID prevents the #1 beginner mistake: buying at the top.'},
+    guide:{title:'Identifying Phases on Your Chart',intro:'Use the 50 SMA and your eyes.',
+      steps:[
+        {title:'Add the 50 SMA',detail:'In Accumulation/Distribution, price crosses the SMA (sideways). In Markup, price stays above. In Markdown, below.',command:'"Add a 50-period SMA to SPY daily"'},
+        {title:'Zoom out',detail:'Switch to weekly or 2 years of daily to see full cycles.',command:'"Show me 2 years of SPY daily to see the full price cycle"'},
+        {title:'Label each phase',detail:'Practice labeling where each phase occurred.',command:'"Label the Accumulation, Markup, Distribution, and Markdown phases on SPY"'}]},
+    exercises:[
+      {title:'Exercise: Phase ID on 3 Stocks',desc:'Check AAPL, TSLA, and NVDA daily. What phase is each in?',cmd:'"Check AAPL, TSLA, and NVDA daily \u2014 what price cycle phase is each in right now?"',checks:['You can distinguish Accumulation (sideways bottom) from Distribution (sideways top)','You used the 50 SMA to confirm','You know which phases are good for buying']}]},
+
+  {id:'m11',icon:'M11',title:'Chart Patterns at Zones',subtitle:'Module 11 \u2014 Visual Confirmation',difficulty:'intermediate',
+    principle:{title:'What Patterns Appear at Supply & Demand Zones?',
+      explanation:'Key patterns: EXPLOSIVE DEPARTURE \u2014 price hits zone and immediately shoots away (strongest signal). BASING CANDLES \u2014 small tight candles at the zone before breakout. ENGULFING \u2014 large candle covers previous candle. Bullish engulfing at demand = strong buy. REJECTION WICKS \u2014 long wicks poking into zone but closing outside. PIN BAR \u2014 very long wick on one side, small body.',
+      whyItMatters:'Zones tell you WHERE to look. Patterns tell you WHEN to act. Zone + pattern + volume = high-probability entry.'},
+    guide:{title:'Spotting Patterns at Zones',intro:'Find real examples on actual charts.',
+      steps:[
+        {title:'Find a zone with a pattern',detail:'Look for engulfing, pin bar, or rejection wick at a demand zone on AAPL daily.',command:'"On AAPL daily, find a demand zone with a confirmation pattern. Draw both."'},
+        {title:'Check volume on the pattern',detail:'Was volume above average on the pattern candle? Zone + pattern + volume = triple confirmation.',command:'"Check the volume on that pattern candle \u2014 is it above the 20-period average?"'}]},
+    exercises:[
+      {title:'Exercise: Pattern Hunt',desc:'On TSLA, NVDA, and AAPL daily, find one example of each: explosive departure, engulfing, and rejection wick at a zone.',cmd:'"Find explosive departure, engulfing, and rejection wick at zones across TSLA, NVDA, and AAPL daily"',checks:['You can identify at least 3 pattern types','Each pattern is at an actual zone','Volume confirmed at least one']}]},
+
+  {id:'m12',icon:'M12',title:'Market Psychology',subtitle:'Module 12 \u2014 Behavioral Traps',difficulty:'intermediate',
+    principle:{title:'Why Does Psychology Matter in Trading?',
+      explanation:'Key traps: FOMO \u2014 buying because everyone else is. Confirmation Bias \u2014 only seeing evidence that supports your trade. Loss Aversion \u2014 holding losers too long. Recency Bias \u2014 assuming last week repeats. The S&P 500 averages ~10% per year but includes -30% and +40% years.',
+      whyItMatters:'Psychology makes you break your own rules. Every trader knows the S.E.T. Rule. But emotions override logic. Awareness is the defense.'},
+    guide:{title:'Using Historical Data for Perspective',intro:'Seeing past crashes and recoveries builds emotional resilience.',
+      steps:[
+        {title:'Study the 2020 crash',detail:'SPY dropped 35% in one month then recovered in 5 months. Panic selling at the bottom is the most expensive mistake.',command:'"Show me SPY weekly from Jan 2020 to Jan 2021 and label the COVID crash and recovery"'},
+        {title:'Check your biases',detail:'What is your gut feeling about the market right now? Is it based on your Five Pillar analysis or just a feeling?',command:'"Give me an objective Five Pillar analysis on SPY daily \u2014 just data, no opinions"'}]},
+    exercises:[
+      {title:'Exercise: Emotion vs Evidence',desc:'Look at 3 stocks. Write your GUT FEELING first, then run Five Pillar analysis. How often does gut match evidence?',cmd:'"Run Five Pillar analysis on AAPL, TSLA, and NVDA daily. Just data, no opinions."',checks:['You noticed when gut disagreed with evidence','You understand S.E.T. overrides emotions','You can name 2 biases you have caught yourself making']}]},
+
+  {id:'m13',icon:'M13',title:'Options Fundamentals',subtitle:'Module 13 \u2014 Calls, Puts & Basics',difficulty:'beginner',
+    principle:{title:'Calls and Puts: The Two Building Blocks',
+      explanation:'CALL = bet price goes UP. Pay premium to control 100 shares. If stock rises past strike, you profit. If not, you lose the premium only. PUT = bet price goes DOWN. Same logic reversed. Maximum loss is ALWAYS the premium paid. Potential gain can be much larger. Example: AAPL at $150. Buy $155 call for $3 ($300). If AAPL hits $165, option worth $10 ($1,000). Profit: $700.',
+      whyItMatters:'Calls and puts are the language of options. Every advanced strategy is combinations of these two. Master them individually first.'},
+    guide:{title:'Visualizing Options on Your Chart',intro:'Use the chart to see where you would profit and where you would lose.',
+      steps:[
+        {title:'Mark your strike price',detail:'Draw a horizontal line at the strike. For calls, profit ABOVE. For puts, profit BELOW.',command:'"On AAPL daily, draw a line at the $155 strike \u2014 above = call profits, below = put profits"'},
+        {title:'Add breakeven level',detail:'Breakeven = strike + premium for calls. $155 call with $3 premium = $158 breakeven.',command:'"Draw a second line at $158 as breakeven for a $155 call with $3 premium"'}]},
+    exercises:[
+      {title:'Exercise: Visualize a Call Trade',desc:'On AAPL daily, pick a demand zone. Imagine buying a call: draw strike, breakeven, and 3:1 target.',cmd:'"Visual call trade on AAPL: strike at demand zone, breakeven with $3 premium, 3:1 target."',checks:['Strike + premium = breakeven','Target is at least 3x premium','Strike is at a demand zone, not random']}]},
+
+  {id:'m14',icon:'M14',title:'The Greeks',subtitle:'Module 14 \u2014 Delta, Theta, Vega',difficulty:'intermediate',
+    principle:{title:'What Are the Greeks?',
+      explanation:'DELTA \u2014 Direction/speed. Delta 0.50 = option gains $0.50 per $1 stock move. Higher delta = more responsive. THETA \u2014 Time decay. Each day, your option loses value. Accelerates near expiration. Theta -0.05 = losing $5/day. VEGA \u2014 Volatility. Higher volatility = higher option prices. Vega 0.10 = 1% volatility increase adds $10.',
+      whyItMatters:'Greeks explain why options sometimes do not behave as expected. Stock goes up but option loses money? Theta ate more than Delta added. Understanding Greeks prevents confusion and helps pick better options.'},
+    guide:{title:'Greek-Aware Decisions on the Chart',intro:'Use chart data to make Greek-informed choices.',
+      steps:[
+        {title:'Delta: Strike selection',detail:'ATM = ~0.50 delta. ITM = higher delta (0.60-0.90). OTM = lower (0.10-0.40). Higher delta = more expensive but higher probability.',command:'"On AAPL, show which strikes are ITM, ATM, and OTM"'},
+        {title:'Theta: Timing',detail:'Theta accelerates in the last 30 days. If your trade needs 2 weeks, buy 45+ DTE as buffer.',command:'"How many days do I need based on the distance to my target? Add a 30-day buffer."'}]},
+    exercises:[
+      {title:'Exercise: Greek-Smart Selection',desc:'For an AAPL call: which strike gives ~0.50 delta? How many DTE to keep theta manageable?',cmd:'"Help me select an AAPL call: delta ~0.50 and at least 45 DTE. Explain why."',checks:['ATM for 0.50 delta','At least 45 DTE for theta','You understand cheap OTM = low probability']}]},
+
+  {id:'m15',icon:'M15',title:'Advanced Options Strategies',subtitle:'Module 15 \u2014 Spreads & Crisis Plays',difficulty:'intermediate',
+    principle:{title:'Beyond Single Options: Spreads',
+      explanation:'BULL CALL SPREAD \u2014 Buy a call + sell a higher call. Reduces cost, caps upside. Max risk: debit paid. Max reward: spread width minus debit. PROTECTIVE PUT \u2014 Own stock + buy put as insurance. CRISIS STRATEGY \u2014 During crashes, buy long-dated calls (LEAPS) on quality stocks. Everything is cheap because fear is high.',
+      whyItMatters:'Advanced strategies give defined risk in any market. But every strategy still starts with zones, volume, S.E.T., and 1% risk. Complexity increases, foundation never changes.'},
+    guide:{title:'Setting Up Spreads on the Chart',intro:'Spreads involve multiple price levels.',
+      steps:[
+        {title:'Draw a Bull Call Spread',detail:'Two strikes: lower (buy) and higher (sell). Profit zone is between them.',command:'"On AAPL, draw a bull call spread: buy $150 call, sell $160 call. Show profit zone."'},
+        {title:'Find crisis opportunities',detail:'Zoom to weekly, find the biggest drops in 5 years. These are where LEAPS shine.',command:'"Show SPY weekly 5 years and mark major drops where crisis LEAPS would have been profitable"'}]},
+    exercises:[
+      {title:'Exercise: Design a Bull Call Spread',desc:'On AAPL: long strike at demand zone, short strike at next supply zone. Calculate max risk and max reward.',cmd:'"Bull call spread on AAPL: long at demand zone, short at supply zone above. Show max risk and reward."',checks:['Long strike at demand zone','Short strike at supply zone','Max risk = debit; Max reward = spread width minus debit','Risk/reward is at least 2:1']}]}
+];
+
+/* ===== TOOLS REFERENCE ===== */
+var TV_TOOLS = [
+  {cat:'Chart Control',desc:'Change what your chart displays.',tools:[
+    {cmd:'"Switch to [SYMBOL] on the [TIMEFRAME]"',what:'Changes stock and timeframe',when:'Every time you analyze a new stock',ex:'"Switch to TSLA on the daily"'},
+    {cmd:'"Change chart type to [TYPE]"',what:'Candlestick, line, bar, etc.',when:'Candlestick is default. Line helps see trends.',ex:'"Show me a line chart"'}]},
+  {cat:'Indicators',desc:'Add mathematical calculations to your chart.',tools:[
+    {cmd:'"Add [INDICATOR] to my chart"',what:'Adds volume, SMAs, RSI, etc.',when:'To confirm your analysis.',ex:'"Add volume and a 50-period SMA"'},
+    {cmd:'"Remove all indicators"',what:'Strips chart clean',when:'When chart is too cluttered.',ex:'"Give me a clean chart"'}]},
+  {cat:'Drawing Tools',desc:'Draw directly on your chart.',tools:[
+    {cmd:'"Draw a [SHAPE] at [PRICE]"',what:'Rectangles (zones), lines (levels), trend lines',when:'To mark supply/demand zones, S.E.T. levels',ex:'"Draw a demand zone rectangle between $145 and $148"'},
+    {cmd:'"Clear all drawings"',what:'Removes everything drawn',when:'Fresh start.',ex:'"Clear all drawings"'}]},
+  {cat:'Data & Analysis',desc:'Pull actual data from your chart.',tools:[
+    {cmd:'"Get the last [N] OHLCV bars"',what:'Open, High, Low, Close, Volume data',when:'Need actual numbers for calculations or journaling.',ex:'"Get last 20 daily bars for SPY"'},
+    {cmd:'"Take a screenshot"',what:'Captures current chart',when:'Save analysis for review.',ex:'"Screenshot my chart"'}]},
+  {cat:'PineScript (Strategy Testing)',desc:'Claude writes and injects trading strategies that run on historical data.',tools:[
+    {cmd:'"Inject a [STRATEGY] PineScript"',what:'Applies strategy to chart for backtesting',when:'Test a strategy against history.',ex:'"Inject a PineScript marking demand zones with S.E.T. levels"'},
+    {cmd:'"Get strategy results"',what:'Win rate, profit, drawdown, trade count',when:'After injecting, evaluate performance.',ex:'"Show me strategy results"'}]}
+];
+
+/* ===== COMPONENTS ===== */
+
+function Collapsible(props) {
+  var isOpen = props.defaultOpen || false;
+  var state = useState(isOpen);
+  var open = state[0]; var setOpen = state[1];
+  return React.createElement('div', null,
+    React.createElement('div', {className: 'collapse-trigger' + (open ? ' open' : ''), onClick: function() { setOpen(!open); }},
+      React.createElement('span', null, props.title),
+      React.createElement('span', {className: 'arr'}, '\u25B6')),
+    React.createElement('div', {className: 'collapse-panel' + (open ? ' open' : '')}, props.children));
+}
+
+function PrincipleExplainer(props) {
+  var p = props.data;
+  return React.createElement('div', null,
+    React.createElement('div', {className: 'principle-box'},
+      React.createElement('h4', null, p.title),
+      React.createElement('p', null, p.explanation)),
+    React.createElement('div', {className: 'why-box'},
+      React.createElement('h4', null, 'Why This Matters'),
+      React.createElement('p', null, p.whyItMatters)));
+}
+
+function StepByStep(props) {
+  var g = props.data;
+  return React.createElement('div', {className: 'card'},
+    React.createElement('div', {className: 'card-head'},
+      React.createElement('div', {className: 'card-icon', style: {background: '#ECFDF5', color: '#0D9373'}}, 'GO'),
+      React.createElement('div', null,
+        React.createElement('h3', null, g.title),
+        React.createElement('p', null, 'Step-by-step with TradingView'))),
+    React.createElement('div', {className: 'card-body'},
+      React.createElement('p', {style: {fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px', lineHeight: '1.65'}}, g.intro),
+      React.createElement('div', {className: 'steps'},
+        g.steps.map(function(s, i) {
+          return React.createElement('div', {className: 'step-item', key: i},
+            React.createElement('div', {className: 'step-num'}),
+            React.createElement('div', {className: 'step-body'},
+              React.createElement('h4', null, s.title),
+              React.createElement('p', null, s.detail),
+              s.command ? React.createElement('div', {className: 'cmd'}, s.command) : null));
+        }))));
+}
+
+function ExerciseCard(props) {
+  var ex = props.data;
+  return React.createElement('div', {className: 'exercise'},
+    React.createElement('h4', null, ex.title),
+    React.createElement('p', null, ex.desc),
+    React.createElement('div', {className: 'claude-cmd'},
+      React.createElement('span', {className: 'claude-cmd-label'}, 'Tell Claude:'),
+      ex.cmd),
+    React.createElement('div', {className: 'self-check'},
+      React.createElement('h4', null, 'Self-Check: You Are Ready When...'),
+      React.createElement('ul', null, ex.checks.map(function(c, i) {
+        return React.createElement('li', {key: i}, c);
+      }))));
+}
+
+function ToolsPage() {
+  return React.createElement('div', null,
+    React.createElement('div', {className: 'module-badge'}, 'Reference'),
+    React.createElement('h2', {className: 'page-title'}, 'Your TradingView MCP Toolkit'),
+    React.createElement('p', {className: 'page-subtitle'}, 'Claude is connected to your TradingView Desktop through the MCP. This means Claude can directly control your charts \u2014 switch symbols, change timeframes, add indicators, draw, inject PineScript, and pull data. Here is every tool available.'),
+    TV_TOOLS.map(function(cat, ci) {
+      return React.createElement('div', {className: 'card', key: ci},
+        React.createElement('div', {className: 'card-head'},
+          React.createElement('div', {className: 'card-icon', style: {background: '#EFF6FF', color: '#3B82F6'}}, ci + 1),
+          React.createElement('div', null,
+            React.createElement('h3', null, cat.cat),
+            React.createElement('p', null, cat.desc))),
+        React.createElement('div', {className: 'card-body'},
+          cat.tools.map(function(t, ti) {
+            return React.createElement('div', {className: 'tool-entry', key: ti},
+              React.createElement('div', {className: 'tool-cmd'}, t.cmd),
+              React.createElement('div', {className: 'tool-row'}, React.createElement('strong', null, 'What it does: '), t.what),
+              React.createElement('div', {className: 'tool-row'}, React.createElement('strong', null, 'When to use: '), t.when),
+              React.createElement('div', {className: 'tool-example'}, 'Example: ' + t.ex));
+          })));
+    }));
+}
+
+function ModuleView(props) {
+  var m = props.data;
+  return React.createElement('div', null,
+    React.createElement('div', {style: {marginBottom: '8px'}},
+      React.createElement('span', {className: 'module-badge' + (m.difficulty === 'intermediate' ? ' intermediate' : '')}, m.difficulty),
+      React.createElement('span', {className: 'module-badge'}, m.subtitle)),
+    React.createElement('h2', {className: 'page-title'}, m.title),
+    React.createElement('p', {className: 'page-subtitle'}, 'Learn the principle, understand why it matters, then practice it hands-on with TradingView.'),
+
+    React.createElement('div', {className: 'card'},
+      React.createElement('div', {className: 'card-head'},
+        React.createElement('div', {className: 'card-icon', style: {background: '#EFF6FF', color: '#3B82F6'}}, 'P'),
+        React.createElement('div', null, React.createElement('h3', null, 'Understand the Principle'), React.createElement('p', null, 'Read this carefully before touching TradingView'))),
+      React.createElement('div', {className: 'card-body'},
+        React.createElement(PrincipleExplainer, {data: m.principle}))),
+
+    React.createElement(StepByStep, {data: m.guide}),
+
+    React.createElement('div', {className: 'card'},
+      React.createElement('div', {className: 'card-head'},
+        React.createElement('div', {className: 'card-icon', style: {background: '#FFFBEB', color: '#F59E0B'}}, 'E'),
+        React.createElement('div', null, React.createElement('h3', null, 'Practice Exercises'), React.createElement('p', null, 'Apply what you learned on a real chart'))),
+      React.createElement('div', {className: 'card-body'},
+        React.createElement('div', {className: 'tip-box'},
+          React.createElement('h4', null, 'How to use these exercises'),
+          React.createElement('p', null, 'Each exercise has a "Tell Claude" command. Copy it and paste it directly into your conversation with Claude. Claude will execute it on your TradingView chart in real time. Then use the Self-Check to verify you understood.')),
+        m.exercises.map(function(ex, i) { return React.createElement(ExerciseCard, {data: ex, key: i}); }))),
+
+    React.createElement('div', {className: 'warn-box'},
+      React.createElement('h4', null, 'Remember'),
+      React.createElement('p', null, 'The goal is not to memorize commands \u2014 it is to understand the PRINCIPLE behind each action. Ask Claude "why" at any point. If something does not make sense, ask Claude to explain it differently. There are no dumb questions in the Practice Lab.')));
+}
+
+function WelcomePage() {
+  return React.createElement('div', {className: 'welcome'},
+    React.createElement('h2', null, 'TradingView Practice Lab'),
+    React.createElement('p', null, 'Welcome to the hands-on training center for the Impact Trading Academy. This is where you take everything from the modules and practice it on real charts with Claude guiding you every step.'),
+    React.createElement('div', {className: 'welcome-grid'},
+      React.createElement('div', {className: 'wcard'},
+        React.createElement('h4', null, 'Learn the Principle'),
+        React.createElement('p', null, 'Every module starts with a deep, plain-language explanation \u2014 no jargon, no assumptions.')),
+      React.createElement('div', {className: 'wcard'},
+        React.createElement('h4', null, 'Follow the Steps'),
+        React.createElement('p', null, 'Step-by-step instructions show exactly how to apply each principle on TradingView.')),
+      React.createElement('div', {className: 'wcard'},
+        React.createElement('h4', null, 'Practice on Real Charts'),
+        React.createElement('p', null, 'Guided exercises with "Tell Claude" commands let you practice on live data.'))),
+    React.createElement('div', {className: 'warn-box', style: {maxWidth: '560px', margin: '0 auto', textAlign: 'left'}},
+      React.createElement('h4', null, 'Setup Required'),
+      React.createElement('p', null, 'The Practice Lab works best with TradingView Desktop connected through the MCP. If you have not set that up, ask Claude: "Set up TradingView MCP for me." Select a module from the sidebar to begin.')));
+}
+
+/* ===== MAIN APP ===== */
+function App() {
+  var viewState = useState('welcome');
+  var view = viewState[0]; var setView = viewState[1];
+  var modState = useState(null);
+  var activeMod = modState[0]; var setActiveMod = modState[1];
+
+  function nav(v, m) { setView(v); setActiveMod(m || null); window.scrollTo(0, 0); }
+
+  var groups = [
+    {label: 'Foundational', ids: ['m1','m2','m3','m4']},
+    {label: 'Vehicles & Instruments', ids: ['m5','m6','m7']},
+    {label: 'Execution & Analysis', ids: ['m8','m9','m10','m11']},
+    {label: 'Psychology & Advanced', ids: ['m12','m13','m14','m15']}
+  ];
+
+  return React.createElement('div', {className: 'app'},
+    React.createElement('div', {className: 'sidebar'},
+      React.createElement('div', {className: 'sidebar-header'},
+        React.createElement('h1', null, React.createElement('span', null, 'Impact'), ' Trading Academy'),
+        React.createElement('p', null, 'TradingView Practice Lab')),
+      React.createElement('a', {className: 'back-link', href: '/index.html'}, '\u2190 Back to Training Portal'),
+      React.createElement('div', {className: 'nav-section'},
+        React.createElement('div', {className: 'nav-label'}, 'Getting Started'),
+        React.createElement('div', {className: 'nav-item' + (view === 'welcome' ? ' active' : ''), onClick: function() { nav('welcome'); }},
+          React.createElement('div', {className: 'nav-dot'}), React.createElement('span', {className: 'nav-text'}, 'Welcome')),
+        React.createElement('div', {className: 'nav-item' + (view === 'tools' ? ' active' : ''), onClick: function() { nav('tools'); }},
+          React.createElement('div', {className: 'nav-dot'}), React.createElement('span', {className: 'nav-text'}, 'TradingView Tools Guide')),
+        groups.map(function(g) {
+          return React.createElement('div', {key: g.label},
+            React.createElement('div', {className: 'nav-label'}, g.label),
+            g.ids.map(function(id) {
+              var m = MODULES.find(function(mod) { return mod.id === id; });
+              return React.createElement('div', {key: id, className: 'nav-item' + (activeMod && activeMod.id === id ? ' active' : ''), onClick: function() { nav('module', m); }},
+                React.createElement('div', {className: 'nav-dot'}),
+                React.createElement('span', {className: 'nav-text'}, m.icon + ' ' + m.title));
+            }));
+        }))),
+    React.createElement('div', {className: 'main'},
+      React.createElement('div', {className: 'content-header'},
+        React.createElement('span', {style: {fontSize: '14px', fontWeight: 600, color: 'var(--navy)'}}, 'Practice Lab'),
+        React.createElement('span', {style: {fontSize: '12px', color: 'var(--text-muted)'}}, 'Impact Trading Academy')),
+      React.createElement('div', {className: 'content-body'},
+        view === 'welcome' ? React.createElement(WelcomePage, null) : null,
+        view === 'tools' ? React.createElement(ToolsPage, null) : null,
+        view === 'module' && activeMod ? React.createElement(ModuleView, {data: activeMod}) : null)));
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App, null));
+</script>
+</body>
+</html>

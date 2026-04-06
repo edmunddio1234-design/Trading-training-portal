@@ -11,24 +11,85 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/options-backtester.html", "destination": "/public/options-backtester.html" },
-    { "source": "/training-manual.html", "destination": "/public/training-manual.html" },
-    { "source": "/advanced-options-mastery.html", "destination": "/public/advanced-options-mastery.html" },
-    { "source": "/tradingview-charts.html", "destination": "/public/tradingview-charts.html" },
-    { "source": "/market-scanner.html", "destination": "/public/market-scanner.html" },
-    { "source": "/halt-tracker.html", "destination": "/public/halt-tracker.html" },
-    { "source": "/trade-journal.html", "destination": "/public/trade-journal.html" },
-    { "source": "/sentiment-scanner.html", "destination": "/public/sentiment-scanner.html" },
-    { "source": "/ml-indicator.html", "destination": "/public/ml-indicator.html" },
-    { "source": "/company-lookup.html", "destination": "/public/company-lookup.html" },
-    { "source": "/day-trade-dash.html", "destination": "/public/day-trade-dash.html" },
-    { "source": "/webull-charts.html", "destination": "/public/webull-charts.html" },
-    { "source": "/webull-guide.html", "destination": "/public/webull-guide.html" },
-    { "source": "/charts-tutorial.html", "destination": "/public/charts-tutorial.html" },
-    { "source": "/charts-tutorial-guide.pdf", "destination": "/public/charts-tutorial-guide.pdf" },
-    { "source": "/interactive-mindmap.html", "destination": "/public/interactive-mindmap.html" },
-    { "source": "/infographics/:path*", "destination": "/public/infographics/:path*" },
-    { "source": "/(.*)", "destination": "/public/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/options-backtester.html",
+      "destination": "/public/options-backtester.html"
+    },
+    {
+      "source": "/training-manual.html",
+      "destination": "/public/training-manual.html"
+    },
+    {
+      "source": "/advanced-options-mastery.html",
+      "destination": "/public/advanced-options-mastery.html"
+    },
+    {
+      "source": "/tradingview-charts.html",
+      "destination": "/public/tradingview-charts.html"
+    },
+    {
+      "source": "/market-scanner.html",
+      "destination": "/public/market-scanner.html"
+    },
+    {
+      "source": "/halt-tracker.html",
+      "destination": "/public/halt-tracker.html"
+    },
+    {
+      "source": "/trade-journal.html",
+      "destination": "/public/trade-journal.html"
+    },
+    {
+      "source": "/sentiment-scanner.html",
+      "destination": "/public/sentiment-scanner.html"
+    },
+    {
+      "source": "/ml-indicator.html",
+      "destination": "/public/ml-indicator.html"
+    },
+    {
+      "source": "/company-lookup.html",
+      "destination": "/public/company-lookup.html"
+    },
+    {
+      "source": "/day-trade-dash.html",
+      "destination": "/public/day-trade-dash.html"
+    },
+    {
+      "source": "/webull-charts.html",
+      "destination": "/public/webull-charts.html"
+    },
+    {
+      "source": "/webull-guide.html",
+      "destination": "/public/webull-guide.html"
+    },
+    {
+      "source": "/charts-tutorial.html",
+      "destination": "/public/charts-tutorial.html"
+    },
+    {
+      "source": "/charts-tutorial-guide.pdf",
+      "destination": "/public/charts-tutorial-guide.pdf"
+    },
+    {
+      "source": "/interactive-mindmap.html",
+      "destination": "/public/interactive-mindmap.html"
+    },
+    {
+      "source": "/infographics/:path*",
+      "destination": "/public/infographics/:path*"
+    },
+    {
+      "source": "/practice-lab.html",
+      "destination": "/public/practice-lab.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/index.html"
+    }
   ]
 }
