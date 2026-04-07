@@ -3921,6 +3921,70 @@ app.get('/api/udf/history', async (req, res) => {
 });
 
 // =============================================================================
+// CHART TRAINING — LIVE OHLCV FOR PRACTICE ENGINE
+// =============================================================================
+
+const TRAINING_SYMBOLS = [
+  'AAPL','MSFT','NVDA','TSLA','AMZN','GOOGL','META','SPY','QQQ',
+  'AMD','NFLX','DIS','BA','JPM','GS','V','WMT','HD','CRM','ORCL'
+];
+
+app.post('/api/training/live-bars', async (req, res) => {
+  try {
+    const { difficulty = 'easy', symbol } = req.body || {};
+    const sym = symbol || TRAINING_SYMBOLS[Math.floor(Math.random() * TRAINING_SYMBOLS.length)];
+    const n = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 16 : 24;
+
+    // Fetch 6 months of daily data from Yahoo Finance
+    const now = Math.floor(Date.now() / 1000);
+    const sixMonthsAgo = now - (180 * 86400);
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?period1=${sixMonthsAgo}&period2=${now}&interval=1d`;
+
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TradingAcademy/1.0)' }
+    });
+    const data = await resp.json();
+
+    if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+      return res.status(400).json({ error: 'No data returned for ' + sym, fallback: true });
+    }
+
+    const result = data.chart.result[0];
+    const quote = result.indicators?.quote?.[0] || {};
+    const timestamps = result.timestamp || [];
+
+    // Build bar array in same format as frontend genChart()
+    const allBars = [];
+    for (let i = 0; i < timestamps.length; i++) {
+      const o = quote.open?.[i], h = quote.high?.[i], l = quote.low?.[i], c = quote.close?.[i];
+      if (o == null || h == null || l == null || c == null) continue;
+      allBars.push({
+        o: +o.toFixed(2), h: +h.toFixed(2), l: +l.toFixed(2), c: +c.toFixed(2),
+        bull: c >= o, idx: allBars.length,
+        date: new Date(timestamps[i] * 1000).toISOString().split('T')[0],
+        vol: quote.volume?.[i] || 0
+      });
+    }
+
+    if (allBars.length < n) {
+      return res.json({ success: false, error: 'Not enough bars for ' + sym, fallback: true });
+    }
+
+    // Pick a random window of n bars (avoid the last 5 days to prevent stale-data edge)
+    const maxStart = Math.max(0, allBars.length - n - 5);
+    const start = Math.floor(Math.random() * maxStart);
+    const window = allBars.slice(start, start + n).map((b, i) => ({
+      ...b, idx: i, phase: null, phaseDir: null, patIdx: -1
+    }));
+
+    res.json({ success: true, symbol: sym, bars: window, totalBars: allBars.length, live: true });
+  } catch (error) {
+    console.error('Training live bars error:', error.message);
+    res.json({ success: false, error: error.message, fallback: true });
+  }
+});
+
+// =============================================================================
 // HEALTH CHECK
 // =============================================================================
 

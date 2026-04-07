@@ -139,6 +139,13 @@
 [data-theme="dark"] #set-result { color: #CBD5E1; }
 [data-theme="dark"] #set-result table td { color: #CBD5E1; border-color: #1F2E4A; }
 [data-theme="dark"] #set-result table th { color: #E2E8F0; background: #0F1A2E; }
+/* Live Mode pill */
+.live-pill { background: rgba(239,68,68,0.12) !important; color: #EF4444 !important; border: 1px solid rgba(239,68,68,0.3) !important; cursor: pointer; }
+.live-pill.on { background: rgba(16,185,129,0.18) !important; color: #10B981 !important; border-color: #10B981 !important; box-shadow: 0 0 8px rgba(16,185,129,0.3); }
+.live-pill.on::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 4px; animation: pulse-dot 1.5s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.live-loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.85); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; z-index: 20; border-radius: 12px; }
+.live-loading span { color: #10B981; font-size: 14px; font-weight: 600; }
 /* OHLC / Chart Training dark mode extras */
 [data-theme="dark"] .mode-card p { color: #8B92AB; }
 [data-theme="dark"] .mc-learn { background: #1A2540; color: #10B981; border-color: #1F2E4A; }
@@ -3059,6 +3066,8 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
         <div class="dpill on" onclick="TM.diff('easy',this)">Easy</div>
         <div class="dpill" onclick="TM.diff('medium',this)">Medium</div>
         <div class="dpill" onclick="TM.diff('hard',this)">Hard</div>
+        <div id="live-toggle" class="dpill live-pill" onclick="TM.toggleLive(this)" title="Practice on real market data instead of synthetic charts">📡 Live</div>
+        <span id="live-sym" style="font-size:11px;color:#10B981;font-weight:700;display:none;margin-left:4px;"></span>
         <button class="ta-btn" onclick="TM.next()">Next →</button>
         <button class="ta-btn" onclick="TM.newChart()">🔄 New Chart</button>
         <button class="ta-btn red" onclick="TM.end()">End</button>
@@ -5045,6 +5054,44 @@ function ldP(){try{return JSON.parse(localStorage.getItem('tm3'))||defP();}catch
 function svP(p){localStorage.setItem('tm3',JSON.stringify(p));}
 function defP(){return{tQ:0,tC:0,bStr:0,c:{o_o:0,o_c:0,o_h:0,o_l:0,o_bull:0,o_bear:0,o_body:0,o_wick:0,sd_d:0,sd_s:0,sd_base:0,sd_dept:0,sd_ret:0,of_bal:0,of_imb:0,of_mov:0,of_pres:0,seq:0,zm:0},a:{o_o:0,o_c:0,o_h:0,o_l:0,o_bull:0,o_bear:0,o_body:0,o_wick:0,sd_d:0,sd_s:0,sd_base:0,sd_dept:0,sd_ret:0,of_bal:0,of_imb:0,of_mov:0,of_pres:0,seq:0,zm:0},badges:[],dDate:'',dDone:0,sess:0,ms:{ohlc:{q:0,c:0},sd:{q:0,c:0},seq:{q:0,c:0},zm:{q:0,c:0},of:{q:0,c:0}}};}
 
+// ---- LIVE MODE STATE ----
+let liveMode=false;
+let liveSym='';
+let liveBarsCache=null;
+
+function toggleLive(el){
+  if(mode!=='ohlc'){
+    el.classList.remove('on');
+    const symEl=document.getElementById('live-sym');if(symEl){symEl.style.display='none';symEl.textContent='';}
+    alert('Live Mode is currently available for OHLC Mastery. Other modes coming soon.');
+    return;
+  }
+  liveMode=!liveMode;
+  el.classList.toggle('on',liveMode);
+  const symEl=document.getElementById('live-sym');
+  if(!liveMode){if(symEl){symEl.style.display='none';symEl.textContent='';}liveSym='';liveBarsCache=null;}
+  if(liveMode){newChart();}
+}
+
+async function fetchLiveBars(){
+  const n=diff==='easy'?10:diff==='medium'?16:24;
+  try{
+    const res=await fetch('/api/training/live-bars',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({difficulty:diff})});
+    const data=await res.json();
+    if(data.success&&data.bars&&data.bars.length>=3){
+      liveSym=data.symbol;
+      const symEl=document.getElementById('live-sym');
+      if(symEl){symEl.style.display='inline';symEl.textContent=data.symbol+' (Live)';}
+      return data.bars;
+    }
+  }catch(e){console.error('Live fetch error:',e);}
+  // Fallback to synthetic
+  liveMode=false;
+  const tog=document.getElementById('live-toggle');if(tog)tog.classList.remove('on');
+  const symEl=document.getElementById('live-sym');if(symEl){symEl.style.display='none';}
+  return null;
+}
+
 // ---- CHART GENERATOR (always random) ----
 function genChart(n,opts={}){
   const b=[];let price=80+Math.random()*120;
@@ -5475,16 +5522,54 @@ function getMastery(p,m){const k={ohlc:['o_o','o_c','o_h','o_l','o_bull','o_bear
 
 // ---- ENGINE: start, events, navigation ----
 let evClick,evMove,evDown,evUp,evDblClick;
-function startMode(m){
+async function startMode(m){
   mode=m;qI=0;sC=0;streak=0;bStreak=0;answered=false;drawnZ=[];sessResults=[];
-  const data=genQ();
-  animBars=data.bars;sQ=data.questions;
-  if(sQ.length===0){sQ=[{type:'mc',con:'seq',bars:animBars,txt:'No questions generated. Click Next for a new chart.',opts:['OK'],cor:'OK',fc:'',fw:''}];}
+
+  // Show arena immediately
   document.getElementById('train-dash').style.display='none';
   document.getElementById('train-arena').classList.add('active');
   const titles={ohlc:'📊 OHLC Mastery',sd:'🏗️ Supply & Demand',seq:'📅 Three-Day Sequence',zm:'🎨 Zone Marking',of:'⚡ Order Flow'};
   document.getElementById('ar-title').textContent=titles[m]||'Training';
   initCV();setupEv();
+
+  // Reset live toggle for non-OHLC modes
+  if(m!=='ohlc'){liveMode=false;const tog=document.getElementById('live-toggle');if(tog)tog.classList.remove('on');const se=document.getElementById('live-sym');if(se){se.style.display='none';}}
+
+  // If live mode and OHLC, fetch real data
+  if(liveMode && m==='ohlc'){
+    // Show loading overlay on canvas area
+    const cp=document.getElementById('train-canvas')?.parentElement;
+    if(cp){cp.style.position='relative';cp.insertAdjacentHTML('beforeend','<div class="live-loading" id="live-ld"><div class="spinner"></div><span>Loading real market data...</span></div>');}
+    const liveBars=await fetchLiveBars();
+    const ldEl=document.getElementById('live-ld');if(ldEl)ldEl.remove();
+    if(liveBars){
+      // Use live bars with OHLC question generation only
+      liveBarsCache=liveBars;
+      const qs=[];
+      for(let q=0;q<30&&qs.length<10;q++){
+        const question=genOneQ(liveBars,[],q);
+        if(question)qs.push(question);
+      }
+      if(qs.length<3){
+        // Fallback: generate basic OHLC questions
+        for(let i=0;i<Math.min(liveBars.length,10);i++){
+          const b=liveBars[i];
+          if(i%3===0)qs.push({type:'click',con:'o_o',bars:liveBars,tb:i,txt:'Click the OPEN on Bar '+(i+1),ans:'open',fc:'Correct! The Open is where price started — $'+b.o.toFixed(2),fw:'Incorrect. The Open is at $'+b.o.toFixed(2)+' — the '+(b.bull?'bottom':'top')+' of the body.'});
+          else if(i%3===1)qs.push({type:'click',con:'o_h',bars:liveBars,tb:i,txt:'Click the HIGH on Bar '+(i+1),ans:'high',fc:'Correct! The High ($'+b.h.toFixed(2)+') is the peak.',fw:'Incorrect. The High is $'+b.h.toFixed(2)+' — the very top of the wick.'});
+          else qs.push({type:'mc',con:'o_bull',bars:liveBars,hlb:i,txt:'Is Bar '+(i+1)+' bullish or bearish?',opts:['Bullish','Bearish'],cor:b.bull?'Bullish':'Bearish',fc:'Correct! '+(b.bull?'Close ($'+b.c.toFixed(2)+') > Open ($'+b.o.toFixed(2)+') = Bullish':'Close ($'+b.c.toFixed(2)+') < Open ($'+b.o.toFixed(2)+') = Bearish'),fw:'Incorrect. '+(b.bull?'This is bullish — Close > Open':'This is bearish — Close < Open')});
+        }
+      }
+      animBars=liveBars;sQ=qs;
+      document.getElementById('ar-title').textContent='📊 OHLC Mastery — '+liveSym+' (Live)';
+      animate(animBars,()=>loadQ());
+      return;
+    }
+    // If live fetch failed, fall through to synthetic
+  }
+
+  const data=genQ();
+  animBars=data.bars;sQ=data.questions;
+  if(sQ.length===0){sQ=[{type:'mc',con:'seq',bars:animBars,txt:'No questions generated. Click Next for a new chart.',opts:['OK'],cor:'OK',fc:'',fw:''}];}
   // Animate chart in, then load question
   animate(animBars,()=>loadQ());
 }
@@ -5496,8 +5581,25 @@ function back(){
   mode=null;updateDash();
 }
 
-function newChart(){
+async function newChart(){
   stopAnim();answered=false;drawnZ=[];xAnno();
+  if(liveMode && mode==='ohlc'){
+    // Fetch fresh live data
+    const cp=document.getElementById('train-canvas')?.parentElement;
+    if(cp){cp.style.position='relative';cp.insertAdjacentHTML('beforeend','<div class="live-loading" id="live-ld"><div class="spinner"></div><span>Loading new chart...</span></div>');}
+    const liveBars=await fetchLiveBars();
+    const ldEl=document.getElementById('live-ld');if(ldEl)ldEl.remove();
+    if(liveBars){
+      liveBarsCache=liveBars;
+      const qs=[];
+      for(let q=0;q<30&&qs.length<10;q++){const question=genOneQ(liveBars,[],q);if(question)qs.push(question);}
+      if(qs.length<3){for(let i=0;i<Math.min(liveBars.length,10);i++){const b=liveBars[i];qs.push({type:'mc',con:'o_bull',bars:liveBars,hlb:i,txt:'Is Bar '+(i+1)+' bullish or bearish?',opts:['Bullish','Bearish'],cor:b.bull?'Bullish':'Bearish',fc:'Correct!',fw:'Incorrect.'});}}
+      animBars=liveBars;sQ=qs;qI=0;sC=0;streak=0;sessResults=[];
+      document.getElementById('ar-title').textContent='📊 OHLC Mastery — '+liveSym+' (Live)';
+      animate(animBars,()=>loadQ());
+      return;
+    }
+  }
   const data=genQ();animBars=data.bars;sQ=data.questions;qI=0;sC=0;streak=0;sessResults=[];
   animate(animBars,()=>loadQ());
 }
@@ -5924,7 +6026,7 @@ function resetProgress(){
 
 function redraw(){ if(bars&&bars.length>0&&ctx){ calcL(bars); const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined; draw(bars,{zones,zLabels:diff==='easy'}); } }
 
-return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,toggleHints,closeExpl,xAnno,initTraining,genChart,resetProgress,redraw};
+return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,toggleHints,toggleLive,closeExpl,xAnno,initTraining,genChart,resetProgress,redraw};
 })();
 
 // Hash-based tab switching (for iframe embedding)
@@ -8593,3 +8695,4 @@ document.getElementById('confirmOverlay')?.addEventListener('click', function(e)
 
 </body>
 </html>
+
