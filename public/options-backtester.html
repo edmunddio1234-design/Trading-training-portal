@@ -146,7 +146,8 @@
 .live-pill.on::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 4px; animation: pulse-dot 1.5s infinite; }
 @keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 .ct-tag.live.on { background: rgba(16,185,129,0.18) !important; color: #10B981 !important; border-color: #10B981 !important; font-weight: 700; }
-#lw-chart-container { border-radius: 8px; overflow: hidden; }
+#lw-chart-container { border-radius: 8px; overflow: hidden; width: 100%; min-height: 420px; }
+#lw-chart-container table { font-size: 0; } /* Fix LW Charts internal table rendering */
 .live-loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.85); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; z-index: 20; border-radius: 12px; }
 .live-loading span { color: #10B981; font-size: 14px; font-weight: 600; }
 /* OHLC / Chart Training dark mode extras */
@@ -594,8 +595,9 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
 .ct-tag.live { background:rgba(16,185,129,0.15); color:var(--candle-up); }
 .ct-ohlc { display:flex; gap:10px; margin-left:auto; font-size:11px; color:var(--chart-text); }
 .ct-ohlc span { font-weight:600; }
-.chart-canvas-wrap { position:relative; }
+.chart-canvas-wrap { position:relative; min-height: 200px; }
 .chart-canvas-wrap canvas { display:block; width:100%; cursor:crosshair; }
+.chart-canvas-wrap.lw-active { min-height: 420px; }
 
 /* --- Crosshair tooltip --- */
 .ch-tip { position:absolute; pointer-events:none; z-index:10; display:none; }
@@ -3089,7 +3091,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       </div>
       <div class="chart-canvas-wrap" id="chart-wrap">
         <canvas id="train-canvas" width="900" height="600"></canvas>
-        <div id="lw-chart-container" style="display:none;width:100%;height:420px;position:absolute;top:0;left:0;z-index:2;"></div>
+        <div id="lw-chart-container" style="display:none;width:100%;height:420px;"></div>
         <div class="anno" id="anno" style="display:none;">
           <button class="anno-x" onclick="TM.xAnno()">✕</button>
           <div class="anno-hd" id="anno-hd"></div>
@@ -5109,16 +5111,22 @@ function initLWChart(){
   const container=document.getElementById('lw-chart-container');
   if(!container||!window.LightweightCharts)return false;
   destroyLWChart();
-  container.style.display='block';
-  // Hide canvas
+  // Hide canvas, show LW container
   const cv=document.getElementById('train-canvas');if(cv)cv.style.display='none';
+  container.style.display='block';
+  container.style.height='420px';
+  container.style.minHeight='420px';
+  // Force parent to maintain height
+  const wrap=document.getElementById('chart-wrap');
+  if(wrap){wrap.classList.add('lw-active');}
+  // Detect theme
   const isDark=document.documentElement.getAttribute('data-theme')==='dark';
   lwChart=LightweightCharts.createChart(container,{
-    width:container.clientWidth,height:420,
+    autoSize:true,
     layout:{background:{type:'solid',color:isDark?'#0B1426':'#FFFFFF'},textColor:isDark?'#9CA3AF':'#6B7280',fontFamily:'Inter,system-ui,sans-serif'},
     grid:{vertLines:{color:isDark?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.06)'},horzLines:{color:isDark?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.06)'}},
     crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
-    rightPriceScale:{borderColor:isDark?'#1F2937':'#E5E7EB'},
+    rightPriceScale:{borderColor:isDark?'#1F2937':'#E5E7EB',scaleMargins:{top:0.1,bottom:0.1}},
     timeScale:{borderColor:isDark?'#1F2937':'#E5E7EB',timeVisible:false,fixLeftEdge:true,fixRightEdge:true},
   });
   lwSeries=lwChart.addCandlestickSeries({
@@ -5126,9 +5134,6 @@ function initLWChart(){
     borderUpColor:'#10B981',borderDownColor:'#EF4444',
     wickUpColor:'#10B981',wickDownColor:'#EF4444',
   });
-  // Resize observer
-  const ro=new ResizeObserver(()=>{if(lwChart&&container.clientWidth>0)lwChart.applyOptions({width:container.clientWidth});});
-  ro.observe(container);container._lwRO=ro;
   return true;
 }
 
@@ -5136,17 +5141,31 @@ function renderLWBars(barsArr){
   if(!lwSeries)return;
   lwBarsData=barsArr;
   const lwData=barsArr.map((b,i)=>{
-    // Use real date if available, otherwise generate synthetic dates
     let t;
     if(b.date){t=b.date;}
-    else{const d=new Date(2025,0,6+i);t=d.toISOString().split('T')[0];}// Mon starting Jan 6 2025
-    return{time:t,open:b.o,high:b.h,low:b.l,close:b.c};
+    else{
+      // Generate synthetic weekday dates (skip weekends)
+      const d=new Date(2025,0,6); // Monday Jan 6 2025
+      let added=0;
+      while(added<i){d.setDate(d.getDate()+1);if(d.getDay()!==0&&d.getDay()!==6)added++;}
+      t=d.toISOString().split('T')[0];
+    }
+    return{time:t,open:+b.o,high:+b.h,low:+b.l,close:+b.c};
   });
+  // Sort by time (required by LW Charts)
+  lwData.sort((a,b)=>a.time<b.time?-1:a.time>b.time?1:0);
   lwSeries.setData(lwData);
-  lwChart.timeScale().fitContent();
+  // Fit content after a micro-delay to ensure layout is complete
+  requestAnimationFrame(()=>{
+    if(lwChart){
+      lwChart.timeScale().fitContent();
+      // Force price scale to fit
+      lwChart.priceScale('right').applyOptions({autoScale:true});
+    }
+  });
   // Update toolbar with last bar
   if(barsArr.length>0){
-    bars=barsArr; // Sync global bars
+    bars=barsArr;
     updateToolbar(barsArr);
   }
 }
@@ -5275,8 +5294,9 @@ function destroyLWChart(){
   removeLWEvents();
   if(lwChart){try{lwChart.remove();}catch(e){}lwChart=null;lwSeries=null;}
   const container=document.getElementById('lw-chart-container');
-  if(container){container.style.display='none';container.innerHTML='';if(container._lwRO){container._lwRO.disconnect();delete container._lwRO;}}
-  // Show canvas again
+  if(container){container.style.display='none';container.innerHTML='';}
+  // Restore parent and canvas
+  const wrap=document.getElementById('chart-wrap');if(wrap)wrap.classList.remove('lw-active');
   const cv=document.getElementById('train-canvas');if(cv)cv.style.display='';
 }
 
