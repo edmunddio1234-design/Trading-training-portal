@@ -3932,6 +3932,10 @@ const TRAINING_SYMBOLS = [
 app.post('/api/training/live-bars', async (req, res) => {
   try {
     const { difficulty = 'easy', symbol } = req.body || {};
+    // Validate symbol if user-provided
+    if (symbol && !/^[A-Z0-9.\-]{1,10}$/i.test(symbol)) {
+      return res.status(400).json({ error: 'Invalid symbol format', fallback: true });
+    }
     const sym = symbol || TRAINING_SYMBOLS[Math.floor(Math.random() * TRAINING_SYMBOLS.length)];
     const n = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 16 : 24;
 

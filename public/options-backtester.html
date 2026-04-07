@@ -6,6 +6,7 @@
 <title>Mission Metrics — Options Backtester</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root {
   --navy: #1B2A4A;
@@ -144,6 +145,8 @@
 .live-pill.on { background: rgba(16,185,129,0.18) !important; color: #10B981 !important; border-color: #10B981 !important; box-shadow: 0 0 8px rgba(16,185,129,0.3); }
 .live-pill.on::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 4px; animation: pulse-dot 1.5s infinite; }
 @keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.ct-tag.live.on { background: rgba(16,185,129,0.18) !important; color: #10B981 !important; border-color: #10B981 !important; font-weight: 700; }
+#lw-chart-container { border-radius: 8px; overflow: hidden; }
 .live-loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.85); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; z-index: 20; border-radius: 12px; }
 .live-loading span { color: #10B981; font-size: 14px; font-weight: 600; }
 /* OHLC / Chart Training dark mode extras */
@@ -3086,6 +3089,7 @@ table.tbl { width:100%; border-collapse:collapse; font-size:12px; }
       </div>
       <div class="chart-canvas-wrap" id="chart-wrap">
         <canvas id="train-canvas" width="900" height="600"></canvas>
+        <div id="lw-chart-container" style="display:none;width:100%;height:420px;position:absolute;top:0;left:0;z-index:2;"></div>
         <div class="anno" id="anno" style="display:none;">
           <button class="anno-x" onclick="TM.xAnno()">✕</button>
           <div class="anno-hd" id="anno-hd"></div>
@@ -5069,7 +5073,13 @@ function toggleLive(el){
   liveMode=!liveMode;
   el.classList.toggle('on',liveMode);
   const symEl=document.getElementById('live-sym');
-  if(!liveMode){if(symEl){symEl.style.display='none';symEl.textContent='';}liveSym='';liveBarsCache=null;}
+  if(!liveMode){
+    if(symEl){symEl.style.display='none';symEl.textContent='';}
+    liveSym='';liveBarsCache=null;
+    destroyLWChart();
+    // Restart synthetic
+    if(mode)newChart();
+  }
   if(liveMode){newChart();}
 }
 
@@ -5091,6 +5101,186 @@ async function fetchLiveBars(){
   const symEl=document.getElementById('live-sym');if(symEl){symEl.style.display='none';}
   return null;
 }
+
+// ---- TRADINGVIEW LIGHTWEIGHT CHARTS ENGINE ----
+let lwChart=null,lwSeries=null,lwBarsData=[],lwClickHandler=null,lwHoverHandler=null;
+
+function initLWChart(){
+  const container=document.getElementById('lw-chart-container');
+  if(!container||!window.LightweightCharts)return false;
+  destroyLWChart();
+  container.style.display='block';
+  // Hide canvas
+  const cv=document.getElementById('train-canvas');if(cv)cv.style.display='none';
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  lwChart=LightweightCharts.createChart(container,{
+    width:container.clientWidth,height:420,
+    layout:{background:{type:'solid',color:isDark?'#0B1426':'#FFFFFF'},textColor:isDark?'#9CA3AF':'#6B7280',fontFamily:'Inter,system-ui,sans-serif'},
+    grid:{vertLines:{color:isDark?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.06)'},horzLines:{color:isDark?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.06)'}},
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
+    rightPriceScale:{borderColor:isDark?'#1F2937':'#E5E7EB'},
+    timeScale:{borderColor:isDark?'#1F2937':'#E5E7EB',timeVisible:false,fixLeftEdge:true,fixRightEdge:true},
+  });
+  lwSeries=lwChart.addCandlestickSeries({
+    upColor:'#10B981',downColor:'#EF4444',
+    borderUpColor:'#10B981',borderDownColor:'#EF4444',
+    wickUpColor:'#10B981',wickDownColor:'#EF4444',
+  });
+  // Resize observer
+  const ro=new ResizeObserver(()=>{if(lwChart&&container.clientWidth>0)lwChart.applyOptions({width:container.clientWidth});});
+  ro.observe(container);container._lwRO=ro;
+  return true;
+}
+
+function renderLWBars(barsArr){
+  if(!lwSeries)return;
+  lwBarsData=barsArr;
+  const lwData=barsArr.map((b,i)=>{
+    // Use real date if available, otherwise generate synthetic dates
+    let t;
+    if(b.date){t=b.date;}
+    else{const d=new Date(2025,0,6+i);t=d.toISOString().split('T')[0];}// Mon starting Jan 6 2025
+    return{time:t,open:b.o,high:b.h,low:b.l,close:b.c};
+  });
+  lwSeries.setData(lwData);
+  lwChart.timeScale().fitContent();
+  // Update toolbar with last bar
+  if(barsArr.length>0){
+    bars=barsArr; // Sync global bars
+    updateToolbar(barsArr);
+  }
+}
+
+function lwHighlightBar(barIdx,color){
+  if(!lwSeries||!lwBarsData[barIdx])return;
+  const b=lwBarsData[barIdx];
+  const t=b.date||new Date(2025,0,6+barIdx).toISOString().split('T')[0];
+  lwSeries.setMarkers([{time:t,position:'aboveBar',color:color||'#60A5FA',shape:'arrowDown',text:'Bar '+(barIdx+1)}]);
+}
+
+function lwClearMarkers(){if(lwSeries)lwSeries.setMarkers([]);}
+
+function lwGetBarTime(idx){
+  if(!lwBarsData[idx])return null;
+  return lwBarsData[idx].date||new Date(2025,0,6+idx).toISOString().split('T')[0];
+}
+
+function setupLWEvents(){
+  if(!lwChart||!lwSeries)return;
+
+  // Click handler — maps to same grade/answer system
+  lwClickHandler=function(param){
+    if(!param.point||!param.time)return;
+    // Find bar index
+    const barIdx=lwBarsData.findIndex(b=>{
+      const t=b.date||new Date(2025,0,6+lwBarsData.indexOf(b)).toISOString().split('T')[0];
+      return t===param.time;
+    });
+    if(barIdx<0)return;
+    const bar=lwBarsData[barIdx];
+
+    // Determine click price from Y coordinate
+    const clickPrice=lwSeries.coordinateToPrice(param.point.y);
+    if(clickPrice===null||clickPrice===undefined)return;
+
+    // Determine which element was clicked (like hitTest)
+    const range=bar.h-bar.l;
+    const tol=Math.max(range*0.1,0.05);
+    let el='body';
+    if(Math.abs(clickPrice-bar.h)<tol)el='high';
+    else if(Math.abs(clickPrice-bar.l)<tol)el='low';
+    else if(Math.abs(clickPrice-bar.o)<tol)el='open';
+    else if(Math.abs(clickPrice-bar.c)<tol)el='close';
+    else if(clickPrice>Math.max(bar.o,bar.c))el='upper_wick';
+    else if(clickPrice<Math.min(bar.o,bar.c))el='lower_wick';
+
+    const hit={b:barIdx,d:bar,el,x:param.point.x,y:param.point.y,pr:clickPrice};
+
+    // Explore mode — show annotation
+    if(explore&&hit&&(answered||sQ[qI]?.type==='mc')){showAnno(hit);return;}
+    if(answered)return;
+    const q=sQ[qI];if(!q)return;
+
+    // Click-type questions (same logic as canvas handler)
+    if(q.type==='click'){
+      if(hit.b===q.tb){
+        const tgtPrice=bar[q.ans==='open'?'o':q.ans==='close'?'c':q.ans==='high'?'h':'l'];
+        const isCorrect=el===q.ans||Math.abs(clickPrice-tgtPrice)<tol;
+        grade(isCorrect,q);
+        lwSeries.setMarkers([{time:lwGetBarTime(q.tb),position:'aboveBar',color:isCorrect?'#10B981':'#EF4444',shape:'arrowDown',text:(q.ans||'').toUpperCase()}]);
+      }else{grade(false,q);}
+    }else if(q.type==='click_bar'||q.type==='click_zone'){
+      if(q.chk){
+        const correct=q.chk(hit);
+        grade(correct,q);
+        lwSeries.setMarkers([{time:lwGetBarTime(barIdx),position:'aboveBar',color:correct?'#10B981':'#EF4444',shape:'arrowDown',text:correct?'✓':'✗'}]);
+      }else{grade(false,q);}
+    }else if(q.type==='click_el'){
+      if(hit.b===q.tb){
+        const isBody=el==='body';const isWick=el==='upper_wick'||el==='lower_wick';
+        let correct=false;
+        if(q.ans==='body'&&isBody)correct=true;
+        else if(q.ans==='wick'&&isWick)correct=true;
+        grade(correct,q);
+        lwSeries.setMarkers([{time:lwGetBarTime(q.tb),position:'aboveBar',color:correct?'#10B981':'#EF4444',shape:'arrowDown',text:(q.ans||'').toUpperCase()}]);
+      }else{grade(false,q);}
+    }else if(explore&&hit){showAnno(hit);}
+  };
+  lwChart.subscribeClick(lwClickHandler);
+
+  // Hover handler — updates toolbar OHLC + educational tooltip
+  lwHoverHandler=function(param){
+    if(!param.point||!param.time){hideHoverTip();return;}
+    const barIdx=lwBarsData.findIndex(b=>{
+      const t=b.date||new Date(2025,0,6+lwBarsData.indexOf(b)).toISOString().split('T')[0];
+      return t===param.time;
+    });
+    if(barIdx<0){hideHoverTip();return;}
+    const bar=lwBarsData[barIdx];
+    hovBar=barIdx;
+
+    // Update toolbar OHLC
+    const ohlcEl=document.getElementById('ct-ohlc');
+    if(ohlcEl)ohlcEl.innerHTML=`O: <span style="color:${bar.bull?'#10B981':'#EF4444'}">${bar.o.toFixed(2)}</span> H: <span style="color:#10B981">${bar.h.toFixed(2)}</span> L: <span style="color:#EF4444">${bar.l.toFixed(2)}</span> C: <span style="color:${bar.bull?'#10B981':'#EF4444'}">${bar.c.toFixed(2)}</span>`;
+
+    // Show educational hover tooltip (same system as canvas)
+    if(hintsOn){
+      const clickPrice=lwSeries.coordinateToPrice(param.point.y);
+      const range=bar.h-bar.l;const tol=Math.max(range*0.1,0.05);
+      let el='body';
+      if(clickPrice!==null&&clickPrice!==undefined){
+        if(Math.abs(clickPrice-bar.h)<tol)el='high';
+        else if(Math.abs(clickPrice-bar.l)<tol)el='low';
+        else if(Math.abs(clickPrice-bar.o)<tol)el='open';
+        else if(Math.abs(clickPrice-bar.c)<tol)el='close';
+        else if(clickPrice>Math.max(bar.o,bar.c))el='upper_wick';
+        else if(clickPrice<Math.min(bar.o,bar.c))el='lower_wick';
+      }
+      const hit={b:barIdx,d:bar,el,x:param.point.x,y:param.point.y,pr:clickPrice};
+      showHoverTip(hit,param.point.x,param.point.y);
+    }
+  };
+  lwChart.subscribeCrosshairMove(lwHoverHandler);
+}
+
+function removeLWEvents(){
+  if(lwChart){
+    if(lwClickHandler){try{lwChart.unsubscribeClick(lwClickHandler);}catch(e){}}
+    if(lwHoverHandler){try{lwChart.unsubscribeCrosshairMove(lwHoverHandler);}catch(e){}}
+  }
+  lwClickHandler=null;lwHoverHandler=null;
+}
+
+function destroyLWChart(){
+  removeLWEvents();
+  if(lwChart){try{lwChart.remove();}catch(e){}lwChart=null;lwSeries=null;}
+  const container=document.getElementById('lw-chart-container');
+  if(container){container.style.display='none';container.innerHTML='';if(container._lwRO){container._lwRO.disconnect();delete container._lwRO;}}
+  // Show canvas again
+  const cv=document.getElementById('train-canvas');if(cv)cv.style.display='';
+}
+
+function isLWActive(){return liveMode&&lwChart&&lwSeries;}
 
 // ---- CHART GENERATOR (always random) ----
 function genChart(n,opts={}){
@@ -5224,12 +5414,21 @@ function animate(allBars,cb){
 
 function stopAnim(){isAnim=false;if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}}
 
-function updateToolbar(){
-  if(bars.length>0){
-    const last=bars[bars.length-1];
-    const symEl=document.getElementById('ct-sym');if(symEl)symEl.textContent='SIM '+String.fromCharCode(65+Math.floor(Math.random()*26))+String.fromCharCode(65+Math.floor(Math.random()*26))+String.fromCharCode(65+Math.floor(Math.random()*26));
+function updateToolbar(overrideBars){
+  const bb=overrideBars||bars;
+  if(bb.length>0){
+    const last=bb[bb.length-1];
+    const symEl=document.getElementById('ct-sym');
+    if(symEl){
+      if(liveMode&&liveSym){symEl.textContent=liveSym;}
+      else{symEl.textContent='SIM '+String.fromCharCode(65+Math.floor(Math.random()*26))+String.fromCharCode(65+Math.floor(Math.random()*26))+String.fromCharCode(65+Math.floor(Math.random()*26));}
+    }
     const prEl=document.getElementById('ct-price');if(prEl){prEl.textContent='$'+last.c.toFixed(2);prEl.className='ct-price '+(last.bull?'up':'dn');}
-    const tagEl=document.getElementById('ct-tag');if(tagEl){tagEl.textContent='PRACTICE';tagEl.className='ct-tag live';}
+    const tagEl=document.getElementById('ct-tag');
+    if(tagEl){
+      if(liveMode&&liveSym){tagEl.textContent='LIVE';tagEl.className='ct-tag live on';}
+      else{tagEl.textContent='PRACTICE';tagEl.className='ct-tag live';}
+    }
   }
 }
 
@@ -5473,8 +5672,13 @@ function grade(correct,q,score){
   showFB(correct,q,score);
   document.getElementById('ar-str').textContent='🔥 '+streak;
   if(q.tb!==undefined){
-    const hl=[{b:q.tb,c:correct?'#10B981':'#EF4444',mk:[q.ans||'open']}];
-    draw(bars,{hl,zones:q.zones});
+    if(isLWActive()){
+      // Highlight on Lightweight Charts
+      lwSeries.setMarkers([{time:lwGetBarTime(q.tb),position:'aboveBar',color:correct?'#10B981':'#EF4444',shape:'arrowDown',text:(q.ans||'open').toUpperCase()}]);
+    }else{
+      const hl=[{b:q.tb,c:correct?'#10B981':'#EF4444',mk:[q.ans||'open']}];
+      draw(bars,{hl,zones:q.zones});
+    }
   }
   if(q.type==='mc'){document.querySelectorAll('.qo').forEach(btn=>{btn.disabled=true;if(btn.textContent===q.cor)btn.classList.add('ok');});}
 }
@@ -5535,23 +5739,21 @@ async function startMode(m){
   // Reset live toggle for non-OHLC modes
   if(m!=='ohlc'){liveMode=false;const tog=document.getElementById('live-toggle');if(tog)tog.classList.remove('on');const se=document.getElementById('live-sym');if(se){se.style.display='none';}}
 
-  // If live mode and OHLC, fetch real data
+  // If live mode and OHLC, fetch real data and render with Lightweight Charts
   if(liveMode && m==='ohlc'){
-    // Show loading overlay on canvas area
-    const cp=document.getElementById('train-canvas')?.parentElement;
+    const cp=document.getElementById('chart-wrap');
     if(cp){cp.style.position='relative';cp.insertAdjacentHTML('beforeend','<div class="live-loading" id="live-ld"><div class="spinner"></div><span>Loading real market data...</span></div>');}
     const liveBars=await fetchLiveBars();
     const ldEl=document.getElementById('live-ld');if(ldEl)ldEl.remove();
     if(liveBars){
-      // Use live bars with OHLC question generation only
       liveBarsCache=liveBars;
+      // Generate questions
       const qs=[];
       for(let q=0;q<30&&qs.length<10;q++){
         const question=genOneQ(liveBars,[],q);
         if(question)qs.push(question);
       }
       if(qs.length<3){
-        // Fallback: generate basic OHLC questions
         for(let i=0;i<Math.min(liveBars.length,10);i++){
           const b=liveBars[i];
           if(i%3===0)qs.push({type:'click',con:'o_o',bars:liveBars,tb:i,txt:'Click the OPEN on Bar '+(i+1),ans:'open',fc:'Correct! The Open is where price started — $'+b.o.toFixed(2),fw:'Incorrect. The Open is at $'+b.o.toFixed(2)+' — the '+(b.bull?'bottom':'top')+' of the body.'});
@@ -5559,12 +5761,23 @@ async function startMode(m){
           else qs.push({type:'mc',con:'o_bull',bars:liveBars,hlb:i,txt:'Is Bar '+(i+1)+' bullish or bearish?',opts:['Bullish','Bearish'],cor:b.bull?'Bullish':'Bearish',fc:'Correct! '+(b.bull?'Close ($'+b.c.toFixed(2)+') > Open ($'+b.o.toFixed(2)+') = Bullish':'Close ($'+b.c.toFixed(2)+') < Open ($'+b.o.toFixed(2)+') = Bearish'),fw:'Incorrect. '+(b.bull?'This is bullish — Close > Open':'This is bearish — Close < Open')});
         }
       }
-      animBars=liveBars;sQ=qs;
+      bars=liveBars;animBars=liveBars;sQ=qs;
       document.getElementById('ar-title').textContent='📊 OHLC Mastery — '+liveSym+' (Live)';
-      animate(animBars,()=>loadQ());
+      // Initialize Lightweight Charts instead of canvas animation
+      if(initLWChart()){
+        renderLWBars(liveBars);
+        setupLWEvents();
+        loadQ();
+      }else{
+        // LW Charts not available, fallback to canvas animation
+        animate(animBars,()=>loadQ());
+      }
       return;
     }
-    // If live fetch failed, fall through to synthetic
+    // Live fetch failed — notify user and fall through to synthetic
+    liveMode=false;
+    const tog=document.getElementById('live-toggle');if(tog)tog.classList.remove('on');
+    document.getElementById('ar-title').textContent=titles[m]||'Training';
   }
 
   const data=genQ();
@@ -5575,17 +5788,16 @@ async function startMode(m){
 }
 
 function back(){
-  stopAnim();removeEv();
+  stopAnim();removeEv();destroyLWChart();
   document.getElementById('train-dash').style.display='block';
   document.getElementById('train-arena').classList.remove('active');
   mode=null;updateDash();
 }
 
 async function newChart(){
-  stopAnim();answered=false;drawnZ=[];xAnno();
+  stopAnim();answered=false;drawnZ=[];xAnno();lwClearMarkers();
   if(liveMode && mode==='ohlc'){
-    // Fetch fresh live data
-    const cp=document.getElementById('train-canvas')?.parentElement;
+    const cp=document.getElementById('chart-wrap');
     if(cp){cp.style.position='relative';cp.insertAdjacentHTML('beforeend','<div class="live-loading" id="live-ld"><div class="spinner"></div><span>Loading new chart...</span></div>');}
     const liveBars=await fetchLiveBars();
     const ldEl=document.getElementById('live-ld');if(ldEl)ldEl.remove();
@@ -5594,12 +5806,24 @@ async function newChart(){
       const qs=[];
       for(let q=0;q<30&&qs.length<10;q++){const question=genOneQ(liveBars,[],q);if(question)qs.push(question);}
       if(qs.length<3){for(let i=0;i<Math.min(liveBars.length,10);i++){const b=liveBars[i];qs.push({type:'mc',con:'o_bull',bars:liveBars,hlb:i,txt:'Is Bar '+(i+1)+' bullish or bearish?',opts:['Bullish','Bearish'],cor:b.bull?'Bullish':'Bearish',fc:'Correct!',fw:'Incorrect.'});}}
-      animBars=liveBars;sQ=qs;qI=0;sC=0;streak=0;sessResults=[];
+      bars=liveBars;animBars=liveBars;sQ=qs;qI=0;sC=0;streak=0;sessResults=[];
       document.getElementById('ar-title').textContent='📊 OHLC Mastery — '+liveSym+' (Live)';
-      animate(animBars,()=>loadQ());
+      // Render on Lightweight Charts
+      if(isLWActive()){
+        renderLWBars(liveBars);
+        loadQ();
+      }else if(initLWChart()){
+        renderLWBars(liveBars);
+        setupLWEvents();
+        loadQ();
+      }else{
+        animate(animBars,()=>loadQ());
+      }
       return;
     }
   }
+  // Synthetic mode — destroy LW chart if active, use canvas
+  if(lwChart)destroyLWChart();
   const data=genQ();animBars=data.bars;sQ=data.questions;qI=0;sC=0;streak=0;sessResults=[];
   animate(animBars,()=>loadQ());
 }
@@ -5617,9 +5841,19 @@ function loadQ(){
   document.getElementById('ar-str').textContent='🔥 '+streak;
   document.getElementById('fb').className='fb';
   // Redraw chart (bars already formed)
-  const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;
-  const hl=q.hlb!==undefined?[{b:q.hlb,c:'#60A5FA'}]:undefined;
-  draw(bars,{zones:q.zones||zones,hl,zLabels:diff==='easy'});
+  if(isLWActive()){
+    // For LW charts: highlight target bar with marker
+    lwClearMarkers();
+    if(q.hlb!==undefined){
+      lwHighlightBar(q.hlb,'#60A5FA');
+    }else if(q.tb!==undefined){
+      lwHighlightBar(q.tb,'#60A5FA');
+    }
+  }else{
+    const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined;
+    const hl=q.hlb!==undefined?[{b:q.hlb,c:'#60A5FA'}]:undefined;
+    draw(bars,{zones:q.zones||zones,hl,zLabels:diff==='easy'});
+  }
   // Options
   const od=document.getElementById('qp-opts');od.innerHTML='';
   if(q.type==='mc'){q.opts.forEach(o=>{const btn=document.createElement('button');btn.className='qo';btn.textContent=o;btn.onclick=()=>handleMC(o,q);od.appendChild(btn);});}
@@ -6026,7 +6260,7 @@ function resetProgress(){
 
 function redraw(){ if(bars&&bars.length>0&&ctx){ calcL(bars); const zones=(mode==='sd'||mode==='zm'||mode==='of'||mode==='seq')?findZones(bars):undefined; draw(bars,{zones,zLabels:diff==='easy'}); } }
 
-return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,toggleHints,toggleLive,closeExpl,xAnno,initTraining,genChart,resetProgress,redraw};
+return{startMode,back,diff:setDiff,next:nextQ,newChart,end:endSess,closeSess,submitZone,toggleExplore,toggleHints,toggleLive,closeExpl,xAnno,initTraining,genChart,resetProgress,redraw,destroyLWChart};
 })();
 
 // Hash-based tab switching (for iframe embedding)
